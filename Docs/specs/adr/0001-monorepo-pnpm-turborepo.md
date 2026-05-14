@@ -28,7 +28,7 @@ The codebase is TypeScript strict throughout (CLAUDE.md §7). A monorepo strateg
 Use **pnpm workspaces** for dependency management and **Turborepo** for task orchestration and remote caching.
 
 ```
-ROMAS BRIEF/
+romas-brief/                  # D:\dev\projects\romas-brief\ (standalone repo per ADR-0014)
 ├── apps/
 │   ├── cms/          (workspace: @romas-brief/cms)
 │   └── reader/       (workspace: @romas-brief/reader)
