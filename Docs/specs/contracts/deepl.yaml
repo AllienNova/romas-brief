@@ -1,0 +1,155 @@
+openapi: 3.1.0
+info:
+  title: DeepL Pro Translation API (derived contract — LATAM editorial)
+  version: 1.0.0
+  description: |
+    Primary translation provider for LATAM editorial per ADR-0013 (Kimal lock 2026-05-14).
+    Translates ANVISA / COFEPRIS / ANMAT / SBR / SLAGO / ALATRO source records
+    from Portuguese / Spanish into English for ROMAS Brief publication.
+servers:
+  - url: https://api.deepl.com
+    description: DeepL Pro
+  - url: https://api-free.deepl.com
+    description: DeepL Free (initial launch volume)
+paths:
+  /v2/translate:
+    post:
+      summary: Translate text from source to target language
+      operationId: translate
+      security:
+        - authKey: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [text, target_lang]
+              properties:
+                text:
+                  type: array
+                  items: { type: string }
+                  description: 1..50 segments per request
+                  maxItems: 50
+                source_lang:
+                  type: string
+                  enum: [PT, ES, JA, ZH, KO, DE, FR, IT, EN]
+                  description: ROMAS Brief uses PT (Portuguese) + ES (Spanish) for LATAM; others reserved for future
+                target_lang:
+                  type: string
+                  enum: [EN-US, EN-GB]
+                  default: EN-US
+                formality:
+                  type: string
+                  enum: [default, more, less, prefer_more, prefer_less]
+                  default: default
+                glossary_id:
+                  type: string
+                  description: Reference to a ROMAS Brief glossary of medical-specialty terms (M1 deliverable)
+                tag_handling:
+                  type: string
+                  enum: [xml, html]
+                  description: Preserve HTML/XML tags in translated output
+                preserve_formatting:
+                  type: integer
+                  enum: [0, 1]
+                  default: 1
+      responses:
+        '200':
+          description: Translated text
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  translations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detected_source_language: { type: string }
+                        text: { type: string }
+        '403': { description: Invalid auth_key }
+        '429': { description: Rate limit }
+        '456': { description: Quota exceeded — switch to Claude/GPT-4 fallback }
+        '503': { description: Service unavailable — switch to Claude/GPT-4 fallback }
+  /v2/glossaries:
+    post:
+      summary: Create glossary (medical-terminology pinning)
+      operationId: createGlossary
+      security:
+        - authKey: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [name, source_lang, target_lang, entries, entries_format]
+              properties:
+                name: { type: string, example: "romas-brief-medical-pt-en" }
+                source_lang: { type: string, enum: [PT, ES] }
+                target_lang: { type: string, enum: [EN] }
+                entries:
+                  type: string
+                  description: TSV — source_term\ttranslated_term per line
+                entries_format:
+                  type: string
+                  enum: [tsv, csv]
+                  default: tsv
+      responses:
+        '201': { description: Glossary created }
+
+components:
+  securitySchemes:
+    authKey:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: "DeepL-Auth-Key ${DEEPL_API_KEY}"
+
+x-romas-policy:
+  role: latam_editorial_translation
+  scope:
+    languages_in: [PT, ES]
+    language_out: EN-US
+    runs_for: ['articles where source_language in (es, pt)']
+  pipeline:
+    stage_1_primary: deepl
+    stage_2_verification: |
+      ONLY if articles.composite_score >= 70 (Strong + Hero bands).
+      Claude 3.5 Sonnet via llm-orchestrator package; prompt enforces JSON return:
+      {verified: bool, mistranslations: string[], suggested_fixes: string[]}.
+      If verified=false: add suggested_fixes to body_md, set translation_verified=true, log review.
+      If Standard / Quick-Hit / Reference bands: skip verification, DeepL output ships directly.
+  citation_discipline:
+    primary_source_url: original-language record (PT or ES) — not the translation
+    body_md_language: en
+    verbatim_quoting: |
+      Quote in English (translated). Show original-language quote in italics inside parens for transparency.
+      Example: "...the trial showed a 28% reduction in PSA recurrence (*una reducción del 28% en la recurrencia del PSA*)..."
+    footer_attribution: |
+      Mandatory non-removable footer:
+      "Source originally in {Portuguese|Spanish}; translated with editorial review."
+  retry:
+    primary_attempts: 3
+    backoff: [2s, 8s, 30s]
+    retryable_status: [429, 500, 502, 503]
+    fallback_status: [456, 503]   # quota or service-unavailable → Claude/GPT-4
+  timeout: 30s
+  glossary:
+    medical_pt_en: M1 deliverable — seed with ~50 RT-specific Portuguese terms (radioterapia adaptativa, braquiterapia, fraccionamento, etc.)
+    medical_es_en: M1 deliverable — seed with ~50 RT-specific Spanish terms (radioterapia, fraccionamiento, supervivencia libre de enfermedad, etc.)
+    update_cadence: monthly review based on translation_qa flags
+  cost:
+    free_tier_chars_per_month: 500000
+    expected_monthly_chars: ~50000 (40 launch + 1-2/day × 3000 chars)
+    monthly_cap_alert: $100 → trigger ADR-0013 revisit
+  privacy:
+    data_retention: DeepL Pro retains 0 days; DeepL Free retains 30 days (DPA requires Pro for production)
+    pii_classes: []  # source records are public regulatory/journal text; no PII
+    dpa_required: true
+  observability:
+    metrics: [request_id, source_lang, char_count, latency_ms, status_code, verification_triggered, verification_outcome]
+    sink: Workers Analytics Engine
+  api_version_pinned: v2

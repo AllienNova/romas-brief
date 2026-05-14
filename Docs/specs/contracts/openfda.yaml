@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: openFDA (derived contract — DISCOVERY ONLY)
+  version: 1.0.0
+  description: |
+    DISCOVERY ONLY. Per Rule 4 (CLAUDE.md §4, AGENT.md §5),
+    openFDA hits MUST be verified against the official FDA 510(k) /
+    De Novo / PMA record before drafting. openFDA is NEVER cited
+    as a primary source.
+servers:
+  - url: https://api.fda.gov
+paths:
+  /device/510k.json:
+    get:
+      summary: Search 510(k) clearances
+      operationId: search510k
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string }
+          example: 'decision_date:[2026-01-01+TO+2026-12-31]+AND+product_code:JAK'
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10, maximum: 1000 }
+        - name: skip
+          in: query
+          schema: { type: integer, default: 0 }
+        - name: api_key
+          in: query
+          schema: { type: string }
+          description: Optional; raises rate limit from 240/min to 120,000/day
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    type: object
+                    properties:
+                      results:
+                        type: object
+                        properties:
+                          total: { type: integer }
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        k_number: { type: string }
+                        applicant: { type: string }
+                        decision_date: { type: string, format: date }
+                        device_name: { type: string }
+                        product_code: { type: string }
+                        statement_or_summary: { type: string }
+        '429': { description: Rate limit }
+  /device/recall.json:
+    get:
+      summary: Recall search
+      operationId: searchRecall
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /device/event.json:
+    get:
+      summary: Adverse event search
+      operationId: searchEvent
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+
+x-romas-policy:
+  role: discovery_only
+  inviolable_rule: 4
+  verification_step: |
+    Every openFDA hit -> regulatory-analyst verifies against
+    https://www.accessdata.fda.gov/cdrh_docs/pdf{first2_digits}/{k_number}.pdf
+    BEFORE drafting. The official PDF/page URL is the primary source.
+    See contracts/fda-510k.yaml.
+  retry:
+    attempts: 3
+    backoff: [1s, 4s, 16s]
+  timeout: 15s
+  rate_limit:
+    unauthenticated: 240/min
+    api_key_tier: 120000/day
+  cache:
+    ttl: 6h
+    backing: R2 + Workers KV
+  on_failure:
+    log: source_health
+    silent_drop: false   # Rule 5

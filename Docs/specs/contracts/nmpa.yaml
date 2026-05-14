@@ -1,0 +1,57 @@
+openapi: 3.1.0
+info:
+  title: NMPA China (derived contract — READ-ONLY ingest per SSOT §3 row 17)
+  version: 1.0.0
+  description: |
+    China's National Medical Products Administration. Per SSOT §3 row 17
+    (Kimal lock 2026-05-14): READ-ONLY ingest only. NMPA records cited as
+    primary source per Rule 4 for Chinese RT-AI device clearances. NO Chinese
+    subscriber hosting (PIPL data localization). NO Beehiiv list segment for China.
+    Revisit at 10k global subscribers.
+servers:
+  - url: https://www.nmpa.gov.cn
+paths:
+  /english/device:
+    get:
+      summary: NMPA medical-device approvals (English mirror)
+      operationId: listDeviceApprovals
+      responses:
+        '200':
+          description: HTML/PDF
+          content:
+            text/html: {}
+            application/pdf: {}
+  /english/policies/medical-device-recalls:
+    get:
+      summary: NMPA recall notices
+      operationId: listRecalls
+      responses:
+        '200': { description: HTML }
+
+x-romas-policy:
+  role: primary_source (READ-ONLY)
+  inviolable_rule: 4
+  citation:
+    primary_source_url: nmpa.gov.cn/english/... URL
+    primary_source_type: nmpa_approval | nmpa_recall
+    primary_source_id: NMPA registration number
+  retry: { attempts: 3, backoff: [2s, 8s, 30s] }
+  timeout: 60s   # China network conditions variable; bumped further
+  on_failure:
+    action: log to source_health; retry next cycle
+    do_not_alert_on_repeat_5xx: true   # known unreliability
+  region_tag: apac (china)
+  china_specific:
+    pipl_compliance: |
+      Read-only ingest of public NMPA records does NOT trigger PIPL data-export
+      restrictions (we are not transferring Chinese personal data out of China).
+      We are reading public regulatory records — same legal posture as any
+      external journalist or analyst.
+    subscriber_hosting: PROHIBITED at launch. Revisit at 10k global subscribers.
+    beehiiv_list_segment_for_china: NONE (China subscribers cannot be acquired)
+    reader_site_accessibility_in_china: NOT GUARANTEED (Cloudflare GFW issues; do not commit to availability)
+  lexicon_dependencies:
+    - NMPA letter-by-letter
+    - CSCO-RO ("C-S-C-O ar-oh")
+    - Chinese institution names (Peking Union Medical College, Fudan Cancer Center, Sun Yat-sen University Cancer Center, Tianjin Medical University Cancer Institute, SHENZHEN United Imaging)
+  owner: regulatory-analyst

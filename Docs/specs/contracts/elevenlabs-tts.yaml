@@ -1,0 +1,106 @@
+openapi: 3.1.0
+info:
+  title: ElevenLabs TTS (derived contract)
+  version: 1.0.0
+  description: |
+    Derived contract for the ElevenLabs TTS calls used by `workers/audio-producer`.
+    Direct HTTP — no ElevenLabs SDK (per F-S-007).
+  contact:
+    name: audio-producer (ROMAS Brief)
+servers:
+  - url: https://api.elevenlabs.io
+paths:
+  /v1/text-to-speech/{voice_id}:
+    post:
+      summary: Generate speech from text
+      operationId: synthesizeSpeech
+      security:
+        - apiKey: []
+      parameters:
+        - name: voice_id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "{ELEVENLABS_ROMAS_VOICE_ID}"
+        - name: optimize_streaming_latency
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 4
+            default: 0
+        - name: output_format
+          in: query
+          schema:
+            type: string
+            enum: [mp3_44100_128, mp3_44100_192, pcm_24000, pcm_44100]
+            default: pcm_44100
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text, model_id, voice_settings]
+              properties:
+                text:
+                  type: string
+                  description: Script body, post-lexicon application
+                  maxLength: 5000
+                model_id:
+                  type: string
+                  enum: [eleven_multilingual_v2, eleven_turbo_v2_5]
+                  default: eleven_multilingual_v2
+                voice_settings:
+                  type: object
+                  properties:
+                    stability: { type: number, minimum: 0, maximum: 1, default: 0.5 }
+                    similarity_boost: { type: number, minimum: 0, maximum: 1, default: 0.75 }
+                    style: { type: number, minimum: 0, maximum: 1, default: 0 }
+                    use_speaker_boost: { type: boolean, default: true }
+      responses:
+        '200':
+          description: PCM audio stream
+          content:
+            audio/wav:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Invalid API key
+        '422':
+          description: Validation error
+        '429':
+          description: Rate limit — TRIGGER FAILOVER TO PlayHT
+        '500':
+          description: Server error — TRIGGER FAILOVER TO PlayHT
+        '503':
+          description: Service unavailable — TRIGGER FAILOVER TO PlayHT
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: xi-api-key
+
+# ROMAS Brief usage policy (non-OpenAPI)
+x-romas-policy:
+  retry:
+    strategy: exponential
+    attempts: 3
+    backoff: [1s, 4s, 16s]
+    retryable_status: [429, 500, 502, 503, 504]
+  timeout: 60s
+  failover:
+    on_exhaust: playht-tts
+    log_field: voice_engine_used
+  rate_limit:
+    monthly_char_cap_alert: 80%   # alert when monthly chars reach 80% of subscription tier
+  consent:
+    voice_consent_registry: Docs/voice-consent-registry.md
+    pre_publish_gate: true
+  observability:
+    metrics: [request_id, latency_ms, char_count, voice_engine_used, retry_attempt, status_code]
+    sink: Workers Analytics Engine
+  api_version_pinned: v1

@@ -1,0 +1,104 @@
+openapi: 3.1.0
+info:
+  title: Resend Email (derived contract)
+  version: 1.0.0
+  description: |
+    Issue email + transactional email delivery for ROMAS Brief.
+    Used by publish-time email worker (or apps/cms server action in M3).
+servers:
+  - url: https://api.resend.com
+paths:
+  /emails:
+    post:
+      summary: Send email (transactional or broadcast)
+      operationId: sendEmail
+      security:
+        - bearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [from, to, subject]
+              properties:
+                from: { type: string, description: "ROMAS Brief <brief@romas.health>" }
+                to:
+                  oneOf:
+                    - type: string
+                    - type: array
+                      items: { type: string }
+                      maxItems: 50
+                cc: { type: array, items: { type: string } }
+                bcc: { type: array, items: { type: string } }
+                subject: { type: string, maxLength: 256 }
+                html: { type: string, description: React-Email compiled HTML }
+                text: { type: string }
+                reply_to: { type: string }
+                headers:
+                  type: object
+                  additionalProperties: { type: string }
+                  description: |
+                    Must include List-Unsubscribe header per RFC 8058.
+                    Must include List-Unsubscribe-Post: List-Unsubscribe=One-Click
+                tags:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name: { type: string }
+                      value: { type: string }
+                  description: |
+                    Tag every issue with {name: 'issue_date', value: 'YYYY-MM-DD'}
+                    for idempotency / dedupe
+      responses:
+        '200':
+          description: Queued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string, format: uuid }
+        '400': { description: Validation error }
+        '401': { description: Invalid bearer }
+        '429': { description: Rate limit }
+  /domains:
+    get:
+      summary: List domains (used by deploy health check)
+      operationId: listDomains
+      security:
+        - bearer: []
+      responses:
+        '200': { description: OK }
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+
+x-romas-policy:
+  region: eu-west-1            # for EU subscriber data residency
+  retry:
+    attempts: 3
+    backoff: [1s, 4s, 16s]
+  timeout: 30s
+  idempotency:
+    method: tag-based
+    tag_key: issue_date
+  rfc:
+    - RFC 8058 (one-click unsubscribe)
+    - RFC 2368 (mailto syntax for List-Unsubscribe)
+  compliance:
+    dpa_required: true
+    pii_classes: [subscriber_email]
+    gdpr_lawful_basis: consent
+  webhooks:
+    handler: workers/resend-webhook
+    events:
+      - email.delivered → analytics only
+      - email.bounced → subscribers.status = 'bounced'
+      - email.complained → subscribers.status = 'unsubscribed'
+      - email.unsubscribed → subscribers.status = 'unsubscribed'
+  observability:
+    metrics: [send_count, delivered_count, bounce_count, unsubscribe_count, latency_ms]

@@ -1,0 +1,94 @@
+openapi: 3.1.0
+info:
+  title: Cloudflare Cache Purge (derived contract)
+  version: 1.0.0
+  description: |
+    Used by `workers/audio-producer` (publish-side) and `workers/cdn-purge-watchdog`
+    (revoke-side enforcement of the 60s SLA).
+servers:
+  - url: https://api.cloudflare.com
+paths:
+  /client/v4/zones/{zone_id}/purge_cache:
+    post:
+      summary: Purge cache by tag, host, prefix, or files
+      operationId: purgeCache
+      security:
+        - bearer: []
+      parameters:
+        - name: zone_id
+          in: path
+          required: true
+          schema: { type: string }
+          example: "{CLOUDFLARE_ZONE_ID}"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  required: [tags]
+                  properties:
+                    tags:
+                      type: array
+                      items: { type: string }
+                      maxItems: 30
+                      description: Cache-Tag header values; preferred for ROMAS Brief
+                - type: object
+                  required: [files]
+                  properties:
+                    files:
+                      type: array
+                      items:
+                        oneOf:
+                          - type: string
+                          - type: object
+                            properties:
+                              url: { type: string, format: uri }
+                              headers:
+                                type: object
+                                additionalProperties: { type: string }
+      responses:
+        '200':
+          description: Purge accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  result:
+                    type: object
+                    properties:
+                      id: { type: string }
+                  errors: { type: array, items: { type: object } }
+                  messages: { type: array, items: { type: object } }
+        '400': { description: Invalid request }
+        '401': { description: Invalid API token }
+        '429': { description: Rate limit }
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      description: API token with `Zone.Cache Purge` scope only
+
+x-romas-policy:
+  scopes: ["Zone.Cache Purge"]   # least privilege
+  retry:
+    attempts: 3
+    backoff: [1s, 4s, 16s]
+    retryable_status: [429, 500, 502, 503, 504]
+  timeout: 30s
+  on_failure:
+    publish_side: alert + retry next cycle
+    revoke_side: |
+      cdn-purge-watchdog (cron */1) scans revocations.cdn_purge_at IS NULL
+      AND created_at < now() - interval '90 seconds'; retries; alerts
+      via Sentry + email if still failing after watchdog retry.
+  sla:
+    revoke_to_purge: 60s p99
+    watchdog_alert_threshold: 90s
+  observability:
+    metrics: [request_id, status, latency_ms, retry_attempt, purge_tag, zone_id]
+    audit: every purge attempt logged to revocations.cdn_purge_at (set only on 2xx)
