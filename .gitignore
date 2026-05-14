@@ -1,0 +1,97 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.yarn/
+.yarn-integrity
+
+# Build artifacts
+dist/
+build/
+.next/
+.nuxt/
+out/
+.cache/
+.turbo/
+.parcel-cache/
+.vite/
+.swc/
+*.tsbuildinfo
+
+# Cloudflare Workers
+.wrangler/
+.dev.vars
+wrangler.toml.local
+
+# Supabase
+.supabase/
+supabase/.temp/
+
+# Env / secrets — NEVER commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# IDE / editor
+.vscode/
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# OS
+.AppleDouble
+.LSOverride
+$RECYCLE.BIN/
+*.lnk
+
+# Python (translation tooling, if any)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Audio working files (only finals go to R2; locally these are scratch)
+*.wav
+*.aif
+*.aiff
+audio-scratch/
+audio-masters/
+
+# DB local snapshots
+*.sql.gz
+*.dump
+*.db
+
+# Generated docs
+.docusaurus/
+
+# Misc
+.history/
+*.bak
+*.tmp
+.DS_Store

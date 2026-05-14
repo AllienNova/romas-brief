@@ -1,0 +1,87 @@
+openapi: 3.1.0
+info:
+  title: FDA 510(k) / De Novo / PMA records (verification target)
+  version: 1.0.0
+  description: |
+    The PRIMARY source per Rule 4. Every openFDA discovery is verified
+    against the relevant record on accessdata.fda.gov before drafting.
+servers:
+  - url: https://www.accessdata.fda.gov
+paths:
+  /scripts/cdrh/cfdocs/cfpmn/pmn.cfm:
+    get:
+      summary: 510(k) decision lookup page
+      operationId: pmnLookup
+      parameters:
+        - name: ID
+          in: query
+          required: true
+          schema:
+            type: string
+            pattern: '^K\d{6}$'
+          description: K-number, e.g. K260123
+      responses:
+        '200':
+          description: HTML decision page; parse for decision date + statement/summary URL
+          content:
+            text/html: {}
+        '404':
+          description: K-number not found
+  /cdrh_docs/pdf{prefix2}/{kNumber}.pdf:
+    get:
+      summary: 510(k) Summary or Statement PDF (primary-source URL)
+      operationId: pmnSummaryPdf
+      parameters:
+        - name: prefix2
+          in: path
+          required: true
+          schema: { type: string, pattern: '^\d{2}$' }
+          description: First 2 digits of K-number (year prefix)
+        - name: kNumber
+          in: path
+          required: true
+          schema: { type: string, pattern: '^K\d{6}$' }
+      responses:
+        '200': { description: PDF }
+        '404': { description: PDF not present — fall back to /pmn.cfm HTML }
+
+  /scripts/cdrh/cfdocs/cfPMA/pma.cfm:
+    get:
+      summary: PMA lookup
+      operationId: pmaLookup
+      parameters:
+        - name: ID
+          in: query
+          required: true
+          schema: { type: string, pattern: '^P\d{6}$' }
+      responses:
+        '200': { description: HTML }
+
+  /scripts/cdrh/cfdocs/cfPMN/denovo.cfm:
+    get:
+      summary: De Novo lookup
+      operationId: denovoLookup
+      parameters:
+        - name: ID
+          in: query
+          required: true
+          schema: { type: string, pattern: '^DEN\d+$' }
+      responses:
+        '200': { description: HTML }
+
+x-romas-policy:
+  role: primary_source
+  inviolable_rule: 4
+  citation:
+    primary_source_url: prefer PDF (cdrh_docs); fall back to pmn.cfm if PDF 404
+    primary_source_type: fda_510k | fda_pma | fda_denovo
+    primary_source_id: K-number | P-number | DEN-number
+  retry:
+    attempts: 3
+    backoff: [1s, 4s, 16s]
+  timeout: 30s
+  on_failure:
+    log: source_health
+    publish_block: |
+      If openFDA discovered an item that cannot be verified here,
+      DO NOT publish. Block at editorial-director. Surface in next morning brief.

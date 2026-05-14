@@ -1,0 +1,46 @@
+openapi: 3.1.0
+info:
+  title: PMDA Japan (derived contract — Japan primary source)
+  version: 1.0.0
+  description: |
+    Pharmaceuticals and Medical Devices Agency. Primary source for
+    Japan medical-device approvals. Japanese-language records — Tier 5 lexicon
+    + ElevenLabs ssml hints required for proper-noun pronunciation in audio.
+servers:
+  - url: https://www.pmda.go.jp
+paths:
+  /english/review-services/reviews:
+    get:
+      summary: PMDA approvals listing (English mirror)
+      operationId: listApprovals
+      responses:
+        '200':
+          description: HTML/PDF — parse approval announcements
+          content:
+            text/html: {}
+            application/pdf: {}
+  /english/safety/info-services/devices/recalls:
+    get:
+      summary: PMDA device recall notices (English mirror)
+      operationId: listRecalls
+      responses:
+        '200': { description: HTML }
+
+x-romas-policy:
+  role: primary_source
+  inviolable_rule: 4
+  citation:
+    primary_source_url: pmda.go.jp/english/...PDF or HTML URL
+    primary_source_type: pmda_approval | pmda_recall | pmda_safety_info
+    primary_source_id: PMDA review/approval number
+  retry: { attempts: 3, backoff: [2s, 8s, 30s] }
+  timeout: 45s   # Japanese site can be slow; bumped vs FDA/EMA
+  on_failure:
+    action: log to source_health; retry next cycle
+  region_tag: apac (japan)
+  lexicon_dependencies:
+    - PMDA letter-by-letter ("P-M-D-A")
+    - JASTRO ("jas-troh")
+    - Tokyo / Osaka / Kyoto / Sapporo / Fukuoka institutional names
+    - Japanese vendor names (Hitachi, Mitsubishi Electric, Sumitomo Heavy Industries Quantum)
+  owner: regulatory-analyst

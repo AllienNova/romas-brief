@@ -1,0 +1,50 @@
+openapi: 3.1.0
+info:
+  title: TGA Australia (derived contract — Australia primary source)
+  version: 1.0.0
+  description: |
+    Therapeutic Goods Administration. Primary source for Australian
+    medical-device approvals (ARTG = Australian Register of Therapeutic Goods).
+servers:
+  - url: https://www.tga.gov.au
+paths:
+  /resources/artg:
+    get:
+      summary: ARTG public search
+      operationId: searchARTG
+      parameters:
+        - name: sponsor
+          in: query
+          schema: { type: string }
+        - name: keyword
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: HTML; parse for ARTG entry list
+          content:
+            text/html: {}
+  /alerts:
+    get:
+      summary: TGA safety alerts and recalls
+      operationId: listAlerts
+      responses:
+        '200': { description: HTML }
+
+x-romas-policy:
+  role: primary_source
+  inviolable_rule: 4
+  citation:
+    primary_source_url: tga.gov.au/resources/artg/{ARTG-number} or tga.gov.au/alerts/...
+    primary_source_type: tga_artg | tga_alert | tga_recall
+    primary_source_id: ARTG number
+  retry: { attempts: 3, backoff: [2s, 8s, 30s] }
+  timeout: 30s
+  on_failure:
+    action: log to source_health; retry next cycle
+  region_tag: apac (australia + new zealand via RANZCR/COMP-equivalent)
+  lexicon_dependencies:
+    - TGA letter-by-letter
+    - RANZCR ("ranz-ker")
+    - Australian institution names (Peter MacCallum Cancer Centre, Royal Adelaide, Sir Charles Gairdner, Westmead, etc.)
+  owner: regulatory-analyst

@@ -1,0 +1,104 @@
+openapi: 3.1.0
+info:
+  title: Whisper Transcription (derived contract — OpenAI primary)
+  version: 1.0.0
+  description: |
+    Per ADR-0011. Used by `workers/audio-producer` post-master step.
+    Failure blocks audio publish (transcript_url IS NOT NULL gate).
+servers:
+  - url: https://api.openai.com
+    description: Primary
+  - url: https://api.replicate.com
+    description: Fallback (different shape — see x-romas-policy)
+paths:
+  /v1/audio/transcriptions:
+    post:
+      summary: Transcribe audio (primary)
+      operationId: transcribe
+      security:
+        - bearer: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, model]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Audio file (mp3, wav, m4a, etc.); max 25MB
+                model:
+                  type: string
+                  enum: [whisper-1]
+                  default: whisper-1
+                language:
+                  type: string
+                  description: ISO-639-1; "en" for ROMAS Brief
+                  default: en
+                response_format:
+                  type: string
+                  enum: [json, text, srt, verbose_json, vtt]
+                  default: verbose_json
+                temperature:
+                  type: number
+                  minimum: 0
+                  maximum: 1
+                  default: 0
+                prompt:
+                  type: string
+                  description: |
+                    Pronunciation lexicon entries injected as bias prompt.
+                    Improves recognition of proper nouns (vendors, drugs, sites).
+                  maxLength: 244
+      responses:
+        '200':
+          description: Transcription
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  text: { type: string }
+                  segments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start: { type: number }
+                        end: { type: number }
+                        text: { type: string }
+            application/x-subrip:
+              schema: { type: string }
+        '401': { description: Invalid API key }
+        '429': { description: Rate limit }
+        '500': { description: Server error — failover to Replicate }
+
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+
+x-romas-policy:
+  retry:
+    primary_attempts: 3
+    backoff: [2s, 8s, 30s]
+    retryable_status: [429, 500, 502, 503]
+  timeout: 300s
+  failover:
+    on_exhaust: replicate-whisper-large-v3
+    on_failover_fail: BLOCK audio publish (transcript_url is mandatory per schema CHECK)
+  output:
+    primary_format: srt + json
+    storage: R2 alongside audio file (audio-production-pipeline.md:113-115)
+    transcript_url: set in audio_jobs.transcript_url
+  cost:
+    per_minute_estimate: $0.006
+    monthly_cap_alert: $200 → trigger ADR-0011 revisit
+  privacy:
+    data_retention: 30 days at OpenAI (no training)
+    dpa_required: true
+  observability:
+    metrics: [request_id, audio_duration_sec, transcription_duration_sec, status_code, retry_attempt, vendor_used]

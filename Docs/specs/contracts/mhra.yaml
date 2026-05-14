@@ -1,0 +1,53 @@
+openapi: 3.1.0
+info:
+  title: MHRA UK (derived contract — UK primary source)
+  version: 1.0.0
+  description: |
+    UK Medicines & Healthcare Products Regulatory Agency.
+    Primary source for UK medical-device approvals post-Brexit.
+servers:
+  - url: https://www.gov.uk
+paths:
+  /government/publications:
+    get:
+      summary: MHRA publications search (medical devices)
+      operationId: searchMhraPublications
+      parameters:
+        - name: keywords
+          in: query
+          schema: { type: string }
+        - name: departments[]
+          in: query
+          schema:
+            type: array
+            items: { type: string, enum: [medicines-and-healthcare-products-regulatory-agency] }
+      responses:
+        '200':
+          description: HTML; parse for publication list with device-related entries
+          content:
+            text/html: {}
+  /drug-device-alerts:
+    get:
+      summary: MHRA device safety alerts + recalls
+      operationId: searchAlerts
+      parameters:
+        - name: alert_type
+          in: query
+          schema:
+            type: string
+            enum: [device-safety-information, drug-device-alert, drug-safety-update]
+      responses:
+        '200': { description: HTML }
+
+x-romas-policy:
+  role: primary_source
+  inviolable_rule: 4
+  citation:
+    primary_source_url: gov.uk MHRA publication URL or alert URL
+    primary_source_type: mhra_publication | mhra_alert | mhra_recall
+  retry: { attempts: 3, backoff: [2s, 8s, 30s] }
+  timeout: 30s
+  on_failure:
+    action: log to source_health; retry next cycle
+  region_tag: uk
+  owner: regulatory-analyst

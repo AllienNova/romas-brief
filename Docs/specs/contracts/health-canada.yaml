@@ -1,0 +1,56 @@
+openapi: 3.1.0
+info:
+  title: Health Canada (derived contract — Canada primary source)
+  version: 1.0.0
+  description: |
+    Health Canada Medical Devices Bureau. Primary source for Canadian
+    medical-device licences (MDALL = Medical Devices Active Licence Listing).
+servers:
+  - url: https://health-products.canada.ca
+paths:
+  /mdall-limh/index:
+    get:
+      summary: MDALL public search
+      operationId: searchMDALL
+      parameters:
+        - name: language
+          in: query
+          schema: { type: string, enum: [en, fr], default: en }
+        - name: licence_number
+          in: query
+          schema: { type: string }
+        - name: company_name
+          in: query
+          schema: { type: string }
+        - name: device_name
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: HTML; parse for licence list
+          content:
+            text/html: {}
+  /recall-alert-rappel-avis:
+    get:
+      summary: Health Canada recall + safety alert search (medical devices)
+      operationId: searchRecalls
+      responses:
+        '200': { description: HTML }
+
+x-romas-policy:
+  role: primary_source
+  inviolable_rule: 4
+  citation:
+    primary_source_url: health-products.canada.ca/mdall-limh URL or recall-alert URL
+    primary_source_type: hc_mdall | hc_recall | hc_safety_alert
+    primary_source_id: Medical Device Licence number
+  retry: { attempts: 3, backoff: [2s, 8s, 30s] }
+  timeout: 30s
+  on_failure:
+    action: log to source_health; retry next cycle
+  region_tag: canada
+  bilingual_note: |
+    Canada is officially bilingual (EN + FR). Default ingest in English;
+    French records are equivalent canonical sources for Quebec-specific items.
+    Cite the English URL unless the French version is the only available canonical record.
+  owner: regulatory-analyst

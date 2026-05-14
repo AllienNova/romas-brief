@@ -1,0 +1,88 @@
+openapi: 3.1.0
+info:
+  title: PlayHT TTS (derived contract — failover)
+  version: 1.0.0
+  description: |
+    Failover contract from ElevenLabs. Used by `workers/audio-producer`.
+    Direct HTTP — no PlayHT SDK.
+servers:
+  - url: https://api.play.ht
+paths:
+  /api/v2/tts/stream:
+    post:
+      summary: Stream synthesized audio
+      operationId: streamTTS
+      security:
+        - bearer: []
+      parameters:
+        - name: X-User-ID
+          in: header
+          required: true
+          schema:
+            type: string
+          example: "{PLAYHT_USER_ID}"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text, voice]
+              properties:
+                text: { type: string, maxLength: 5000 }
+                voice:
+                  type: string
+                  description: PlayHT voice ID (cloned)
+                  example: "{PLAYHT_ROMAS_VOICE_ID}"
+                output_format:
+                  type: string
+                  enum: [mp3, wav, ogg, mulaw]
+                  default: wav
+                voice_engine:
+                  type: string
+                  enum: [PlayHT2.0, PlayDialog]
+                  default: PlayHT2.0
+                quality:
+                  type: string
+                  enum: [draft, low, medium, high, premium]
+                  default: premium
+                speed:
+                  type: number
+                  minimum: 0.5
+                  maximum: 2.0
+                  default: 1.0
+      responses:
+        '200':
+          description: Audio stream
+          content:
+            audio/wav:
+              schema: { type: string, format: binary }
+            audio/mpeg:
+              schema: { type: string, format: binary }
+        '401':
+          description: Invalid bearer
+        '429':
+          description: Rate limit — DO NOT auto-retry beyond policy
+        '500':
+          description: Server error — SKIP audio, ship article without audio
+
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+
+x-romas-policy:
+  trigger: only on ElevenLabs exhaust
+  retry:
+    attempts: 1
+    timeout: 60s
+  on_failure:
+    action: mark audio_status='skipped'
+    log_field: audio_jobs.error
+    article_publish: continue (audio failure never blocks article)
+  consent:
+    voice_consent_registry: Docs/voice-consent-registry.md
+  observability:
+    metrics: [request_id, latency_ms, char_count, voice_engine_used, status_code]
+  api_version_pinned: v2

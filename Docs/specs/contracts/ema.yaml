@@ -1,0 +1,74 @@
+openapi: 3.1.0
+info:
+  title: EMA + CE-mark + EUDAMED (derived contract — EU primary source chain)
+  version: 1.0.0
+  description: |
+    European primary-source chain per cycle-2 R-014 (M0 move). Replaces the
+    revoked `meddeviceguide.com` / `MDCG.eu` secondary-source workaround.
+    Three-step fallback: (1) EUDAMED API → (2) NB-OG register → (3) MDCG official PDF.
+servers:
+  - url: https://ec.europa.eu
+    description: EMA / EUDAMED official
+  - url: https://eudamed.ec.europa.eu
+    description: EUDAMED API (when reachable)
+paths:
+  /tools/eudamed/api/devices:
+    get:
+      summary: Search EUDAMED devices (primary source for CE-mark)
+      operationId: searchEudamed
+      parameters:
+        - name: deviceModelName
+          in: query
+          schema: { type: string }
+        - name: actorName
+          in: query
+          schema: { type: string }
+        - name: pageIndex
+          in: query
+          schema: { type: integer, default: 0 }
+      responses:
+        '200':
+          description: Device list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        udiDi: { type: string }
+                        manufacturer: { type: string }
+                        deviceName: { type: string }
+                        ceCertificateNumber: { type: string }
+                        notifiedBody: { type: string }
+        '5XX':
+          description: Service unavailable — fall through to NB-OG register
+
+x-romas-policy:
+  role: primary_source
+  inviolable_rule: 4
+  fallback_chain:
+    - eudamed_api: https://eudamed.ec.europa.eu/tools/eudamed/api/devices
+    - nb_og_register: https://ec.europa.eu/growth/tools-databases/nando/index.cfm
+    - mdcg_official_pdf: https://health.ec.europa.eu/medical-devices-sector/new-regulations/guidance-mdcg-endorsed-documents-and-other-guidance_en
+  banned_as_primary:
+    - meddeviceguide.com (secondary; discovery use only)
+    - mdcg.eu (secondary; discovery use only)
+    - any commercial regulatory-tracking blog
+  citation:
+    primary_source_url: prefer EUDAMED record URL > NB-OG register page > MDCG official PDF URL
+    primary_source_type: ema_eudamed | ce_mark | mdcg_guidance
+    primary_source_id: UDI-DI or CE certificate number or MDCG document number
+  retry:
+    attempts: 3
+    backoff: [2s, 8s, 30s]
+  timeout: 30s
+  on_failure:
+    eudamed_5xx: try NB-OG register
+    nb_og_5xx: try MDCG official PDF
+    all_three_fail: log to source_health; do NOT publish EU regulatory item this cycle
+  region_tag: europe
+  owner: regulatory-analyst

@@ -1,0 +1,231 @@
+openapi: 3.1.0
+info:
+  title: Beehiiv (derived contract — newsletter surface)
+  version: 1.0.0
+  description: |
+    Newsletter surface per ADR-0007 (Kimal-locked 2026-05-14).
+    Beehiiv is the canonical source of the subscriber list and handles
+    daily issue / Friday Read / Audio Podcast notification / Conference Brief
+    notification delivery. Resend handles transactional (see resend.yaml).
+servers:
+  - url: https://api.beehiiv.com/v2
+paths:
+  /publications/{publication_id}/subscriptions:
+    post:
+      summary: Create subscriber
+      operationId: createSubscriber
+      security:
+        - bearer: []
+      parameters:
+        - name: publication_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+                reactivate_existing: { type: boolean, default: true }
+                send_welcome_email: { type: boolean, default: false }
+                utm_source: { type: string }
+                utm_medium: { type: string }
+                utm_campaign: { type: string }
+                referring_site: { type: string }
+                custom_fields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name: { type: string }
+                      value: { type: string }
+      responses:
+        '201':
+          description: Subscriber created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      email: { type: string }
+                      status: { type: string, enum: [active, validating, invalid, inactive, pending, needs_attention] }
+                      created: { type: integer, description: epoch seconds }
+        '400': { description: Validation }
+        '401': { description: Invalid bearer }
+        '429': { description: Rate limit }
+    get:
+      summary: List subscribers (paginated)
+      operationId: listSubscribers
+      security:
+        - bearer: []
+      parameters:
+        - name: publication_id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10, maximum: 100 }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: email
+          in: query
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+
+  /publications/{publication_id}/subscriptions/{subscription_id}:
+    patch:
+      summary: Update subscriber (status, custom fields)
+      operationId: updateSubscriber
+      security:
+        - bearer: []
+      parameters:
+        - { name: publication_id, in: path, required: true, schema: { type: string } }
+        - { name: subscription_id, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                unsubscribe: { type: boolean }
+                custom_fields: { type: array, items: { type: object } }
+      responses:
+        '200': { description: OK }
+
+  /publications/{publication_id}/posts:
+    post:
+      summary: Create an issue (draft, scheduled, or published)
+      operationId: createPost
+      security:
+        - bearer: []
+      parameters:
+        - { name: publication_id, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, body_content]
+              properties:
+                title: { type: string, maxLength: 256 }
+                subtitle: { type: string }
+                body_content: { type: string, description: HTML or Markdown }
+                status: { type: string, enum: [draft, scheduled, published], default: draft }
+                publish_at: { type: integer, description: epoch seconds (scheduled status only) }
+                send_email_to: { type: string, enum: [all, free, paid], default: all }
+                slug: { type: string }
+                thumbnail_url: { type: string, format: uri }
+                content_tags: { type: array, items: { type: string } }
+                external_id:
+                  type: string
+                  description: |
+                    ROMAS Brief uses this for idempotency dedupe (issue_date=YYYY-MM-DD).
+                    Re-running publish with same external_id is rejected.
+      responses:
+        '201': { description: Created }
+        '409': { description: external_id conflict (idempotency) }
+
+  /publications/{publication_id}/automations/{automation_id}/journeys:
+    post:
+      summary: Trigger automation (e.g., onboarding sequence) for a subscriber
+      operationId: triggerAutomation
+      security:
+        - bearer: []
+      parameters:
+        - { name: publication_id, in: path, required: true, schema: { type: string } }
+        - { name: automation_id, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '201': { description: Journey triggered }
+
+# Webhook endpoints — Beehiiv → workers/beehiiv-webhook on ROMAS Brief side
+x-beehiiv-webhooks:
+  endpoint: https://api.romasbrief.com/webhooks/beehiiv
+  signature_header: X-Beehiiv-Signature
+  signature_algorithm: HMAC-SHA256
+  signature_secret_env: BEEHIIV_WEBHOOK_SECRET
+  events:
+    subscription.created: subscribers.upsert(status='active')
+    subscription.confirmed: subscribers.update(status='active', confirmed_at=now())
+    subscription.unsubscribed: subscribers.update(status='unsubscribed', unsubscribed_at=now())
+    subscription.bounced: subscribers.update(status='bounced', bounced_at=now())
+    subscription.complained: subscribers.update(status='unsubscribed', complained_at=now())
+    post.delivered: optional — analytics only
+    post.opened: optional — analytics only
+
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      description: "Authorization: Bearer ${BEEHIIV_API_KEY}"
+
+x-romas-policy:
+  role: newsletter_canonical_source
+  scope:
+    sends:
+      - daily_issue_mon_thu
+      - friday_romas_read
+      - audio_podcast_notification
+      - conference_brief_notification
+    does_not_send:
+      - signup_confirmation         # → Resend
+      - unsubscribe_receipt         # → Resend
+      - audio_revocation_notice     # → Resend
+      - password_reset              # → Resend
+  retry:
+    attempts: 3
+    backoff: [2s, 8s, 30s]
+    retryable_status: [429, 500, 502, 503]
+  timeout: 30s
+  idempotency:
+    method: external_id-based
+    external_id_pattern: "issue_{YYYY-MM-DD}_{tier}"
+  on_failure:
+    publish_blocking: false
+    fallback: |
+      Queue the post in workers/issue-publisher with retry + dead-letter.
+      Do NOT block article publish on email send.
+  subscriber_sync:
+    canonical: beehiiv
+    mirror: supabase.subscribers
+    webhook_handler: workers/beehiiv-webhook
+    signature_verification: required (HMAC-SHA256 with BEEHIIV_WEBHOOK_SECRET)
+    drift_alert_threshold: |
+      Daily reconciliation job compares Beehiiv subscriber count vs
+      Supabase subscribers WHERE status='active'. Alert if delta > 5
+      OR 0.5% (whichever is greater).
+  compliance:
+    dpa_required: true
+    pii_classes: [subscriber_email, custom_fields]
+    gdpr_lawful_basis: consent
+    eu_region: "Beehiiv hosts in US; confirm DPA covers EU subscriber data transfer under SCCs"
+  pricing_alignment:
+    free_tier_subscriber_limit: 2500
+    rationale: |
+      Matches SSOT §3 row 5 (subscriber count hidden until 2,500).
+      Paid tier kicks in at the same threshold the public count flips visible.
+  observability:
+    metrics: [api_call_count, latency_ms, status_code, webhook_lag_ms, sync_drift_count]
+    sink: Workers Analytics Engine + Sentry on >5xx
