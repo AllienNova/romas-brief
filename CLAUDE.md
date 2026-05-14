@@ -1,6 +1,8 @@
 # CLAUDE.md — ROMAS Brief
 
 > This file is loaded into Claude Code's context for every session in this repo. It is the **single source of truth** for project intent, invariants, and decision lineage. Keep it lean. Detailed playbooks live in `AGENT.md`, `.claude/skills/`, and `.claude/agents/`.
+>
+> **Repo identity (locked 2026-05-14):** Standalone git repo at `D:\dev\projects\romas-brief\` · GitHub `aliennova/romas-brief` (private) · separate from parent ROMAS COS monorepo. No cross-monorepo imports — `packages/llm-orchestrator/` lives in this repo. See `docs/SSOT.md` §3 row 19 + `Docs/specs/adr/0014-repository-separation.md`.
 
 ---
 

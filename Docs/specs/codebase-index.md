@@ -25,7 +25,9 @@ note: Repo is CODE-EMPTY at index time. This document indexes the planning kit (
 
 ## Planning kit on disk (the "code" today)
 
-### Project root (`D:/dev/projects/ROMAS/ROMAS BRIEF/`)
+### Project root (`D:/dev/projects/romas-brief/`)
+
+> **Note**: This repo was separated from the parent ROMAS COS monorepo on 2026-05-14 per ADR-0014 + SSOT §3 row 19. Prior path was `D:/dev/projects/ROMAS/ROMAS BRIEF/`; references to that path elsewhere in `docs/` predate the separation and should be read as historical.
 
 | Path | Purpose |
 |---|---|
