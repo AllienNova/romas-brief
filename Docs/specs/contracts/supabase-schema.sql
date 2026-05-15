@@ -133,7 +133,7 @@ create index claims_article_idx on claims(article_id);
 create table audio_jobs (
   id                      uuid primary key default gen_random_uuid(),
   article_id              uuid not null references articles(id) on delete cascade,
-  tier                    text not null check (tier in ('audio_brief','daily_brief','podcast','conference_brief')),
+  tier                    text not null check (tier in ('audio_brief','daily_brief','podcast','conference_brief','video_podcast')),  -- M0c2: video_podcast added for Tier 5 (Day 60 launch per ADR-0005 cycle-3 + ADR-0012 placeholder)
   target_length_sec       int not null,
   voice_engine_used       text check (voice_engine_used in ('elevenlabs','playht')),
   audio_status            text not null default 'queued'
