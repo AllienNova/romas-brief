@@ -297,6 +297,19 @@ create index subscribers_active on subscribers(status) where status = 'active';
 create index subscribers_region_idx on subscribers(region, status) where status = 'active';
 create index subscribers_beehiiv_id_idx on subscribers(beehiiv_subscription_id) where beehiiv_subscription_id is not null;
 
+-- M0c2 P0 fix: set_updated_at() must be defined BEFORE migration 0009
+-- creates the subscribers_set_updated trigger that references it.
+-- Original placement was after migration 0010_rls_policies — applying
+-- migrations in order (0001..0010) failed at 0009 with "function
+-- set_updated_at() does not exist". Hoisted to live alongside the
+-- first trigger that needs it.
+create or replace function set_updated_at() returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+
 create trigger subscribers_set_updated before update on subscribers
   for each row execute function set_updated_at();
 
@@ -349,13 +362,6 @@ create policy "embargo_read_restricted" on embargo_holds
             where id = auth.uid() and role in ('editor_in_chief','fact_checker') and active = true)
   );
 
--- Updated_at triggers
-create or replace function set_updated_at() returns trigger as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$ language plpgsql;
-
+-- Updated_at triggers (set_updated_at() function hoisted to migration 0009 region above per M0c2 P0 fix)
 create trigger articles_set_updated   before update on articles   for each row execute function set_updated_at();
 create trigger audio_jobs_set_updated before update on audio_jobs for each row execute function set_updated_at();

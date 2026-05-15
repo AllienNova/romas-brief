@@ -30,7 +30,7 @@ ROMAS Brief becomes a **standalone git repository** with no path dependency on t
 | Field | Value |
 |---|---|
 | Local path | `D:\dev\projects\romas-brief\` (lowercase, hyphen, no spaces — matches `romasbrief.com` canonical; avoids tooling issues with spaces in path) |
-| GitHub identity | `aliennova/romas-brief` (private) |
+| GitHub identity | `AllienNova/romas-brief` (private) |
 | Branch model | `main` for production, feature branches per CLAUDE.md §10 |
 | Tech stack | TypeScript / Node 20+ / Next.js / Cloudflare Workers / Supabase — unchanged from cycle-1 ADR-0001 |
 | `llm-orchestrator` resolution (REL-010) | Author fresh `packages/llm-orchestrator/` inside ROMAS Brief monorepo. Do NOT import from parent ROMAS COS. The two packages may share design and vocabulary but are independent codebases on independent deploy cycles. |
@@ -72,7 +72,7 @@ ROMAS Brief becomes a **standalone git repository** with no path dependency on t
 5. **Move** — `mv "D:\dev\projects\ROMAS\ROMAS BRIEF" "D:\dev\projects\romas-brief"`.
 6. **Path-reference sweep** — update internal references in `CLAUDE.md`, `docs/build/build-log.md`, `docs/build/handoff-notes.md`, `docs/build/decision-log.md`, `docs/specs/adr/0013-latam-llm-translate.md` to point at the new repo path.
 7. **`.gitignore`** — author `.gitignore` covering `node_modules/`, `.env`, `.next/`, `.wrangler/`, `dist/`, build artifacts, OS files.
-8. **GitHub repo** — Kimal runs `gh repo create aliennova/romas-brief --private --source . --remote origin --push` interactively (SSO required).
+8. **GitHub repo** — Kimal runs `gh repo create AllienNova/romas-brief --private --source . --remote origin --push` interactively (SSO required).
 
 ## Revision triggers
 
