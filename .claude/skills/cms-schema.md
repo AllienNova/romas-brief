@@ -1,6 +1,33 @@
 ---
 name: cms-schema
 description: Supabase / Postgres schema for ROMAS Brief — articles, audio_jobs, claims, sources, qa_reviewers, embargo_holds, lexicon, revocations, RLS policies. Load before writing any migration or query touching CMS data.
+canonical_source: Docs/specs/contracts/supabase-schema.sql
+last_sync: 2026-05-15 (M0c2 — partial — see "Known drift from canonical" below)
+---
+
+> **CANONICAL SQL LIVES AT `Docs/specs/contracts/supabase-schema.sql`.** On any conflict between this skill file and the canonical SQL, **the canonical SQL wins** per SSOT §9 precedence. This skill captures the conceptual model; the SQL captures the executable contract.
+
+## Known drift from canonical (M0c2 documented; full sync deferred)
+
+This skill currently does not enumerate the following columns added in cycle-4 and cycle-6 but present in the canonical `supabase-schema.sql`. **Read the canonical SQL when writing migrations or queries that touch these:**
+
+| Table | Column | Type | Added | Canonical source |
+|---|---|---|---|---|
+| `articles` | `category` | text NOT NULL CHECK in 11-value enum | cycle-4 | `supabase-schema.sql:~60` |
+| `articles` | `subcategory` | text | cycle-4 | `supabase-schema.sql` |
+| `articles` | `content_type` | text NOT NULL CHECK in 8-value enum | cycle-4 | `supabase-schema.sql` |
+| `articles` | `source_language` | text NOT NULL DEFAULT 'en' CHECK in 10-value enum | cycle-6 | `supabase-schema.sql` |
+| `articles` | `translation_provider` | text CHECK in 4-value enum | cycle-6 | `supabase-schema.sql` |
+| `articles` | `translation_verified` | boolean DEFAULT false | cycle-6 | `supabase-schema.sql` |
+| `articles` | `articles_translation_provider_required` | CHECK constraint | cycle-6 | `supabase-schema.sql` |
+| `subscribers` | `region` | text NOT NULL DEFAULT 'americas' CHECK in 4-value enum | cycle-5 | `supabase-schema.sql:268` |
+| `subscribers` | `beehiiv_subscription_id` | text UNIQUE | cycle-3 (Q3 email split) | `supabase-schema.sql:269` |
+| `subscribers` | `confirmed_at` · `unsubscribed_at` · `bounced_at` · `complained_at` | timestamptz | cycle-3 webhook tracking | `supabase-schema.sql` |
+| `subscribers` | `subscribers_region_idx` · `subscribers_beehiiv_id_idx` | partial indexes | cycle-5/6 | `supabase-schema.sql` |
+| `subscribers` | `subscribers_set_updated` | trigger using `set_updated_at()` (hoisted to migration 0009 in M0c2 P0 fix) | M0c2 | `supabase-schema.sql:312` |
+
+Full skill-side sync to enumerate every column inline is tracked as a P2 M0c2-or-W-7 doc task. Reading the canonical SQL is the supported workflow until then.
+
 ---
 
 # ROMAS Brief — CMS Schema (Supabase / Postgres)
