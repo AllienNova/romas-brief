@@ -28,7 +28,7 @@ to: /team-qa (cycle-3 readiness verification) + /team-design (W-7 dispatch)
 | `docs/specs/contracts/supabase-schema.sql` | ~15 | Subscribers schema delta: region + beehiiv_subscription_id + 4 webhook timestamps + 2 indexes + updated_at trigger |
 | `docs/specs/delivery-plan.md` | ~7 | /team-design predecessor lock added to §3.4 (M3) |
 | `.claude/skills/source-ingestion.md` | ~10 | Canonical-status declaration; SSOT §6 banned-source note; three-edition cron note |
-| `.env.example` | new file | 16 named env vars across 6 sections (audio · Supabase · Cloudflare · email · LATAM · observability) |
+| `.env.example` | new file | Cycle-1 shipped 16 named env vars; cycle-2/3 expansion grew to 25 (added BEEHIIV_API_KEY · BEEHIIV_PUBLICATION_ID · BEEHIIV_WEBHOOK_SECRET · RESEND_WEBHOOK_SECRET · DEEPL_API_KEY · NODE_ENV · others) across 6 sections (audio · Supabase · Cloudflare · email · LATAM · observability) |
 
 Total cycle-1 files touched: **14**. Total new files: **6**. Total lines changed: ~120.
 

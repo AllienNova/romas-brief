@@ -69,7 +69,7 @@ ROMAS Brief becomes a **standalone git repository** with no path dependency on t
 2. **ADR-0014** — author this file (this PR).
 3. **ADR-0013 update** — close REL-010 by pointing `llm-orchestrator` to `packages/llm-orchestrator/` inside ROMAS Brief monorepo (see ADR-0013 revision history).
 4. **Baseline commit** — `git init` inside current `D:\dev\projects\ROMAS\ROMAS BRIEF\` and create an initial commit with all current work so the move is recoverable.
-5. **Move** — `mv "D:\dev\projects\ROMAS\ROMAS BRIEF" "D:\dev\projects\romas-brief"`.
+5. **Move** — `mv "D:\dev\projects\ROMAS\ROMAS BRIEF" "D:\dev\projects\romas-brief"` if the source directory is not locked by another process. **Windows CWD-lock fallback** (M0c2 D-008): if `mv` returns `Device or resource busy` because the active session holds the source as its working directory, execute the separation via `git clone --no-local "ROMAS/ROMAS BRIEF" romas-brief` from the baseline commit instead. The clone produces an identical content + history snapshot at the target path; the old `.git/` and contents are abandoned and cleaned up after the session ends.
 6. **Path-reference sweep** — update internal references in `CLAUDE.md`, `docs/build/build-log.md`, `docs/build/handoff-notes.md`, `docs/build/decision-log.md`, `docs/specs/adr/0013-latam-llm-translate.md` to point at the new repo path.
 7. **`.gitignore`** — author `.gitignore` covering `node_modules/`, `.env`, `.next/`, `.wrangler/`, `dist/`, build artifacts, OS files.
 8. **GitHub repo** — Kimal runs `gh repo create AllienNova/romas-brief --private --source . --remote origin --push` interactively (SSO required).
