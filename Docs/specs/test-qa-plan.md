@@ -123,6 +123,7 @@ Each row maps to a milestone (M0 = doc hygiene baseline; M1 = schema + migration
 
 | ID | Title | Lvl | Given / When / Then | Source |
 |---|---|---|---|---|
+| A-009 | Migrations 0001..0010 apply in order against a fresh Supabase branch with no errors | I (pgTAP) | Given a fresh Supabase project (or local branch); When apply migrations 0001 through 0010 in numeric order via `supabase db push --include-all`; Then exit code is 0 and `set_updated_at()` function exists before migration 0009 creates the `subscribers_set_updated` trigger that references it. Regression test for M0c2 P0 fix (Build Savage BS-1, 2026-05-15) where the original schema had the function defined after migration 0010 RLS policies, causing 0009 to fail with "function set_updated_at() does not exist". | `Docs/specs/contracts/supabase-schema.sql:300-315` + `docs/build/critic-review.md` BS-1 |
 | A-010 | `articles.primary_source_url` NOT NULL enforced | I (pgTAP) | Given fresh DB; When `INSERT INTO articles (...) VALUES (..., primary_source_url=NULL, ...)`; Then constraint violation `articles_primary_source_required` | `cms-schema.md` lines 57-58 |
 | A-011 | `articles_embargo_consistency` blocks embargoed-without-date | I (pgTAP) | Given fresh DB; When `INSERT` with `embargoed=true, embargo_until=NULL`; Then constraint violation | `cms-schema.md` lines 59-60 |
 | A-012 | `articles_insight_labeled` blocks unlabeled insight | I (pgTAP) | Given fresh DB; When `INSERT` with `romas_insight='X', romas_insight_labeled=false`; Then constraint violation | `cms-schema.md` lines 61-62 |
