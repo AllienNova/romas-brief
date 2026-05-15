@@ -11,27 +11,37 @@ All tokens live in `src/styles/tokens.css` as CSS custom properties on `:root`. 
 
 ## Color
 
-### Brand
+### Brand (v1.2 — M0c2 design-QA contrast fix)
 
 ```css
 --rb-bg:              #FAFAF8;   /* off-white page bg */
 --rb-bg-elevated:     #FFFFFF;
---rb-ink:             #0E1116;   /* primary text */
---rb-ink-muted:       #4A5159;
---rb-ink-subtle:      #6E767E;
+--rb-ink:             #0E1116;   /* primary text — 18.10:1 on bg (AAA Normal) */
+--rb-ink-muted:       #4A5159;   /*               — 7.69:1 on bg (AAA Normal) */
+--rb-ink-subtle:      #6B7280;   /* M0c2 v1.2: was #6E767E (4.41:1 FAIL AA Normal); now 4.55:1 PASS AA Normal */
 --rb-rule:            #E5E7EB;   /* hairline borders */
---rb-accent:          #00B4C6;   /* ROMAS teal — single accent */
---rb-accent-deep:     #0090A0;
+--rb-accent:          #00B4C6;   /* ROMAS teal — FILLS ONLY (logo dot · large UI surfaces). Text use BANNED — 2.41:1 on bg fails AA Large. */
+--rb-accent-deep:     #0090A0;   /* hover state · large filled surfaces; 3.66:1 on bg = AA Large only, NOT body text */
+--rb-accent-strong:   #006B7A;   /* M0c2 v1.2 NEW: text + focus-ring + non-text-UI on bg; 5.91:1 PASS AA Normal · 5.16:1 on accent-soft PASS AA Normal */
 --rb-accent-soft:     #D5F2F5;
 ```
 
-### Audio state (v1.1)
+### Audio state colors (v1.2 — M0c2 contrast fix)
+
+Two parallel scales: original values for **decorative dots and large-surface fills** (no text); new `-text` variants for **badge label foreground**. Schema-enforced pairing per AudioStatusBadge component spec.
 
 ```css
+/* Original: decorative dots, large-fill backgrounds (aria-hidden when used as dot) */
 --rb-audio-published: #00B4C6;
 --rb-audio-pending:   #F59E0B;
 --rb-audio-skipped:   #94A3B8;
 --rb-audio-revoked:   #DC2626;
+
+/* NEW v1.2: badge label text — measured AA Normal pass on the badge background */
+--rb-audio-published-text: #006B7A;  /* = --rb-accent-strong; 5.16:1 on accent-soft */
+--rb-audio-pending-text:   #B45309;  /* amber-700 ish; 4.83:1 on amber-50 */
+--rb-audio-skipped-text:   #475569;  /* slate-600;     5.85:1 on slate-100 */
+--rb-audio-revoked-text:   #B91C1C;  /* red-700;       5.83:1 on red-50 */
 ```
 
 ### Semantic
@@ -155,18 +165,35 @@ Respect `prefers-reduced-motion` — disable non-essential animation.
 
 ---
 
-## Accessibility
+## Accessibility (v1.2 — M0c2 measured + fixed)
 
-- **WCAG 2.2 AA minimum.** AAA where reasonable on long-form body text.
-- `--rb-ink` on `--rb-bg` = 16.5:1 contrast. Pass.
-- `--rb-ink-muted` on `--rb-bg` = 7.2:1. Pass.
-- `--rb-accent` on `--rb-bg` = 3.4:1 — **do not use teal for body text**, only icons / accents ≥ 18px.
+**WCAG 2.2 AA minimum.** AAA on long-form body text (article body, Friday Read). Measured 2026-05-15 via Python WCAG 2.1 luminance formula; values below are fresh-command-output, not estimates.
 
-Focus ring (every interactive element):
+| Pair | Contrast | AA Normal | AA Large | AAA Normal | Use |
+|---|---|---|---|---|---|
+| `--rb-ink` on `--rb-bg` | 18.10:1 | PASS | PASS | PASS | Body text · headings |
+| `--rb-ink-muted` on `--rb-bg` | 7.69:1 | PASS | PASS | PASS | Meta · standfirst |
+| `--rb-ink-subtle` on `--rb-bg` | 4.55:1 (v1.2 fix; was 4.41 FAIL) | PASS | PASS | FAIL | Subtle copy · issue meta · tag-pill labels |
+| `--rb-accent` on `--rb-bg` | 2.41:1 | **FAIL** | **FAIL** | **FAIL** | **Fills only — banned as text or focus-ring** |
+| `--rb-accent-deep` on `--rb-bg` | 3.66:1 | FAIL | PASS | FAIL | Hover fills · large-text-only (≥18.66px bold or ≥24px regular) |
+| `--rb-accent-strong` on `--rb-bg` | 5.91:1 (NEW v1.2) | PASS | PASS | FAIL | Focus ring · link text · AudioStatusBadge published text |
+| `--rb-accent-strong` on `--rb-accent-soft` | 5.16:1 | PASS | PASS | FAIL | AudioStatusBadge "Listen" label · text on soft surfaces |
+| `--rb-audio-pending-text` (#B45309) on bg-amber-50 | 4.83:1 | PASS | PASS | FAIL | Badge `queued`/`generating`/`in_review` |
+| `--rb-audio-skipped-text` (#475569) on bg-slate-100 | 5.85:1 | PASS | PASS | FAIL | Badge `skipped` |
+| `--rb-audio-revoked-text` (#B91C1C) on bg-red-50 | 5.83:1 | PASS | PASS | FAIL | Badge `revoked` |
+| `--rb-ink` on `--rb-accent` (#00B4C6) | 9.02:1 | PASS | PASS | PASS | AudioPlayer play-button glyph (v1.2: was white, now ink) |
+
+**Banned uses** (design-system-keeper blocks):
+- `--rb-accent` (#00B4C6) as text color anywhere — fails AA Large.
+- `--rb-accent` as focus-ring outline — fails 1.4.11 non-text UI 3:1 minimum.
+- `--rb-accent-deep` as body text below 18.66px bold or 24px regular — fails AA Normal.
+- White (`--rb-bg-elevated` foreground) on `--rb-accent` background — fails AA Normal.
+
+Focus ring (every interactive element) — **v1.2: now `--rb-accent-strong`**:
 
 ```css
 :focus-visible {
-  outline: 2px solid var(--rb-accent);
+  outline: 2px solid var(--rb-accent-strong);  /* was --rb-accent (2.41:1 FAIL); now 5.91:1 PASS */
   outline-offset: 3px;
   border-radius: var(--rb-radius-sm);
 }
@@ -208,13 +235,18 @@ export default {
           'ink-muted': 'var(--rb-ink-muted)',
           'ink-subtle': 'var(--rb-ink-subtle)',
           rule: 'var(--rb-rule)',
-          accent: 'var(--rb-accent)',
-          'accent-deep': 'var(--rb-accent-deep)',
+          accent: 'var(--rb-accent)',                     /* fills only — banned as text */
+          'accent-deep': 'var(--rb-accent-deep)',           /* hover · large-fill */
+          'accent-strong': 'var(--rb-accent-strong)',       /* v1.2 NEW: text · focus-ring · non-text UI on bg */
           'accent-soft': 'var(--rb-accent-soft)',
-          'audio-published': 'var(--rb-audio-published)',
-          'audio-pending':   'var(--rb-audio-pending)',
-          'audio-skipped':   'var(--rb-audio-skipped)',
-          'audio-revoked':   'var(--rb-audio-revoked)',
+          'audio-published': 'var(--rb-audio-published)',   /* decorative dot · large fill */
+          'audio-pending':   'var(--rb-audio-pending)',     /* decorative dot · large fill */
+          'audio-skipped':   'var(--rb-audio-skipped)',     /* decorative dot · large fill */
+          'audio-revoked':   'var(--rb-audio-revoked)',     /* decorative dot · large fill */
+          'audio-published-text': 'var(--rb-audio-published-text)',  /* v1.2 NEW: badge label */
+          'audio-pending-text':   'var(--rb-audio-pending-text)',    /* v1.2 NEW: badge label */
+          'audio-skipped-text':   'var(--rb-audio-skipped-text)',    /* v1.2 NEW: badge label */
+          'audio-revoked-text':   'var(--rb-audio-revoked-text)',    /* v1.2 NEW: badge label */
         },
       },
       fontFamily: {

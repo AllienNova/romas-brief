@@ -1,13 +1,46 @@
 ---
-title: QA Savage Review — ROMAS Brief /team-qa critic gate
-version: 1.0.0
-date: 2026-05-14
-reviewer: team-qa-critic (QA Savage)
-target: docs/specs/qa-report.md + 9 supporting QA artifacts under docs/qa/
-verdict: GO WITH CONDITIONS (downgraded from author's NO-GO/HOLD)
+title: QA Savage Review — ROMAS Brief /team-qa critic gate (cycle 1 + design-review cycle 2)
+version: 2.0.0
+date: 2026-05-14 (cycle 1 plan-level) · 2026-05-15 (cycle 2 design-review)
+reviewer: team-qa-critic (QA Savage) — Kimal-invoked
+target: cycle 1 = qa-report.md + 9 supporting QA artifacts; cycle 2 = docs/design/* (21 artifacts) + the contrast-measurement evidence in design-review.md
+verdict_c1: GO WITH CONDITIONS (downgraded from author's NO-GO/HOLD)
+verdict_c2: GO WITH CONDITIONS — after applying 8 surgical fixes (design-tokens v1.2 + ListenPage spec + Route 3 sponsor clarification) and re-verifying via fresh contrast measurement; 5 P2 findings deferred to W-6 prototype
 ---
 
-# QA Savage Review — ROMAS Brief /team-qa (cycle 1)
+# QA Savage Review
+
+## Cycle 2 — Design Review (M0c2 — 2026-05-15)
+
+**Verdict: GO WITH CONDITIONS.**
+
+The QA Savage produced **hard contrast evidence** against 14 documented color pairs via the WCAG 2.1 luminance formula (fresh Python output captured in `docs/qa/design-review.md` §1). 9 P0 failures surfaced — every AudioStatusBadge state, the AudioPlayer play-button label, the focus-ring outline, and the ink-subtle text token. These were not estimated; they were measured.
+
+Cycle-2 fixes applied to:
+- `.claude/skills/design-tokens.md` v1.2 — added `--rb-accent-strong` (5.94:1 on bg, PASS AA Normal); added per-state `--rb-audio-{pending,skipped,revoked,published}-text` variants; tightened `--rb-ink-subtle` from #6E767E (4.41:1 FAIL) to #6B7280 (4.63:1 PASS); banned `--rb-accent` as text or focus-ring via design-system-keeper.
+- `Docs/design/tokens.json` v1.2.0 — JSON mirror with measured-contrast metadata per pair.
+- `Docs/design/a11y-audit.md` — corrected token-contrast table with split (body-text · non-text UI · decorative/fill-only) + measured ratios per pair.
+- `Docs/design/components/AudioStatusBadge.md` — state matrix uses `*-text` token variants; v1.1 supersession noted.
+- `Docs/design/components/AudioPlayer.md` — play button foreground changed from white (2.52:1 FAIL) to `--rb-ink` (7.51:1 PASS AAA).
+- `Docs/design/components/ListenPage.md` — new file (closes P1-D1 component count gap).
+- `Docs/design/wireframes.md` Route 3 — sponsor block placement clarified as `<aside>` SIBLING of `<main>`, not nested.
+- `Docs/design/ui-spec.md` — Color §3 table corrected with measured ratios + new accent-strong token row.
+- `Docs/design/components/AudioStatusBadge.md` — state matrix uses `*-text` token variants.
+
+Re-verification (second contrast-measurement pass) confirmed **0 critical text pairs failing AA Normal**. Two intentional restrictions remain (FAIL marker is correct per token discipline): `--rb-accent` (fills only) and `--rb-accent-deep` (AA Large only).
+
+Conditions for full GO at W-6:
+1. Run-time axe-core + Lighthouse a11y ≥ 95 on prototype.
+2. Touch-target verification on real device (tag pill 32×32 vs AAA 44×44 target).
+3. Dark-mode contrast verification (tightened `--rb-ink-subtle` from #7C848D to #9CA3AF pending run-time confirmation).
+4. AAA verification on Friday Read body — `ink-muted` 7.69:1 passes AAA; verify at run-time.
+5. Audio-state badge brand-alignment review (P3 — `amber-700`/`slate-600`/`red-700` are technically compliant but off the single-accent brand discipline; not blocking ship).
+
+The design as documented at commit `1ed4ff7` (before design-review) had 9 P0 a11y failures. The design as documented at this commit (post design-review fix) has 0 P0 contrast failures and clean WCAG 2.2 AA across every reader route token pair. **Ready for `/team-build M3` dispatch when the design hand-off lands at W-3.**
+
+---
+
+# QA Savage Review — Cycle 1 (plan-level — 2026-05-14)
 
 ## Verdict
 

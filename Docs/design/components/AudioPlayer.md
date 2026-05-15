@@ -53,7 +53,7 @@ Full TSX in `.claude/skills/component-library.md §AudioPlayer`.
 - Surface: `--rb-bg-elevated`
 - Border: `1px solid --rb-rule`
 - Radius: `--rb-radius-lg` (12px) on Variant A; `0` on Variant B (sticky banner is full-bleed)
-- Play button: `--rb-accent` background, `--rb-bg-elevated` foreground; hover → `--rb-accent-deep`
+- Play button: `--rb-accent` background, **`--rb-ink` foreground** (v1.2 fix — was `--rb-bg-elevated`/white which measured 2.52:1 FAIL; now ink-on-accent = 7.51:1 PASS AAA Normal per docs/qa/design-review.md P0-D7). Hover state: bg → `--rb-accent-deep`; foreground stays `--rb-ink` (ink on accent-deep = 4.95:1 PASS AA Normal).
 - Timestamp text: `--rb-ink-muted` 14px sans
 - Transcript link: `--rb-accent` underlined-on-hover
 

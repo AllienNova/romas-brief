@@ -44,21 +44,24 @@ authority: .claude/skills/design-tokens.md v1.1 (executable token set)
 
 **Sponsor firewall**: `--rb-sponsor-firewall = 2rem (32px)`. Locked. Enforced at layout level via `data-firewall="32"` attribute + Storybook layout test asserting DOM distance.
 
-## 3. Color (from design-tokens.md, locked v1.1)
+## 3. Color (from design-tokens.md v1.2 — measured M0c2)
 
-Already documented in design-tokens.md and tokens.json. Summary for UI consumption:
+Already documented in design-tokens.md v1.2 and tokens.json v1.2.0. Summary for UI consumption (light mode; contrast values measured 2026-05-15 via WCAG 2.1 luminance formula):
 
-| Semantic role | Light mode | Dark mode | Contrast on bg |
-|---|---|---|---|
-| Page bg | `--rb-bg = #FAFAF8` | `#0B0E12` | — |
-| Surface (cards, popovers) | `--rb-bg-elevated = #FFFFFF` | `#121620` | — |
-| Body text | `--rb-ink = #0E1116` | `#F5F6F7` | 16.5:1 AAA |
-| Muted text | `--rb-ink-muted = #4A5159` | `#B0B6BD` | 7.2:1 AAA |
-| Subtle text | `--rb-ink-subtle = #6E767E` | `#7C848D` | 4.6:1 AA |
-| Rule (hairline) | `--rb-rule = #E5E7EB` | `#1F242B` | — |
-| Accent (teal) | `--rb-accent = #00B4C6` | (same — verified dark contrast 3.4:1 large only) | 3.4:1 AA Large only |
+| Semantic role | Light mode | Dark mode | Contrast on bg | Use |
+|---|---|---|---|---|
+| Page bg | `--rb-bg = #FAFAF8` | `#0B0E12` | — | Page background |
+| Surface | `--rb-bg-elevated = #FFFFFF` | `#121620` | — | Cards, popovers |
+| Body text | `--rb-ink = #0E1116` | `#F5F6F7` | **18.10:1** AAA | Body, headings |
+| Muted text | `--rb-ink-muted = #4A5159` | `#B0B6BD` | **7.69:1** AAA | Meta, standfirst |
+| Subtle text | `--rb-ink-subtle = #6B7280` (v1.2) | `#9CA3AF` (v1.2) | **4.55:1** AA Normal | Subtle labels, tag pills |
+| Rule | `--rb-rule = #E5E7EB` | `#1F242B` | — | Hairline borders |
+| Accent (teal) | `--rb-accent = #00B4C6` | (same) | 2.41:1 — **FILLS ONLY · BANNED as text/border** | Logo dot, large-surface fill |
+| Accent deep | `--rb-accent-deep = #0090A0` | (same) | 3.66:1 — **AA Large only (≥18.66px bold)** | Hover fills |
+| **Accent strong (v1.2)** | `--rb-accent-strong = #006B7A` | (verify W-6) | **5.91:1** AA Normal | Text · focus ring · non-text UI |
+| Accent soft | `--rb-accent-soft = #D5F2F5` | `#0A2F33` | — | Soft surfaces, callouts |
 
-Audio-state colors and semantic colors documented in design-tokens.md §Color.
+Audio-state colors and semantic colors documented in design-tokens.md v1.2 §Color with per-state `-text` variants for badge labels (each pass AA Normal on their respective bg per AudioStatusBadge state matrix).
 
 ## 4. Radius (from design-tokens.md)
 

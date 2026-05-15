@@ -5,7 +5,10 @@ date: 2026-05-15
 authority: information-architecture.md §3 routes inventory · web-engineer agent surfaces · component-library skill
 ---
 
-# Wireframes — 12 routes, 5 states each
+# Wireframes — 12 routes (+ Route 6 tier-page variant, + Route 13 errors), 5 states each
+
+> Per LAUNCH_ARC_PLAN.md §2 trigger 2, the 12 canonical routes are: Homepage · Issue · Article · Friday Read · Listen · Conference · Search · Subscribe · About · Sponsor · Audio QA admin · 404. **Route 6 (Tier-specific Listen page)** is a variant of Route 5 (Listen index) — same template applied per tier — not a separate canonical wireframe; documented here for /team-build implementation reference. **Route 13 (404/500/410/offline)** is documented under "Route 12 / 404" in the LAUNCH_ARC_PLAN.md count but split out here for state coverage.
+
 
 > Format per route: primary (success) state rendered as ASCII layout for mobile (390×844) and desktop (1440×900); other 4 states summarized with what changes. Token references use the v1.1 design-tokens. All measurements in CSS pixels.
 
@@ -235,8 +238,13 @@ Same content stacked: Issue header → Lead article (full ArticleHeader + AudioP
 |  review."                                                       |
 +----------------------------------------------------------------+
 
-(Sponsor block, if any, renders here — outside max-w-prose,
- in its own aside region, ≥ 32px from header masthead end)
+⟨end of <main> element⟩
+(Sponsor block — if any — renders here AS A SIBLING OF <main>,
+ not nested inside <main>. DOM structure: <main>...</main><aside
+ class="sponsor-block" data-firewall="32">...</aside><footer>...</footer>.
+ design-system-keeper PR-blocks sponsor block placement inside <main>
+ per SponsorBlock.md anti-patterns. Sponsor outer margin ≥ 32px from
+ the masthead wordmark; layout test asserts DOM distance.)
 
 [FOOTER]
 ```
