@@ -28,9 +28,9 @@ Never use the positioning line as a homepage tagline. Never use emojis in copy. 
 
 ---
 
-## 3. Locked decisions ledger (v2.1)
+## 3. Locked decisions ledger (v2.1 → cycle-6 expansion + M0c2 close)
 
-These six decisions are **locked**. Do not propose reversing them without an explicit unlock from Kimal.
+These decisions are **locked**. Do not propose reversing them without an explicit unlock from Kimal. **For the full 19-row canonical ledger, read `docs/SSOT.md` §3.** This file inlines the launch-critical subset.
 
 | # | Decision | Locked value |
 |---|---|---|
@@ -39,7 +39,13 @@ These six decisions are **locked**. Do not propose reversing them without an exp
 | 3 | Co-branded mastheads | **Killed** for launch. Masthead belongs to ROMAS for first 60–90 days. Only "Sponsored by [X]" or "Partner message from [X]" allowed. Re-evaluate Day 90. |
 | 4 | The ROMAS Read | **Fridays only**. Mon–Thu issues stay sharp + operational. |
 | 5 | Subscriber count | **Hidden until 2,500**. Milestones: 2.5k / 5k / 10k / 25k. |
-| 6 | Podcast | Day 14 with web. Audio-first. No video studio. |
+| 6 | Audio architecture | **All 4 tiers launch Day 1** per cycle-3 Q2 (supersedes the v1.1 "Day 14 podcast" wording). Day 1 ships full Audio Podcast episode 001 (30–60 min) per Q2-A. Tier 5 Video Podcast launches Day 60 with invited guest (placeholder ADR-0012). |
+| 7 | Email split (cycle-3 Q3) | **Beehiiv** = newsletter delivery (daily issue, Friday Read, podcast/conference notifications); subscriber list canonical on Beehiiv. **Resend** = transactional (signup confirm, unsubscribe receipt, audio-revocation notice, password reset). |
+| 8 | Three-edition publish (cycle-5 Q8) | APAC 22:00 UTC · EU 06:00 UTC · Americas 11:00 UTC; per-edition homepage re-ranks by region tag; Beehiiv subscriber segment field drives delivery time. |
+| 9 | China posture (cycle-5 Q9) | **Read-only NMPA + CSCO-RO ingest** only; no Chinese subscriber acquisition at launch (PIPL data-localization). |
+| 10 | Region rebalance (cycle-5 Q10) | NA 26% · EU 32% · APAC 26% · LATAM 8% · MENA-Africa 4% · Global 4%. |
+| 11 | LATAM editorial (cycle-6 Q11) | **LLM-translate** via DeepL Pro + Claude verification on Hero/Strong bands; original-language source URL preserved; mandatory footer attribution. |
+| 19 | Repository separation (M0c2) | Standalone repo at `D:\dev\projects\romas-brief\` · GitHub `AllienNova/romas-brief` (private) · separate from parent ROMAS COS · `packages/llm-orchestrator/` lives in this repo (no cross-monorepo import). |
 
 Sponsor firewall: **no sponsor logo within 32px of the ROMAS Brief wordmark**.
 
@@ -56,14 +62,17 @@ Sponsor firewall: **no sponsor logo within 32px of the ROMAS Brief wordmark**.
 
 ---
 
-## 5. Audio architecture (4 tiers)
+## 5. Audio architecture (4 tiers Day 1 + Tier 5 Day 60)
 
-| Tier | Name | Length | Cadence | RSS |
-|---|---|---|---|---|
-| 1 | ROMAS Audio Brief | 5 / 7 / 10 min | Per article | `audio-brief.xml` |
-| 2 | ROMAS Daily Brief | 10–15 min | Daily roundup (launches Day 14) | `daily-brief.xml` |
-| 3 | The ROMAS Podcast | 30–60 min | Weekly deep-dive (launches Day 30–45) | `podcast.xml` |
-| 4 | ROMAS Conference Brief | 15–30 min | During ASTRO / ESTRO / AAPM / JASTRO / RANZCR | `conference-brief.xml` |
+Cycle-3 Q2 / Q2-A locks supersede the v1.1 "Day 14 / Day 30–45" launch dates: **all 4 audio tiers launch Day 1** with episode 001 of the full Audio Podcast pre-produced.
+
+| Tier | Name | Length | Cadence | RSS | Launch |
+|---|---|---|---|---|---|
+| 1 | ROMAS Audio Brief | 5 / 7 / 10 min | Per article | `audio-brief.xml` | **Day 1** |
+| 2 | ROMAS Daily Brief | 10–15 min | Daily roundup | `daily-brief.xml` | **Day 1** |
+| 3 | The ROMAS Podcast | 30–60 min | Weekly deep-dive | `podcast.xml` | **Day 1 (episode 001 pre-mastered)** |
+| 4 | ROMAS Conference Brief | 15–30 min | During ASTRO / ESTRO / AAPM / JASTRO / RANZCR | `conference-brief.xml` | **Day 1 (activates per conference)** |
+| 5 | Video Podcast | 20–40 min | With invited guest | `video-podcast.xml` (placeholder) | **Day 60** (ADR-0012 vendor decision at Day 30) |
 
 **Article → audio length mapping**: Short brief → 5 min (700–850 spoken words) · Standard → 7 min (1,000–1,150) · Deep report → 10 min (1,400–1,600).
 
@@ -112,7 +121,7 @@ All files live alongside this CLAUDE.md. Load the relevant one(s) before editing
 - **CMS surface**: Internal Next.js app on Cloudflare Pages.
 - **Reader surface**: Next.js + Tailwind on Cloudflare Pages.
 - **Search**: Postgres full-text + pgvector for embeddings.
-- **Email**: Resend (or Postmark) for issue delivery.
+- **Email**: split per ADR-0007 cycle-3 — **Beehiiv** (newsletter delivery, subscriber list canonical) + **Resend** (transactional only: signup confirm, unsubscribe receipt, audio-revocation notice, password reset). Beehiiv webhook (HMAC-SHA256 with `BEEHIIV_WEBHOOK_SECRET`) syncs subscriber state to Supabase; daily reconciliation alerts at > 5 row drift.
 - **Analytics**: Plausible (privacy-first).
 
 Color tokens (added v1.1):
@@ -200,4 +209,4 @@ Skills (`.claude/skills/`):
 
 ---
 
-*Last updated: 2026-05-12. Version: 1.1.0. Locked decisions: v2.1.*
+*Last updated: 2026-05-15 (M0c2 close). Version: 1.2.0. Locked decisions: v2.1 + cycle-3..6 Q1-Q11 + M0c2 row 19 separation. Canonical ledger: `docs/SSOT.md` §3 (19 rows).*
