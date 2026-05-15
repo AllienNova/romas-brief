@@ -10,22 +10,43 @@ status: Per-route design-time audit. Run-time validation deferred to W-6 with Pl
 
 > Design-time audit against WCAG 2.2 AA per route. Run-time verification (Lighthouse, axe-core, screen-reader walkthrough) happens at W-6 prototype phase per LAUNCH_ARC_PLAN.md.
 
-## 1. Token-level contrast (verified at design-tokens.md v1.1)
+## 1. Token-level contrast (measured 2026-05-15 M0c2 via WCAG 2.1 luminance formula — fresh-command-output)
 
-| Pair | Ratio | WCAG verdict |
+The v1.1 of this table claimed estimated values that were proven wrong by fresh contrast measurement during the team-qa design-review pass (`docs/qa/design-review.md`). v1.2 of design-tokens (this M0c2 update) introduced new tokens to fix the failures. The table below is the **measured-and-fixed** state.
+
+### Pairs used at body / small text (must pass AA Normal 4.5:1)
+
+| Pair | Measured | WCAG verdict |
 |---|---|---|
-| `--rb-ink` (#0E1116) on `--rb-bg` (#FAFAF8) | 16.5:1 | AAA (Normal + Large) |
-| `--rb-ink-muted` (#4A5159) on `--rb-bg` | 7.2:1 | AAA (Normal + Large) |
-| `--rb-ink-subtle` (#6E767E) on `--rb-bg` | 4.6:1 | AA Normal, AAA Large |
-| `--rb-accent` (#00B4C6) on `--rb-bg` | 3.4:1 | AA Large only — **body text use blocked by design-system-keeper** |
-| `--rb-accent-deep` (#0090A0) on `--rb-bg` | 4.6:1 | AA Normal |
-| `--rb-accent` on `--rb-accent-soft` (#D5F2F5) | 3.5:1 | AA Large + non-text UI components |
-| `--rb-audio-published` on `--rb-accent-soft` (badge) | 3.5:1 | AA Large (badge text is 12px → needs verify; currently uses `--rb-accent-deep` instead) |
-| `--rb-audio-pending` (#F59E0B) on `bg-amber-50` (#FFFBEB) | 3.2:1 | AA Large only — badge label is 12px sans 500; **verify** |
-| `--rb-audio-skipped` (#94A3B8) on `bg-slate-100` (#F1F5F9) | 3.5:1 | AA Large only — verify |
-| `--rb-audio-revoked` (#DC2626) on `bg-red-50` (#FEF2F2) | 5.1:1 | AA Normal |
+| `--rb-ink` (#0E1116) on `--rb-bg` (#FAFAF8) | 18.10:1 | AAA Normal |
+| `--rb-ink-muted` (#4A5159) on `--rb-bg` | 7.69:1 | AAA Normal |
+| `--rb-ink-subtle` (#6B7280) on `--rb-bg` — **v1.2 FIX: was #6E767E (4.41:1 FAIL); now PASS** | 4.63:1 | AA Normal |
+| `--rb-accent-strong` (#006B7A) on `--rb-bg` — **v1.2 NEW** | 5.94:1 | AA Normal |
+| `--rb-accent-strong` on `--rb-accent-soft` (#D5F2F5) — **v1.2 NEW** | 5.27:1 | AA Normal |
+| `--rb-audio-pending-text` (#B45309) on bg-amber-50 (#FFFBEB) — **v1.2 NEW** | 4.84:1 | AA Normal |
+| `--rb-audio-skipped-text` (#475569) on bg-slate-100 (#F1F5F9) — **v1.2 NEW** | 6.92:1 | AA Normal |
+| `--rb-audio-revoked-text` (#B91C1C) on bg-red-50 (#FEF2F2) — **v1.2 NEW** | 5.91:1 | AA Normal |
+| `--rb-audio-published-text` (#006B7A; = `--rb-accent-strong`) on `--rb-accent-soft` — **v1.2** | 5.27:1 | AA Normal |
+| `--rb-ink` on `--rb-accent` (#00B4C6) — **AudioPlayer play button v1.2** | 7.51:1 | AAA Normal |
+| `--rb-ink` on `--rb-accent-deep` (#0090A0) — **AudioPlayer play button hover v1.2** | 4.95:1 | AA Normal |
 
-**Action item (W-6 prototype)**: Verify `--rb-audio-pending` and `--rb-audio-skipped` badge contrast at actual 12px text size. If they fail AA Large (3:1), darken the foreground to `--rb-audio-pending-text` and `--rb-audio-skipped-text` variants. Tracked as M-001 in this audit.
+### Pairs used for non-text UI only (must pass WCAG 1.4.11 3:1 minimum)
+
+| Pair | Measured | WCAG verdict |
+|---|---|---|
+| Focus ring `--rb-accent-strong` (#006B7A) outline on bg | 5.91:1 | PASS (well above 3:1 floor) |
+| `--rb-accent-deep` (#0090A0) on bg — used for large-fill hover only | 3.66:1 | PASS for non-text UI |
+
+### Pairs banned from text use (decorative / fill only — paired with text label elsewhere)
+
+| Pair | Measured | Use restriction |
+|---|---|---|
+| `--rb-accent` (#00B4C6) on bg | 2.41:1 | **Fills only.** Logo dot (decorative, no text on disk). Banned as text/border/focus-ring. |
+| `--rb-accent` on `--rb-accent-soft` | 2.14:1 | (would be banned) |
+| White on `--rb-accent` (FAILED v1.1 play button) | 2.52:1 | **Replaced by `--rb-ink` foreground** in v1.2 |
+| `--rb-audio-pending` (#F59E0B) on bg-amber-50 — original | 2.07:1 | Decorative dot only (badge label uses `-text` variant); `aria-hidden` |
+| `--rb-audio-skipped` (#94A3B8) on bg-slate-100 — original | 2.34:1 | Decorative dot only; `aria-hidden` |
+| `--rb-audio-revoked` (#DC2626) on bg-red-50 — original | 4.41:1 | Below AA Normal (4.5); decorative dot only; `aria-hidden`. Badge label uses `-text` variant. |
 
 **Color-independence rule**: AudioStatusBadge always pairs color with a text label (e.g., "Audio in review"). No color-only state indicator anywhere — design-system-keeper PR-blocks.
 

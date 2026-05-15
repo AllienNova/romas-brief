@@ -1,8 +1,8 @@
 ---
-title: Risk Register — Consolidated (plan-level)
-version: 1.0.0
-date: 2026-05-14
-sources: delivery-plan.md R-01..R-23 + cycle-1 critic F-* + this QA pass NEW-* + Test Engineer trace gaps G-NN
+title: Risk Register — Consolidated (plan-level + design-time)
+version: 1.1.0
+date: 2026-05-14 (v1.0) · 2026-05-15 (v1.1 — M0c2 design-time risks DR-* appended)
+sources: delivery-plan.md R-01..R-23 + cycle-1 critic F-* + this QA pass NEW-* + Test Engineer trace gaps G-NN + M0c2 design-review DR-NNN
 ---
 
 # Risk Register — Consolidated Plan-Level
@@ -93,8 +93,9 @@ sources: delivery-plan.md R-01..R-23 + cycle-1 critic F-* + this QA pass NEW-* +
 | Test Engineer G-* | 10 | Yes — propagated as B-* |
 | Performance audit NFR risks | 6 | Yes |
 | UX audit gaps | 6 | Yes — propagated as B-07 + M-* |
+| M0c2 design-review DR-* | 7 | Yes — appended as design-time appendix |
 
-**Total tracked: 88 risks.** This is consistent with a plan of this scope (47 artifacts, 38 FRs, 15 contracts, 12 ADRs).
+**Total tracked: 95 risks** (88 plan-level + 7 design-time). This is consistent with a plan of this scope (47 artifacts, 38 FRs, 15 contracts, 12 ADRs, 8 components).
 
 ---
 
@@ -113,3 +114,21 @@ Sourced from `Docs/qa/test-coverage.md`. These supplement (do not duplicate) the
 | XR-007 | P1 | subscribers.beehiiv_subscription_id absent — ADR-0007 Beehiiv sync unimplementable | `.claude/skills/cms-schema.md` subscribers table | Column added; migration authored |
 | XR-008 | P2 | Rule 6 prose in SSOT/CLAUDE.md cites 2 of 5 QA conditions; schema enforces 5 | `Docs/SSOT.md:§2 R6` · `CLAUDE.md:§4 R6` · `.claude/skills/cms-schema.md:96-103` | Prose updated to cite all 5 conditions |
 | XR-009 | P2 | ADR-0011 action items reference `docs/specs/contracts/` (lowercase) — repo uses `Docs/` | `Docs/specs/adr/0011-whisper-transcription.md` | Path corrected in ADR action items |
+
+---
+
+## Appendix: Design-Time Risks — M0c2 /team-qa design-review (2026-05-15)
+
+Sourced from `docs/qa/design-review.md` cycle-2 GO WITH CONDITIONS verdict. These are run-time verification gaps deferred from design-time to W-6 prototype phase, plus a small number of design-time decisions accepted with caveats.
+
+| ID | Severity | Title | File(s) | Condition for closure |
+|----|----------|-------|---------|----------------------|
+| DR-001 | P1 | **Run-time a11y verification deferred** — measured contrast math passes design-time, but axe-core + Lighthouse a11y ≥95 + screen-reader landmark + keyboard-map + 200% text-size + reduced-motion all require a real DOM. | `Docs/design/a11y-audit.md` §run-time | W-6 prototype + Playwright + axe-core run; Lighthouse ≥95 per route captured to `screenshots/`; failures triaged to component spec |
+| DR-002 | M | **Audio production volume scale untested** — 500-article launch needs ~14 hr finished audio at -16 LUFS. Single-narrator ElevenLabs cap + PlayHT failover untested at this volume; lexicon expansion 30→~80 entries also pending. | `Docs/ROMAS-Brief-500-Article-Launch-Plan.md` §6 + `H-02`/`H-11` | W-5 audio dry-run on 10-episode sample; loudness + pace + lexicon coverage measured |
+| DR-003 | M | **Dark-mode contrast unconfirmed** — token set v1.2 measured against light surfaces only. Dark-mode token mirror absent from `tokens.json`. | `Docs/design/tokens.json` §3 | W-5 dark-mode token authoring + measured-ratio table per pair; design-system-keeper sign-off |
+| DR-004 | L | **AudioStatusBadge per-state hues sit outside single-accent discipline** — pending=amber, skipped=slate, revoked=red, published=teal-deep. Accepted because each is a semantic-state signal (warn/neutral/error/ok), not a brand surface. Risk: if brand later restricts to single-accent, badges need re-design. | `Docs/design/components/AudioStatusBadge.md` | Either (a) lock semantic-state palette as canonical brand exception or (b) re-design to icon-only differentiation |
+| DR-005 | L | **Tag pill touch-target 32×32 falls below AAA 44×44 target** — passes AA 24×24 minimum but tighter than recommended on mobile. Accepted for v1; revisit at Tier 5 (Day 60) mobile-first review. | `Docs/design/components/IssueHeader.md` tag spec | Mobile touch-target audit Day 60; either upsize pill or add 12px padding hit-area |
+| DR-006 | L | **AudioPlayer Variant B (banner) overlap with iOS safe-area unverified** — Listen page sticky banner overlap with bottom safe-area on notched iPhones documented as design intent but never run on device. | `Docs/design/components/AudioPlayer.md` Variant B | W-5 device test on iPhone 14/15 Pro + Safari mobile |
+| DR-007 | L | **prefers-reduced-motion enforcement is design-time spec only** — no eslint rule or runtime guard enforces that motion uses the `motion-safe:` Tailwind variant. Risk of accidental motion in PRs that bypass design review. | `Docs/design/ui-spec.md` §motion | M3 ESLint rule + CI lint gate per cycle-3 R-303 (sponsor firewall rule template) |
+
+**Design-time risks: 7 total** (1 P1 + 2 M + 4 L). Zero P0 — all P0 contrast failures closed in cycle-2 with verified measurements (see `docs/qa/design-review.md` cycle-2 evidence section).

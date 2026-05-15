@@ -9,7 +9,16 @@ scope: plan-level QA on code-empty repo; release-readiness gate for /team-build 
 
 # ROMAS Brief — QA Report
 
-## Verdict
+## M0c2 design-review verdict (2026-05-15)
+
+**GO WITH CONDITIONS** for the design layer (`docs/design/*`). Cycle-1 of the design-review surfaced 9 P0 WCAG 2.1 contrast failures across the AudioStatusBadge + AudioPlayer play button + focus-ring + ink-subtle token; cycle-2 applied surgical token-level fixes (design-tokens v1.2 — added `--rb-accent-strong` + per-state `*-text` variants + tightened `--rb-ink-subtle`) and **re-verified via fresh contrast measurement** — all 9 P0 pairs now PASS AA Normal. P1 findings (ListenPage component spec missing · Route 3 sponsor placement ambiguous · contrast claim drift) all closed in this commit. See `docs/qa/design-review.md` for full evidence + audit trail.
+
+Conditions for full GO at W-6:
+- Run-time axe-core + Lighthouse a11y ≥ 95 verification at W-6 prototype phase
+- Touch-target ≥ 44×44 on tag pill verified on real device
+- Service worker offline fallback deferred to M4+ (accepted)
+
+## Plan-level verdict (2026-05-14 — cycle-1)
 
 **GO WITH CONDITIONS** *(verdict post-critic; author's initial NO-GO was downgraded by team-qa-critic per `docs/qa/critic-review.md`)*
 

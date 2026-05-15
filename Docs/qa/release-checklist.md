@@ -1,13 +1,41 @@
 ---
-title: Release Checklist — /team-build start readiness
-version: 1.0.0
-date: 2026-05-14
-note: This checklist is the GATE for dispatching /team-build, not the Day-1 launch readiness gate (that lives in SSOT §12.8).
+title: Release Checklist — /team-build start readiness + M0c2 design-review status
+version: 2.0.0
+date: 2026-05-14 (v1) · 2026-05-15 (v2 M0c2 status update)
+note: This checklist is the GATE for dispatching /team-build, not the Day-1 launch readiness gate (that lives in SSOT §12.8 / LAUNCH_ARC_PLAN.md §5).
 ---
 
-# Release Checklist — /team-build Start Readiness
+# Release Checklist
 
-## Hard blockers (must close before /team-build dispatch)
+## M0c2 status (2026-05-15) — items closed in this session
+
+| # | Item | M0c2 status |
+|---|---|---|
+| 1 | T-225..T-230 + T-310A..T-310D concrete rows (subset of original 40 placeholders) | **CLOSED** (commit c50a01e) |
+| 1b | T-NEW1..T-NEW20 renumbering | Header in delivery-plan.md cycle-2 scope-lock declares new IDs authoritative; concrete rows to land at M2/M3 dispatch |
+| 2 | A-009 migration-ordering pgTAP entry | **CLOSED** (commit ed2927f). A-061..A-075 deferred to M2/M3 dispatch (not pre-M1 critical). |
+| 4 | Launch Plan §6 Sample 5 re-sourced from `meddeviceguide.com` to European Commission AI Act page + fact-check pre-publish flag | **CLOSED** cycle-1 (commit dcc8389) |
+| 5 | Doc-version bumps + tagline + Q-lock propagation through CLAUDE.md/AGENT.md/Master-Strategy/Runbook | **CLOSED** (commits c50a01e + dcc8389) |
+| 6 | Six inviolable rules wording aligned in Master-Strategy §6.1 + Runbook §6 with SSOT §2 verbatim | **CLOSED** (commit dcc8389) |
+| 7 | ADR-0005 cycle-3 rewrite (Day-1 all-tier launch + Tier 5 row) | **CLOSED** (commit dcc8389) |
+| 8 | architecture.md §7 decision log updated through ADR-0014 | **OPEN** — defer to W-7 prep (cosmetic) |
+| 9 | `subscribers.region` column added to schema | **CLOSED** (commit dcc8389) |
+| 10 | `subscribers.beehiiv_subscription_id` added to schema | **CLOSED** (commit dcc8389) |
+| 11 | `.claude/skills/cms-schema.md` updated with cycle-4/6 + drift pointer | **CLOSED** (commit ed2927f) |
+
+## M0c2 design-review additions (2026-05-15) — items closed
+
+| # | Item | M0c2 status |
+|---|---|---|
+| D-1 | docs/design/ artifact set (12 wireframes + 8 components + tokens.json + copy + a11y + brand + UX + flow + IA + ui-spec + interaction-patterns + review-notes + critic-placeholder + assets/manifest stub) | **CLOSED** (commit 1ed4ff7) |
+| D-2 | 9 P0 WCAG contrast failures in AudioStatusBadge + AudioPlayer + focus ring + ink-subtle — design-tokens v1.2 fix | **CLOSED** (this commit; see `docs/qa/design-review.md` cycle-2 evidence) |
+| D-3 | Migration 0009 trigger ordering fix | **CLOSED** cycle-2 P0 (commit 78c83c8) |
+| D-4 | AllienNova casing patch (SSOT §3 row 19 + ADR-0014) | **CLOSED** (commit 78c83c8) |
+| D-5 | M0 cycle-1 build artifacts reconstructed (build-log, handoff-notes, decision-log, critic-review) | **CLOSED** (commit 78c83c8) |
+| D-6 | ListenPage component spec authored | **CLOSED** (this commit) |
+| D-7 | Sponsor block placement clarified in wireframes Route 3 | **CLOSED** (this commit) |
+
+## Hard blockers (remaining — must close before /team-build M1 dispatch on Mon 2026-05-19)
 
 | # | Item | Status | Owner | Risk ref |
 |---|---|---|---|---|

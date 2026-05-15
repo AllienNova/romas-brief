@@ -1,23 +1,27 @@
 ---
-title: UX / Design Conformance Validation — plan-level
-version: 1.0.0
-date: 2026-05-14
-scope: Design-system + reader-flow conformance plan for /team-build. No reader UI yet — this validates the plan that the design surface is buildable.
+title: UX / Design Conformance Validation — plan-level + design-review (M0c2)
+version: 2.0.0
+date: 2026-05-14 (v1 plan-level) · 2026-05-15 (v2 design-review M0c2)
+scope: Design-system + reader-flow conformance. v1 was plan-level (no design artifacts yet). v2 reflects /team-design D1-D12+D15 output + team-qa design-review pass with 9 P0 contrast fixes.
 ---
 
-# UX / Design Validation — Plan Level
+# UX / Design Validation
 
-## Critical missing artifacts (P0)
+## M0c2 design-review status (2026-05-15)
 
-| Artifact | Required by | Status |
+**GO WITH CONDITIONS** — All P0 cycle-1 missing-artifact findings closed. All P0 cycle-2 contrast findings closed via design-tokens v1.2 + component spec updates. See `docs/qa/design-review.md` for the QA Savage findings + fixes + re-verification math.
+
+### Previously-missing artifacts — now closed
+
+| Artifact | Cycle-1 status | M0c2 status |
 |---|---|---|
-| `Docs/ROMAS-Brief-Design-Specification.md` v1.1 | CLAUDE.md §6, README, FR-019 sponsor firewall, FR-028 8-module homepage | **MISSING** — R-005 in M1, design-system-keeper to author |
-| `Docs/ROMAS-Brief-Audio-Architecture.md` v1.0 | CLAUDE.md §6, FR-007..FR-010, audio-producer skill | **MISSING** — R-006-A in M1 |
-| `docs/design/wireframes.md` | This QA's UX check; team-design output | **MISSING** — never produced (Kimal had me sketch in chat, but it's not committed to repo) |
-| `docs/design/user-flows.md` | Critical-path testing per team-qa skill | **MISSING** |
-| `docs/design/components/*.md` | Per-component spec for AudioPlayer Variant A/B, SponsorBlock, ROMASRead, IssueHeader, ArticleHeader, AudioStatusBadge | **MISSING** |
-| `docs/design/tokens.md` | Currently lives in `.claude/skills/design-tokens.md` v1.1 (locked tokens for audio-published/pending/skipped) + chat-only cycle-1 proposal for category color tokens (--rb-cat-*) | **PARTIAL** — formal handoff doc not yet authored |
-| `docs/design/accessibility.md` | WCAG 2.2 AA per design-system-keeper | **MISSING** |
+| `Docs/ROMAS-Brief-Design-Specification.md` v1.1 | MISSING | **Superseded** by `docs/design/` artifact set (ux-principles + IA + flows + wireframes + ui-spec + components + tokens + copy + a11y + brand) — `/team-design` output replaces the planned standalone companion doc. CLAUDE.md §6 pointer should be updated next M0c2 sweep. |
+| `Docs/ROMAS-Brief-Audio-Architecture.md` v1.0 | MISSING | **Superseded** by `.claude/skills/audio-production-pipeline.md` + `audio-qa-checklist.md` + `pronunciation-lexicon.md` + `rss-feed-spec.md` (operational equivalents). |
+| `docs/design/wireframes.md` | MISSING | **Authored** — 12 canonical routes + Route 6 tier-page variant + Route 13 error states; all 5 states each per coverage matrix. |
+| `docs/design/user-flows.md` | MISSING | **Authored** — 10 flows × happy + edge + error paths; FR-NNN coverage matrix. |
+| `docs/design/components/*.md` | MISSING | **8 specs authored** — AudioPlayer · AudioStatusBadge · SponsorBlock · ROMASRead · IssueHeader · ArticleHeader · SubscriberCount · ListenPage (the 8th was the M0c2 design-review P1-D1 close). |
+| `docs/design/tokens.json` | PARTIAL (CSS vars only) | **Authored** v1.2.0 — JSON mirror with measured contrast verdicts per pair. |
+| `docs/design/a11y-audit.md` | MISSING | **Authored** — per-route WCAG 2.2 AA + measured token contrast; 4 design-time findings (none P0 after M0c2 fixes); run-time verification queued for W-6. |
 
 ## Designed surfaces (per SSOT §12.4 + Launch Plan §4)
 
