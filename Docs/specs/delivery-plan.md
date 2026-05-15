@@ -119,6 +119,12 @@ Owner-role codes match `.claude/agents/`: `cms-engineer`, `web-engineer`, `audio
 | T-220 | Loudness re-master loop — auto-retry twice, then mark `skipped` | audio-producer | S | T-204 | A-220 |
 | T-221 | Transcript generator (text companion to MP3) | audio-producer | M | T-205 | A-221 |
 | T-222 | M2 end-to-end dry run on 5 sample articles from Launch Plan §6 | editorial-director | S | T-201..T-221 | A-222 |
+| T-225 | **Audio Podcast episode 001** — long-form script (4,500–9,000 spoken words, 30–60 min runtime) draft from launch-window editorial pool; topic: state-of-the-field synthesis at Day 1 | editorial-director + audio-producer | L | T-205 | A-225 |
+| T-226 | Episode 001 script lock — fact-checker + physics-reviewer + regulatory-analyst sign-off + transcript-ready format | editorial-director | M | T-225 | A-226 |
+| T-227 | Episode 001 lexicon application + ElevenLabs TTS generation + PlayHT failover path tested | audio-producer | M | T-202,T-203,T-226 | A-227 |
+| T-228 | Episode 001 master — ffmpeg loudnorm pass to -16 LUFS / -1 dBTP + transcript export + chapter markers | audio-producer | M | T-204,T-221,T-227 | A-228 |
+| T-229 | Episode 001 audio-QA flip — `audio_jobs` row passes 5-condition CHECK; `audio_qa_reviewer.approve` recorded | audio-qa-reviewer | S | T-209,T-228 | A-229 |
+| T-230 | `podcast.xml` validates with iTunes namespace + episode 001 enclosure + show-notes; first-fetch by Apple Podcasts directory before Day 1 00:00 UTC | rss-publisher | M | T-214,T-229,T-313 | A-230 |
 
 ### 3.4 M3 — Web reader + Daily Brief tier + Podcast Day 14
 
@@ -139,6 +145,10 @@ Recommended sequencing: dispatch `/team-design` at the same time as `/team-build
 | T-308 | Daily Brief Worker — 10–15 min daily roundup TTS job (uses M2 pipeline) | audio-producer | M | T-202,T-204 | A-308 |
 | T-309 | `daily-brief.xml` RSS generator + validator | rss-publisher | M | T-214,T-308 | A-309 |
 | T-310 | Email issue — **Beehiiv newsletter send** (canonical per ADR-0007 cycle-3); subscriber list canonical on Beehiiv. Transactional traffic (signup confirm, unsubscribe receipt, audio-revocation notice) routes via T-310A Resend. See cycle-2 scope-lock at top of this doc for T-310A..T-310D split. | web-engineer | M | T-111,T-116,T-303 | A-310 |
+| T-310A | **Resend transactional flow** — signup confirmation · unsubscribe receipt · audio-revocation notice · password reset; DKIM + SPF + DMARC on `brief@romasbrief.com` | web-engineer | M | T-310 | A-310A |
+| T-310B | (reserved — pre-launch Beehiiv→Supabase one-shot subscriber migration if pre-existing list exists; default = empty; no work unless Kimal provisions pre-launch list) | web-engineer | S | T-310 | A-310B |
+| T-310C | **Beehiiv webhook handler** — `workers/beehiiv-webhook/src/index.ts` verifies `BEEHIIV_WEBHOOK_SECRET` HMAC-SHA256 signature; syncs `subscribers` row state transitions (confirmed/unsubscribed/bounced/complained) with timestamp columns; idempotent on Beehiiv event ID | cms-engineer | M | T-310 | A-310C |
+| T-310D | **Daily Beehiiv↔Supabase reconciliation job** — `workers/beehiiv-reconcile/src/index.ts` runs 03:00 UTC daily; fetches Beehiiv subscriber count + Supabase active count; alerts (Slack + email) at drift > 5 rows OR > 0.5% delta; logs to `subscriber_health` table | cms-engineer | M | T-310C | A-310D |
 | T-311 | Subscriber count display logic — qualitative copy < 2,500, numeric ≥ 2,500 (per Master Strategy §8) | web-engineer | S | T-302 | A-311 |
 | T-312 | Sponsor block component — 32px firewall enforced via design lint | design-system-keeper | S | T-302 | A-312 |
 | T-313 | `podcast.xml` **full Tier-3 RSS** (Day 1 launch — cycle-3 Q2/Q2-A lock supersedes the pre-cycle-3 "Day 14 minimal shell" hypothesis). Episode 001 (30–60 min, 4,500–9,000 spoken words) ships live by Day 1 00:00 UTC per new T-225..T-230 in M2. iTunes namespace validates. | rss-publisher | M | T-214,T-230 | A-313 |

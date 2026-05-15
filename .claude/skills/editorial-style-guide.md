@@ -115,4 +115,23 @@ Forbidden until Day 90 re-evaluation:
 
 ---
 
+## Footer attribution rule for LLM-translated articles (cycle-6 Q11 lock — ADR-0013)
+
+Every article whose `articles.source_language != 'en'` MUST carry a non-removable footer line, rendered by the reader template **after the byline / source-attribution block and before the audio player**, in the form:
+
+```
+Source originally in {Portuguese|Spanish|{other}}; translated with editorial review.
+```
+
+Rules:
+- The string is **mandatory and non-removable**. Editor cannot delete it; the reader component reads `articles.source_language` and `articles.translation_provider` and renders the footer when `source_language != 'en'`.
+- Languages currently in scope: Portuguese (`pt`), Spanish (`es`). Other languages added as launch expands; the schema CHECK constraint enumerates the allowed values per `Docs/specs/contracts/supabase-schema.sql`.
+- Translation provider name is NOT exposed to readers in the v1 footer copy — the phrase "translated with editorial review" covers the workflow without surfacing vendor names. Provider name lives in `articles.translation_provider` for internal audit only.
+- **Verbatim quote handling**: when an article quotes the original-language source verbatim, the English translation appears in the article body and the original-language text appears in italic parentheses immediately after the English: `"The 30-day adverse event rate was 4.2%"` *(Spanish: "La tasa de eventos adversos a 30 días fue del 4,2%")*.
+- The footer rule applies to **every reader surface**: web article, RSS body, email body, and audio script (the script reads "Source originally in Spanish, translated with editorial review" as the closing line of the source-attribution beat 10).
+
+This rule operationalizes Rule 1 (primary source URL) under LLM-translate: `primary_source_url` cites the original-language record; the body is in English; the footer makes the translation workflow transparent to the reader.
+
+---
+
 *Load this skill before any editorial work. Update only when Kimal locks a new style decision in `AGENT.md` §13.*

@@ -211,6 +211,15 @@ Append every locked decision here. Do not edit prior entries.
 | 2026-05-11 | 4-tier audio architecture locked | Kimal | Audio Architecture v1.0 |
 | 2026-05-11 | Audio QA gate is non-negotiable | Kimal | Audio Architecture v1.0 |
 | 2026-05-12 | ROMAS Brief agent kit (CLAUDE.md + AGENT.md + skills + agents) created | Kimal + Computer | This file |
+| 2026-05-14 | Cycle-3 Q2: All 4 audio tiers launch Day 1 (supersedes "Day 14 podcast" from 2026-05-11) | Kimal verbal | SSOT §3 row 14 |
+| 2026-05-14 | Cycle-3 Q2-A: Day 1 ships full Audio Podcast episode 001 (30–60 min) | Kimal verbal | SSOT §3 row 14 |
+| 2026-05-14 | Cycle-3 Q3: Email split — Beehiiv (newsletter, canonical subscriber list) + Resend (transactional only) | Kimal verbal | ADR-0007 cycle-3; SSOT §3 row 15 |
+| 2026-05-14 | Cycle-3 Tier 5 Video Podcast at Day 60 with invited guest (ADR-0012 placeholder) | Kimal verbal | ADR-0005 cycle-3; ADR-0012 |
+| 2026-05-14 | Cycle-5 Q8: Three-edition publish (APAC 22:00 UTC · EU 06:00 UTC · Americas 11:00 UTC) | Kimal verbal | SSOT §3 row 16 |
+| 2026-05-14 | Cycle-5 Q9: China posture = read-only NMPA + CSCO-RO ingest; no Chinese subscribers (PIPL) | Kimal verbal | SSOT §3 row 17 |
+| 2026-05-14 | Cycle-5 Q10: Region rebalance — NA 26% / EU 32% / APAC 26% / LATAM 8% / MENA-Africa 4% / Global 4% | Kimal verbal | SSOT §3 + worldwide positioning rebalance |
+| 2026-05-14 | Cycle-6 Q11: LATAM editorial via DeepL Pro + Claude verification on Hero/Strong bands | Kimal verbal | ADR-0013; SSOT §3 row 18 |
+| 2026-05-14 | M0c2 Q12/Q13/Q14: Repository separation — standalone repo at `D:\dev\projects\romas-brief\`, GitHub `AllienNova/romas-brief` (private), `packages/llm-orchestrator/` authored in this repo (no cross-monorepo import) | Kimal verbal `yes all` | ADR-0014; SSOT §3 row 19 |
 
 ---
 
@@ -239,7 +248,7 @@ A daily issue is "done" when:
 4. Source-health report attached.
 5. For each top item: audio status is `published` (after QA) or explicitly `skipped`.
 6. RSS feeds regenerated and validated.
-7. Email issue queued in Resend / Postmark.
+7. Email issue queued in **Beehiiv** for newsletter delivery (per ADR-0007 cycle-3); transactional mail via Resend. Three-edition fan-out (APAC 22:00 UTC · EU 06:00 UTC · Americas 11:00 UTC) per cycle-5 Q8.
 8. Web issue page renders with AudioPlayer in correct state per article.
 9. Friday issue ships the ROMAS Read with sub-rubric.
 10. Sign-off: `— Kimal`.

@@ -144,6 +144,12 @@ CI green. `pnpm install && pnpm turbo build && pnpm turbo test && pnpm turbo lin
 | T-220 | Loudness retry cap | `workers/audio-loudness/src/retry.ts` (max 2, then skip) | audio-producer | S | T-204 | A-220 |
 | T-221 | Transcript generator | `workers/audio-transcript/src/index.ts` | audio-producer | M | T-205 | A-221 |
 | T-222 | M2 dry run | `docs/sign-offs/m2-dryrun.md` (5 sample articles from Launch Plan §6) | editorial-director | S | T-201..T-221 | A-222 |
+| T-225 | Audio Podcast episode 001 — long-form script (4,500–9,000 spoken words; 30–60 min) | `editorial/podcast/episode-001/script.md` + draft state in `articles` | editorial-director + audio-producer | L | T-205 | A-225 |
+| T-226 | Episode 001 script lock + 3-reviewer sign-off | `editorial/podcast/episode-001/script-locked.md` + `claims` table populated + `qa_reviewer` recorded | editorial-director | M | T-225 | A-226 |
+| T-227 | Episode 001 TTS — ElevenLabs primary + PlayHT failover tested | `audio_jobs` row, `processing` state; lexicon applied | audio-producer | M | T-202,T-203,T-226 | A-227 |
+| T-228 | Episode 001 master + transcript + chapter markers | `r2:romas-audio-archive/podcast-ep001-master.wav` + `r2:romas-audio-cdn/podcast-ep001.mp3` + transcript JSON | audio-producer | M | T-204,T-221,T-227 | A-228 |
+| T-229 | Episode 001 audio-QA approve | `audio_jobs.audio_status = 'published'` via 5-condition CHECK | audio-qa-reviewer | S | T-209,T-228 | A-229 |
+| T-230 | `podcast.xml` validates with iTunes namespace + episode 001 enclosure | `workers/rss-podcast/src/index.ts` validated against Apple Podcasts; first-fetch before Day 1 00:00 UTC | rss-publisher | M | T-214,T-229,T-313 | A-230 |
 
 ### C.2 Required flip conditions (schema-enforced via T-209)
 
@@ -183,6 +189,10 @@ CI green. `pnpm install && pnpm turbo build && pnpm turbo test && pnpm turbo lin
 | T-308 | Daily Brief Worker | `workers/audio-daily-brief/src/index.ts` (10–15 min roundup) | audio-producer | M | T-202,T-204 | A-308 |
 | T-309 | `daily-brief.xml` RSS | `workers/rss-daily-brief/src/index.ts` | rss-publisher | M | T-214,T-308 | A-309 |
 | T-310 | Email issue — Beehiiv newsletter (canonical per ADR-0007 cycle-3) | `workers/email-issue/src/index.ts` (Beehiiv API); transactional via T-310A `workers/email-transactional/` (Resend); webhook via T-310C `workers/beehiiv-webhook/`; reconciliation via T-310D | web-engineer | M | T-111,T-116,T-303 | A-310 |
+| T-310A | Resend transactional flow | `workers/email-transactional/src/index.ts` — signup confirm + unsubscribe receipt + audio-revocation notice + password reset; DKIM/SPF/DMARC on brief@romasbrief.com | web-engineer | M | T-310 | A-310A |
+| T-310B | (reserved — pre-launch Beehiiv→Supabase migration; no work unless Kimal provisions pre-existing list) | — | web-engineer | S | T-310 | A-310B |
+| T-310C | Beehiiv webhook handler | `workers/beehiiv-webhook/src/index.ts` — HMAC-SHA256 verify with BEEHIIV_WEBHOOK_SECRET; sync subscriber state transitions; idempotent on Beehiiv event ID | cms-engineer | M | T-310 | A-310C |
+| T-310D | Daily Beehiiv↔Supabase reconciliation | `workers/beehiiv-reconcile/src/index.ts` — 03:00 UTC daily; Slack + email alert at drift > 5 rows or > 0.5% delta; logs to subscriber_health table | cms-engineer | M | T-310C | A-310D |
 | T-311 | Subscriber count display | `apps/web/src/components/SubscriberCount.tsx` | web-engineer | S | T-302 | A-311 |
 | T-312 | Sponsor block | `packages/ui/src/SponsorBlock.tsx` (32px firewall) | design-system-keeper | S | T-302 | A-312 |
 | T-313 | `podcast.xml` **full Tier-3** (Day 1 per cycle-3 Q2/Q2-A; iTunes namespace; episode 001 live by Day 1 00:00 UTC) | `workers/rss-podcast/src/index.ts` | rss-publisher | M | T-214,T-230 | A-313 |
