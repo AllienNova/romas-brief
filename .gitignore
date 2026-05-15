@@ -4,9 +4,14 @@ node_modules/
 .yarn/
 .yarn-integrity
 
-# Build artifacts
+# Build artifacts (root-anchored to avoid swallowing docs/build/)
 dist/
-build/
+/build/
+apps/*/build/
+apps/*/dist/
+workers/*/dist/
+packages/*/dist/
+!docs/build/
 .next/
 .nuxt/
 out/
