@@ -138,11 +138,11 @@ Recommended sequencing: dispatch `/team-design` at the same time as `/team-build
 | T-307 | Search — Postgres full-text + pgvector embeddings | cms-engineer | L | T-103 | A-307 |
 | T-308 | Daily Brief Worker — 10–15 min daily roundup TTS job (uses M2 pipeline) | audio-producer | M | T-202,T-204 | A-308 |
 | T-309 | `daily-brief.xml` RSS generator + validator | rss-publisher | M | T-214,T-308 | A-309 |
-| T-310 | Email issue template + Resend send job (subscriber cutover) | web-engineer | M | T-111,T-116,T-303 | A-310 |
+| T-310 | Email issue — **Beehiiv newsletter send** (canonical per ADR-0007 cycle-3); subscriber list canonical on Beehiiv. Transactional traffic (signup confirm, unsubscribe receipt, audio-revocation notice) routes via T-310A Resend. See cycle-2 scope-lock at top of this doc for T-310A..T-310D split. | web-engineer | M | T-111,T-116,T-303 | A-310 |
 | T-311 | Subscriber count display logic — qualitative copy < 2,500, numeric ≥ 2,500 (per Master Strategy §8) | web-engineer | S | T-302 | A-311 |
 | T-312 | Sponsor block component — 32px firewall enforced via design lint | design-system-keeper | S | T-302 | A-312 |
-| T-313 | `podcast.xml` minimal RSS feed (Day 14 launch hypothesis — awaiting Kimal); even if Tier 3 is Day 30, feed-shell exists at Day 14 | rss-publisher | M | T-214 | A-313 |
-| T-314 | Day-14 launch checklist — full pass of Launch Plan §8 | editorial-director | S | T-301..T-313 | A-314 |
+| T-313 | `podcast.xml` **full Tier-3 RSS** (Day 1 launch — cycle-3 Q2/Q2-A lock supersedes the pre-cycle-3 "Day 14 minimal shell" hypothesis). Episode 001 (30–60 min, 4,500–9,000 spoken words) ships live by Day 1 00:00 UTC per new T-225..T-230 in M2. iTunes namespace validates. | rss-publisher | M | T-214,T-230 | A-313 |
+| T-314 | **Day-1 launch checklist** — full pass of LAUNCH_ARC_PLAN.md §5 18-item readiness gate. (Was "Day-14 launch checklist" pre-cycle-3; superseded by Q2/Q2-A all-tier Day-1 lock.) | editorial-director | S | T-301..T-313 | A-314 |
 | T-315 | Accessibility (WCAG 2.2 AA) audit pass on reader surface | design-system-keeper | M | T-301..T-306 | A-315 |
 | T-316 | Performance budget — LCP < 2.5s, INP < 200ms, CLS < 0.1 on article page | web-engineer | M | T-301..T-306 | A-316 |
 | T-317 | Plausible analytics events — issue open, audio play, audio complete, subscribe | web-engineer | S | T-119 | A-317 |
@@ -168,7 +168,7 @@ Recommended sequencing: dispatch `/team-design` at the same time as `/team-build
 |---|---|---|---|---|---|
 | T-501 | Long-form podcast script generator (30–60 min, 4–8k spoken words) | audio-producer | L | T-205 | A-501 |
 | T-502 | Chapter markers + show notes generator | audio-producer | M | T-501 | A-502 |
-| T-503 | `podcast.xml` full Tier 3 RSS (not the Day-14 minimal shell) | rss-publisher | M | T-313,T-501 | A-503 |
+| T-503 | **DISSOLVED** — folded into T-313 (full `podcast.xml` Tier-3 RSS now lives at M3, ships Day 1 per cycle-3 Q2/Q2-A). M5 weekly-podcast tier launch dissolved per cycle-3 scope expansion (see MASTER_IMPLEMENTATION_PLAN.md row "All 4 audio tiers launch Day 1"). | rss-publisher | (closed) | T-313,T-501 | (deprecated) |
 | T-504 | Apple Podcasts + Spotify directory submission | audio-producer | S | T-503 | A-504 |
 | T-505 | Post-roll injection — "Not headlines. Clinical intelligence." | audio-producer | S | T-501 | A-505 |
 | T-506 | First weekly podcast ships (Day 30 hypothesis — awaiting Kimal) | audio-producer | S | T-501..T-505 | A-506 |
@@ -265,7 +265,7 @@ gantt
 | R-03 | EUDAMED outage (already partial per Launch Plan §7) | H | **M** | EU official fallback chain only: EUDAMED API → NB-OG register → MDCG official PDF. `meddeviceguide.com` and `MDCG.eu` are **banned as primary** per cycle-1 critic F-P1-04 + remediation R-014 (moved to M0). Flag any failure in source_health (Rule 5). | regulatory-analyst |
 | R-04 | openFDA rate limit during morning sweep | M | M | Cached request pool; verify-against-official rule (Rule 4) catches mismatches | regulatory-analyst |
 | R-05 | CDN purge failure on revocation — exceeds 60s SLA | L | H | T-212 watchdog alerts at 45s; double-fanout purge call; manual CDN purge runbook entry | audio-producer |
-| R-06 | Podcast Day 14 vs Day 30 ambiguity — feed-shell vs full tier | M | M | T-313 ships minimal shell at Day 14; T-503 ships full Tier 3 at Day 30 (both hypotheses — awaiting Kimal) | editorial-director |
+| R-06 | **CLOSED 2026-05-14 by cycle-3 Q2/Q2-A** — Podcast Day 14 vs Day 30 ambiguity is resolved: all 4 audio tiers launch Day 1 (including Audio Podcast episode 001 at 30–60 min). T-313 now ships full Tier-3 RSS at Day 1; T-503 dissolved. M5 weekly-podcast launch milestone dissolved into M2. | (closed) | (closed) | (n/a) | (n/a) |
 | R-07 | Fact-checker bandwidth — Kimal solo until Day 30 reviewer 2 lands | H | H | T-218 second-reviewer onboarding playbook; ship article-only without audio when QA backlog >2 issues | editorial-director |
 | R-08 | Embargo leak in Conference Brief mode | L | H | T-605 schema-enforced reject + T-602 release-at check in Worker | regulatory-analyst |
 | R-09 | Supabase region / data sovereignty for EU subscribers under GDPR (no PHI but personal email + listening telemetry) | M | M | Supabase project in EU region from T-103; documented DPA; cookie-less Plausible analytics (T-119) | cms-engineer |

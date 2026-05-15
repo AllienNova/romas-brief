@@ -182,11 +182,11 @@ CI green. `pnpm install && pnpm turbo build && pnpm turbo test && pnpm turbo lin
 | T-307 | Search | `supabase/migrations/0012_pgvector_search.sql` + `apps/web/src/app/search/page.tsx` | cms-engineer | L | T-103 | A-307 |
 | T-308 | Daily Brief Worker | `workers/audio-daily-brief/src/index.ts` (10–15 min roundup) | audio-producer | M | T-202,T-204 | A-308 |
 | T-309 | `daily-brief.xml` RSS | `workers/rss-daily-brief/src/index.ts` | rss-publisher | M | T-214,T-308 | A-309 |
-| T-310 | Email issue | `workers/email-issue/src/index.ts` (Resend) | web-engineer | M | T-111,T-116,T-303 | A-310 |
+| T-310 | Email issue — Beehiiv newsletter (canonical per ADR-0007 cycle-3) | `workers/email-issue/src/index.ts` (Beehiiv API); transactional via T-310A `workers/email-transactional/` (Resend); webhook via T-310C `workers/beehiiv-webhook/`; reconciliation via T-310D | web-engineer | M | T-111,T-116,T-303 | A-310 |
 | T-311 | Subscriber count display | `apps/web/src/components/SubscriberCount.tsx` | web-engineer | S | T-302 | A-311 |
 | T-312 | Sponsor block | `packages/ui/src/SponsorBlock.tsx` (32px firewall) | design-system-keeper | S | T-302 | A-312 |
-| T-313 | `podcast.xml` minimal | `workers/rss-podcast/src/index.ts` (Day 14 shell) | rss-publisher | M | T-214 | A-313 |
-| T-314 | Day-14 launch checklist | `docs/sign-offs/m3-launch-checklist.md` | editorial-director | S | T-301..T-313 | A-314 |
+| T-313 | `podcast.xml` **full Tier-3** (Day 1 per cycle-3 Q2/Q2-A; iTunes namespace; episode 001 live by Day 1 00:00 UTC) | `workers/rss-podcast/src/index.ts` | rss-publisher | M | T-214,T-230 | A-313 |
+| T-314 | **Day-1 launch checklist** (was Day-14; superseded cycle-3) | `docs/sign-offs/day1-launch-checklist.md` mirrors LAUNCH_ARC_PLAN.md §5 18-item gate | editorial-director | S | T-301..T-313 | A-314 |
 | T-315 | WCAG 2.2 AA pass | `docs/accessibility/m3-audit.md` | design-system-keeper | M | T-301..T-306 | A-315 |
 | T-316 | Web perf budget | LCP < 2.5s, INP < 200ms, CLS < 0.1 (Lighthouse CI) | web-engineer | M | T-301..T-306 | A-316 |
 | T-317 | Plausible events | `packages/ui/src/analytics.ts` | web-engineer | S | T-119 | A-317 |
@@ -232,7 +232,7 @@ Friday issue ships with one of the four sub-rubrics (Week in Receipts / Five Thi
 |---|---|---|---|---|---|---|
 | T-501 | Long-form script generator | `packages/audio-pipeline/src/podcast-script.ts` (30–60 min, 4k–8k words) | audio-producer | L | T-205 | A-501 |
 | T-502 | Chapter markers + show notes | `workers/podcast-chapters/src/index.ts` | audio-producer | M | T-501 | A-502 |
-| T-503 | Full `podcast.xml` Tier 3 | `workers/rss-podcast/src/full.ts` | rss-publisher | M | T-313,T-501 | A-503 |
+| T-503 | **DISSOLVED** — full Tier-3 RSS now ships at T-313 on Day 1 per cycle-3 Q2/Q2-A. M5 weekly-podcast launch milestone dissolved into M2 (see cycle-2 scope-lock row at top of this doc). | (closed) | rss-publisher | (closed) | T-313,T-501 | (deprecated) |
 | T-504 | Apple + Spotify submission | `docs/operations/podcast-directory-submission.md` | audio-producer | S | T-503 | A-504 |
 | T-505 | Post-roll injection | `packages/audio-pipeline/src/postroll.ts` | audio-producer | S | T-501 | A-505 |
 | T-506 | First episode ships | n/a — content artifact | audio-producer | S | T-501..T-505 | A-506 |
