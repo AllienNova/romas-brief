@@ -55,7 +55,7 @@ Set `clinical_claims_checked = true` only when all A-rows pass.
 
 | # | Check | Pass criterion |
 |---|---|---|
-| C1 | Integrated loudness | -17 to -15 LUFS (target -16) |
+| C1 | Integrated loudness | Pass: -18 to -14 LUFS (ADR-0016 DB gate). Tight production target: -16 ±1 LUFS = [-17, -15]. Outside the tight target but inside the DB gate → amber soft-warning, reviewer may still approve. Outside the DB gate → hard reject. |
 | C2 | True peak | ≤ -1 dBTP |
 | C3 | No audible glitches | No clicks, dropouts, robotic artifacts in spot-check |
 | C4 | No abrupt cuts | Clean fade in / fade out |

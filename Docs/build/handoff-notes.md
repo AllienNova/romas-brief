@@ -124,3 +124,127 @@ After this commit lands and the remaining M0c2 P1 items close (Sun 2026-05-17 EO
 - **Mon 2026-06-30** — `/team-qa cycle-3` for full readiness audit (per LAUNCH_ARC_PLAN.md §2 trigger 6)
 
 In parallel from W-7 start (2026-05-19): editorial pre-launch ramp Mon-Fri at 06:30–07:00 ET, target 500 articles cumulative by Sun 2026-07-06.
+
+---
+
+# Handoff — cycle build-2026-05-21 (review-remediation) → `/team-qa`
+
+## What this cycle did
+
+Remediated the 17 items surfaced by `/team-review` against the T-101 monorepo scaffold + migrations 0001-0005 (3 reviewers, 4 HIGH / 11 MEDIUM / 12 LOW / 0 CRITICAL). Kimal authorized adopt-all-13 at the plan-approval gate (2026-05-21), including the loudness band widen that overrides cycle-1 F-P1-01's inviolable-rule-6 lock — documented in ADR-0016.
+
+`team-build-critic` returned **APPROVE WITH CONDITIONS → APPROVE** on cycle 1 (no iteration). All P0 + P1 + P2 critic findings closed in the same cycle.
+
+## What changed — by surface
+
+### Canonical schema contract
+`Docs/specs/contracts/supabase-schema.sql` — 10 amendments per Bucket A: loudness widen, embargo release-pair CHECK, URL scheme CHECKs on 4 columns, body_md + script_md length caps, word_count trim() fix, audio_jobs unique index, articles.publish_at partial index, sources index reshape, articles author-on-publish CHECK, qa_reviewers email-lower CHECK, audio_jobs.tier → audio_tier rename (ADR-0017), claims.confidence type clarity.
+
+### Migrations 0001-0005
+Each migration amended in lockstep with the contract. Migrations are pre-push (untracked), so in-place amendment is correct.
+
+### New ADRs
+- **ADR-0015** — Next 14 GHSA-h25m-26qc-wcjf accepted CVE with named controls (RSC input validation, body cap, edge rate-limit, quarterly review).
+- **ADR-0016** — Loudness band widen from [-17,-15] to [-18,-14] LUFS at the DB layer; -16 ±1 LUFS production target moved to audio-qa-reviewer agent + audio-production-pipeline R-202.
+- **ADR-0017** — `audio_jobs.tier` → `audio_jobs.audio_tier` rename to disambiguate from `articles.tier` (editorial-edition enum).
+
+### Forward-looking corpus propagation (23 files)
+SSOT, Master-Strategy, Daily-Production-Runbook, MASTER_IMPLEMENTATION_PLAN, product-spec, delivery-plan, test-qa-plan, remediation-plan, smoke-test-report, ADR-0005, ADR-0006, requirements-trace, performance-report, LAUNCH_ARC_PLAN, design wireframes + user-flows, AGENT.md, the 3 audio-related skills (cms-schema, audio-production-pipeline, audio-qa-checklist), the 3 audio-related agents (audio-producer, audio-qa-reviewer, cms-engineer). Every forward-looking mention of `[-17,-15]` is now labelled as the production-target window with the `[-18,-14]` DB gate also named.
+
+### Scaffold + config (Bucket C, 13 items)
+- `.npmrc save-prefix=^` → `save-exact=true`.
+- Root `package.json` `pnpm.overrides`: `undici >=6.24.0` + `glob >=10.5.0` (verified: undici 5.29.0 → 8.3.0; glob 10.3.10 → 13.0.6).
+- `turbo.json`: `lint dependsOn ["^lint"]` removed; `test dependsOn ["^build"]` → `["^typecheck"]`.
+- `apps/{web,cms}/package.json`: `next` + `eslint-config-next` pinned exact `14.2.18`; `@romas-brief/ui` declared in devDeps.
+- `apps/{web,cms}/tailwind.config.ts`: spread shared `baseTailwindConfig` from new `packages/config/src/tailwind.ts` (and `packages/config` package.json adds `tailwindcss@3.4.15` devDep + `./tailwind` export, drops the broken `./tsconfig-base.json` re-export).
+- `workers/cron-ingest/tsconfig.json`: `verbatimModuleSyntax: false` override removed (proven safe by typecheck PASS).
+- `workers/cron-ingest/wrangler.toml`: SUPABASE_URL comment hardened to explicitly negative ("NEVER put service-role key in [vars]").
+- `workers/cron-ingest/src/index.ts:23-26`: T-115 auth-gate TODO added on stub `fetch` handler.
+- `supabase/seed.sql:3-4`: header doc-drift `0001..0011` → `0001..0010 (M1 target; 0001..0005 today)`.
+
+## Self-verification evidence
+
+```
+pnpm install                                         → PASS (6 workspaces; +6/-2 packages on overrides apply)
+pnpm turbo run typecheck                             → 5/5 PASS (web, cms, config, ui, cron-ingest)
+pnpm turbo run build --filter=@romas-brief/cron-ingest → PASS (21.68 KiB / 5.15 KiB gzip)
+pnpm why undici                                      → undici 8.3.0 (was 5.29.0)
+pnpm why glob                                        → glob 13.0.6 (was 10.3.10)
+```
+
+Local Windows app builds (`pnpm turbo run build` for the apps) deliberately NOT run — known Next 14 + Node 24 + Windows prerender bug per SCAFFOLD-NOTES.md L51-57. Will pass on CI (Node 20 Linux). T-117 owns CI wiring.
+
+## Focus areas for `/team-qa`
+
+1. **pgTAP coverage of the new CHECK constraints.** The remediation-plan R-105 entry was extended to enumerate 8 new pgTAP targets:
+   - `articles_primary_source_required` scheme regex (ADR-0016 + A3)
+   - `articles_published_requires_author` (A9)
+   - `embargo_release_pair` (A2)
+   - `audio_jobs_article_tier_uniq` (A6)
+   - `qa_reviewers.email` lowercase (A10)
+   - `articles.body_md` length cap (A4)
+   - `audio_jobs.script_md` length cap (A4)
+   - `claims.source_url` scheme regex (A3)
+   - `sources.feed_url` + `sources.api_endpoint` scheme regex (A3)
+   - Carry from cycle-1 P2-05: archetype/tier/status enums, claims.confidence range, qa_reviewers.role, audio_jobs.audio_tier, title length
+
+   pgTAP test scaffolding does not yet exist — R-105 owner (cms-engineer) lands it in M1.
+
+2. **Audio QA layered-defense validation.** ADR-0016 introduces a 3-layer model:
+   - **DB layer**: `[-18, -14]` LUFS (hard reject)
+   - **Pipeline layer** (audio-production-pipeline R-202): target `-16 ±0.5`, tolerate `±1`, re-master once if outside `[-17, -15]`, skip if outside `[-18, -14]` after re-master
+   - **Reviewer layer** (audio-qa-reviewer agent): green tick if inside `[-17, -15]`, amber soft-warning if inside `[-18, -14]` but outside `[-17, -15]`, cannot approve outside DB gate
+
+   `/team-qa` should test all three layers with fixture audio (in-target, soft-warn-band, out-of-band, broken master).
+
+3. **CVE acceptance audit** (ADR-0015). The Next 14 RSC DoS surface is mitigated by named controls; verify each control is actually in place when M3 lands:
+   - Zod (or equivalent) validation at every RSC server-component boundary that ingests user input
+   - Body-size cap in `next.config.mjs` or Pages settings
+   - Cloudflare WAF rate-limit rule on `/api/*` (T-117 owns CI/CD deploy)
+
+4. **Bucket C verification on CI**. The .npmrc + pnpm.overrides + tsconfig + turbo.json changes have only been verified on local Windows (Node 24). CI baseline is Linux + Node 20 (per `.nvmrc`). Confirm:
+   - `pnpm install` reproduces the lockfile-resolved `undici@8.3.0` + `glob@13.0.6` on CI.
+   - `pnpm turbo run build` for both apps passes on CI (the known Windows-only prerender bug doesn't reproduce).
+   - `pnpm turbo run lint` after T-117 ESLint preset doesn't regress against the new turbo.json shape.
+
+5. **Audio-jobs column rename ripple**. ADR-0017 renamed `tier` → `audio_tier`. /team-qa should confirm no code referencing the old name lands in worker implementations (cron-ingest, rss-publisher, audio-producer). The DB constraint enforces the new name; any worker that constructs `INSERT … (tier, …)` will fail loudly.
+
+## Known gaps deferred to future cycles
+
+| Gap | Owner | Milestone |
+|---|---|---|
+| pgTAP test suite for new CHECK constraints + R-105 carry items | cms-engineer (R-105) | M1 |
+| CI pre-push guard requiring `0011_rls_policies.sql` before `supabase db push --linked` | DevOps (T-117 / R-106) | M1 |
+| `Docs/ROMAS-Brief-Audio-Architecture.md v1.0` formalizing ADR-0016 numerics at top-level | audio-producer + Kimal (R-006-A) | M1 |
+| Cloudflare WAF rate-limit rule for ADR-0015 mitigation | DevOps | M2 |
+| Quarterly Next 14 CVE re-check (per ADR-0015 closing conditions) | release-manager | Q3 2026 onward |
+| `seed.sql` PII env-templating | Kimal | Optional at Day 90 review |
+
+## Files in this diff
+
+26 files changed (`git diff main --stat`):
+- 3 new ADRs (`Docs/specs/adr/0015-`, `0016-`, `0017-`)
+- 1 new package source (`packages/config/src/tailwind.ts`)
+- 5 migrations amended (`supabase/migrations/0001..0005`)
+- 1 canonical contract amended (`Docs/specs/contracts/supabase-schema.sql`)
+- 6 root config files (`package.json`, `.npmrc`, `turbo.json`, `apps/{web,cms}/package.json`, `packages/config/package.json`)
+- 2 worker config files (`workers/cron-ingest/tsconfig.json`, `wrangler.toml`)
+- 1 worker source (`workers/cron-ingest/src/index.ts`)
+- 1 seed (`supabase/seed.sql`)
+- 2 app Tailwind configs (`apps/{web,cms}/tailwind.config.ts`)
+- 1 packages/config source (`src/index.ts` re-export)
+- 2 build artifacts (`build-log.md` + `decision-log.md` extended)
+- 1 this file (`handoff-notes.md`)
+
+Plus the 23 forward-looking spec/skill/agent files updated for loudness widen + tier rename propagation.
+
+## Suggested next invocation
+
+```
+/team-qa
+```
+
+The /team-qa skill should focus on the five Focus Areas above. The build is shippable in the engineering sense; /team-qa validates the QA + release-readiness dimensions (security, reliability, traceability, requirements coverage, UX/a11y).
+
+Branch / commit: still on `main`, uncommitted. The user explicitly chose "stay on main; commits land in the user's normal flow" rather than worktree isolation.
+

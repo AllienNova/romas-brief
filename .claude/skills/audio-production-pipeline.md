@@ -68,7 +68,8 @@ published → revoked   (post-publish kill switch only)
 **Publish requires** (schema-enforced):
 - `clinical_claims_checked = true`
 - `qa_reviewer IS NOT NULL`
-- `loudness_lufs BETWEEN -17 AND -15`
+- `loudness_lufs BETWEEN -18 AND -14` (ADR-0016 DB gate). Pipeline targets `-16 ±0.5 LUFS` on first pass; tolerates `±1 LUFS` (`[-17, -15]`) without re-master; re-masters once if outside `[-17, -15]`; marks `skipped` if outside `[-18, -14]` after re-master. The tight `±0.5` target is the pipeline's job; reviewer sees only the post-retry result.
+- `true_peak_dbtp <= -1`
 - `transcript_url IS NOT NULL`
 
 ## Loudness verification
@@ -85,7 +86,7 @@ measured_I=...:measured_LRA=...:measured_TP=...:measured_thresh=...:offset=... \
 -ar 48000 -y mastered.wav
 ```
 
-Reject if final `integrated_loudness` is outside **-17 to -15 LUFS** or `true_peak > -1 dBTP`.
+**Production target window**: re-master if final `integrated_loudness` is outside **-17 to -15 LUFS** (the -16 ±1 production target) or `true_peak > -1 dBTP`. After one re-master, accept any value inside the DB gate **-18 to -14 LUFS** (ADR-0016) — values inside the DB gate but outside the production target surface as an amber soft-warning in the audio-qa-reviewer agent. Outside the DB gate after re-master: mark job `skipped` with reason `loudness_out_of_band`.
 
 ## TTS failover logic
 

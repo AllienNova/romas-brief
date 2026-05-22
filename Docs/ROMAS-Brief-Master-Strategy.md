@@ -211,7 +211,7 @@ Composite Signal Score (weighted): **Clinical 0.30 + AI 0.25 + Physics 0.15 + Op
 3. **ROMAS Insight / ROMAS Take is always labeled as interpretation**, never as fact.
 4. **Verify openFDA discoveries against the official FDA 510(k) / De Novo / PMA record before drafting.** openFDA is discovery only. EU regulatory chain per `contracts/ema.yaml`: EUDAMED → NB-OG → MDCG official PDF; `meddeviceguide.com` + `MDCG.eu` are BANNED as primary per SSOT §6.
 5. **If a source fails to fetch, surface it in source health.** Do not silently drop.
-6. **No audio goes live without editorial QA pass.** Requires `clinical_claims_checked = true` AND `qa_reviewer` set AND `loudness_lufs BETWEEN -17 AND -15` AND `true_peak_dbtp <= -1` AND `transcript_url IS NOT NULL` — all 5 conditions schema-enforced via the `audio_publish_requires_qa` CHECK in `contracts/supabase-schema.sql`.
+6. **No audio goes live without editorial QA pass.** Requires `clinical_claims_checked = true` AND `qa_reviewer` set AND `loudness_lufs BETWEEN -18 AND -14` (ADR-0016 widen; -16 ±1 LUFS production target enforced by audio-qa-reviewer agent) AND `true_peak_dbtp <= -1` AND `transcript_url IS NOT NULL` — all 5 conditions schema-enforced via the `audio_publish_requires_qa` CHECK in `contracts/supabase-schema.sql`.
 
 ### 6.2 Three-state approval
 

@@ -8,7 +8,7 @@
 -- =====================================================================
 create table qa_reviewers (
   id              uuid primary key default gen_random_uuid(),
-  email           text unique not null,
+  email           text unique not null check (email = lower(email)),  -- A10: case-insensitive uniqueness; app layer must lowercase before insert
   name            text not null,
   role            text not null check (role in ('editor_in_chief', 'audio_qa', 'fact_checker', 'physics_reviewer')),
   active          boolean default true,
@@ -45,8 +45,8 @@ create table articles (
   translation_verified  boolean default false,
   title                 text not null check (length(title) <= 90),
   standfirst            text not null,
-  body_md               text not null,
-  word_count            int generated always as (array_length(regexp_split_to_array(body_md, '\s+'), 1)) stored,
+  body_md               text not null check (length(body_md) <= 200000),  -- A4: 200 KB cap (~32k words; well above the 3,500-word deep-report archetype)
+  word_count            int generated always as (array_length(regexp_split_to_array(trim(body_md), '\s+'), 1)) stored,  -- A5: trim() avoids leading-whitespace overcount
   romas_insight         text,
   romas_insight_labeled boolean default false,
   status                text not null default 'draft'
@@ -71,9 +71,11 @@ create table articles (
   updated_at            timestamptz default now()
 );
 
--- Inviolable rule 1: primary source mandatory
+-- Inviolable rule 1: primary source mandatory (length + scheme)
+-- A3: ~* '^https?://' tightens the rule-1 gate at the DB layer; single-space
+-- and `javascript:` payloads no longer satisfy the constraint.
 alter table articles add constraint articles_primary_source_required
-  check (length(primary_source_url) > 0);
+  check (length(primary_source_url) > 0 and primary_source_url ~* '^https?://');
 
 -- Inviolable rule 2: embargo consistency
 alter table articles add constraint articles_embargo_consistency
@@ -87,9 +89,16 @@ alter table articles add constraint articles_insight_labeled
 alter table articles add constraint articles_translation_provider_required
   check (source_language = 'en' or translation_provider is not null);
 
+-- A9: a published article must name its author. (status,author_id) coupling
+-- at the DB level prevents accidental anonymous publication.
+alter table articles add constraint articles_published_requires_author
+  check (status <> 'published' or author_id is not null);
+
 create index articles_status_idx on articles(status);
 create index articles_published_at_idx on articles(published_at desc);
 create index articles_tier_published_idx on articles(tier, published_at desc);
+-- A7: SSOT §3 row 8 three-edition publish scheduler hot-path query
+create index articles_publish_at_idx on articles(publish_at) where status = 'ready_to_publish';
 create index articles_modality_gin on articles using gin(modality_tags);
 create index articles_disease_gin on articles using gin(disease_site_tags);
 -- Cycle-4 indexes for 11-category + content-type + homepage-module filtering (SSOT §12.3)
@@ -117,12 +126,12 @@ create table claims (
   id          uuid primary key default gen_random_uuid(),
   article_id  uuid not null references articles(id) on delete cascade,
   claim_text  text not null,
-  source_url  text not null,
+  source_url  text not null check (source_url ~* '^https?://'),  -- A3: scheme guard mirrors inviolable rule 1
   source_id   text,
   source_type text,
   verified_by uuid references qa_reviewers(id),
   verified_at timestamptz,
-  confidence  numeric(3,2) check (confidence between 0 and 1),
+  confidence  numeric(4,3) check (confidence between 0 and 1),  -- A12: numeric(4,3) better expresses a probability (storage 0.000–9.999 still bounded by CHECK)
   created_at  timestamptz default now()
 );
 create index claims_article_idx on claims(article_id);
@@ -133,7 +142,10 @@ create index claims_article_idx on claims(article_id);
 create table audio_jobs (
   id                      uuid primary key default gen_random_uuid(),
   article_id              uuid not null references articles(id) on delete cascade,
-  tier                    text not null check (tier in ('audio_brief','daily_brief','podcast','conference_brief','video_podcast')),  -- M0c2: video_podcast added for Tier 5 (Day 60 launch per ADR-0005 cycle-3 + ADR-0012 placeholder)
+  -- A11: column renamed from `tier` → `audio_tier` to disambiguate from `articles.tier`
+  -- (editorial-edition enum) per ADR-0017. The two columns carry different
+  -- enumerations; the rename makes joins explicit.
+  audio_tier              text not null check (audio_tier in ('audio_brief','daily_brief','podcast','conference_brief','video_podcast')),  -- M0c2: video_podcast added for Tier 5 (Day 60 launch per ADR-0005 cycle-3 + ADR-0012 placeholder); A11 (build-2026-05-21): column renamed tier → audio_tier per ADR-0017
   target_length_sec       int not null,
   voice_engine_used       text check (voice_engine_used in ('elevenlabs','playht')),
   audio_status            text not null default 'queued'
@@ -151,18 +163,25 @@ create table audio_jobs (
   skip_reason             text,
   revoke_reason           text,
   notes                   text,
-  script_md               text,
+  -- A4: 200 KB cap matches articles.body_md; spoken script is typically shorter
+  -- than the source body but the same DoS guard applies to the word_count
+  -- generated-column equivalents that may land via T-202 (lexicon application).
+  script_md               text check (script_md is null or length(script_md) <= 200000),
   cover_url               text,
   error                   text,
   created_at              timestamptz default now(),
   updated_at              timestamptz default now(),
 
-  -- Inviolable rule 6: audio publish requires full QA gate
+  -- Inviolable rule 6: audio publish requires full QA gate.
+  -- ADR-0016 (cycle build-2026-05-21) widens loudness gate from [-17,-15]
+  -- to [-18,-14] LUFS to match the broadcast speech safe band; the -16 LUFS
+  -- production target is enforced in the audio-qa-reviewer agent and the
+  -- audio-production-pipeline two-pass loudnorm step (R-202), not at the DB.
   constraint audio_publish_requires_qa check (
     audio_status <> 'published'
     or (clinical_claims_checked = true
         and qa_reviewer is not null
-        and loudness_lufs between -17 and -15
+        and loudness_lufs between -18 and -14
         and true_peak_dbtp <= -1
         and transcript_url is not null)
   ),
@@ -175,7 +194,10 @@ create table audio_jobs (
 );
 create index audio_jobs_article_idx on audio_jobs(article_id);
 create index audio_jobs_status_idx on audio_jobs(audio_status);
-create index audio_jobs_tier_published on audio_jobs(tier, audio_status) where audio_status = 'published';
+-- A11: index renamed in lockstep with column rename
+create index audio_jobs_tier_published on audio_jobs(audio_tier, audio_status) where audio_status = 'published';
+-- A6: one audio job per (article, audio_tier) — prevents producer-retry races
+create unique index audio_jobs_article_tier_uniq on audio_jobs(article_id, audio_tier);
 
 -- =====================================================================
 -- 0005_init_sources_and_health.sql
@@ -187,14 +209,19 @@ create table sources (
   category        text not null check (category in
                   ('literature','regulatory','society','reimbursement','vendor','conference','preprint')),
   region          text not null,
-  feed_url        text,
-  api_endpoint    text,
+  -- A3: SSRF surface — the cron-ingest worker (T-115) will fetch these URLs.
+  -- Scheme guard at the DB prevents `javascript:` / `file:` / scheme-less payloads.
+  feed_url        text check (feed_url is null or feed_url ~* '^https?://'),
+  api_endpoint    text check (api_endpoint is null or api_endpoint ~* '^https?://'),
   active          boolean default true,
   last_fetched_at timestamptz,
   last_status     int,
   notes           text
 );
-create index sources_active_idx on sources(active);
+-- A8: partial index on (last_fetched_at) restricted to active=true matches the
+-- cron's actual query — "oldest active sources first". A btree on the boolean
+-- `active` column alone is a no-op for the planner (~50% selectivity).
+create index sources_active_last_fetched_idx on sources(last_fetched_at) where active = true;
 
 create table source_health (
   id             uuid primary key default gen_random_uuid(),
@@ -220,7 +247,15 @@ create table embargo_holds (
   notes                  text,
   released_at            timestamptz,
   released_to_article_id uuid references articles(id),
-  created_at             timestamptz default now()
+  created_at             timestamptz default now(),
+  -- A2: release-pair atomicity (cycle build-2026-05-21 convergent finding).
+  -- The release worker writes both columns in one UPDATE; if the worker
+  -- crashes between the two column writes (or any future raw UPDATE sets
+  -- only one), the row would silently corrupt — inviolable rule 2 would
+  -- not detect it. One-line CHECK eliminates the entire class.
+  constraint embargo_release_pair check (
+    (released_at is null) = (released_to_article_id is null)
+  )
 );
 create index embargo_holds_until_idx on embargo_holds(embargo_until) where released_at is null;
 

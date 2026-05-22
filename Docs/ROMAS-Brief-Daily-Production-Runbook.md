@@ -183,7 +183,7 @@ Every top-5 item ships with all ten fields populated:
 3. **ROMAS Insight / ROMAS Take is always labeled as interpretation**, never as fact.
 4. **Verify openFDA discoveries against the official FDA 510(k) / De Novo / PMA record before drafting.** openFDA is discovery only. EU regulatory chain per `contracts/ema.yaml`: EUDAMED → NB-OG → MDCG official PDF; `meddeviceguide.com` + `MDCG.eu` are BANNED as primary per SSOT §6.
 5. **If a source fails to fetch, surface it in source health.** Do not silently drop.
-6. **No audio goes live without editorial QA pass.** Requires all 5 schema-enforced conditions (`clinical_claims_checked` + `qa_reviewer` + `loudness_lufs` in -17..-15 + `true_peak_dbtp <= -1` + `transcript_url`) per `contracts/supabase-schema.sql:audio_publish_requires_qa` CHECK.
+6. **No audio goes live without editorial QA pass.** Requires all 5 schema-enforced conditions (`clinical_claims_checked` + `qa_reviewer` + `loudness_lufs` in -18..-14 (ADR-0016) + `true_peak_dbtp <= -1` + `transcript_url`) per `contracts/supabase-schema.sql:audio_publish_requires_qa` CHECK. The -16 ±1 LUFS production target is enforced by the audio-qa-reviewer agent, not at the DB.
 
 ---
 

@@ -42,7 +42,7 @@ status: SKIPPED — no code to smoke test
 ## What CANNOT be verified pre-code
 
 - TTS failover actually fires on ElevenLabs 5xx
-- Loudness `loudnorm` two-pass produces values in -17 to -15 range
+- Loudness `loudnorm` two-pass produces values in -17 to -15 range (production target window; DB gate per ADR-0016 is -18 to -14)
 - Schema CHECK constraints reject invalid inserts in a live DB
 - RSS feeds pass xmllint with iTunes/podcast namespace
 - Audio QA flip enforces all 4 conditions (only DB will tell us)

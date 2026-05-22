@@ -46,7 +46,7 @@ Run all five sections of the QA checklist:
 
 ### Section C — Audio quality (block on FAIL)
 
-- Integrated loudness -17 to -15 LUFS
+- Integrated loudness -18 to -14 LUFS (DB gate per ADR-0016). Pipeline production target is `-16 ±0.5 LUFS`; pipeline tolerance is `±1 LUFS` (= `[-17, -15]`). Values inside the DB gate but outside the `[-17, -15]` tolerance window surface as an amber soft-warning; reviewer may still approve, but should re-master if a clean re-master is available. Outside the DB gate → cannot approve; DB CHECK will reject.
 - True peak ≤ -1 dBTP
 - No audible artifacts
 - Clean fade in/out

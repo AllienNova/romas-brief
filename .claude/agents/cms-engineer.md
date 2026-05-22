@@ -42,7 +42,7 @@ constraint audio_publish_requires_qa check (
   audio_status <> 'published' or (
     clinical_claims_checked = true
     and qa_reviewer is not null
-    and loudness_lufs between -17 and -15
+    and loudness_lufs between -18 and -14  -- ADR-0016 widen; -17..-15 production target in audio-qa-reviewer agent
     and true_peak_dbtp <= -1
     and transcript_url is not null
   )
@@ -112,7 +112,7 @@ end $$;
 
 ## Performance discipline
 
-- Index every column used in WHERE / ORDER BY of hot queries (status, published_at, tier).
+- Index every column used in WHERE / ORDER BY of hot queries (status, published_at, `articles.tier` (editorial edition), `audio_jobs.audio_tier` (audio product, ADR-0017 rename), `articles.publish_at` partial-index for the 3-edition scheduler).
 - GIN indexes on array columns (modality_tags, disease_site_tags).
 - Materialize aggregate counts (subscriber_count view) — refresh on a schedule, not on read.
 - Use `EXPLAIN ANALYZE` before adding new query patterns to hot paths.

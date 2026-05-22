@@ -188,7 +188,8 @@ published → revoked   (60s CDN withdrawal, post-publish kill switch only)
 - `in_review → published` requires:
   - `clinical_claims_checked = true`
   - `qa_reviewer IS NOT NULL`
-  - `loudness_lufs BETWEEN -17 AND -15`
+  - `loudness_lufs BETWEEN -18 AND -14` (ADR-0016; -16 ±1 LUFS production target enforced by audio-qa-reviewer agent)
+  - `true_peak_dbtp <= -1`
   - `transcript_url IS NOT NULL`
 - `published → revoked` requires:
   - `revoke_reason IS NOT NULL`

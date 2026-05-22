@@ -229,7 +229,7 @@ Kimal logs into /cms (Supabase auth)
      → 5-condition QA checklist below:
         [ ] clinical_claims_checked (true | false toggle, with reviewer notes)
         [ ] qa_reviewer (auto-populated from session; manually settable if delegating)
-        [ ] loudness_lufs (read-only, populated by ffmpeg ebur128 → must be in [-17, -15])
+        [ ] loudness_lufs (read-only, populated by ffmpeg ebur128 → must be in [-18, -14] per ADR-0016 DB gate; amber soft-warn if outside production target [-17, -15])
         [ ] true_peak_dbtp (read-only, must be ≤ -1)
         [ ] transcript_url (auto-populated from Whisper job; must be non-null)
      → Pronunciation issues list (from lexicon validation)
@@ -244,7 +244,7 @@ Kimal logs into /cms (Supabase auth)
 ```
 
 **Edge paths**:
-- **One condition fails** (e.g., loudness measured at -14.5 LUFS): "Approve" button is disabled with inline message "Loudness is out of range (-14.5 LUFS, target [-17, -15]). Re-master required." Link to audio-producer re-master job.
+- **One condition fails** (e.g., loudness measured at -13.5 LUFS, outside the DB gate): "Approve" button is disabled with inline message "Loudness is out of DB gate (-13.5 LUFS, gate [-18, -14] per ADR-0016). Re-master required." Link to audio-producer re-master job. Soft amber warn (Approve still enabled) for LUFS in `[-18, -17] ∪ [-15, -14]` — inside DB gate but outside production target `[-17, -15]`.
 - **Reviewer delegates to second reviewer (Day 30+)**: qa_reviewer field shows current session's user, with "Reassign to…" dropdown of other audio_qa role members.
 - **Audio file fails to load in /cms preview**: Show "Audio file not accessible — check R2 archive. Audio QA cannot proceed until preview loads." with retry button.
 

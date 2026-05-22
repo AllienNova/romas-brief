@@ -1,0 +1,35 @@
+{
+  "name": "@romas-brief/web",
+  "private": true,
+  "version": "0.0.0",
+  "description": "ROMAS Brief — public reader (Next.js 14 on Cloudflare Pages).",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"(M1 stub) tests land in T-117\" && exit 0",
+    "clean": "rimraf .next .turbo"
+  },
+  "dependencies": {
+    "next": "14.2.35",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@romas-brief/config": "workspace:*",
+    "@romas-brief/ui": "workspace:*",
+    "@types/node": "^20.17.10",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.35",
+    "postcss": "^8.4.49",
+    "rimraf": "^6.0.1",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3"
+  }
+}

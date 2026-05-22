@@ -1,0 +1,23 @@
+{
+  "name": "@romas-brief/ui",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Shared UI primitives + design tokens for ROMAS Brief surfaces. T-122 populates audio.css tokens.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens/audio.css": "./src/tokens/audio.css"
+  },
+  "scripts": {
+    "lint": "echo \"(M1 stub) lint lands in T-117\" && exit 0",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"(M1 stub) tests land in T-117\" && exit 0",
+    "clean": "rimraf dist .turbo"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3"
+  }
+}
