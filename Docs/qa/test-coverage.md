@@ -228,3 +228,18 @@ SSOT §10 Q-numbering is canonical. delivery-plan.md Q-numbering drifts (deliver
 **APPROVE WITH CONDITIONS** — the ROMAS Brief plan corpus is architecturally coherent at its core (audio QA state machine, schema-enforced safety gates, six inviolable rules, ADRs 0001–0002 hardened). The critical path to Day 1 is sound. However, 4 P0 breaks must be resolved before any implementation work begins on cycle-5/6 features (worldwide, LATAM translate, three-edition). The 6 P1 gaps are high-urgency documentation debt that will cause agent mis-execution if not closed in M0.
 
 **Summary** (148 words): The plan's core safety architecture — the 5-condition `audio_publish_requires_qa` CHECK, the six inviolable rules enforced at both schema and agent levels, and ADRs 0001–0006 — is sound and consistent across docs. The four P0 breaks are entirely in cycle-5/6 territory: the all-tiers-Day-1 lock has not propagated to ADR-0005, AGENT.md §13, or CLAUDE.md §5; ADR-0013's schema delta is absent from `cms-schema.md` the day it was signed; the `subscribers.region` column needed for three-edition publish has no schema entry; and 15 FRs carry placeholder T-NEW task IDs with no MASTER_IMPLEMENTATION_PLAN entries. The six P1 gaps are documentation lag: architecture.md's decision log is 7 ADRs behind, CLAUDE.md still offers Postmark as an option after ADR-0007 locked Resend, the physics-reviewer agent has no skill, and all 15 integration contracts are unauthored. No code should be written for FR-024 through FR-038 until the P0 gaps are closed.
+
+---
+
+## Cycle-5 coverage state (2026-05-22 against full M1)
+
+| Test class | File count | Assertion count | Status |
+|---|---|---|---|
+| **pgTAP schema tests** | 5 in `supabase/tests/` | 79 assertions | Covers 18 named CHECK targets per R-105 (6 inviolable + 8 build-2026-05-21 Bucket A + cycle-1 P2-05 carry); execution vs live DB deferred to deploy-migrations.yml |
+| **JS unit tests** | 0 | 0 | Vitest deferred to T-117 / R-201 (M2) |
+| **JS integration tests** | 0 | 0 | Deferred to R-201 (M2) + R-308 E2E (M3) |
+| **E2E (Playwright)** | 0 | 0 | Deferred to T-308 / R-308 (M3) |
+| **Component / interaction** | 0 | 0 | Deferred to M3 reader build |
+| **Property-based** | 0 | 0 | Deferred to M2 (R-201 audio-producer logic has rich invariants) |
+
+**Critical-path coverage at end of M1**: schema-enforced inviolable rules covered by pgTAP; no JS test pyramid yet (R-201 owner / M2 milestone). /team-qa cycle-5 does NOT block on JS-test absence — the deferral is honest (no production code exists yet to test).

@@ -373,3 +373,5 @@ Business invariant: subscriber count hidden until 2,500. `subscriber_count` view
 |---|---|---|
 | 2026-05-14 | 1.0.0 | Cycle-1 baseline (docs/specs/security-findings.md). 10 findings. |
 | 2026-05-14 | 2.0.0 | Cycle-6 contract audit. 11 new findings (NEW-S-001 through NEW-S-011). Cycle-1 status review. OWASP re-mapping. 5 security blockers identified. |
+| 2026-05-21 | 2.1.0 | build-2026-05-21 qa-pass: 26 → 14 vulns (0 critical) via D-025 next 14.2.35 bump + 3 transitive overrides. ADR-0015 v2 acceptance. |
+| 2026-05-22 | 2.2.0 | /team-qa cycle-5: ADR-0015 v2 14-CVE inventory still matches; @supabase/ssr 0.10.3 + supabase-js 2.106.1 added 0 new CVEs; SECRETS.md v1.0.0 lands 27-secret inventory + rotation policy; voice consent template covers donor cascade. No new P0/P1 security findings introduced by M1-completion or M1c-closeout. |

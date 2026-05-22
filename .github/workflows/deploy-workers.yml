@@ -1,0 +1,99 @@
+# =====================================================================
+# deploy-workers.yml · ROMAS Brief Cloudflare Workers deploys
+# R-106 (remediation-plan M1) · /team-build M1-completion cycle
+# Anchors: ADR-0003 (Cloudflare Workers + Pages + R2) · SSOT §6 source
+#   ingestion + §12 cron schedule · workers/cron-ingest is the first
+#   Worker; audio-producer + rss-publisher + cdn-purge-watchdog +
+#   beehiiv-webhook + email-canary + source-health land in M2/M3.
+# =====================================================================
+#
+# Deploys all Cloudflare Workers on push to main (filtered to workers/
+# directory changes). Each worker has its own wrangler.toml under
+# workers/<name>/. cron-ingest deploys live today; the other workers
+# are .gitkeep stubs and the matrix `if` step skips them until they
+# have a wrangler.toml.
+#
+# Required GitHub secrets:
+#   CLOUDFLARE_API_TOKEN   - Workers:Edit + R2:Edit on the AllienNova/
+#                            romas-brief account; same token as Pages
+#   CLOUDFLARE_ACCOUNT_ID  - same as Pages
+
+name: Deploy Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - workers/**
+      - packages/**
+      - pnpm-lock.yaml
+  workflow_dispatch:
+
+concurrency:
+  group: workers-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy ${{ matrix.worker }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+
+    strategy:
+      fail-fast: false
+      matrix:
+        worker:
+          - cron-ingest
+          # M2/M3 workers land here as their wrangler.toml + src/ files
+          # arrive. Until then the `if` step below skips them.
+          # `source-health` deliberately omitted — folded into cron-ingest
+          # per Docs/ROMAS-Brief-Audio-Architecture.md §9.2 (writes to the
+          # source_health table directly from the cron-ingest worker).
+          - audio-producer
+          - rss-publisher
+          - cdn-purge-watchdog
+          - beehiiv-webhook
+          - email-canary
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Check if worker has a deployable wrangler.toml
+        id: check
+        run: |
+          if [ -f "workers/${{ matrix.worker }}/wrangler.toml" ]; then
+            echo "deployable=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deployable=false" >> "$GITHUB_OUTPUT"
+            echo "Worker ${{ matrix.worker }} is a stub; skipping deploy."
+          fi
+
+      - uses: pnpm/action-setup@v4
+        if: steps.check.outputs.deployable == 'true'
+        with:
+          version: 9.0.0
+
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.deployable == 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        if: steps.check.outputs.deployable == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy via Wrangler
+        if: steps.check.outputs.deployable == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: workers/${{ matrix.worker }}
+          command: deploy

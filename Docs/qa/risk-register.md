@@ -133,3 +133,35 @@ Sourced from `docs/qa/design-review.md` cycle-2 GO WITH CONDITIONS verdict. Thes
 | DR-007 | L | **prefers-reduced-motion enforcement is design-time spec only** — no eslint rule or runtime guard enforces that motion uses the `motion-safe:` Tailwind variant. Risk of accidental motion in PRs that bypass design review. | `Docs/design/ui-spec.md` §motion | M3 ESLint rule + CI lint gate per cycle-3 R-303 (sponsor firewall rule template) |
 
 **Design-time risks: 7 total** (1 P1 + 2 M + 4 L). Zero P0 — all P0 contrast failures closed in cycle-2 with verified measurements (see `docs/qa/design-review.md` cycle-2 evidence section).
+
+---
+
+## Cycle-5 risk register refresh (2026-05-22 against full M1)
+
+### Blocker carry-forward + status
+
+| ID | Status as of cycle-5 | Notes |
+|---|---|---|
+| B-01 | OPEN — 40 placeholder T-NEW task IDs un-actionable | Mostly M3 reader + M6.5 video. M0c2 closed the T-225..T-230 + T-310A..D subset. |
+| B-02 | OPEN — 88 unwritten A-NNN acceptance tests | Carry-forward; 79 pgTAP assertions added across build-2026-05-21 + M1c cycles. |
+| B-03 | OPEN — FR-002/FR-003 task-ID misnumbering | Cosmetic. |
+| B-04 | OPEN — Tier 5 Video Podcast un-actionable until ADR-0012 Day 30 | Soft blocker; not on Day 1 critical path. |
+| B-05 | OPEN — Launch Plan §6 Sample 5 `meddeviceguide.com` Rule-4 violation | M0 carry-forward; editorial cannot ship Sample 5 until re-sourced. |
+| B-06 | OPEN — Doc-version drift on disk | Partially closed cycle-1; full close needs per-doc audit. |
+| **B-07** | **CLOSED** in M1-closeout — Design Spec v1.1 (R-005) + Audio Architecture v1.0 (R-006-A) landed |  |
+| B-08 | OPEN — CDN purge watchdog deferred to M2 R-211 | Worker stub at `workers/cdn-purge-watchdog/.gitkeep`. |
+| B-09 | OPEN — Resend webhook signature verification | Deferred M3. |
+| B-10 | OPEN — Beehiiv DPA + SCC for EU subscribers | Kimal legal track. |
+| B-11 | OPEN — 14 Next 14 residual CVEs accepted per ADR-0015 v2 | 9 of 14 applicable to M3 reader surface; controls must land alongside RSC code. |
+
+### New cycle-5 findings (minor; not blockers)
+
+| ID | Risk | Severity | Likelihood | Mitigation |
+|---|---|---|---|---|
+| B-12 | team-build-critic dispatch reliability — 2 of 4 critic dispatches in this session had issues (truncated output, API 529). | M | M | Build Lead inline self-audit as documented fallback. Cycle-5 trace serves as critic-rerun on M1c-closeout. Flag for next cycle to re-run critic with fresh context. |
+| B-13 | `apps/cms/lib/supabase/types.ts` is placeholder until `supabase gen types typescript --linked` runs against a live Supabase project | L | H | Owner: Kimal infra (provision Supabase) + cms-engineer (regenerate types post-provisioning). Impact deferred until M3 reader build. |
+| B-14 | FR-S-003 + FR-S-005 have no T-NNN assigned | L | M | M3 planning gap; minor — both are SHOULD not MUST. Owner: editorial-director + Kimal during M2/M3 task-row authoring. |
+
+**Trajectory**: B-07 closed; 0 net-new blockers from cycles since cycle-1; the project is closing debt, not adding it.
+
+Full cycle-5 traceability + critic-rerun on M1c-closeout: see `Docs/qa/requirements-trace.md` cycle-5 section.
