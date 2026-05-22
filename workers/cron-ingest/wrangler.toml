@@ -1,0 +1,18 @@
+name = "romas-brief-cron-ingest"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# T-114 / SSOT §8: Mon–Fri 10:30 UTC (60 min before Americas edition publish at 11:00 UTC)
+[triggers]
+crons = ["30 10 * * 1-5"]
+
+# Bindings (filled in T-115; secrets via `wrangler secret put`)
+# [[r2_buckets]]
+# binding = "RAW"
+# bucket_name = "romas-raw"
+#
+# NEVER put SUPABASE_SERVICE_ROLE_KEY (or any secret) under [vars] — that
+# section is committed plaintext. Use Worker Secrets for keys/tokens:
+#   wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+# Only public, non-sensitive config (e.g. SUPABASE_URL) may live in [vars].

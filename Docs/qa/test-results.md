@@ -32,7 +32,7 @@ Repo is code-empty. Standard test pyramid commands (lint / typecheck / unit / bu
 | T-17 | Banned anti-slop patterns in canonical docs | Grep "delve\|tapestry\|stands as\|serves as\|Great question" | Zero hits. | PASS |
 | T-18 | Cycle-5/6 worldwide-positioning operationalization | inspect | SSOT §3 rows 15-18 locked ✓. 6 regulatory contracts authored ✓. DeepL contract ✓. FR-032..FR-038 added ✓. **Task IDs T-NEW12..T-NEW20 remain placeholders** (re-flagged from T-08). 7-region distribution applied to SSOT §12.2 ✓; not yet to Launch Plan v1.1 §2.2 on disk (M0 deliverable). | YELLOW *(M0)* |
 
-## Summary
+## Summary (plan-level cycle-1)
 
 | Verdict | Count |
 |---|---|
@@ -41,6 +41,70 @@ Repo is code-empty. Standard test pyramid commands (lint / typecheck / unit / bu
 | FAIL (P0) | 4 |
 | FAIL (P1) | 2 |
 | FAIL (architectural / multiple) | 1 |
+
+## build-2026-05-21 qa-pass — fresh evidence (added 2026-05-21)
+
+Real test pyramid commands NOW runnable (T-101 scaffold + build-2026-05-21 amendments landed). Evidence below is from fresh runs on the post-D-025 state.
+
+| Gate | Command | Result | Verdict |
+|---|---|---|---|
+| G1 Lint | (deferred — T-117 owns ESLint preset; package-level `lint` scripts return 0 per scaffold note) | not yet runnable | DEFERRED |
+| G2 Typecheck | `pnpm turbo run typecheck` | 5 successful / 5 total in 1.375s. Workspaces: `@romas-brief/{web,cms,config,ui,cron-ingest}`. | **PASS** |
+| G3 Tests | (deferred — R-105 pgTAP + T-117 Vitest scaffolding) | not yet runnable | DEFERRED to R-105 / T-117 |
+| G4 Build (Worker) | `pnpm turbo run build --filter=@romas-brief/cron-ingest` | PASS via `wrangler deploy --dry-run`. Output size ≈21.5 KiB / 5.0 KiB gzip (byte counts vary sub-1% build-to-build per wrangler/esbuild date+sha embedding — exact values not pinned). | **PASS** |
+| G4 Build (Apps) | `pnpm turbo run build` (apps) | Not run locally per SCAFFOLD-NOTES.md L51-57 — Next 14 + Node 24 + Windows known prerender bug. Will run on CI Linux/Node 20 (T-117). | DEFERRED to CI |
+| G5 Security audit | `pnpm audit --audit-level=low` | **14 vulns** (0 critical, 5 high, 7 moderate, 2 low) — all `next` advisories patched only in Next 15.x. Documented and accepted under ADR-0015 v2. | **PASS** with ADR-0015 v2 acceptance |
+| G6 No-TODO scan | grep `TODO\|FIXME\|HACK` in source code | 1 hit at `workers/cron-ingest/src/index.ts:23-26` — the explicit T-115 auth-gate TODO added in Bucket C C9, documented in build-log. No other TODOs in source. | **PASS** (single acceptable TODO) |
+| G7 No-secrets scan | grep for `password\|api[_-]?key\|secret\|token\|bearer\|JWT\|cookie` (excluding `_legacy/`) | 20 files match; all are name-references (env-var names, type declarations, doc references), no committed secret values | **PASS** |
+| G8 Device test | UI tests vs stub pages | Apps are force-dynamic stubs only; no UI to device-test until M3 | DEFERRED to M3 (per rule 09-device-testing) |
+| G9 Schema constraints (pgTAP) | (deferred to R-105) | not yet runnable | DEFERRED to R-105 — R-105 acceptance extended in build-2026-05-21 to include 8 new constraints from Bucket A |
+
+### Tier-rename ripple verification (build-2026-05-21 focus area #5)
+
+`grep -rn 'audio_jobs\.tier\b' workers/ apps/` → ZERO matches.
+`grep -rn '^\s*tier\s+text\s+not\s+null\s+check' .claude/ Docs/ supabase/` → ZERO matches (no remaining DDL using old column name).
+
+`audio_jobs.tier` references in the broader corpus are all in documentation-of-the-rename (ADR-0017 self-reference, build-log/decision-log A11 + D-021 entries, cycle-1 historical critic-review). Forward-looking code surface is clean.
+
+### Bucket C config verification (build-2026-05-21 focus area #4)
+
+| Check | Evidence |
+|---|---|
+| `next` resolved version | `apps/{web,cms} > next@14.2.35` (per `pnpm audit` paths after D-025 bump) |
+| `pnpm.overrides` applied | `pnpm why undici` → 8.3.0; `pnpm why glob` → 13.0.6; ws → ≥8.20.1; postcss → ≥8.5.10; esbuild → 0.28.0 (per fresh install logs) |
+| `.npmrc save-exact=true` | Verified by file read; new `pnpm add` will record exact versions |
+| `verbatimModuleSyntax` removed from cron-ingest tsconfig | Verified by file read; typecheck PASS confirms compatibility |
+| `turbo.json` lint/test deps | Verified by file read; `lint: {}` (no deps), `test: { dependsOn: ["^typecheck"] }` |
+| Tailwind shared base | `packages/config/src/tailwind.ts` exists + apps spread `baseTailwindConfig` |
+
+**CI/Node 20 Linux verification**: NOT YET RUN. T-117 owns CI workflow authoring. Findings:
+- Local Windows + Node 24.15 typecheck PASS does NOT prove CI Linux/Node 20 will PASS — the Next 14 + Node 24 + Windows prerender bug demonstrated this gap explicitly. Recommend T-117 CI workflow include `pnpm install --frozen-lockfile && pnpm turbo run typecheck && pnpm turbo run build && pnpm audit --audit-level=high` and that the audit step be wired as a non-blocking informational gate (since 14 ADR-0015-accepted residuals will continue to fire).
+
+### Loudness layered-defense verification (build-2026-05-21 focus area #2)
+
+Read of all 3 layers confirms the model is coherent:
+
+| Layer | Reference | Says |
+|---|---|---|
+| DB CHECK | `Docs/specs/contracts/supabase-schema.sql` `audio_publish_requires_qa` | `loudness_lufs between -18 and -14` |
+| DB CHECK (migration) | `supabase/migrations/0002_create_audio_jobs.sql:88-91` | `loudness_lufs between -18 and -14` (matches contract) |
+| Pipeline target | `.claude/skills/audio-production-pipeline.md` | "Production target window: re-master if outside -17 to -15 LUFS; after one re-master, accept inside DB gate -18 to -14; outside DB gate after re-master: mark skipped" |
+| Reviewer agent | `.claude/agents/audio-qa-reviewer.md:49` | "Integrated loudness -18 to -14 LUFS (DB gate per ADR-0016). Tight production target: -17 to -15 LUFS — soft amber warn outside target but inside gate" |
+| ADR | `Docs/specs/adr/0016-loudness-band-widen.md` | Names the 3-layer model with exact thresholds, retry semantics, and skip conditions |
+
+Verdict: **coherent**. No contradiction between DB / pipeline / reviewer wording.
+
+### CVE acceptance audit (build-2026-05-21 focus area #3)
+
+ADR-0015 v1 named 1 CVE; v2 (rewritten in this qa-pass) names 14 with per-advisory applicability + control mapping. Each control has an explicit owner (web-engineer / DevOps / architecture-reviewer) and a where-it-lands surface (architecture.md / Cloudflare WAF / ESLint preset / Cloudflare Pages settings). Auditable: yes.
+
+Verdict: **PASS** for the ADR's auditability; controls themselves are not yet implemented (no live RSC code exists). Re-audit at M3 to verify the controls landed.
+
+### pgTAP coverage (build-2026-05-21 focus area #1)
+
+R-105 in remediation-plan was extended in build-2026-05-21 to enumerate 8 new pgTAP test targets from Bucket A + the cycle-1 P2-05 carry items. pgTAP scaffolding does NOT yet exist (R-105 owner: cms-engineer; lands in M1). The extension is auditable: the targets are explicitly named in remediation-plan.md R-105 with cross-references to the contract + migration line ranges.
+
+Verdict: **PASS** for R-105 extension auditability; **DEFERRED** for actual pgTAP test execution to M1.
 
 ## Banned-content live violations
 

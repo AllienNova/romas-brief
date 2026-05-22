@@ -155,3 +155,88 @@ Detailed findings in `docs/qa/`:
 - `ux-validation.md` (design conformance — RED, needs `/team-design`)
 - `risk-register.md` (consolidated 88 risks)
 - `release-checklist.md` (32-item gate checklist)
+
+---
+
+# QA Report — cycle build-2026-05-21 (review-remediation + qa-pass) — appended 2026-05-21
+
+**Commit (pre-this-cycle baseline):** `4ac8541` · **Cycle date:** 2026-05-21 · **QA Lead + Build Lead:** same actor (Kimal-authorized /team-qa pass)
+
+## Verdict
+
+**GO WITH CONDITIONS** — for the **contract-amendment + scaffold-remediation** scope of cycle build-2026-05-21.
+
+**Scope of GO:** this cycle's deliverables are ready for next-cycle consumption (M1 cms-engineer for R-105 pgTAP test scaffolding · M1 DevOps for T-117 CI workflow · M3 web-engineer for ADR-0015 v2 control implementation). This is **NOT** a production-ship verdict. Apps remain stub `force-dynamic` pages, no test pyramid exists, no live RSC code exists, no Lighthouse/axe/k6 runnable. The 9 applicable Next residual CVEs documented in ADR-0015 v2 have NO live attack surface today; their named controls are documented but not yet implemented.
+
+**Critic verdict:** team-qa-critic returned `GO WITH CONDITIONS` after fresh re-verification of every load-bearing claim. Zero P0 blockers introduced by this cycle. Two P1 documentation-clarity findings closed in-cycle (loudness model terminology, worker build byte-count cosmetic drift). Three P2 deferrable items per critic explicit allowance.
+
+## Executive summary (3 sentences)
+
+Cycle build-2026-05-21 closed all 17 /team-review recommendations under explicit Kimal "adopt all 13 verbatim" authorization, with full propagation across canonical contract + 5 migrations + 3 new ADRs (0015 CVE acceptance v2, 0016 loudness band widen, 0017 audio_jobs.tier rename) + 23 forward-looking spec/skill/agent files; team-build-critic returned APPROVE on cycle 1. The follow-on /team-qa pass discovered that Bucket C C11's literal pin to `next@14.2.18` had regressed 9 already-fixed Next CVEs (including a CRITICAL middleware authorization bypass), intervened with a `next@14.2.35` + 3 transitive overrides bump that dropped vuln count 26 → 14 and rewrote ADR-0015 from v1 (1 CVE) to v2 (14 CVEs with per-advisory applicability + control mapping); the qa-pass intervention is documented in D-025 with named verification commands and full evidence. The cycle is **structurally sound, evidence-backed, and scope-honest**; it does not regress any pre-existing scaffold-stage risk (B-01..B-10) and surfaces one new open M3 risk (B-11 = the residual ADR-0015 v2 inventory). Future /team-build cycles should run `pnpm audit` alongside typecheck + build to catch the kind of dependency-regression this qa-pass had to clean up.
+
+## Pass / fail per major deliverable
+
+| Deliverable | Status | Evidence |
+|---|---|---|
+| Bucket A (12 contract/migration amendments A1-A12) | **PASS** | All 12 verified in `supabase-schema.sql` + `supabase/migrations/0001..0005` lockstep; team-qa-critic confirmed 12/12 |
+| Bucket A propagation (23 forward-looking files) | **PASS** | grep confirms zero stale `[-17,-15]` claims-as-DB-gate, zero `audio_jobs.tier` in code/skill/agent surface |
+| Bucket C (12 scaffold/config items + ADR-0015) | **PASS WITH IN-CYCLE CORRECTION** | C11 next-pin literal error caught by /team-qa, corrected via D-025 |
+| ADR-0015 (CVE acceptance) | **PASS (v2)** | Expanded from 1 CVE to 14 with per-advisory applicability + control mapping + named owners; 12 of original 26 closed in-cycle via 14.2.35 bump + 3 overrides |
+| ADR-0016 (loudness widen) | **PASS** | DB gate `[-18,-14]` + pipeline target `-16 ±0.5` + tolerance `±1` + skip outside gate — coherent across 5 referenced surfaces (DB / migration / pipeline skill / reviewer agent / ADR) |
+| ADR-0017 (tier rename) | **PASS** | `audio_jobs.tier` → `audio_jobs.audio_tier` propagated; grep confirms 0 forward-looking residuals |
+| R-105 extension (pgTAP for new constraints) | **PASS (extension auditable)** | Explicit enumeration in `remediation-plan.md:47`; actual test files deferred to R-105 owner (cms-engineer / M1) |
+| R-202 extension (pipeline retry semantics) | **PASS** | `remediation-plan.md:64` updated with target / tolerance / re-master / skip semantics |
+| Decision-log integrity D-011..D-025 | **PASS** | 14 D-NNN entries; no weasel language; D-024-followup closes team-build-critic findings; D-025 documents qa-pass intervention with verification commands |
+| Fresh verification (typecheck / worker build / audit / grep) | **PASS** | All re-run by team-qa-critic; outcomes match documented claims |
+| Secret scan | **PASS** | gitleaks: no leaks found |
+| PII | **ACCEPTED-EXPLICIT** | seed.sql Kimal-PII retained per D-023 user decision; re-evaluate Day 90 |
+
+## Top 3 risks (release-not-blocking but next-cycle-blocking)
+
+1. **B-11 — Next 14 residual CVE inventory (5 HIGH + 7 MOD + 2 LOW; 9 applicable to M3 reader surface).** Mitigation = ADR-0015 v2's named controls implemented by web-engineer + DevOps + architecture-reviewer at M3+. If M3 RSC code lands without those controls wired, the 9 applicable CVEs become live attack surface.
+2. **Pre-existing B-01 + B-02 carry-forward (40 placeholder task IDs + 88 unwritten A-NNN acceptance tests).** Not regressed in this cycle but un-actionable for /team-build M1 dispatch without closing.
+3. **Pre-existing B-05 — `meddeviceguide.com` Rule-4 violation in Launch Plan §6 Sample 5.** Cycle-2 R-014 moved to M0; not closed at the time of this cycle. Editorial cannot use Sample 5 until re-sourced.
+
+## Top 3 confident wins
+
+1. **CRITICAL CVE closed in-cycle.** The Next Middleware Authorization Bypass (`GHSA-f82v-jwr5-mffw`) was patched in `next 14.2.25` — invisible to /team-build because team-build-critic does not run `pnpm audit` as part of its gate. The /team-qa pass caught it, intervened, and reduced the CVE count from 26 → 14 (0 critical, 5 high, 7 mod, 2 low) without violating SSOT §5 Next 14 lock. This is exactly the cross-cycle review pattern /team-qa exists to deliver.
+2. **Contract ↔ migration lockstep discipline.** All 12 Bucket A amendments + the 3 new ADRs + the 23-file propagation surface were verified by team-qa-critic with fresh greps and re-reads. No spec/impl drift survived the cycle. The previous M0 cycle established this pattern; build-2026-05-21 proved it scales to a 12-amendment cycle.
+3. **Scope honesty.** No artifact authored this cycle claims production readiness for any M3+ surface. ADR-0015 v2 explicitly notes that controls are documented, not implemented. The qa-report verdict explicitly distinguishes "ready for next-cycle consumption" from "ship to production." This calibration is what makes the verdict trustworthy.
+
+## Conditions to close before /team-build M1 dispatch
+
+Per critic's GO WITH CONDITIONS verdict, the following are documentation/process items that should land before M1:
+
+1. **CI workflow (T-117) MUST include `pnpm audit --audit-level=high` as a non-blocking informational gate.** This is the systemic correction surfaced by D-025: had team-build-critic run audit, the C11 regression would have been caught in-cycle.
+2. **Quarterly Cloudflare WAF review checklist (per ADR-0015 closing conditions) must be added to release-manager's calendar.** First review Q3 2026.
+3. **Pre-M3 implementation of ADR-0015 v2 controls** (Zod-at-RSC-boundary, body cap, edge rate-limit, image-opt rate-limit, no-`beforeInteractive` ESLint rule, sanitiser pipeline, no-user-URL-driven outbound fetches in RSC, no-cache user-segmented routes) — each control assigned to a named owner in ADR-0015 v2; each implementation PR must reference the closing GHSA ID.
+4. **R-105 pgTAP test scaffolding (cms-engineer M1)** — covers the 8 new build-2026-05-21 CHECK constraints + cycle-1 P2-05 carry items. Required for M1 acceptance gate.
+
+## Recommended next iteration items
+
+### Immediate (next session, before any commit)
+- The user owns the commit; this cycle stays on `main` unstaged per user instruction.
+- Optionally: amend the standing /team-build skill discipline to include `pnpm audit` in the verification step (D-025 systemic correction).
+
+### M1 (cms-engineer + DevOps, ~1 week)
+- R-105 pgTAP test scaffolding (extended scope per build-2026-05-21)
+- T-117 CI workflow including `pnpm audit --audit-level=high` informational gate
+- R-006-A `Docs/ROMAS-Brief-Audio-Architecture.md v1.0` formalizing ADR-0016 numerics at top-level
+- Voice consent registry (R-110) — pre-launch gate
+
+### M3 (web-engineer, ~2 weeks)
+- ADR-0015 v2 control implementation alongside reader surface code
+- Cloudflare WAF rate-limit rules deployed
+- ESLint rule rejecting `Script strategy="beforeInteractive"`
+- MDX sanitiser pipeline
+
+### Quarterly forever (release-manager)
+- Re-check Next 14.x backport status against the 14-advisory residual table in ADR-0015 v2; bump pin + close ADR rows as patches ship
+
+## Sign-off
+
+**QA Lead:** Build Lead acting as QA Lead this cycle (same actor)
+**team-qa-critic verdict:** GO WITH CONDITIONS (zero P0; 2 P1 closed in-cycle; 3 P2 deferrable)
+**Date:** 2026-05-21
+**Commit baseline:** `4ac8541` (this cycle's edits remain uncommitted on `main` per user direction)
+**Conditions to close before M1 dispatch:** 4 items enumerated above (CI audit gate · WAF quarterly · ADR-0015 v2 controls at M3 · R-105 pgTAP scaffolding)

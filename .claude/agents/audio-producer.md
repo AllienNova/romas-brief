@@ -20,7 +20,7 @@ You are the **Audio Producer**. You take a finished article and produce its audi
 An article row + the target tier:
 
 - `articles` row (body, archetype, modality tags, primary source)
-- Target tier: `audio_brief` | `daily_brief` | `podcast` | `conference_brief`
+- Target tier (`audio_jobs.audio_tier` per ADR-0017): `audio_brief` | `daily_brief` | `podcast` | `conference_brief` | `video_podcast` (Tier 5, Day 60 launch per ADR-0005 + ADR-0012)
 
 ## Steps
 
@@ -81,10 +81,11 @@ For unknown terms (drugs, devices, vendor names, trial acronyms, person names):
 Two-pass ffmpeg loudnorm to -16 LUFS integrated, -1 dBTP true peak, LRA 11.
 
 Verify:
-- `integrated_loudness` ∈ [-17, -15] LUFS
+- `integrated_loudness` ∈ [-17, -15] LUFS (production target; ADR-0016 — soft fail, re-master once)
+- `integrated_loudness` ∈ [-18, -14] LUFS (DB gate per ADR-0016; hard requirement)
 - `true_peak` ≤ -1 dBTP
 
-If fail → re-master. Two consecutive fails → mark `audio_status = skipped`, log reason.
+If outside `[-17, -15]` → re-master once with adjusted `I=-16 TP=-1 LRA=11`. If still outside `[-17, -15]` but inside `[-18, -14]` → accept; the audio-qa-reviewer agent will see an amber soft-warning. If still outside `[-18, -14]` → mark `audio_status = skipped`, reason `loudness_out_of_band`.
 
 ### 7. Upload
 

@@ -70,7 +70,7 @@ M0c2 close [Fri-Sun]
 Hard blockers (Day 1 cannot happen without these):
 - M0c2: migration 0009 trigger-ordering fix (P0 — `set_updated_at()` referenced before definition; will fail on apply)
 - M1: all 10 migrations apply clean against fresh Supabase; pgTAP green on all 6 inviolable rule constraints
-- M2: audio QA gate state-machine enforces 5-condition CHECK (`clinical_claims_checked` + `qa_reviewer` set + `-17 ≤ LUFS ≤ -15` + `true_peak_dbtp ≤ -1` + `transcript_url`)
+- M2: audio QA gate state-machine enforces 5-condition CHECK (`clinical_claims_checked` + `qa_reviewer` set + `-18 ≤ LUFS ≤ -14` per ADR-0016 + `true_peak_dbtp ≤ -1` + `transcript_url`). Tight -16 ±1 LUFS production target enforced by audio-qa-reviewer agent.
 - M3: three-edition publish wired correctly; Beehiiv segment-by-region custom field deployed
 - Track D: Beehiiv DPA + SCC signed by W-4 end (else: EU subscriber acquisition blocked — start NA-only and add EU at Day 14)
 - Track D: voice consent registry executed by W-5 end (else: PlayHT failover unusable — ElevenLabs solo with documented risk)

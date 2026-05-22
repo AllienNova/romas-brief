@@ -18,7 +18,7 @@ cycles: 1 (initial) → 2 (critic fixes) → 3 (Kimal Q1/Q2/Q3 + email split + T
 
 | Field | Value |
 |---|---|
-| Product name | **ROMAS Brief** |
+| Product name | **ROMAS Brief** (Now The RADONC WIRE) |
 | Position in ecosystem | Public media surface of **ROMAS Intelligence**, sitting under **ROMAS** (the parent ecosystem whose clinical OS is **ROMAS COS**) |
 | Primary tagline | **"Radiation oncology, decoded daily."** *(locked — CLAUDE.md §2, AGENT.md §13 line 205)* |
 | Secondary tagline | "Clinical intelligence for modern radiation oncology." *(use in pre-roll + about pages only — never as homepage)* |
@@ -59,7 +59,7 @@ These six are inviolable. CLAUDE.md §4, AGENT.md §5, this file, and every oper
 | 9 | Voice | ROMAS Clinical Narrator. ElevenLabs primary (`ELEVENLABS_ROMAS_VOICE_ID`), PlayHT failover (`PLAYHT_ROMAS_VOICE_ID`). | Audio Architecture v1.0 |
 | 10 | Audio architecture | 4-tier lock (Audio Brief 5/7/10 min · Daily Brief 10-15 min · Podcast 30-60 min · Conference Brief 15-30 min) | Audio Architecture v1.0 |
 | 11 | Audio QA gate | Non-negotiable. Schema-enforced via `audio_publish_requires_qa` CHECK constraint (`.claude/skills/cms-schema.md:96-103`) | Audio Architecture v1.0 |
-| 12 | Loudness target | -16 LUFS integrated, -1 dBTP true peak (publish range -17 to -15 LUFS) | Audio Architecture v1.0 |
+| 12 | Loudness target | -16 LUFS integrated, -1 dBTP true peak. DB publish gate widened to -18 to -14 LUFS per ADR-0016; -16 ±1 LUFS production target enforced by audio-qa-reviewer agent (not at the DB). | Audio Architecture v1.0 + ADR-0016 |
 | 13 | Pace | 145–160 wpm | Audio Architecture v1.0 |
 | 14 | HIPAA posture | **Not triggered.** No PHI ingested, processed, or logged anywhere in scope. ToS must carry an explicit "No PHI" clause. | Master Strategy v2.1 §7.1 |
 | 15 | **Worldwide positioning (locked 2026-05-14 by Kimal)** | **NA-bias rejected.** Region distribution rebalanced: US 110 (22%) · Canada 20 (4%) · Europe 160 (32%) · APAC 130 (26%) · LATAM 40 (8%) · MENA/Africa 20 (4%) · Global 20 (4%). Supersedes Launch Plan v1.1 §2.2. Top Stories grid quota: max 2 of 6 cards from the same region. Date format honors reader locale via `Intl.DateTimeFormat`. | Kimal verbal 2026-05-14 |
@@ -151,11 +151,11 @@ published → revoked   (60s CDN withdrawal, post-publish kill switch only)
 **`in_review → published`** requires (all **five**, schema-enforced per `contracts/supabase-schema.sql:123-130`):
 - `clinical_claims_checked = true`
 - `qa_reviewer IS NOT NULL`
-- `loudness_lufs BETWEEN -17 AND -15`
+- `loudness_lufs BETWEEN -18 AND -14` (ADR-0016; the -16 ±1 LUFS production target lives in the audio-qa-reviewer agent, not at the DB)
 - `true_peak_dbtp <= -1`
 - `transcript_url IS NOT NULL`
 
-(Cycle-1 critic flagged this as F-P1-01: SSOT §7 previously listed four conditions, omitting `true_peak_dbtp`. The SQL CHECK has all five. Five is canonical.)
+(Cycle-1 critic flagged this as F-P1-01: SSOT §7 previously listed four conditions, omitting `true_peak_dbtp`. The SQL CHECK has all five. Five is canonical. ADR-0016, cycle build-2026-05-21, widened the loudness band from `[-17, -15]` to `[-18, -14]` while keeping the 5-condition shape from F-P1-01 intact.)
 
 **`published → revoked`** requires:
 - `revoke_reason IS NOT NULL`

@@ -52,8 +52,8 @@ IDs are `FR-NNN`. Every MUST traces to ≥1 task in `MASTER_IMPLEMENTATION_PLAN.
 | FR-005 | Every clinical claim has a `claims` row linking to a primary source. | T-104, T-216 |
 | FR-006 | Embargoed items live in `embargo_holds`, never in `articles` until release; schema-enforced consistency. | T-103, T-119 |
 | FR-007 | Audio Brief generated per article, 10-beat structure, ElevenLabs primary + PlayHT failover. | T-201..T-210 |
-| FR-008 | Audio mastered to -16 LUFS / -1 dBTP, range -17 to -15 enforced at QA gate. | T-205, T-208 |
-| FR-009 | Audio QA gate flip requires **all five** schema-enforced conditions: `clinical_claims_checked = true`, `qa_reviewer IS NOT NULL`, `loudness_lufs BETWEEN -17 AND -15`, `true_peak_dbtp <= -1`, `transcript_url IS NOT NULL`. See `contracts/supabase-schema.sql:123-130`. | T-104 constraint, T-209 UI |
+| FR-008 | Audio mastered to -16 LUFS / -1 dBTP. DB publish gate widened to `[-18, -14]` LUFS per ADR-0016; the tight -16 ±1 LUFS production target is enforced by the audio-qa-reviewer agent. | T-205, T-208 |
+| FR-009 | Audio QA gate flip requires **all five** schema-enforced conditions: `clinical_claims_checked = true`, `qa_reviewer IS NOT NULL`, `loudness_lufs BETWEEN -18 AND -14` (ADR-0016), `true_peak_dbtp <= -1`, `transcript_url IS NOT NULL`. See `contracts/supabase-schema.sql` `audio_publish_requires_qa` CHECK. | T-104 constraint, T-209 UI |
 | FR-010 | Whisper-generated transcript per audio episode, stored in R2 alongside audio. | T-207 |
 | FR-011 | Four per-tier RSS feeds: `audio-brief.xml`, `daily-brief.xml`, `podcast.xml`, `conference-brief.xml`. | T-214, T-309, T-503, T-605 |
 | FR-012 | Revoke kill switch: revoke flip → CDN purge by tag → RSS regenerate; 60s SLA; watchdog alerts if `cdn_purge_at` null after 90s. | T-212, T-213, T-219 (watchdog) |

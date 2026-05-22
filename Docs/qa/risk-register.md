@@ -28,6 +28,7 @@ sources: delivery-plan.md R-01..R-23 + cycle-1 critic F-* + this QA pass NEW-* +
 | **B-08** | **CDN purge watchdog (F-S-001)** must be the first Worker built at M2 — without it the 60s revoke SLA is unenforced. Implementation deferred to M2 R-211. | Cycle-1 + Security carry-forward | DevOps | OPEN — M2 |
 | **B-09** | **Resend webhook signature verification absent** — forged `email.complained` mass-unsubscribes subscribers. | NEW-S-001 (Security persona) | web-engineer | OPEN — M3 |
 | **B-10** | **Beehiiv DPA + SCC for EU subscribers unconfirmed** — GDPR violation from first EU subscriber. | NEW-S-003 | Kimal (legal) | OPEN — pre-launch gate |
+| **B-11** | **Next 14 residual CVE inventory** — 14 next advisories patched only in Next 15.x.y (5 HIGH, 7 MOD, 2 LOW) remain after build-2026-05-21 qa-pass intervention. 9 of the 14 are documented applicable to ROMAS Brief's M3 architecture per ADR-0015 v2. Controls (Zod-at-RSC-boundary, body-size cap, WAF rate-limit, no-`beforeInteractive`, sanitiser pipeline, no-user-URL-driven outbound fetches in RSC, no-cache user-segmented routes) are documented but NOT yet implemented (no live RSC code exists). | ADR-0015 v2 + Docs/qa/security-findings.md build-2026-05-21 qa-pass | web-engineer + DevOps + architecture-reviewer | OPEN — M3 implementation gate. Each control must land alongside its corresponding RSC code. Quarterly re-evaluation per ADR-0015 closing conditions. |
 
 ## High (must close before relevant milestone)
 

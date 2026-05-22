@@ -95,7 +95,8 @@ alter table articles add constraint articles_insight_labeled
 create table audio_jobs (
   id              uuid primary key default gen_random_uuid(),
   article_id      uuid not null references articles(id) on delete cascade,
-  tier            text not null check (tier in ('audio_brief', 'daily_brief', 'podcast', 'conference_brief')),
+  -- ADR-0017: column renamed tier → audio_tier; M0c2 + ADR-0005 cycle-3 added video_podcast (Tier 5, Day 60 launch)
+  audio_tier      text not null check (audio_tier in ('audio_brief', 'daily_brief', 'podcast', 'conference_brief', 'video_podcast')),
   target_length_sec int not null,
   voice_engine_used text check (voice_engine_used in ('elevenlabs', 'playht')),
   audio_status    text not null default 'queued'
@@ -124,7 +125,7 @@ create table audio_jobs (
     audio_status <> 'published'
     or (clinical_claims_checked = true
         and qa_reviewer is not null
-        and loudness_lufs between -17 and -15
+        and loudness_lufs between -18 and -14  -- ADR-0016: widened DB gate; -16 ±1 target in audio-qa-reviewer agent
         and true_peak_dbtp <= -1
         and transcript_url is not null)
   ),
@@ -138,7 +139,7 @@ create table audio_jobs (
 
 create index audio_jobs_article_idx on audio_jobs(article_id);
 create index audio_jobs_status_idx on audio_jobs(audio_status);
-create index audio_jobs_tier_published on audio_jobs(tier, audio_status) where audio_status = 'published';
+create index audio_jobs_tier_published on audio_jobs(audio_tier, audio_status) where audio_status = 'published';  -- ADR-0017: column renamed from tier → audio_tier
 ```
 
 ### `claims`

@@ -1,13 +1,72 @@
 ---
-title: Security Findings — ROMAS Brief (Cycle-6 Contract Audit)
-version: 2.0.0
-date: 2026-05-14
-scope: all 16 derived contracts in docs/specs/contracts/ + cycle-1 baseline (docs/specs/security-findings.md)
-methodology: contract-level threat modeling; no code exists; re-audit mandatory post-M2 code drop
+title: Security Findings — ROMAS Brief (Cycle-6 Contract Audit + build-2026-05-21 qa-pass dependency audit)
+version: 2.1.0
+date: 2026-05-14 (v2.0) · 2026-05-21 (v2.1 build-2026-05-21 qa-pass section appended)
+scope: all 16 derived contracts in docs/specs/contracts/ + cycle-1 baseline (docs/specs/security-findings.md) + post-build-2026-05-21 dependency audit
+methodology: contract-level threat modeling + fresh pnpm audit on the M1 scaffold; re-audit mandatory post-M2 code drop
 baseline: docs/specs/security-findings.md v1.0.0 (10 findings F-S-001 through F-S-010)
 ---
 
-# Security Findings — ROMAS Brief (Cycle-6 Contract Audit)
+# Security Findings — ROMAS Brief (Cycle-6 Contract Audit + build-2026-05-21 qa-pass)
+
+## build-2026-05-21 qa-pass dependency audit (added 2026-05-21)
+
+Fresh `pnpm audit --audit-level=low` run against the post-/team-build state:
+
+### Before qa-pass intervention (next pinned 14.2.18, no postcss/ws/esbuild overrides)
+- **26 vulnerabilities total**: 1 critical, 7 high, 14 moderate, 4 low
+- CRITICAL: `GHSA-f82v-jwr5-mffw` — Authorization Bypass in Next.js Middleware (patched in `next 14.2.25`)
+- Bucket C C11 had pinned `next` to exact `14.2.18`, which actively regressed 9 already-fixed advisories from the previous `^14.2.18 → 14.2.35` resolution.
+
+### qa-pass interventions (D-025 in decision-log)
+
+1. **Bump `next` and `eslint-config-next` exact pin from `14.2.18` to `14.2.35`** (latest 14.x; D-025).
+2. **Add `pnpm.overrides`**:
+   - `postcss >=8.5.10` (closes `GHSA-qx2v-qp2m-jg93` XSS)
+   - `ws@>=8.0.0 <8.20.1` → `>=8.20.1` (closes `GHSA-58qx-3vcg-4xpx` uninitialized memory)
+   - `esbuild@<=0.24.2` → `>=0.25.0` (closes `GHSA-67mh-4wv8-2f99` dev-server CORS)
+
+### After qa-pass intervention
+- **14 vulnerabilities total**: 0 critical, 5 high, 7 moderate, 2 low
+- All 14 are `next` advisories patched only in Next 15.x.y
+- Documented and accepted under **ADR-0015 v2** with per-advisory applicability assessment + control mapping
+- 5 of 14 documented NOT applicable to ROMAS Brief's architecture (App Router only, no i18n, no Pages Router, no `Script strategy="beforeInteractive"`)
+
+### Residual CVE summary table
+
+| Severity | Count after qa-pass | Trend vs pre-qa-pass | ADR-0015 v2 disposition |
+|---|---|---|---|
+| Critical | 0 | ↓ 1 (closed by 14.2.35) | — |
+| High | 5 | ↓ 2 (closed by 14.2.34 + 14.2.35) | Accepted with control mapping; 1 of 5 (i18n Pages Router) marked NOT applicable |
+| Moderate | 7 | ↓ 7 (4 closed by Next 14, 3 closed by transitive overrides) | Accepted with control mapping; 1 of 7 (`beforeInteractive` script) marked NOT applicable |
+| Low | 2 | ↓ 2 (closed by 14.2.30 + 14.2.24) | Accepted with cache-control mitigations |
+
+### Fresh secret-scan grep (build-2026-05-21 qa-pass)
+
+```
+grep -i 'password|api[_-]?key|secret|token|bearer|JWT|cookie' (excluding _legacy/)
+```
+20 files matched. **All are name-references**, not committed secret values. Examined samples:
+- `workers/cron-ingest/wrangler.toml` — comments referencing SUPABASE_SERVICE_ROLE_KEY as a variable name (D-014 hardened the comment to explicitly negative wording)
+- `workers/cron-ingest/src/index.ts` — Env interface declaring optional `SUPABASE_SERVICE_ROLE_KEY?: string` (type-only, no value)
+- Specs / docs — env var names, control documentation, no values
+- `pnpm-lock.yaml` — package metadata references, no secret values
+
+Verdict: **CLEAN** — no committed secret values. `.env.example` (not yet authored per R-111 M1) will continue this discipline.
+
+### PII assessment
+
+`supabase/seed.sql` inserts `(president@aliennova.com, Kimal Honour Djam, audio_qa)`. D-023 (Kimal explicit decision via /AskUserQuestion 2026-05-21) leaves this as-is: Kimal authored the data, the data is Kimal's, the repo is private. Re-evaluate at Day 90 review per the D-023 mitigation note.
+
+### Cycle build-2026-05-21 audit verdict
+
+**GREEN** for the dependency surface — assuming ADR-0015 v2 controls are wired up at M3 (RSC input validation + body cap + edge rate-limit + image-opt rate-limit + no-cache on user-segmented routes + no-`beforeInteractive` ESLint rule + sanitiser pipeline). Until M3, the 9 applicable residual CVEs have NO live attack surface (no RSC code exists yet); the 5 not-applicable CVEs are documented exempt.
+
+**Owner of M3 enforcement**: web-engineer + DevOps + architecture-reviewer per ADR-0015 v2 Control column.
+
+---
+
+# Security Findings — ROMAS Brief (Cycle-6 Contract Audit) — preserved baseline below
 
 ## Scope and methodology
 

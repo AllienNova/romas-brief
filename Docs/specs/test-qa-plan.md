@@ -143,7 +143,7 @@ Each row maps to a milestone (M0 = doc hygiene baseline; M1 = schema + migration
 | A-021 | 10-beat structure — skip requires override note | U | Given a 9-beat script; When validate; Then fails unless `audio_jobs.notes` contains `override:beat-skip` token | `audio-production-pipeline.md` line 39 |
 | A-022 | Lexicon application — drug names | U | Given script containing "Lutathera" and "Pluvicto"; When apply lexicon SSML substitution; Then both terms wrapped per lexicon entries | `pronunciation-lexicon` skill; `audio-qa-checklist.md` B1 |
 | A-023 | Lexicon application — vendor names | U | Given script with "Elekta", "Varian", "ViewRay", "RaySearch"; When apply; Then each substituted per lexicon | `audio-qa-checklist.md` B2 |
-| A-024 | Loudness measurement on fixture WAV | I | Given a fixture 5-min WAV mastered to -16 LUFS; When run two-pass `ffmpeg loudnorm`; Then parsed `integrated_loudness` in [-17, -15] AND `true_peak <= -1 dBTP` | `audio-production-pipeline.md` lines 78-88 |
+| A-024 | Loudness measurement on fixture WAV | I | Given a fixture 5-min WAV mastered to -16 LUFS; When run two-pass `ffmpeg loudnorm`; Then parsed `integrated_loudness` in [-18, -14] (ADR-0016 DB gate) AND `true_peak <= -1 dBTP`. Pipeline production-target window [-17, -15] verified by audio-qa-reviewer (soft amber outside target, hard reject outside DB gate). | `audio-production-pipeline.md` lines 78-88 |
 | A-025 | Loudness rejection on hot fixture | I | Given a fixture WAV at -12 LUFS; When measure; Then pipeline marks failure (`audio_status = skipped` after 2 retries) | `audio-production-pipeline.md` lines 152-153 |
 | A-026 | ElevenLabs → PlayHT failover triggers | I | Given mocked ElevenLabs returning 429 three times; When request audio; Then PlayHT path invoked AND `voice_engine_used='playht'` persisted | `audio-production-pipeline.md` lines 91-98 |
 | A-027 | PlayHT also failing → skipped | I | Given both providers returning 5xx; When request audio; Then `audio_status='skipped'`, `error` populated, article still ships | `audio-production-pipeline.md` line 152 |
@@ -207,7 +207,7 @@ Pre-roll insertion verified by **A-031** below.
 
 | ID | Title | Lvl | Given / When / Then | Source |
 |---|---|---|---|---|
-| A-056 | Activation creates conference tier feed entries | E | Given `conference-mode-operator` activates `ASTRO-2026`; When new article ingested in window; Then `articles.tier='conference'` AND `audio_jobs.tier='conference_brief'` | `conference-brief-mode` skill; `AGENT.md` §3 phase 9 |
+| A-056 | Activation creates conference tier feed entries | E | Given `conference-mode-operator` activates `ASTRO-2026`; When new article ingested in window; Then `articles.tier='conference'` AND `audio_jobs.audio_tier='conference_brief'` (ADR-0017 column rename) | `conference-brief-mode` skill; `AGENT.md` §3 phase 9 |
 | A-057 | Embargo lint blocks live abstracts | I | Repeat of A-039 inside the conference mode workflow (active embargo schedule per day) | `embargo-handling.md` lines 105-111 |
 | A-058 | Deactivation closes feed but preserves history | E | Given conference window ends; When operator deactivates; Then no new items accepted into `conference-brief.xml` but existing 50 items remain visible | `rss-feed-spec.md` line 17 cap |
 

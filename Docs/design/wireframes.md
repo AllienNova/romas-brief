@@ -693,7 +693,7 @@ Same content; full-width max-w-prose with 16px gutters. Sub-rubric label stays p
 | [×] qa_reviewer = Kimal Honour Djam (you)                       |
 |     [Reassign to ▼]                                              |
 |                                                                 |
-| [×] loudness_lufs = -16.2  (range -17 to -15)  ✓                |
+| [×] loudness_lufs = -16.2  (DB gate -18 to -14; target -17 to -15) ✓ |
 |     true_peak_dbtp = -1.4  (max -1.0)  ✓                        |
 |                                                                 |
 | [×] transcript_url = present (Whisper large-v3)                 |
@@ -727,7 +727,7 @@ Same content; full-width max-w-prose with 16px gutters. Sub-rubric label stays p
 - **Loading**: Audio preview skeleton + checklist skeleton.
 - **Empty (no job by that ID)**: 404 in CMS context — "Audio job not found".
 - **Error (audio preview fails to load)**: "Audio preview unavailable. Check R2 archive bucket." + retry. Approve button disabled until preview loads.
-- **Partial (one of 5 conditions fails)**: Approve button disabled with inline message naming the failure (e.g., "Loudness out of range (-14.5 LUFS, target [-17, -15]). Re-master required.")
+- **Partial (one of 5 conditions fails)**: Approve button disabled with inline message naming the failure (e.g., "Loudness out of DB gate (-13.5 LUFS, gate [-18, -14] per ADR-0016). Re-master required."). Soft amber warning (Approve still enabled) when LUFS is inside the DB gate but outside the production target `[-17, -15]`.
 - **Revoke flow (post-publish)**: Separate /cms/revoke/{article_id} route — modal confirms 60s SLA + public notice email + RSS update.
 
 ---

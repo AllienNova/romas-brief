@@ -156,7 +156,7 @@ CI green. `pnpm install && pnpm turbo build && pnpm turbo test && pnpm turbo lin
 `audio_status: in_review → published` requires all of:
 1. `clinical_claims_checked = true`
 2. `qa_reviewer IS NOT NULL`
-3. `loudness_lufs BETWEEN -17 AND -15`
+3. `loudness_lufs BETWEEN -18 AND -14` (ADR-0016; -16 ±1 LUFS production target in audio-qa-reviewer agent)
 4. `transcript_url IS NOT NULL`
 
 `audio_status: published → revoked` requires:

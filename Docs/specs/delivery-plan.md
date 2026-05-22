@@ -105,7 +105,7 @@ Owner-role codes match `.claude/agents/`: `cms-engineer`, `web-engineer`, `audio
 | T-206 | Pre-roll injection (Audio Brief opener) | audio-producer | S | T-204 | A-206 |
 | T-207 | Master WAV → R2 `romas-audio-archive` (private) | audio-producer | S | T-204 | A-207 |
 | T-208 | Public MP3 → R2 `romas-audio-cdn` (Cloudflare CDN) | audio-producer | S | T-207 | A-208 |
-| T-209 | CMS Audio QA UI — state-machine flip controls; enforces `clinical_claims_checked = true` AND `qa_reviewer IS NOT NULL` AND `loudness_lufs BETWEEN -17 AND -15` AND `transcript_url IS NOT NULL` | cms-engineer | L | T-104,T-204 | A-209 |
+| T-209 | CMS Audio QA UI — state-machine flip controls; enforces `clinical_claims_checked = true` AND `qa_reviewer IS NOT NULL` AND `loudness_lufs BETWEEN -18 AND -14` (ADR-0016) AND `transcript_url IS NOT NULL`. UI surfaces amber soft-warning when LUFS falls outside the `[-17, -15]` production-target window. | cms-engineer | L | T-104,T-204 | A-209 |
 | T-210 | Audio QA checklist component (one-form-per-job) | cms-engineer | M | T-209 | A-210 |
 | T-211 | Revocation kill switch + Worker-side CDN purge call; target ≤ 60s end-to-end | audio-producer | M | T-208,T-209 | A-211 |
 | T-212 | Revocation latency watchdog (alerts at 45s, fails at 60s) | audio-producer | S | T-211 | A-212 |

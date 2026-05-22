@@ -35,7 +35,7 @@ constraint audio_publish_requires_qa check (
   audio_status <> 'published'
   or (clinical_claims_checked = true
       and qa_reviewer is not null
-      and loudness_lufs between -17 and -15
+      and loudness_lufs between -18 and -14  -- ADR-0016 widen; -16 ±1 target in audio-qa-reviewer agent
       and true_peak_dbtp <= -1
       and transcript_url is not null)
 )
@@ -91,7 +91,7 @@ Rejected. Introducing a dedicated QA microservice would add a network hop on eve
 
 **Negative**
 - Constraint violations surface as Postgres errors in the application layer. The CMS must translate these into user-facing messages ("Audio cannot be published: transcript URL missing") rather than displaying a raw constraint name.
-- Loudness tolerance is `BETWEEN -17 AND -15` (cms-schema.md:100). This is a 2 LUFS window around the -16 LUFS target. Episodes mastered to exactly -16 LUFS integrated pass; episodes at -17.01 LUFS fail the constraint. The audio-producer pipeline's two-pass loudnorm (audio-production-pipeline.md:79-88) must target -16 LUFS with enough precision to stay within the window consistently.
+- Loudness tolerance is `BETWEEN -18 AND -14` (ADR-0016 widen from cycle-1 F-P1-01's `[-17, -15]`). This is a 4 LUFS broadcast speech safe band centred on the -16 LUFS production target. Episodes mastered to anywhere in `[-18, -14]` pass the DB gate; episodes at -18.01 LUFS or -13.99 LUFS fail. The tight `-16 ±1` production target is enforced by the audio-qa-reviewer agent (soft amber warning outside `[-17, -15]`, hard reject only outside `[-18, -14]`). The audio-producer pipeline's two-pass loudnorm (audio-production-pipeline.md:79-88) targets `-16` with enough precision to land inside the tight window on first pass; misses re-master once and accept inside the broader DB gate.
 - `true_peak_dbtp <= -1` is checked at the DB layer but measured by ffmpeg. If the loudnorm pipeline produces a file with true peak of -0.9 dBTP, the constraint blocks publish. The pipeline must measure and store `true_peak_dbtp` accurately before attempting the status flip.
 
 **Neutral**
@@ -102,7 +102,7 @@ Rejected. Introducing a dedicated QA microservice would add a network hop on eve
 
 ## Revisit Triggers
 
-- Loudness tolerance window (`-17 to -15 LUFS`) is too narrow for a specific audio archetype (e.g., Conference Brief recorded in ambient environments) — widen the constraint via migration and update the audio production pipeline accordingly.
+- ~~Loudness tolerance window (`-17 to -15 LUFS`) is too narrow for a specific audio archetype (e.g., Conference Brief recorded in ambient environments) — widen the constraint via migration and update the audio production pipeline accordingly.~~ **Triggered cycle build-2026-05-21 → ADR-0016 widened DB gate to `[-18, -14]`; tight `[-17, -15]` production target moved to the audio-qa-reviewer agent layer.**
 - A second reviewer requirement is added at Day 30 — implement as a new RLS policy or application check; this ADR does not need to change.
 - An automated QA agent (not Kimal) is trusted to flip the publish gate — requires a deliberate policy decision and a new QA reviewer row seeded with the agent's identity. Document in AGENT.md §13.
 

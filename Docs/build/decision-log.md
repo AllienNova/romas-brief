@@ -144,3 +144,222 @@ Implementation-time decisions where the spec was silent. Each entry: context · 
 ---
 
 *Cycle-1 entries reconstructed 2026-05-15 from conversation history. Cycle-2 entries (D-008..D-010) authored live during M0c2 close.*
+
+---
+
+# Cycle build-2026-05-21 (review-remediation) — D-011..D-024
+
+Implementation-time decisions made during the /team-build cycle that remediated the 17 items from the `/team-review` synthesis (3 reviewers, 4 HIGH / 11 MEDIUM / 12 LOW).
+
+Note on numbering: cycle-2 close used D-008..D-010 (cf. previous section). This cycle continues sequentially at D-011 to avoid collisions.
+
+## D-011 — Re-classify reviewer recommendations against the canonical contract
+
+**Context**: The three /team-review reviewers (security, architecture, code-quality) audited migrations 0001-0005 in isolation, without reading `Docs/specs/contracts/supabase-schema.sql`. Their HIGH recommendations (loudness widen, embargo CHECK, URL format CHECK) read as "the migration is wrong" — but the migrations cite the contract as their source-of-truth, and the contract specifies the prior values verbatim.
+
+**Decision**: At the /team-build plan-approval gate, surface the contract-vs-recommendation conflict per item and require Kimal adjudication before unilateral migration edits. Classify each item as (A) contract-drift requiring spec amendment, (B) additive contract extension, or (C) scaffold/config only.
+
+**Rationale**: A migration edit that diverges from the canonical contract is a P0 spec/impl drift — exactly the failure mode `team-build-critic` blocks on. The reviewers' recommendations were valid as proposed amendments; treating them as such instead of as unilateral fixes preserves the contract-as-truth discipline established in cycle-1 (and reinforced by ADR-0014's repository-separation insistence on single sources of truth).
+
+**Alternative considered**: Apply reviewer recommendations directly to migrations. Rejected — would have introduced silent contract drift, would have been caught by the critic anyway, would have wasted a cycle.
+
+**Owner of completion**: Build Lead (this cycle).
+
+---
+
+## D-012 — A1 loudness band widen `[-17,-15]` → `[-18,-14]` LUFS
+
+**Context**: Cycle-1 critic finding F-P1-01 upgraded the `audio_publish_requires_qa` CHECK from 4 to 5 conditions and fixed the loudness band at `[-17, -15]` LUFS. Cycle build-2026-05-21 quality reviewer flagged the band as too tight: ElevenLabs/PlayHT output normalize-lands at `-17.5` to `-14.5` LUFS, and a strict DB band blocks legitimate near-target masters.
+
+**Decision**: Adopt the reviewer's recommendation. Widen the DB-layer CHECK to `[-18, -14]` LUFS (broadcast speech safe band). Move the tight `-16 ±1 LUFS` production target out of the DB layer into the audio-qa-reviewer agent + audio-production-pipeline R-202 two-pass loudnorm step.
+
+**Rationale**: Layered defense. The DB is the floor (broken masters fail), the pipeline is the production target with re-master semantics, the reviewer is the human judgment layer. Hard-rejecting episodes at `-16.9 LUFS` is operationally undesirable for a daily-cadence editorial product. The 5-condition shape from F-P1-01 is preserved; only the band tolerance changes.
+
+**Alternative considered**: Keep `[-17, -15]` and engineer the pipeline to hit it on first pass ≥99.5% of the time. Rejected — the engineering effort is significant and the false-positive rejection cost falls on legitimate publishes daily.
+
+**Counter-argument acknowledged**: This partially reverses cycle-1 F-P1-01's tightening. The reversal is documented in ADR-0016 with a closing condition (re-tighten if the pipeline can land inside `[-17, -15]` ≥99.5% reliably).
+
+**Owner**: ADR-0016 author (this cycle); audio-qa-reviewer agent definition (this cycle); audio-production-pipeline skill update (this cycle).
+
+**Anchored in**: ADR-0016, SSOT §3 row 12 + §7 rule 6, 19 forward-looking files updated in this cycle (see build-log "Bucket A propagation").
+
+---
+
+## D-013 — A2 embargo release-pair CHECK (convergent finding 3-of-3)
+
+**Context**: All three /team-review reviewers flagged the `(released_at IS NOT NULL) ↔ (released_to_article_id IS NOT NULL)` invariant as comment-only enforcement. The contract authors had documented the invariant as "by workflow convention; not constraint-enforced because the release worker writes both in a single update."
+
+**Decision**: Add the explicit `CHECK ((released_at is null) = (released_to_article_id is null))` constraint to `embargo_holds`. Amend the canonical contract + migration 0005.
+
+**Rationale**: A worker crash mid-update (or any future raw UPDATE setting only one column) would leave the row silently half-released, undetectable by inviolable rule 2. One-line CHECK eliminates the corruption class at zero cost. The "single atomic update" workflow assumption is correct for the happy path but fragile against operational failures.
+
+**Owner**: This cycle.
+
+---
+
+## D-014 — A3 URL scheme CHECKs (convergent 2-of-3)
+
+**Context**: Reviewers flagged that the `length > 0` CHECK on `primary_source_url` accepts `.`, ` `, and `javascript:` payloads. Same lack of scheme validation on `sources.feed_url`, `sources.api_endpoint`, `claims.source_url`.
+
+**Decision**: Tighten the rule-1 CHECK on `articles.primary_source_url` to `length > 0 AND col ~* '^https?://'`. Add equivalent scheme regex to `claims.source_url` (CHECK NOT NULL), `sources.feed_url` (nullable), `sources.api_endpoint` (nullable). Amend canonical contract + migrations 0001, 0003, 0004 in lockstep. R-105 extends pgTAP coverage to include these regex constraints.
+
+**Rationale**: Defense-in-depth for inviolable rule 1 (primary source) and SSRF prevention for the T-115 cron-ingest fetch path. Single-line additions per column; no behavioral impact on legitimate URLs.
+
+**Owner**: This cycle.
+
+---
+
+## D-015 — A4 `body_md` + `script_md` length cap (200 KB)
+
+**Context**: Reviewer flagged that uncapped `body_md` length turns the `word_count` generated column's `regexp_split_to_array` into a DoS vector. 200 KB ≈ 32k words covers the deepest 3,500-word "deep_report" archetype with ample headroom.
+
+**Decision**: Add `CHECK (length(body_md) <= 200000)` to `articles.body_md`; equivalent guard on `audio_jobs.script_md` (nullable). Amend contract + migrations 0001, 0002.
+
+**Rationale**: Cheap DoS guard. Editorial archetype caps documented in CLAUDE.md §1 stop well below 200 KB. R-105 extension covers pgTAP.
+
+---
+
+## D-016 — A5 `word_count` trim() bugfix
+
+**Context**: `regexp_split_to_array(body_md, '\s+')` returns `{'', 'text'}` on leading-whitespace bodies, inflating `word_count` by 1.
+
+**Decision**: Change the generated column expression to `regexp_split_to_array(trim(body_md), '\s+')`. Amend contract + migration 0001.
+
+**Rationale**: Off-by-one bug; trivial fix. Existing word-count assertions in R-105 will pick up the corrected behavior.
+
+---
+
+## D-017 — A6 `(article_id, audio_tier)` unique on audio_jobs
+
+**Context**: Reviewer flagged a race condition: the audio-producer agent retries on failure (audio-production-pipeline §3-retry backoff). Without a unique constraint, retries can create duplicate audio_jobs rows for the same (article, tier).
+
+**Decision**: Add `CREATE UNIQUE INDEX audio_jobs_article_tier_uniq ON audio_jobs(article_id, audio_tier);` to canonical contract + migration 0002.
+
+**Rationale**: Makes retries idempotent at the DB layer. The audio-producer can safely `INSERT … ON CONFLICT (article_id, audio_tier) DO NOTHING` (or `UPDATE`) without race semantics.
+
+---
+
+## D-018 — A7 `articles.publish_at` partial index
+
+**Context**: SSOT §3 row 8 locks the 3-edition publish scheduler (APAC 22:00 / EU 06:00 / Americas 11:00 UTC). The scheduler's hot-path query is `WHERE status = 'ready_to_publish' AND publish_at <= now()`. The pre-existing `articles_status_idx` doesn't accelerate the publish_at range scan.
+
+**Decision**: Add `CREATE INDEX articles_publish_at_idx ON articles(publish_at) WHERE status = 'ready_to_publish';`. Partial keeps the index tight as the article catalog grows.
+
+---
+
+## D-019 — A8 `sources_active_idx` replaced with partial on `last_fetched_at`
+
+**Context**: Original `CREATE INDEX sources_active_idx ON sources(active);` is a btree on a boolean column (~50% selectivity) — a planner no-op. The actual cron query is "oldest active sources first" for round-robin freshness.
+
+**Decision**: Drop the old index name `sources_active_idx`. Add `CREATE INDEX sources_active_last_fetched_idx ON sources(last_fetched_at) WHERE active = true;`.
+
+**Rationale**: Replacement, not addition. Aligns the index shape with the cron's actual query.
+
+---
+
+## D-020 — A9 + A10 misc CHECK constraints
+
+**A9**: `articles.author_id` is nullable but published articles must have an author. Add `CHECK (status <> 'published' OR author_id IS NOT NULL)`.
+
+**A10**: `qa_reviewers.email` is `UNIQUE` but case-sensitive. Add `CHECK (email = lower(email))`; application layer is required to lowercase before insert.
+
+**Decision**: Both adopted in canonical contract + migration 0001. R-105 extension picks up pgTAP for both.
+
+---
+
+## D-021 — A11 `audio_jobs.tier` → `audio_jobs.audio_tier` rename
+
+**Context**: `articles.tier` (editorial-edition enum: `daily / friday_read / conference`) and `audio_jobs.tier` (audio product enum: `audio_brief / daily_brief / podcast / conference_brief / video_podcast`) share a column name but carry entirely different enumerations.
+
+**Decision**: Rename `audio_jobs.tier` to `audio_jobs.audio_tier`. Keep `articles.tier` unchanged (it has wider surface area). Amend canonical contract + migration 0002 + 4 propagation files (ADR-0005, test-qa-plan A-056, performance-report NFR-006, `.claude/skills/cms-schema.md` line 141). ADR-0017 documents.
+
+**Rationale**: Joins become self-documenting. Onboarding cost lower. Aligns with SSOT §4 vocabulary which consistently says "audio tier" for the audio enum.
+
+**Index name kept** as `audio_jobs_tier_published` (internal-only; not worth the churn).
+
+---
+
+## D-022 — A12 `claims.confidence` type clarity
+
+**Decision**: `numeric(3,2)` (allows storage to 9.99 before CHECK fires) → `numeric(4,3)` (allows storage 0.000-9.999; still bounded by CHECK between 0 and 1). Cosmetic; CHECK is the real guard.
+
+**Rationale**: Better expresses a probability. Low impact; reviewer flagged as clarity not correctness.
+
+---
+
+## D-023 — A13 Seed PII — keep as-is
+
+**Context**: `supabase/seed.sql` inserts `('president@aliennova.com', 'Kimal Honour Djam', 'audio_qa')`. Reviewer flagged as a generic PII concern.
+
+**Decision**: Keep as-is.
+
+**Rationale**: Kimal authored the data, the data is Kimal's, the repo is private, and remediation-plan M1 R-114 explicitly mandates "seed `qa_reviewers` with Kimal." Env-templating the row adds operational friction without security benefit at this scale. If subscriber base or compliance posture changes, env-template becomes appropriate; flag for re-evaluation at Day 90.
+
+**Owner**: Kimal (explicit /AskUserQuestion answer 2026-05-21).
+
+---
+
+## D-024 — Bucket C non-contract scaffolding decisions
+
+| ID | Decision | Rationale |
+|---|---|---|
+| C2 | Hoist `baseTailwindConfig` to `packages/config/src/tailwind.ts`; add `tailwindcss@3.4.15` to packages/config devDeps | Under `node-linker=isolated`, a package that type-imports `tailwindcss` must declare it. Typecheck caught the missing dep on first run; this is a real diagnostic, not a placeholder. |
+| C3 | Drop `./tsconfig-base.json` re-export from `packages/config/package.json`; the workspace-root `tsconfig.base.json` is the single canonical source. | Two sources of truth (root file + package re-export) would silently drift. Workspaces extend the root file directly. |
+| C4 | Remove `verbatimModuleSyntax: false` override from `workers/cron-ingest/tsconfig.json` | Confirmed by typecheck PASS. The reviewer's claim that Wrangler 3 + esbuild are compatible with `verbatimModuleSyntax: true` is empirically validated. |
+| C5 | Drop `lint dependsOn ["^lint"]`; switch `test dependsOn` to `["^typecheck"]` | Lint is workspace-local. Test depending on `^build` was forcing `next build` on every test run; `^typecheck` is the right shape. |
+| C6 | `.npmrc save-prefix=^` → `save-exact=true` | An editorial platform needs reproducible builds. Carets in package.json from prior `pnpm add` calls survive (manual exact-pin where required, e.g., C11 `next`). |
+| C7 | `pnpm.overrides` for `undici >=6.24.0` + `glob >=10.5.0` | Verified by `pnpm why` post-install: undici 5.29.0 → 8.3.0; glob 10.3.10 → 13.0.6. CVE GHSA-vrm6-* + GHSA-h25m-26qc-wcjf + GHSA-5j98-mcp5-4vw2 closed. |
+| C10 | Reviewer's `compatibility_date` "future-dated" claim is stale — date `2026-05-01` is 3 weeks in the past relative to today (2026-05-21). NO CHANGE. | Reviewer was operating from out-of-date today-date assumption. |
+| C13 | ADR-0015 — Next 14 GHSA-h25m-26qc-wcjf accepted CVE | Per SSOT §5 Next 14 lock. Accept residual risk with named controls (RSC input validation, body cap, edge rate-limit, quarterly review). Closes when Next 14.x patch backport ships OR ADR-0001 is amended for Next 15. |
+
+---
+
+## D-024-followup — team-build-critic gate findings closed
+
+**Context**: `team-build-critic` returned `APPROVE WITH CONDITIONS` with 1 P0 + 2 P1 findings. P2 findings deferred per critic explicit allowance.
+
+**Findings closed**:
+
+1. **P0 — `.claude/skills/cms-schema.md:98`** — DDL example still used old `tier` column name AND was missing `video_podcast` from the enum (4 of 5 values). **Fix**: renamed column to `audio_tier`, added `video_podcast`, inline comment cites ADR-0017 + M0c2 + ADR-0005 cycle-3 provenance. Verified by grep: pattern `tier text not null check` no longer matches any forward-looking file.
+2. **P1 — `.claude/agents/audio-producer.md:23`** — target-tier list missing `video_podcast`. **Fix**: added Tier 5 value with ADR-0005 + ADR-0012 launch-date reference. Column name also clarified as `audio_jobs.audio_tier` per ADR-0017.
+3. **P1 — `Docs/build/build-log.md:200-212` Bucket A table** — D-NNN cross-references were off-by-N (used D-008..D-018 which collide with cycle-2 entries). **Fix**: rewrote every "Other propagation" cell to use the correct D-012..D-023 mapping for this cycle. Also added line 58 attribution to A1 row for audio-qa-checklist.
+
+**P2 also closed (cheap fixes)**:
+
+- **P2.1 — `.claude/agents/cms-engineer.md:115`** — generic `tier` reference now disambiguated to `articles.tier (editorial)` + `audio_jobs.audio_tier (audio product, ADR-0017 rename)` + `articles.publish_at` partial index.
+- **P2.2 — `Docs/specs/contracts/supabase-schema.sql:148`** — inline history comment now carries `A11 (build-2026-05-21): column renamed tier → audio_tier per ADR-0017` alongside the prior M0c2 + ADR-0005 cycle-3 attribution.
+- **P2.3 — `Docs/build/build-log.md:200`** — A1 row's audio-qa-checklist entry now names line 58 explicitly.
+
+**Verification grep**:
+- `audio_jobs\.tier` forward-looking — 0 matches (residual matches are all in documentation-of-the-rename: ADR-0017 self-reference, build-log A11 row, decision-log D-021, historical cycle-1 critic-review).
+- `tier text not null check` — 0 matches (no remaining DDL using `tier` as column name anywhere).
+- `video_podcast` in cms-schema.md + audio-producer.md — confirmed present (lines 99 + 23 respectively).
+
+**Verdict downgrade**: `APPROVE WITH CONDITIONS` → `APPROVE`. Cycle build-2026-05-21 is ready to hand off to `/team-qa`.
+
+**Owner**: This cycle, completing within the 3-cycle critic budget on cycle 1 (no iteration required).
+
+---
+
+## D-025 — /team-qa pass corrects Bucket C C11 next version pin (14.2.18 → 14.2.35) + 3 transitive overrides
+
+**Context**: /team-qa cycle build-2026-05-21 ran fresh `pnpm audit` against the post-/team-build state and found **26 vulnerabilities** in `next@14.2.18` (1 critical, 7 high, 14 moderate, 4 low). The CRITICAL was `GHSA-f82v-jwr5-mffw` (Authorization Bypass in Next.js Middleware) — patched in `next 14.2.25`. Bucket C C11 had pinned exact to `14.2.18` per the literal reviewer text ("Pin to the exact version used in development: 14.2.18") but the reviewer's actual development version was `14.2.35` (resolved from the prior `^14.2.18` caret). The literal pin regressed 9 already-fixed advisories — exactly the kind of self-inflicted version drift the team-qa-critic explicitly blocks on.
+
+**Decision**: Bump exact pin to `14.2.35` (latest 14.x) in both `apps/web/package.json` and `apps/cms/package.json` for both `next` and `eslint-config-next`. Add three `pnpm.overrides` to close transitive devDep CVEs: `postcss >=8.5.10` (XSS), `ws@>=8.0.0 <8.20.1` → `>=8.20.1` (uninitialized memory disclosure), `esbuild@<=0.24.2` → `>=0.25.0` (dev-server CORS).
+
+**Rationale**: 
+- Closes 9 Next 14 CVEs without violating SSOT §5 Next 14 lock.
+- Closes 3 transitive devDep CVEs that pnpm.overrides can resolve.
+- Honors the spirit of the reviewer's C11 recommendation (exact-pin for reproducibility) while correcting the version-number literal error.
+- Reduces vulnerability count from 26 → 14, and 1 critical → 0 critical.
+
+**Residual**: 14 Next CVEs remain, all patched only in Next 15.x.y. ADR-0015 was rewritten from v1 (single CVE accepted) to v2 (14 CVEs accepted with applicability assessment per advisory + mitigation control mapping). 5 of the 14 are documented NOT applicable to ROMAS Brief's architecture (App Router only, no i18n, no Pages Router, no `Script strategy="beforeInteractive"`); the other 9 carry named controls assigned to web-engineer + DevOps + architecture-reviewer for M3+ enforcement.
+
+**Alternative considered**: Migrate to Next 15 now. Rejected — Tailwind 4 pairing requirement + App Router cache behaviour change + no live RSC code yet make the migration cost disproportionate to the residual risk after the 14.2.35 bump.
+
+**Verification** (fresh evidence captured in `Docs/qa/test-results.md` build-2026-05-21 qa-pass section):
+- `pnpm audit --audit-level=low`: 26 → 14 vulnerabilities (1 critical → 0 critical)
+- `pnpm turbo run typecheck`: 5 successful / 5 total (1.375s)
+- `pnpm turbo run build --filter=@romas-brief/cron-ingest`: PASS (2.889s, 21.68 KiB / 5.15 KiB gzip)
+
+**Owner**: QA Lead (this cycle). Future /team-build cycles should run `pnpm audit` as a verification step alongside typecheck + build, not defer it to the /team-qa gate. Adding this to the standing /team-build skill discipline would have caught this within the cycle that introduced it.
