@@ -1,0 +1,91 @@
+# =====================================================================
+# ci.yml · ROMAS Brief CI pipeline
+# R-106 (remediation-plan M1) · /team-build M1-completion cycle
+# Anchors: .nvmrc Node 20 LTS · package.json packageManager pnpm@9.0.0 ·
+#   SCAFFOLD-NOTES.md CI baseline (Linux + Node 20) · D-025 systemic
+#   correction (pnpm audit alongside typecheck + build)
+# =====================================================================
+#
+# Runs on every push to main + every PR. Closes the team-build-critic
+# cycle build-2026-05-21 gap that allowed the next 14.2.18 -> 14.2.35
+# version regression to slip past the build cycle.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HUSKY: 0
+
+jobs:
+  verify:
+    name: lint + typecheck + build + audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm turbo run lint
+        continue-on-error: false
+
+      - name: Typecheck
+        run: pnpm turbo run typecheck
+
+      - name: Build (worker only on CI; apps build separately in deploy-pages)
+        run: pnpm turbo run build --filter=@romas-brief/cron-ingest
+
+      - name: Test (pgTAP runs in deploy-migrations; turbo run test placeholder)
+        run: pnpm turbo run test
+
+      # D-025 systemic correction: pnpm audit ran as INFORMATIONAL gate
+      # so the next dependency-CVE regression gets surfaced in-cycle.
+      # Will not block PRs because ADR-0015 v2 accepts 14 residual Next
+      # advisories that have no patched version inside the Next 14 lock.
+      # Reviewers should still inspect the audit output on each PR.
+      - name: Security audit (informational; ADR-0015 v2 accepts Next 14 residuals)
+        run: pnpm audit --audit-level=high
+        continue-on-error: true
+
+      - name: No-stub guard (no TODO/FIXME/HACK in source other than the
+              T-115 auth-gate placeholder per Bucket C C9)
+        run: |
+          set -uo pipefail
+          unexpected=$(grep -rn -E 'TODO|FIXME|HACK' \
+            --include='*.ts' --include='*.tsx' --include='*.sql' \
+            apps packages workers supabase \
+            | grep -v 'TODO T-115: gate this handler' \
+            || true)
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected TODO/FIXME/HACK in source:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
+          echo "No unexpected TODO/FIXME/HACK markers."

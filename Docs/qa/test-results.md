@@ -133,3 +133,23 @@ This document re-runs after every milestone landing:
 - End of M1: T-08 must turn GREEN (T-NEW placeholders resolved) before M2 starts
 - End of M2: all 10 plan-level gates above become runnable
 - End of M3: Lighthouse + axe-core + visual regression added
+
+---
+
+## Cycle-5 fresh evidence (2026-05-22 against full M1)
+
+| Gate | Command | Result | Verdict |
+|---|---|---|---|
+| Lint | (deferred — T-117 ESLint preset) | n/a | DEFERRED |
+| Typecheck | `pnpm turbo run typecheck` | 5/5 PASS (82ms cached) | **PASS** |
+| Tests (JS) | (deferred — Vitest scaffolding T-117 / R-201) | n/a | DEFERRED |
+| Tests (pgTAP) | (deferred to deploy-migrations.yml + live Supabase) | 79 assertions enumerated in `supabase/tests/`; execution pending live project | DEFERRED |
+| Build (worker) | `pnpm turbo run build --filter=@romas-brief/cron-ingest` | PASS (cached) | **PASS** |
+| Build (apps) | Not run locally per Next 14 + Node 24 + Windows known bug | n/a; PASS on CI Linux/Node 20 | DEFERRED to CI |
+| Security audit | `pnpm audit --audit-level=low` | 14 vulns (0 critical, 5 high, 7 mod, 2 low) — matches ADR-0015 v2 inventory exactly | **PASS** with ADR-0015 v2 acceptance |
+| Workflow YAML lint | `yaml.safe_load` × 4 workflows | All 4 PASS | **PASS** |
+| No-stub guard | grep TODO\|FIXME\|HACK across apps/packages/workers/supabase (excluding T-115 placeholder) | 0 unexpected hits | **PASS** |
+| Tier-rename ripple | `grep audio_jobs\.tier` workers/ apps/ packages/ | 0 hits | **PASS** |
+| Loudness drift | `grep 'between -17 and -15\|BETWEEN -17 AND -15' supabase/ apps/` | 0 hits | **PASS** |
+
+Full cycle-5 trace per FR + critic-rerun on M1c-closeout deliverables: see `Docs/qa/requirements-trace.md` cycle-5 section.

@@ -248,3 +248,142 @@ The /team-qa skill should focus on the five Focus Areas above. The build is ship
 
 Branch / commit: still on `main`, uncommitted. The user explicitly chose "stay on main; commits land in the user's normal flow" rather than worktree isolation.
 
+---
+
+# Handoff — cycle build-2026-05-21-m1c (M1-completion) → next cycle
+
+## What this cycle did
+
+Closed the M1 milestone gaps surfaced by the prior cycle's /team-qa handoff. Kimal-authorized "Full /team-build M1-completion" via /AskUserQuestion 2026-05-21. **11 new files delivered.**
+
+**team-build-critic verdict**: `APPROVE WITH CONDITIONS` → `APPROVE` after P0 close (cycle 1, no iteration needed beyond closing the 0011 header phantom-scope comment + dropping source-health from deploy-workers matrix).
+
+## What changed — by surface
+
+### Schema (R-104 completion + R-114 RLS migration)
+- `supabase/migrations/0006_create_lexicon.sql` — lexicon + lexicon_proposals (T-108)
+- `supabase/migrations/0007_create_revocations.sql` — audit log (T-109)
+- `supabase/migrations/0008_create_subscribers.sql` — Beehiiv-canonical + 3 indexes (T-110)
+- `supabase/migrations/0009_create_set_updated_at.sql` — function + subscribers trigger + view (T-111; M0c2 P0 hoist preserved)
+- `supabase/migrations/0010_create_source_health.sql` — time-series (T-112)
+- `supabase/migrations/0011_rls_policies.sql` — RLS enable on 11 tables + 5 policies + 2 trigger attachments (T-113 + R-114 partial-close)
+
+All transcribed verbatim from canonical `Docs/specs/contracts/supabase-schema.sql`; team-build-critic verified byte-equivalent.
+
+### pgTAP test suite (R-105) — 79 assertions across 5 files
+- `supabase/tests/inviolable_rules.sql` (18 — 6 inviolable rules)
+- `supabase/tests/bucket_a_constraints.sql` (13 — build-2026-05-21 Bucket A)
+- `supabase/tests/enums_and_lengths.sql` (13 — cycle-1 P2-05 carry)
+- `supabase/tests/indexes.sql` (13 — index existence)
+- `supabase/tests/rls_and_triggers.sql` (22 — RLS + policies + triggers + view)
+
+### CI/CD (R-106) — 4 workflows
+- `.github/workflows/ci.yml` — lint + typecheck + worker build + **D-025 informational pnpm audit** + no-stub guard
+- `.github/workflows/deploy-pages.yml` — Cloudflare Pages
+- `.github/workflows/deploy-workers.yml` — Wrangler matrix (cron-ingest live; 5 M2/M3 stubs; source-health folded per D-027)
+- `.github/workflows/deploy-migrations.yml` — supabase db push + pgTAP + **0011 RLS pre-push guard**
+
+All secrets parameterized; all action versions pinned `@v4`.
+
+### Documentation (R-006-A)
+- `Docs/ROMAS-Brief-Audio-Architecture.md` v1.0 — ~390 lines; canonical sibling to Master-Strategy + Runbook + Launch-Plan.
+
+### Build artifacts
+- `Docs/build/build-log.md` — extended with cycle build-2026-05-21-m1c section
+- `Docs/build/decision-log.md` — D-026 + D-027
+
+## Self-verification evidence
+
+```
+pnpm install                                          PASS (lockfile up to date)
+pnpm turbo run typecheck                              5/5 PASS (1.039s)
+pnpm turbo run build --filter=@romas-brief/cron-ingest PASS (36ms cached)
+pnpm audit --audit-level=low                          14 vulns (0 crit; matches ADR-0015 v2)
+YAML lint on 4 workflows                              All 4 PASS
+supabase --version                                    2.90.0 (CLI available locally)
+```
+
+## What's still open in M1
+
+| Item | Owner | Deferred reason |
+|---|---|---|
+| **R-114 Auth Helper scaffold** (`apps/cms/lib/supabase.ts`) | next cycle | Rule 11 — verify current `@supabase/ssr` API first. ~30-50 lines + devDep + layout integration. D-026 documents. |
+| **R-005 Design Spec v1.1** (top-level doc) | design-system-keeper + Kimal | Reader-facing tone benefits from Kimal authoring; design artifacts under `Docs/design/` already exist. |
+| **R-110 Voice consent registry** | Kimal (legal) | Pre-launch gate; legal instrument. Audio Architecture §2.2 references it as "once R-110 lands." |
+| **R-112 SECRETS.md** | DevOps + Kimal | I can draft if you green-light. |
+| **Live Supabase project provisioning** | Kimal (infra) | deploy-migrations.yml needs real `SUPABASE_*` secrets. |
+| **Live Cloudflare provisioning** | Kimal (infra) | deploy-pages + deploy-workers need real `CLOUDFLARE_*` + `PAGES_PROJECT_*` secrets. |
+
+## Focus areas for next dispatch
+
+### Option A — `/team-qa cycle-4` against M1-completion
+Verify the migrations + pgTAP + workflows + Audio Architecture doc against the contract + remediation-plan acceptance. Should be fast.
+
+### Option B — `/team-build M2` audio pipeline
+Per Launch Arc Plan row 4 (originally W-5 start Mon 2026-06-02 — ~11 days from now). Substantial scope (~2 weeks).
+
+### Option C — close R-114 Auth Helper + provision Supabase/Cloudflare
+~1-2 hours including @supabase/ssr docs fetch + scaffold + test deploy. Enables deploy-migrations to actually run.
+
+### Option D — `/team-build M2` parallel with R-114
+Audio pipeline lands in Workers + writes via service-role key (not CMS Auth Helper). Parallelizable.
+
+**Recommended sequencing**: **C → B**. Or **B alone** if you'd rather let R-114 close on its own track.
+
+Branch / commit: still on `main`, uncommitted post-/team-build-critic close.
+
+---
+
+# Handoff — cycle build-2026-05-22-m1c-closeout (M1 deferred-item close) → next cycle
+
+## What this cycle did
+
+Closed the 4 actionable M1 deferred items from the prior cycle's handoff: **R-114** Auth Helper scaffold (per rule 11 with @supabase/ssr docs fetch via context7), **R-005** canonical Design Specification v1.1 top-level doc, **R-110** voice consent registry TEMPLATE (Kimal fills + signs the executed instrument), **R-112** SECRETS.md rotation runbook.
+
+## What changed — by surface
+
+| Surface | Files (lines) |
+|---|---|
+| R-114 deps | `apps/cms/package.json` (+2 deps exact-pinned: `@supabase/ssr@0.10.3`, `@supabase/supabase-js@2.106.1`) + `pnpm-lock.yaml` |
+| R-114 Auth Helper | `apps/cms/lib/supabase/server.ts` (56) + `route.ts` (54) + `types.ts` (25) — server-component + route-handler factories, no middleware variant per ADR-0015 v2 |
+| R-005 Design Spec | `Docs/ROMAS-Brief-Design-Specification.md` v1.1 (~380) — canonical sibling doc; synthesis with pointers, not duplication |
+| R-110 voice consent | `Docs/voice-consent-registry.md` v1.0.0-template (~180) — fillable scaffold with Kimal/ElevenLabs + Kimal/PlayHT pre-staged entries |
+| R-112 SECRETS | `SECRETS.md` v1.0.0 (~260) — 27-secret inventory, 4-store map, 90d/30d rotation cadences, 1Password runbook, breach response 1-2-3 |
+| Build artifacts | `Docs/build/build-log.md` extension, `Docs/build/decision-log.md` D-028..D-030, this file |
+
+## Self-verification evidence
+
+```
+pnpm install                  PASS (+10 added, supabase deps + transitives)
+pnpm turbo run typecheck      5/5 PASS (46ms cached)
+pnpm audit --audit-level=low  14 vulns (matches ADR-0015 v2 inventory; supabase deps added 0 new CVEs)
+```
+
+## What's still open (your operations, not engineering)
+
+| Item | Owner | Blocker for |
+|---|---|---|
+| Live Supabase project provisioning | Kimal infra | deploy-migrations.yml; Auth Helper end-to-end exercise; `supabase gen types typescript --linked > apps/cms/lib/supabase/types.ts` (overwrites the placeholder Database type) |
+| Live Cloudflare provisioning (Pages projects, Workers account, R2 buckets, API token) | Kimal infra | deploy-pages.yml, deploy-workers.yml, cdn-purge-watchdog, R2 audio storage |
+| Voice consent executed signatures (Kimal/ElevenLabs + Kimal/PlayHT) | Kimal legal | First audio publish — audio-producer R-213 cascade behavior gates on `status: active` in the registry |
+| Beehiiv DPA + SCC execution | Kimal legal | First EU subscriber acquisition (Day 1 launch) |
+| Quarterly calendar reminders set up | Kimal | Continuity of secret rotation per D-030 |
+
+## Focus areas for next dispatch
+
+### Option A — `/team-qa cycle-5` against the full M1 (everything since `f8f7507`)
+Verify migrations 0001-0011 + pgTAP suite + GH workflows + Audio Architecture v1.0 + Design Spec v1.1 + Auth Helper scaffold + SECRETS + voice consent template against contracts + remediation-plan acceptance. Substantial scope — would catch any latent gaps before /team-build M2 ships audio pipeline code.
+
+### Option B — `/team-build M2` audio pipeline (per Launch Arc Plan W-5 start)
+The natural next critical-path move. Audio production pipeline + RSS publishers + CDN purge watchdog + Whisper transcription. ~2 weeks per the Arc Plan; substantial scope.
+
+### Option C — Live provisioning + smoke test
+You provision Supabase + Cloudflare + R2; then run a one-shot smoke test of the existing workflows (deploy-migrations actually applying 0001-0011 + running the pgTAP suite against a real database; deploy-pages publishing the stub apps; cron-ingest deploying its first scheduled tick). Single-cycle close on the deployment side; would expose any provisioning-time gaps before M2 starts adding more surface.
+
+### Recommended sequencing
+**A → C → B**: /team-qa catches anything we missed; then provision + smoke; then M2. Most defensive.
+
+Alternative — **C → A → B**: provision first (since smoke testing the workflows reveals real CI/Cloudflare gaps that /team-qa cannot detect from inside the session); then /team-qa with that fresh evidence; then M2. Higher-velocity if you have an hour for provisioning.
+
+Branch / commit: still on `main`, uncommitted post-cycle.
+

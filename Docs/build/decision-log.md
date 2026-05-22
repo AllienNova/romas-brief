@@ -363,3 +363,93 @@ Note on numbering: cycle-2 close used D-008..D-010 (cf. previous section). This 
 - `pnpm turbo run build --filter=@romas-brief/cron-ingest`: PASS (2.889s, 21.68 KiB / 5.15 KiB gzip)
 
 **Owner**: QA Lead (this cycle). Future /team-build cycles should run `pnpm audit` as a verification step alongside typecheck + build, not defer it to the /team-qa gate. Adding this to the standing /team-build skill discipline would have caught this within the cycle that introduced it.
+
+---
+
+# Cycle build-2026-05-21-m1c (M1-completion) — D-026..D-027
+
+## D-026 — R-114 Auth Helper scaffold deferred per rule 11
+
+**Context**: team-build-critic flagged a P0 phantom-scope claim in `supabase/migrations/0011_rls_policies.sql` header. The header said "`apps/cms/lib/supabase.ts` + server-component-side Auth Helper ... Lands in this cycle as scaffold code" — but the file was never created. The critic gave a binary choice: (a) write the scaffold or (b) amend the comment to "deferred."
+
+**Decision**: Chose (b) — amend the comment to mark the Auth Helper scaffold as deferred to the next cycle. Rationale: CLAUDE.md rule 11 ("Read official sources before implementing") forbids writing third-party SDK integration code without first reading current docs. `@supabase/ssr` has had API churn across versions (server-component vs middleware patterns, cookie helpers), and writing the scaffold without first verifying the current API would be exactly the recall-as-evidence anti-pattern rule 11 exists to prevent.
+
+**Alternative considered**: Write the scaffold against best-guess API. Rejected per rule 11.
+
+**Owner of completion**: next cycle. Estimated work: 30-50 lines of code in `apps/cms/lib/supabase.ts` + `@supabase/ssr` devDep addition + `app/layout.tsx` integration. Per ADR-0015 v2: Auth runs at the Server Component layer, NOT middleware.
+
+---
+
+## D-027 — `source-health` worker folded into `cron-ingest`, dropped from CI matrix
+
+**Context**: Original Worker inventory in `delivery-plan.md` enumerated `workers/source-health` as a separate worker. Audio Architecture v1.0 §9.2 (authored this cycle) says "T-115 / M1 (folded into cron-ingest)" because writing to the `source_health` table is a natural side effect of cron-ingest's per-source fetch loop. team-build-critic flagged the deploy-workers.yml matrix vs Audio Architecture §9.2 drift as P1.
+
+**Decision**: Drop `source-health` from the deploy-workers.yml matrix. Keep Audio Architecture §9.2's folded statement.
+
+**Rationale**: Eliminates doc/workflow drift without losing functionality — source_health table is still written, just by cron-ingest. Reversible if a future cycle needs source-health on a different cadence.
+
+**Alternative considered**: Keep source-health in matrix as a separate worker stub. Rejected — no M2 R-NNN allocates work to a separate source-health worker.
+
+**Owner of completion**: this cycle (immediate edit to deploy-workers.yml).
+
+---
+
+# Cycle build-2026-05-22-m1c-closeout — D-028..D-030
+
+Decisions made during the M1-completion-closeout cycle (Kimal-authorized close of the 4 actionable deferred items from M1-completion handoff).
+
+## D-028 — apps/cms Auth Helper env var convention: SUPABASE_URL (no NEXT_PUBLIC_ prefix)
+
+**Context**: @supabase/ssr official docs (fetched 2026-05-22 via context7 `/supabase/ssr`) use `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` env var convention. The `NEXT_PUBLIC_` prefix exposes a variable to the Next.js client bundle (browser-readable). The current `.env.example` uses unprefixed `SUPABASE_URL` + `SUPABASE_ANON_KEY` — designed for server-side Worker consumption.
+
+**Decision**: Keep the unprefixed convention (`SUPABASE_URL` + `SUPABASE_ANON_KEY`) in the Auth Helper scaffold. Reference them from the server-component factory + route-handler factory via `process.env["SUPABASE_URL"]` etc.
+
+**Rationale**:
+- ADR-0015 v2 mandates server-only Auth flows for ROMAS Brief (no Pages Router, no middleware). The anon key never reaches the browser bundle — there is no browser-side sign-in form that needs `NEXT_PUBLIC_*` exposure.
+- Sign-in flow is server-rendered form POST → `app/api/auth/sign-in/route.ts` Route Handler that calls `supabase.auth.signInWithPassword({ ... })` server-side; cookies are set in the response.
+- Keeping the unprefixed name means apps/cms + Workers share the exact same env-var name (one source of truth in Cloudflare Worker Secrets + Cloudflare Pages env vars).
+
+**Alternative considered**: Add `NEXT_PUBLIC_*` duplicates of the existing names. Rejected — operationally creates two-name drift risk for zero functional benefit at this Auth posture.
+
+**Reversal trigger**: If a future cycle introduces client-side auth UI (browser-side `useUser()` hooks, optimistic UI on auth state), add the `NEXT_PUBLIC_*` duplicates then; both names can coexist. Update this ADR + the scaffold imports.
+
+**Owner**: this cycle. Documented in `apps/cms/lib/supabase/server.ts` header comment + `Docs/SECRETS.md` §2.
+
+---
+
+## D-029 — R-110 deliverable: template only, not executed instrument
+
+**Context**: Kimal /AskUserQuestion 2026-05-22 explicitly chose "Template only — you fill and sign" for R-110 voice consent registry. The actionable interpretation: deliver a fillable scaffold that the audio-producer agent can read for cascade-on-withdrawal behavior, with placeholders for the donor identity + recording session + commercial scope + signatures that Kimal fills offline.
+
+**Decision**: Author `Docs/voice-consent-registry.md` as a v1.0.0-template document. Pre-stage §2 (Kimal/ElevenLabs entry) + §3 (Kimal/PlayHT entry) with all field names present but values marked `# FILL:`. Document the operational checklist (§5) that gates `status: active` flip — 9 items including signed-PDF storage in 1Password "ROMAS legal" vault.
+
+**Rationale**:
+- The audio-producer agent (per R-213, M2) reads this file at start-of-pipeline; the cascade behavior on withdrawal must be deterministic. The template structure delivers that operational contract independent of when the legal instrument is executed.
+- Executing the legal instrument requires Kimal-only authority (donor + AllienNova signer + optional witness). I cannot fabricate signatures.
+- Pre-staging Kimal's two expected entries (ElevenLabs + PlayHT — both his own voice clones per CLAUDE.md §6) means Kimal just fills the per-vendor identifiers + dates + signs, rather than designing the entry from scratch.
+
+**Alternative considered**: Skip the file entirely and surface R-110 as Kimal's authoring track. Rejected — leaving the file absent means the audio-producer agent's R-213 cascade behavior has no concrete reference; the template lands the operational contract.
+
+**Owner of completion**: Kimal fills + signs the executed copies before first audio publish (M2 R-201 prerequisite).
+
+---
+
+## D-030 — SECRETS.md rotation cadences: 90d standard, 30d high-blast-radius
+
+**Context**: SECRETS.md needs an explicit rotation policy. Industry standard for API keys ranges from "never" (bad) to "weekly" (operationally excessive for a 1-person editorial platform). The right cadence trades off rotation operational cost against blast-radius-on-leak.
+
+**Decision**: Two-tier rotation:
+- **90 days standard** for: API keys (ElevenLabs, PlayHT, OpenAI, Beehiiv, Resend, DeepL), R2 keys, HMAC webhook secrets, Sentry DSN.
+- **30 days high-blast-radius** for: `SUPABASE_SERVICE_ROLE_KEY` (full DB bypass), `CLOUDFLARE_API_TOKEN` (Workers/Pages/Cache deploy authority), `SUPABASE_ACCESS_TOKEN` (CI deploy), `SUPABASE_DB_PASSWORD` (production DB).
+- **On-event immediate** for: personnel change, suspected exposure, vendor breach notification, GitHub repo permissions change, Cloudflare account permissions change.
+
+Calendar reminders: quarterly block for 90d secrets (first business day Q1/Q2/Q3/Q4); monthly block for the 4 high-blast secrets (first business day each month). Aligned with the quarterly Cloudflare WAF + Next 14 CVE review per ADR-0015 v2.
+
+**Rationale**:
+- 90 days is the most common operationally-sustainable cadence for solo or small-team ops; quarterly is a calendar discipline Kimal can keep.
+- 30 days for the 4 high-blast secrets reflects their disproportionate damage potential: a leaked service-role key bypasses every RLS policy + every CHECK constraint at the DB layer.
+- "On-event immediate" overrides cadence whenever the specific events fire — never wait for the next scheduled block.
+
+**Alternative considered**: Uniform 90-day cadence for all secrets. Rejected — the service-role key + Cloudflare API token blast radius warrants tighter discipline; the 30-day cost is one calendar event per month vs the cost of an undetected leaked DB key persisting for up to 3 months.
+
+**Owner**: Kimal owns the calendar discipline. 1Password vault "ROMAS legal" maintains per-item audit log of every rotation (current value + previous value + last rotated + next due).
