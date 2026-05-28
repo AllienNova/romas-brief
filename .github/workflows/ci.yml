@@ -65,14 +65,11 @@ jobs:
       - name: Test (pgTAP runs in deploy-migrations; turbo run test placeholder)
         run: pnpm turbo run test
 
-      # D-025 systemic correction: pnpm audit ran as INFORMATIONAL gate
-      # so the next dependency-CVE regression gets surfaced in-cycle.
-      # Will not block PRs because ADR-0015 v2 accepts 14 residual Next
-      # advisories that have no patched version inside the Next 14 lock.
-      # Reviewers should still inspect the audit output on each PR.
-      - name: Security audit (informational; ADR-0015 v2 accepts Next 14 residuals)
+      # D-025 systemic correction: pnpm audit runs as a hard gate.
+      # Blocks PRs if new high-severity CVEs are introduced.
+      - name: Security audit
         run: pnpm audit --audit-level=high
-        continue-on-error: true
+        continue-on-error: false
 
       - name: No-stub guard (no TODO/FIXME/HACK in source other than the
               T-115 auth-gate placeholder per Bucket C C9)
