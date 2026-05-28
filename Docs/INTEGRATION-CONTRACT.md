@@ -1,13 +1,15 @@
 ---
 title: ROMAS Brief — Split-Repo Integration Contract
-version: 1.1.0
+version: 1.2.0
 date: 2026-05-28
-status: ACCEPTED-CONSOLIDATE — Kimal selected Option A (consolidate) on 2026-05-28. This contract becomes obsolete on consolidation-sprint completion. Until then, §3-§7 govern any inter-repo work.
+status: EXECUTED — Consolidation sprint (Phase 8, T-801–T-806) complete as of 2026-05-28. Reader source is now in apps/web/ of AllienNova/romas-brief. Vercel project romas-brief-web (prj_U86mInvLI5mRyv6zjPIwh2Aryi) is building from kimhons/romas-brief-web (repoId 1252164491) with the consolidated source committed. §3–§7 of this contract are superseded by the single-repo architecture. See Docs/specs/architecture.md for the current canonical architecture.
 owner: Kimal Honour Djam
-trigger: /team-qa cycle-6 surfaced B-20 (split-repo architecture undocumented). This doc closes B-20 at the contract level. Architecture decision (§8) resolved 2026-05-28 → consolidate.
+trigger: /team-qa cycle-6 surfaced B-20 (split-repo architecture undocumented). This doc closes B-20 at the contract level. Architecture decision (§8) resolved 2026-05-28 → consolidate. Phase 8 sprint executed 2026-05-28.
 ---
 
 # ROMAS Brief — Split-Repo Integration Contract
+
+> **STATUS: EXECUTED** — This contract is now retired. The split-repo architecture it governed has been consolidated. All reader source code lives in `apps/web/` of `AllienNova/romas-brief`. The canonical architecture is documented in `Docs/specs/architecture.md`.
 
 ROMAS Brief production lives across two GitHub repositories. This contract documents how they coordinate so:
 
@@ -25,6 +27,8 @@ ROMAS Brief production lives across two GitHub repositories. This contract docum
 | **Reader** | `kimhons/romas-brief-web` (per CLAUDE.md §12) | Public-facing Next.js reader site deployed at `https://romas-brief-web.vercel.app/`. Homepage, article pages, listen page, region/category/audience routes. | Not in this monorepo — separate clone. |
 
 **State at cycle-6 sign-off:** Platform repo HEAD = `9c4284d` (M2-A cron-ingest committed; M2-B/C audio workers untracked + lockfile drift per B-18). Reader repo state = unaudited by /team-qa cycles 1-6.
+
+**State at Phase 8 completion (2026-05-28):** Reader source fully merged into `apps/web/` of AllienNova/romas-brief. pnpm install + turbo typecheck + build all green (79/79 pages). Vercel deployment dpl_HANrm9sxb3hbZRMkRBGanjpuQatJ READY, aliased to romas-brief-web.vercel.app. B-17, B-18, B-20 all CLOSED.
 
 ## 2. Ownership matrix — which repo owns what
 
@@ -177,7 +181,8 @@ Estimated effort: 1-2 days. Blocking until done: any /team-qa cycle-7 Day-1 laun
 Initial states (resolved):
 
 - ~~PROPOSED~~ (2026-05-28, transient)
-- **ACCEPTED-CONSOLIDATE** ← current (2026-05-28). Kimal selected Option A. Consolidation sprint scheduled as `tasks.md` Phase 8. This contract becomes obsolete on sprint completion.
+- ~~ACCEPTED-CONSOLIDATE~~ (2026-05-28, resolved)
+- **EXECUTED** ← current (2026-05-28). Phase 8 consolidation sprint complete. Reader source in `apps/web/`. Vercel deployment live. This contract is retired.
 
 Possible future transitions:
 
@@ -194,4 +199,4 @@ Possible future transitions:
 
 ---
 
-*Authored to close cycle-6 B-20. State: PROPOSED. Awaiting Kimal decision per §8.*
+*Authored to close cycle-6 B-20. State: EXECUTED (2026-05-28). Phase 8 consolidation sprint complete. Superseded by `Docs/specs/architecture.md`.*
