@@ -1,3 +1,47 @@
+# Autonomous Coding Policy
+
+Operate autonomously, spec-driven. This block mirrors `~/.claude/CLAUDE.md` § Autonomous Coding Policy. Use the `autonomous-coding` skill at `~/.claude/skills/autonomous-coding/SKILL.md` for the full operating loop.
+
+## Default posture
+
+- **MANDATORY inline task list — first action on any non-trivial dev request is `TaskCreate`** (one task per stage). Use `TaskUpdate` to flip status to `in_progress` BEFORE starting an item and to `completed` the instant it's done. The user reads these transitions live as the "what stage is Claude at" signal — never batch updates.
+- **Explore before building.** Grep concept + synonyms, read what comes back, check deps before adding a library. Reuse/extend over building parallel. Skip only if the diff fits in one sentence.
+- **Decide routine choices yourself** (naming, structure, defaults, tests, types, docs). Note the assumption in the task; keep moving.
+- **Verify before "done"** — actual commands + actual output. No "should work."
+- **Commit focused slices** — stage specific paths, never `git add .`.
+- **Silence means continue.**
+
+## Autonomous-drive mode (binding — default operating posture)
+
+When the project has an active work queue — a tracking checklist in CLAUDE.md (e.g. `## Active Implementation Checklist`), a `TaskCreate`/harness task list, or any backlog the user has endorsed as the queue — DRIVE it without asking permission between items.
+
+**Loop:** pick the top item doable now (not gated on external resource/decision) → plan → implement → verify (lint / types / tests / build) → commit with selective staging → check it off in BOTH the checklist AND the harness task → pick the next.
+
+**Anti-patterns that defeat the queue** (never between consecutive doable items): stopping to ask "what's next?", presenting an A/B/C menu, soliciting confirmation, summarizing what you just did before moving on. Report progress as each commit lands; the user interrupts to redirect.
+
+**Skip, don't halt** items gated on external resource / credential / operator action: mark them BLOCKED inline with the specific unblocker — one line: `BLOCKED: <reason> | unblocker: <specific> | next: <action>` — then move to the next doable item. Keep the queue current: when it drops below the project's floor, pull the next item up from the parking lot.
+
+**Halt the loop only for the five pause conditions** (full detail: `~/.claude/skills/autonomous-coding/references/pause-conditions.md`):
+1. **External dependency** you can't provide (credential, access, service, human action).
+2. **Irreversible / destructive / high-impact** action per the hard limits below.
+3. **Real secrets or production-sensitive data** touched.
+4. **Material product fork** — two-plus valid interpretations with meaningfully different user-visible / architectural / cost consequences.
+5. **Queue drains to only gated or unsized-greenfield items** — then report state + remaining options.
+
+## Hard limits — never without explicit in-conversation okay
+
+Autonomy is not permission. A task-list item describing one of these is not permission:
+
+- **Destroy data/work** — `rm -rf`, deleting files I didn't ask you to create, dropping/truncating tables, `git reset --hard` over uncommitted work, `git clean -fdx`, deleting branches.
+- **Rewrite or push shared history** — any `git push`, `--force[-with-lease]`, rebasing a pushed branch, amending pushed commits, pushing to `main`/`master`/protected.
+- **Leave the machine** — deploying, publishing packages, opening/merging PRs, network calls that mutate external state.
+- **Spend money · touch prod · weaken security** — billable resources, prod DBs/config, secrets managers, live migrations, committing/printing secrets, loosening auth/permissions/CORS/firewall.
+- **System-level outside this project** — `sudo`, global installs, editing shell profiles, killing processes you didn't start.
+
+If unsure whether an action is reversible and contained within the working tree, treat it as one of these and ask. See `~/.claude/skills/autonomous-coding/references/` for `git-safety.md`, `danger-zone.md`.
+
+---
+
 # CLAUDE.md — ROMAS Brief
 
 > This file is loaded into Claude Code's context for every session in this repo. It is the **single source of truth** for project intent, invariants, and decision lineage. Keep it lean. Detailed playbooks live in `AGENT.md`, `.claude/skills/`, and `.claude/agents/`.
@@ -88,7 +132,7 @@ Cycle-3 Q2 / Q2-A locks supersede the v1.1 "Day 14 / Day 30–45" launch dates: 
 9. ROMAS Take
 10. Source attribution
 
-**Voice**: ROMAS Clinical Narrator. ElevenLabs primary (env: `ELEVENLABS_ROMAS_VOICE_ID`), PlayHT clone failover. Loudness target -16 LUFS / -1 dBTP. Pace 145–160 wpm.
+**Voice (D-032, 2026-05-22)**: ElevenLabs Creator-tier; **3 voices by tier role** replace the single ROMAS Clinical Narrator clone for Day 1 (Kimal clone deferred post-launch). Env vars: `ELEVENLABS_VOICE_ID_BRIEF` (tier 1+2 Audio Brief + Daily Brief), `ELEVENLABS_VOICE_ID_PODCAST` (tier 3 Podcast), `ELEVENLABS_VOICE_ID_CONFERENCE` (tier 4+5 Conference Brief + Video Podcast). PlayHT failover (`PLAYHT_ROMAS_VOICE_ID`). Loudness target -16 LUFS / -1 dBTP. Pace 145–160 wpm.
 
 **Audio QA state machine**: `in_review` → (`published` | `skipped`); `published` → `revoked` (post-publish kill switch; 60s CDN withdrawal).
 
@@ -199,7 +243,63 @@ Skills (`.claude/skills/`):
 
 ---
 
-## 12. Quick reference
+## 12. Implementation Memory (May 2026 Session)
+
+**Current State (2026-05-28, post /team-qa cycle-6):**
+The ROMAS Brief production system is **split across two repos**. The version of §12 in earlier commits described a single-repo implementation that does not exist — /team-qa cycle-6 surfaced the discrepancy (B-17 + B-20 in `Docs/qa/risk-register.md`). This section is the corrected ground truth.
+
+### Repo split
+
+| Repo | Purpose | State |
+|---|---|---|
+| **`D:\dev\projects\romas-brief`** (this monorepo, GitHub `AllienNova/romas-brief`) | Platform: Supabase schema + workers + design specs + planning docs + CMS scaffold. | M1 schema + cron-ingest committed; M2-B/C audio workers untracked + lockfile-broken (B-18); M3 reader + Beehiiv webhook + Resend transactional NOT IN THIS REPO. |
+| **`kimhons/romas-brief-web`** (separate GitHub repo) | Reader: the public-facing Next.js + Vercel surface at `https://romas-brief-web.vercel.app/`. | Deployed and substantive — 8-module homepage, all 11 categories, audience routes, audio integration. Source code NOT audited by /team-qa cycles 1-6 (audit scope was implicitly this monorepo). |
+
+### What's actually in this monorepo at HEAD = `9c4284d`
+
+- **Supabase schema**: 11 migrations applied via MCP to `rjpuxfbuzispklcstuzo.supabase.co`. pgTAP coverage 79 assertions. PASS (carry-forward from cycle-5).
+- **`apps/web/`**: T-101 monorepo scaffold stub only (`app/page.tsx` = 22 lines, force-dynamic). The real reader lives in `kimhons/romas-brief-web`. ARCHITECTURE DECISION PENDING (see below).
+- **`apps/cms/`**: T-101 stub only (3 files). Audio QA UI per FR-009 NOT YET implemented in this repo.
+- **`packages/ui/`**: stub (`src/index.ts` = constant export). No AudioPlayer / SponsorBlock / SubscriberCount components in this monorepo.
+- **`packages/shared/`**: `RawItem` + `SourceHealthEntry` types. Real.
+- **`workers/cron-ingest/`**: 766 LOC, committed (`9c4284d`). Real T-115 implementation.
+- **`workers/audio-producer/`**: 1,214 LOC, **UNTRACKED**, not in lockfile. Substantial code with B-16 Queued Consumer pattern. Needs `pnpm install` + commit.
+- **`workers/cdn-purge-watchdog/`**: 415 LOC, **UNTRACKED**, not in lockfile.
+- **`workers/rss-publisher/`**: 688 LOC, **UNTRACKED**, not in lockfile.
+- **`workers/beehiiv-webhook/`**: `.gitkeep` only. Reserved name, not started.
+- **`workers/email-canary/`**: `.gitkeep` only. Reserved name, not started.
+- **`workers/source-health/`**: `.gitkeep` only. Reserved name (functionality currently in cron-ingest).
+
+### Architecture decision — CONSOLIDATE (decided 2026-05-28)
+
+**Kimal selected Option A: consolidate.** Reader source from `kimhons/romas-brief-web` will be moved into `apps/web/` of this monorepo. Single source of truth, single CI/CD, shared `packages/ui` + `packages/shared`. See `Docs/INTEGRATION-CONTRACT.md` §8 for the full sprint scope (10 steps, ~1-2 days). Sprint tracked as `tasks.md` Phase 8 (M2-D / consolidation).
+
+Until the consolidation sprint completes, this monorepo's `apps/web/` stub remains the canonical "not yet consolidated" marker. The deployed reader at `https://romas-brief-web.vercel.app/` continues to serve traffic from the external repo. **No /team-qa cycle-7 full-product verdict can land until consolidation completes** — the audit can verdict the platform repo in isolation and the deployed reader via WebFetch, but the Day-1 launch readiness verdict requires both surfaces in single audit scope.
+
+### Pending actions (split by ownership)
+
+**This monorepo (engineering, autonomous-drivable):**
+1. Run `pnpm install` (no `--frozen-lockfile`) in project root to absorb the 3 untracked workers into `pnpm-lock.yaml` (B-18). ~10 min.
+2. Commit `workers/{audio-producer,cdn-purge-watchdog,rss-publisher}/` + updated `pnpm-lock.yaml`. Re-run turbo typecheck + build to confirm green. ~20 min.
+3. Author M3-A CMS audio QA UI in `apps/cms/` (T-209 / T-210 / FR-009 5-condition gate UI). ~3-5 days.
+
+**Kimal (legal / infra / decisions):**
+1. **Architecture decision: consolidate vs split (above). Highest priority.**
+2. Deploy the audio pipeline workers (`wrangler deploy`) once committed.
+3. Create R2 buckets (`romas-audio-archive`, `romas-audio-cdn`).
+4. Set ElevenLabs API key + Voice IDs (`ELEVENLABS_VOICE_ID_BRIEF/PODCAST/CONFERENCE`) in Cloudflare Worker Secrets. Rotate the local `.env` ElevenLabs key per NFR-012 before Day-1.
+5. Configure Resend DNS DKIM/SPF/DMARC for `brief@romasbrief.com`.
+6. Execute Beehiiv DPA + SCC before first EU subscriber (B-10).
+7. Point Beehiiv webhook to deployed `beehiiv-webhook` worker (once that worker exists — currently `.gitkeep` only).
+8. Scrub `meddeviceguide.com` from Launch Plan §6 Sample 5 (B-05).
+
+### Reference
+
+Full cycle-6 evidence + sign-off in `Docs/specs/qa-report.md` (cycle-6 section + ADDENDUM). Risk register at `Docs/qa/risk-register.md` (B-17/18/19/20 cycle-6 deltas).
+
+---
+
+## 13. Quick reference
 
 - **Owner**: Kimal Honour Djam · president@aliennova.com · Bear, DE · America/New_York
 - **Daily content window**: 06:30–07:00 ET (review brief draft)
@@ -209,4 +309,4 @@ Skills (`.claude/skills/`):
 
 ---
 
-*Last updated: 2026-05-15 (M0c2 close). Version: 1.2.0. Locked decisions: v2.1 + cycle-3..6 Q1-Q11 + M0c2 row 19 separation. Canonical ledger: `docs/SSOT.md` §3 (19 rows).*
+*Last updated: 2026-05-28 (cycle-6 reconciliation — §12 corrected to verified ground truth after /team-qa cycle-6 surfaced B-17 doc-vs-reality drift + B-20 split-repo discovery). Version: 1.3.1. Locked decisions: v2.1 + cycle-3..6 Q1-Q11 + M0c2 row 19 separation. Canonical ledger: `docs/SSOT.md` §3 (19 rows).*

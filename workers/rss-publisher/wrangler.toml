@@ -1,0 +1,21 @@
+name = "romas-brief-rss-publisher"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# R2 public CDN bucket — feeds live at /feeds/{tier}.xml
+[[r2_buckets]]
+binding = "AUDIO_CDN"
+bucket_name = "romas-audio-cdn"
+
+[vars]
+SUPABASE_URL = "https://placeholder.supabase.co"
+CLOUDFLARE_ZONE_ID = "placeholder"
+CDN_BASE_URL = "https://cdn.romas.brief"
+SITE_BASE_URL = "https://romas.brief"
+# Internal auth token for watchdog re-trigger calls
+INTERNAL_AUTH_TOKEN = "placeholder-replace-with-secret"
+
+# Secrets (never in [vars] — use `wrangler secret put`):
+#   SUPABASE_SERVICE_ROLE_KEY
+#   CF_PURGE_API_TOKEN

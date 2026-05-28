@@ -123,3 +123,72 @@ What is genuinely P0 and warrants a Kimal-level hold: **the Beehiiv DPA + SCC tr
 Two findings the author did not catch deserve cycle-7 attention regardless of /team-build start: (a) the test-coverage.md stale-snapshot problem (C-001) — refresh before citing it as gate evidence; (b) the SSOT version self-contradiction (C-002) — fix in one PR.
 
 **Verdict: GO WITH CONDITIONS.** Dispatch /team-build into M0 immediately. The 8-week pre-launch ramp does not lose a week.
+
+---
+
+# Cycle-6 QA Savage Review — NO-GO confirmed, report needs 4 corrections (2026-05-28)
+
+**Verdict: GO WITH CONDITIONS** — cycle-6 NO-GO/HOLD/narrow-GO triad is correct and well-evidenced; ship the report after 4 mechanical corrections. The blockers (B-17/B-18/B-19) are real, the pyramid evidence (typecheck FAIL / build FAIL / phantom-test) reproduces under re-run, and the doc-vs-reality drift is the single most important finding any /team-qa pass has surfaced this project. The corrections below do not change the call; they tighten it.
+
+## Re-runs performed (fresh, this review)
+- `git log --oneline -1` → `9c4284d feat(m2-a): implement cron-ingest worker (T-115)` — matches.
+- `git status --short | grep '^??'` → 3 worker dirs `audio-producer/`, `cdn-purge-watchdog/`, `rss-publisher/` confirmed UNTRACKED.
+- `ls workers/{beehiiv-webhook,email-canary,source-health}/` → only `.gitkeep` (100 bytes each). Matches.
+- `wc -l apps/web/app/page.tsx apps/cms/app/page.tsx packages/ui/src/index.ts` → 21 / 23 / 9 lines (report says 22/24/10 — off-by-one because report counted trailing newline; immaterial).
+- `find apps/web/app -name page.tsx | wc -l` → 1, not 74. Matches.
+- `find . -name "*.test.ts" -not -path "*/node_modules/*"` → 0. Matches.
+- `grep -c "audio-producer\|cdn-purge-watchdog\|rss-publisher" pnpm-lock.yaml` → 0. Lockfile drift confirmed.
+- `pnpm turbo run typecheck` → exit 1, audio-producer `MODULE_NOT_FOUND` on typescript. Matches.
+- `pnpm turbo run build` → exit 1, audio-producer `MODULE_NOT_FOUND` on wrangler. Matches.
+- `wc -l workers/cron-ingest/src/index.ts` → 766. Matches the "narrow GO" claim.
+
+Every load-bearing pyramid claim in the cycle-6 report reproduces.
+
+## What the cycle-6 report got right (steelman)
+- **The trajectory-inversion framing is correct and rare-in-the-wild.** Cycle-5 GO WITH CONDITIONS → cycle-6 NO-GO with first net-positive blocker delta. Most teams would have rubber-stamped against the docs; this pass refused.
+- **B-17 is the most important finding any cycle has surfaced.** CLAUDE.md §12 (the file Claude loads first every session) is now a hallucination source. Until reconciled, every dispatched subagent plans against fiction. The report names this correctly as "Blocker" and demands the reconcile-or-commit choice from Kimal.
+- **Pyramid evidence is reproducible.** Exit codes, bg IDs, first-N-line excerpts — not paraphrased. Re-runs match.
+- **The narrow GO carve-out for `9c4284d` is calibrated correctly.** The M2-A cron-ingest commit IS substantive (766 LOC), clean, and shippable as an isolated milestone. Refusing to taint it with the M2-B/C/M3 fictional state is correct severity discipline.
+
+## Corrections required before re-verdict
+
+### F-C6-01 — P0: arithmetic error on uncommitted LOC ("3,317" should be "2,317")
+The report repeats "3,317 LOC uncommitted" in 5 places (`qa-report.md:328,343,361,367,414`; `test-results.md:160`; `risk-register.md:175`; `requirements-trace.md:492`). Re-summed: `1,214 + 415 + 688 = 2,317`. Off by exactly 1,000 — a transposition error that propagated through every artifact. Not load-bearing on the verdict, but it's the kind of number future cycles will cite. **Fix:** sed-replace `3,317` → `2,317` across the 4 artifacts.
+
+### F-C6-02 — P0: live `ELEVENLABS_API_KEY` in working-tree `.env` is mis-classified as "hygiene note"
+`test-results.md:179` and `qa-report.md:362` describe the local `.env` containing `ELEVENLABS_API_KEY=sk_eed3...` as a "hygiene note only, no git leak." Verified: `.env` is gitignored AND `git log --all -p -- .env` returns no commit history. However, the file exists in cleartext at `D:\dev\projects\romas-brief\.env` (807 bytes, 14 keys when grepped by name). A secret on disk in a dev tree is still a secret-rotation-on-rotation surface and a real exfil risk on backup/IDE-sync/AI-tool ingestion. **Calibration:** this is P2-Hygiene, not "no finding." The report should explicitly flag: (a) `ELEVENLABS_API_KEY` should be rotated before launch given it has been in cleartext on a workstation for 6 days; (b) `.env` belongs in a `gpg`-encrypted variant or a secrets manager; (c) `SECRETS.md` already exists in repo per the gitignore exception and should document the rotation policy.
+
+### F-C6-03 — P1: cycle-6 blockers NOT propagated to 6 sibling artifacts
+`grep -c "B-17\|B-18\|B-19"` on `release-checklist.md`, `reliability-report.md`, `security-findings.md`, `performance-report.md`, `ux-validation.md`, `test-coverage.md` → all return 0. Cycle-6 added B-17/18/19 only to `qa-report.md` + `risk-register.md` + `requirements-trace.md` + `test-results.md`. The release-checklist still shows the cycle-1 framing ("32 items, 11 blockers, 3-5 day estimate") which is now obsolete — the gate has shifted from /team-build dispatch to Day-1-launch and the 32-item count no longer reflects the binding constraint. **Fix:** append cycle-6 sections to the 6 remaining artifacts with the same dating + commit-baseline header, OR add a one-line cycle-6 supersession note to each. Without this, cycle-7 will re-discover the same drift in those artifacts.
+
+### F-C6-04 — P1: no rollback rehearsal for M2-A cron-ingest, the one thing called "shippable"
+The narrow GO for `9c4284d` is stated without verifying that the commit can be rolled back if it misbehaves at first deploy. `Docs/build/decision-log.md` and `Docs/build/handoff-notes.md` have no rollback rehearsal entry for T-115. The migrations 0001-0011 are forward-only (verified via `ls supabase/migrations/`); there is no documented procedure for cron-ingest mis-firing (e.g., wrong source pulled, duplicate inserts, dedup logic regression). **Fix:** add a 1-paragraph rollback-rehearsal note to `release-checklist.md` cycle-6 section: how to disable the wrangler cron, how to revert `9c4284d` cleanly, and how to drain any `embargo_holds` rows the worker mis-classified. Without this, the "narrow GO" is rhetorical, not operational.
+
+## What the report did NOT miss (sanity check)
+- ✓ Phantom-pass tests correctly classified (all 9 packages have `echo` test scripts).
+- ✓ Lockfile drift correctly diagnosed as root cause.
+- ✓ Schema work + pgTAP correctly carried forward (no double-counting).
+- ✓ `apps/web/app/page.tsx` correctly identified as T-101 stub (not 74 pages).
+- ✓ Voice-consent registry correctly flagged as Kimal legal track (FR-021).
+
+## Verdict line
+**GO WITH CONDITIONS** — cycle-6 NO-GO/HOLD/narrow-GO is the correct call; ship the report after fixing F-C6-01 (arithmetic), F-C6-02 (secret-on-disk severity), F-C6-03 (sibling-artifact propagation), F-C6-04 (rollback rehearsal for `9c4284d`). 4 corrections, ~2 hours total. Critic confidence: high — every load-bearing claim re-ran identically.
+
+— team-qa-critic (QA Savage), 2026-05-28
+
+---
+
+## Cycle-6 — Critic re-verification (round 2)
+
+**Date:** 2026-05-28 · **Re-verifier:** team-qa-critic (QA Savage) · **Scope:** verify F-C6-01..04 close-state.
+
+| Finding | Close-check command | Result |
+|---|---|---|
+| F-C6-01 | `grep -rn "3,317" Docs/qa/ Docs/specs/qa-report.md` → only `critic-review.md:155` (original-finding row). `grep -rn "2,317"` → propagated across `qa-report.md` (4 hits: L328, 343, 406, 415) + 6 sibling artifacts + `risk-register.md` + `requirements-trace.md` + `test-results.md`. | **CLOSED** — arithmetic corrected everywhere; only the original-finding row retains "3,317". |
+| F-C6-02 | Read `qa-report.md:362-363` cycle-6 deliverable-area table. | **CLOSED** — Secret-scan row split into (a) `Secret scan (git history)` PASS + (b) `Local secret hygiene` **WARN** referencing NFR-012 (90-day rotation + immediate-on-suspected-exposure), `SECRETS.md` 1Password runbook, and explicit `ELEVENLABS_API_KEY` rotate-before-Day-1 action. |
+| F-C6-03 | `grep "B-17\|B-18\|B-19"` across all 6 sibling artifacts. | **CLOSED** — release-checklist (L117-121), reliability-report (L299-303), security-findings (L385-389), performance-report (L68-72), ux-validation (L101-105), test-coverage (L252-256). Identical 3-blocker block + "superseded until close" supersession marker in each. |
+| F-C6-04 | Read `qa-report.md:339` narrow-GO line. | **CLOSED** — text now reads "GO *(narrow, conditional on rollback rehearsal)*" with all 3 rehearsal items spelled out: (1) `git revert 9c4284d` clean revert test, (2) `wrangler rollback` to prior version documented in `release-checklist.md`, (3) `wrangler triggers --disable` cron-kill path verified. |
+
+**Round-2 verdict:** **GO** — all 4 fixes verified closed by independent re-grep + re-read. Cycle-6 report is approved for final sign-off at the current commit baseline (`9c4284d` + uncommitted M2-B/C worker code + cycle-6 artifact edits). The NO-GO Day-1 / HOLD planning / GO narrow M2-A verdicts remain unchanged and now have clean evidentiary backing across all 10 artifacts. No new findings introduced by the remediation diff.
+
+— team-qa-critic (QA Savage), 2026-05-28 (round 2)

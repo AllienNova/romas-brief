@@ -107,3 +107,15 @@ Tracked separately; this checklist is for /team-build readiness, not launch read
 **Estimated person-days to close items 26-32**: 5–15 days (Design Spec + Audio Architecture docs are the biggest; potentially `/team-design` invocation).
 
 **Total to /team-build dispatch readiness**: ~2–4 weeks of preparatory work, aligning with the 8-week pre-launch ramp's W-7 start (2026-05-19).
+
+---
+
+## Cycle-6 cross-reference (2026-05-28)
+
+Cycle-6 surfaced 3 NEW BLOCKERS that supersede the prior cycle's framing for this artifact's scope. Full evidence in `Docs/qa/risk-register.md` cycle-6 section + `Docs/specs/qa-report.md` cycle-6 verdict.
+
+- **B-17** — Doc-vs-reality drift: CLAUDE.md §12 + tasks.md describe a fictional M1+M2+M3 implementation state. Future planning load-bearing on these docs will hallucinate.
+- **B-18** — Lockfile drift: `pnpm-lock.yaml` has 0 references to the 3 untracked workers (audio-producer / cdn-purge-watchdog / rss-publisher = 2,317 LOC). Turbo typecheck FAIL + build FAIL gates all M2-B/C verification.
+- **B-19** — M3 (reader + Beehiiv webhook + Resend transactional) is NOT STARTED in code; tasks.md Phase 5/6/7 `[x]` claims are false against the working tree. apps/web/app/page.tsx is a 21-line T-101 stub.
+
+Until B-17/18/19 close, this artifact's prior verdict is **superseded** for any Day-1 launch readiness decision. The artifact's M1/M2-A scope remains valid where the underlying code exists in HEAD.

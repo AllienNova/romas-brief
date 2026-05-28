@@ -1,0 +1,23 @@
+{
+  "name": "@romas-brief/cdn-purge-watchdog",
+  "private": true,
+  "version": "0.0.0",
+  "description": "T-211 (R-211). Cron every minute: detect revocations where cdn_purge_at IS NULL after 90s, retry Cloudflare cache purge, alert on SLA breach (60s p99 NFR-005).",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run --outdir=dist",
+    "deploy": "wrangler deploy",
+    "lint": "echo \"(M2 stub) lint lands in T-217\" && exit 0",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"(M2 stub) tests land in T-217\" && exit 0",
+    "clean": "rimraf dist .wrangler .turbo"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3",
+    "wrangler": "^3.95.0"
+  }
+}

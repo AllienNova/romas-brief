@@ -153,3 +153,65 @@ This document re-runs after every milestone landing:
 | Loudness drift | `grep 'between -17 and -15\|BETWEEN -17 AND -15' supabase/ apps/` | 0 hits | **PASS** |
 
 Full cycle-5 trace per FR + critic-rerun on M1c-closeout deliverables: see `Docs/qa/requirements-trace.md` cycle-5 section.
+---
+
+# Test Results — cycle-6 against in-tree implementation state (appended 2026-05-28)
+
+**Commit baseline:** `9c4284d` (cron-ingest committed) + uncommitted M2-B/M2-C worker code (audio-producer 1,214 LOC · cdn-purge-watchdog 415 LOC · rss-publisher 688 LOC) **NOT in pnpm-lock.yaml**
+
+**Reviewer:** team-qa skill (Test Engineer + SRE personas) — Kimal-invoked
+
+## Verdict: NO-GO (release-ready). Cycle-6 evidence-based.
+
+Fresh pyramid run on actual repo state at 2026-05-28 14:00 UTC. See exit codes + first-N-lines below — no paraphrasing.
+
+## Stack-detected commands + fresh exit codes
+
+| # | Gate | Command | Exit | Time | Verdict | Evidence |
+|---|------|---------|------|------|---------|----------|
+| 1 | Install | `pnpm install --frozen-lockfile` | 0 | ~30s | PASS (but: warnings on `workers/rss-publisher`, `workers/cdn-purge-watchdog`, `workers/audio-producer` not in lockfile) | bg `bfkoj7cen` |
+| 2 | Typecheck | `pnpm turbo run typecheck` | **1** | 890ms | **FAIL — P0** | bg `bfghk4rgh` line 31-50: `@romas-brief/audio-producer:typecheck: Error: Cannot find module 'D:\dev\projects\romas-brief\workers\audio-producer\node_modules\typescript\bin\tsc'` |
+| 3 | Build | `pnpm turbo run build` | **1** | 1.139s | **FAIL — P0** | bg `bzx3y3xui` line 38-58: `@romas-brief/audio-producer:build: Error: Cannot find module 'D:\dev\projects\romas-brief\workers\audio-producer\node_modules\wrangler\bin\wrangler.js'` |
+| 4 | Test | `pnpm turbo run test` | 0 | 1.348s | **PHANTOM-PASS — P0** | bg `ba28uippf` line 36-65: every package's `test` script is literally `echo "(M1 stub) tests land in T-117" && exit 0` or `echo "(M2 stub) tests land in T-217"`. **Zero actual tests exist.** |
+| 5 | Lint | `pnpm turbo run lint` | 0 | 3.011s | PARTIAL-PASS | bg `br9kjlzcr` line 60-61: `apps/cms` + `apps/web` ran `next lint --max-warnings 0` and returned PASS. **7 of 9 packages** ran `echo "(M1/M2 stub) lint lands in T-117"` — phantom-pass. |
+| 6 | Audit | `pnpm audit --audit-level=low` | 0 | ~5s | DOCUMENTED ACCEPTANCE (ADR-0015 v2) | bg `b1eddxggt`: 5+ Next 14 advisories patched only in 15.5.16+ (XSS-CSP-nonce GHSA-ffhc-5mcf-pf4q · XSS-beforeInteractive GHSA-gx5p-jg67-6x7h · DoS-image-opt GHSA-h64f-5h5j-jqjh · cache-poison-RSC GHSA-wfc6-r584-vfw7 · cache-poison-middleware GHSA-wfc6-r584-vfw7 low). All accepted per ADR-0015 v2 (Next 14 lock, controls documented). |
+| 7 | No-stub | `grep -rn 'TODO\|FIXME\|HACK\|XXX' apps/ packages/ workers/` | 0 | <1s | PASS (in scope of M2-A committed code) | No unexpected TODOs in `workers/cron-ingest/` (only committed M2 code). |
+| 8 | No-secret in git | `git ls-files \| grep '\.env$'` | 1 | <1s | PASS | `.env` is gitignored (verified `git check-ignore .env`); zero `.env*` tracked in HEAD. Local `.env` contains live `ELEVENLABS_API_KEY=sk_eed3...` — hygiene note only, no git leak. |
+| 9 | Device test | n/a — no UI to test | n/a | n/a | **SKIPPED** | `apps/web/app/page.tsx` is the T-101 monorepo-scaffold stub (22 lines, force-dynamic, prints "Public reader stub. Implementation lands in M3 (T-301..T-318)."). No reader surface to exercise. |
+
+## Critical evidence — what is actually in the working tree
+
+| Surface | Claimed in CLAUDE.md §12 (2026-05-28) | Claimed in tasks.md | **Reality (2026-05-28)** |
+|---|---|---|---|
+| `apps/web` (reader) | "100% complete (74 pages). All region, category, audience, content-type routes implemented with ISR. Live on Vercel" | T-301-A..T-301-C `[x]` | **1 file**: `app/page.tsx` (22 lines, T-101 stub, force-dynamic, no region/category/audience/content-type routes) |
+| `apps/cms` (audio QA UI) | "Audio QA UI implemented with 5-condition gate and service-role auth" | T-209-A..T-209-D + T-210-A..T-210-B `[x]` | **3 files**: `app/page.tsx` (24-line T-101 stub) + `app/layout.tsx` + `app/not-found.tsx`. No `audio-qa/[id]/page.tsx`. No `api/audio-qa/[id]/route.ts`. No `AudioQAChecklist` or `AudioStatusBadge` components. |
+| `packages/ui` | UI library (AudioPlayer, SponsorBlock, SubscriberCount) | T-215-A, T-216-A, T-312-A, T-311-A `[x]` | **1 file**: `src/index.ts` — exports only `PACKAGE_NAME = "@romas-brief/ui"` constant. No AudioPlayer Variant A or B. No SponsorBlock. No SubscriberCount. |
+| `packages/shared` | RawItem + SourceHealthEntry types | T-P1-06 `[x]` | **1 file**: `src/index.ts` — has both types ✓. Matches claim. |
+| `workers/cron-ingest` | T-115 complete | T-115-A..T-115-L `[x]` | **766 LOC** in committed `src/index.ts`. ✓ matches claim. |
+| `workers/audio-producer` | Implemented | T-202-A..T-202-J `[x]` | **1,214 LOC** in `src/index.ts` — **UNTRACKED** (git status `??`); lockfile does NOT include this workspace; typecheck + build FAIL. |
+| `workers/cdn-purge-watchdog` | Implemented | T-211-A..T-211-B `[x]` | **415 LOC** in `src/index.ts` — **UNTRACKED**; lockfile does NOT include this workspace. |
+| `workers/rss-publisher` | Implemented | T-214-A..T-214-F `[x]` | **688 LOC** in `src/index.ts` — **UNTRACKED**; lockfile does NOT include this workspace. |
+| `workers/beehiiv-webhook` | "Implemented" | T-310C-A..T-310C-C `[x]` | **Empty `.gitkeep` directory only**. No source. |
+| `workers/email-canary` | "Implemented" (renamed from `email-transactional` in tasks.md?) | T-310A-A..T-310A-E `[x]` (for `email-transactional`) | **Empty `.gitkeep` directory only**. Name mismatch with task ID. |
+| `workers/source-health` | (not mentioned in CLAUDE.md, but dir exists) | Implicitly absorbed into cron-ingest | **Empty `.gitkeep` directory only**. |
+| TS test files | "Ready for testing" | Implicit via test pyramid claims | **Zero** `*.test.ts(x)` or `*.spec.ts(x)` files in workspace (verified `find` excluding node_modules + .next). |
+
+## Lockfile drift — root cause of typecheck/build FAIL
+
+```
+$ grep -c "audio-producer\|cdn-purge-watchdog\|rss-publisher" pnpm-lock.yaml
+0
+```
+
+The 3 new worker dirs added 2,317 lines of source code but `pnpm install` was never re-run after they were created. Lockfile is from the build-2026-05-21 cycle (cron-ingest era). Turbo's per-workspace install step can't resolve `typescript` or `wrangler` in workers whose `node_modules/` were never populated.
+
+## Cycle-6 verdict for the pyramid
+
+**4 of 8 gates FAIL or PHANTOM-PASS:**
+
+- Typecheck = FAIL (lockfile drift)
+- Build = FAIL (lockfile drift)
+- Tests = phantom-pass (zero actual tests; all scripts are `echo` stubs)
+- Lint = partial-pass (only 2 of 9 packages ran real lint; 7 are `echo` stubs)
+
+Until those gates run green, **cycle-5's "GO WITH CONDITIONS" verdict for end-of-M1 cannot be extended to cover M2-B/C/M3**. The M2-A cron-ingest commit (9c4284d) was clean; everything since is in a half-state.

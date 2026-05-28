@@ -1,0 +1,22 @@
+name = "romas-brief-cdn-purge-watchdog"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Runs every minute to detect revocations where cdn_purge_at IS NULL after 90s
+# 60s p99 SLA (NFR-005) — watchdog fires at 90s to catch stragglers
+[[triggers.crons]]
+crons = ["* * * * *"]
+
+[vars]
+SUPABASE_URL = "https://placeholder.supabase.co"
+CLOUDFLARE_ZONE_ID = "placeholder"
+# SLA threshold in seconds (90s gives 30s grace over the 60s p99 SLA)
+PURGE_SLA_THRESHOLD_SEC = "90"
+
+# Secrets (never in [vars] — use `wrangler secret put`):
+#   SUPABASE_SERVICE_ROLE_KEY
+#   CF_PURGE_API_TOKEN
+#   SENTRY_DSN              (optional — for SLA breach alerts)
+#   RESEND_API_KEY          (for SLA breach email alerts)
+#   ALERT_EMAIL             (recipient for SLA breach alerts)

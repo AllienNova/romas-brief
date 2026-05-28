@@ -320,3 +320,164 @@ The M1 milestone is complete in the engineering sense: 11 migrations + 79 pgTAP 
 2. Live Supabase + Cloudflare provisioning (Kimal infra)
 3. Smoke deploy of the 4 GH Actions workflows
 4. Optional but recommended: re-dispatch team-build-critic + team-qa-critic on the post-commit state for second-opinion validation
+
+---
+
+# QA Report — cycle-6 against in-tree implementation state (2026-05-28)
+
+**Commit baseline:** HEAD = `9c4284d` (cron-ingest committed) + 2,317 LOC uncommitted across 3 workers (audio-producer / cdn-purge-watchdog / rss-publisher) + lockfile out of sync · M3 reader + Beehiiv + Resend transactional NOT STARTED.
+**Cycle date:** 2026-05-28
+**QA Lead:** team-qa skill (Test Engineer + SRE + Release Manager personas) — Kimal-invoked
+**Scope:** Day-1 launch readiness verdict against actual working tree (NOT against CLAUDE.md §12 + tasks.md aspirational claims).
+
+## Verdict
+
+**NO-GO** — for Day-1 launch readiness.
+
+**HOLD** — for any cycle that requires CLAUDE.md §12 or tasks.md to be load-bearing planning input. Future agents loading those docs will plan against a fictional state. Reconcile first.
+
+**GO** *(narrow, conditional on rollback rehearsal)* — for the M2-A cron-ingest commit (`9c4284d`) considered in isolation: 766 LOC of substantive ingestion code, no obvious regressions, no new CVEs introduced. M2-A is shippable as a milestone **provided** the rollback path is rehearsed before deploy: (1) `git revert 9c4284d` produces a clean revert (test in worktree); (2) Cloudflare Workers `wrangler rollback` to the prior committed version is documented in `docs/qa/release-checklist.md`; (3) the cron trigger can be disabled via `wrangler triggers --disable` without app restart. Without an explicit rollback rehearsal entry in the release-checklist, narrow-GO degrades to GO WITH CONDITIONS.
+
+## Executive summary (3 sentences)
+
+Cycle-5 (2026-05-22) verdict was "GO WITH CONDITIONS for end-of-M1" — accurate at the time. Between cycle-5 and cycle-6 the docs (CLAUDE.md §12 + tasks.md) were edited to describe a complete M1+M2+M3 implementation while the working tree gained only M2-A (committed `9c4284d`) + 2,317 LOC of uncommitted/broken-lockfile M2-B/C worker code; M3 (reader + Beehiiv + Resend) is **not started in code**, despite tasks.md marking all of Phase 5–7 `[x]` complete. Cycle-6 verdicts NO-GO for Day-1 launch and HOLD for any future planning cycle that would lean on the drifted docs — the underlying engineering trajectory is healthy (the M2-B audio-producer code reflects the B-16 Queued Consumer architectural pivot) but the integration discipline is not (3 workers untracked, lockfile not regenerated, pyramid gates 2 of 4 FAIL).
+
+## Pass / fail per major deliverable area at cycle-6
+
+| Area | Status | Evidence |
+|---|---|---|
+| M2-A cron-ingest (committed) | PASS | `9c4284d` · 766 LOC · clean Rule-1/2/4/5 enforcement comments · committed sub-pyramid (typecheck for its workspace green within the committed cron-ingest scope) |
+| M2-B audio-producer | **FAIL** | 1,214 LOC src exists but UNTRACKED + lockfile-broken (typecheck FAIL: Cannot find module typescript; build FAIL: Cannot find module wrangler) |
+| M2-C cdn-purge-watchdog + rss-publisher | **FAIL** | 415 LOC + 688 LOC src exist UNTRACKED + lockfile-broken |
+| M3-A CMS audio QA UI | **MISSING** | `apps/cms/app/` = 3 stub files. No `audio-qa/[id]/page.tsx`. No 5-condition gate UI. No service-role auth. |
+| M3-B Reader app (74-page claim) | **MISSING** | `apps/web/app/page.tsx` = 22-line T-101 stub. Zero region/category/audience/content-type routes. Zero AudioPlayer Variant A/B. No SponsorBlock. No SubscriberCount. |
+| M3-C Beehiiv webhook + Resend transactional | **MISSING** | `workers/beehiiv-webhook/` + `workers/email-canary/` are `.gitkeep` only. No HMAC verify code. No Resend client. No React-Email templates. |
+| Schema (migrations 0001-0011) | PASS (carry-forward) | 11 migrations on disk; cycle-5 verdict holds. |
+| pgTAP coverage (R-105) | PASS (carry-forward) | 79 assertions in 5 SQL files; runs against live DB. |
+| TS test pyramid | **PHANTOM-PASS** | Zero `*.test.ts(x)` or `*.spec.ts(x)` files anywhere. All `test` scripts are `echo "(stub) tests land in T-117/T-217"`. |
+| Lint | PARTIAL-PASS | `apps/cms` + `apps/web` ran `next lint --max-warnings 0` and PASSED. 7 of 9 packages run `echo "(stub) lint lands in T-117"`. |
+| Typecheck | **FAIL** | turbo run typecheck exit 1: `@romas-brief/audio-producer` Cannot find module typescript. |
+| Build | **FAIL** | turbo run build exit 1: `@romas-brief/audio-producer` Cannot find module wrangler. |
+| Security audit (pnpm audit) | DOCUMENTED ACCEPTANCE (ADR-0015 v2 carry-forward) | 5+ Next 14 advisories patched only in 15.5.16+. Accepted per ADR-0015 v2 controls (which themselves cannot land yet — see B-19). |
+| Secret scan (git history) | PASS | `.env` gitignored (verified `git check-ignore .env`); zero `.env*` tracked in HEAD; full git log clean of `.env*` adds. |
+| Local secret hygiene | **WARN** | Local `.env` (807 bytes, 14 keys including live `ELEVENLABS_API_KEY=sk_eed3...`) has existed on workstation since 2026-05-22 (6+ days). Per NFR-012 (90-day routine rotation, immediate on suspected exposure) + `SECRETS.md` 1Password-runbook discipline: pre-launch must move all production keys to Cloudflare Worker Secrets + Supabase Vault. Local `.env` should hold only dev-bound non-prod keys. **Recommended action:** rotate `ELEVENLABS_API_KEY` before Day-1 (workstation key was used during smoke-test cycles 2026-05-19..22; treat as test-grade, rotate-on-cutover), and update `SECRETS.md` cadence column to reflect the rotation date. |
+| Doc-vs-reality consistency | **FAIL** | CLAUDE.md §12 (2026-05-28) + tasks.md describe a fictional state. Surfaced as B-17. |
+
+## Top 3 risks (release-blocking — cycle-6)
+
+1. **B-19 — M3 (reader + Beehiiv webhook + Resend transactional) NOT STARTED in code.** Day-1 launch requires the worldwide-positioning surface (FR-024..FR-038), the 5-condition audio QA gate UI (FR-009), the 32px sponsor firewall (FR-019), the subscriber-count threshold (FR-020), the AudioPlayer Variants (FR-013), the Beehiiv HMAC webhook (FR-023), and Resend transactional (FR-014A). None exist as code today. Estimate: 2-3 weeks across web-engineer + cms-engineer + design-system-keeper, with ADR-0015 v2 controls landing alongside the RSC code per B-11 mitigation.
+2. **B-18 — Lockfile drift blocks M2-B/C verification.** Until `pnpm install` is re-run to include the 3 untracked workers in `pnpm-lock.yaml`, turbo typecheck and turbo build cannot complete on the audio pipeline. ~30 min fix; gates all downstream M2-B/C acceptance.
+3. **B-17 — Doc-vs-reality drift in CLAUDE.md §12 + tasks.md.** Subagents and future Claude sessions reading these docs will plan against a fictional state. Reconcile either by committing the work that closes the gap OR by re-grounding the docs in the actual filesystem state. Either is acceptable; status quo is not.
+
+## Top 3 confident wins (cycle-6)
+
+1. **M2-A cron-ingest commit is substantive and clean.** 766 LOC of real ingestion code with explicit Rule-1/2/4/5 enforcement comments. PubMed + arXiv + ClinicalTrials.gov + FDA + ASTRO/ESTRO/AAPM RSS fetchers. Dedup logic (DOI → PMID → URL hash → title fuzzy). Embargo separation. source_health summary to R2. Auth-gated fetch handler. This is the kind of deliverable cycle-5 anticipated and it landed.
+2. **M2-B audio-producer code reflects the B-16 Queued Consumer architectural pivot.** The empirical finding from cycle-5 smoke test (34.13s TTS latency exceeds 30s Cloudflare sync limit) was correctly absorbed — the 1,214 LOC implementation uses the Queue consumer pattern. Architecture is right; only integration (commit + lockfile) is broken.
+3. **Schema discipline holds.** 11 migrations + 79 pgTAP assertions intact from cycle-5. No regressions. The schema-level inviolable-rule enforcement remains the strongest layer of the system.
+
+## Conditions to close (cycle-6 → cycle-7)
+
+Cycle-6 enumerates the minimum work to convert NO-GO into "ready to re-verdict at cycle-7". Items 1-3 are mechanical (≤1 day total). Items 4-7 are the M3 implementation arc.
+
+### Now (≤1 day total; mechanical)
+
+1. **B-18 — Regenerate pnpm-lock.yaml.** `pnpm install` (no `--frozen-lockfile`) to absorb the 3 untracked workers. Verify `pnpm-lock.yaml` now lists `workers/audio-producer`, `workers/cdn-purge-watchdog`, `workers/rss-publisher`. (~10 min)
+2. **B-17 — Reconcile CLAUDE.md §12 to actual state.** Edit §12 to say what is true at this commit: M2-A committed, M2-B/C uncommitted-pending-lockfile-fix, M3 not started. Mirror in tasks.md by un-checking the Phase 5/6/7 items. (~30 min)
+3. **B-18 follow-on — Commit the 3 worker dirs + new lockfile.** Stage `workers/audio-producer/`, `workers/cdn-purge-watchdog/`, `workers/rss-publisher/`, `pnpm-lock.yaml`. Commit as `feat(m2-bc): integrate audio-producer + cdn-purge-watchdog + rss-publisher workers`. Re-run turbo typecheck + build to confirm green. (~20 min)
+
+### Pre-M3 (~1 week)
+
+4. **B-11 + B-19 prereq — Author M3 design hand-off.** `docs/design/wireframes.md` already exists from M0c2 cycle but the 12 reader routes + 7 components in `docs/qa/ux-validation.md` need 5-state coverage finalized. Re-verify against the current Docs/design/ state before web-engineer dispatch.
+
+### M3 arc (~2-3 weeks)
+
+5. **B-19 — M3-A CMS audio QA UI.** T-209/T-210 surface: 5-condition gate UI + service-role auth + status flip handler. ~3-5 days.
+6. **B-19 — M3-B reader app.** T-301/302/303/304/305 + T-215/216/312/311. Homepage, article page, listen page, category index, region filter, audience filter, AudioPlayer A/B, SponsorBlock, SubscriberCount, ADR-0015 v2 controls (Zod boundary + body-size cap + WAF + ESLint rule + sanitiser). ~8-10 days. Carries B-11 alongside.
+7. **B-19 — M3-C Beehiiv webhook + Resend transactional.** T-310C HMAC verify + T-310A/B/D Resend templates. ~3-4 days.
+
+### Pre-launch (Kimal-owned; not engineering)
+
+- B-10 Beehiiv DPA + SCC executed before first EU subscriber (geofence-or-queue-hold fallback documented).
+- B-05 Sample 5 banned-source scrub in Launch Plan §6.
+
+## Recommendations to Kimal
+
+1. **Acknowledge the doc-vs-reality drift first** (B-17). Either commit the work the docs describe, or re-ground the docs in reality. Pick a direction and execute in one PR before any other M3 work is dispatched. Without this, every subagent dispatched will be planning against a hallucination.
+2. **Triage the M2-B/C lockfile fix as the next concrete step** (B-18). It is 30 minutes of work and converts 2,317 LOC of substantive code from "broken pyramid" to "verifiable pyramid". Without it, the cron-ingest commit is the only verifiable thing in the audio pipeline.
+3. **Treat the M3 arc as a 2-3 week ground-up build, not a "wire up the existing 74 pages" exercise.** The 74-page claim in CLAUDE.md §12 is the source of the most expensive planning error in the project at this point. Plan the M3 arc realistically against the 1-page-stub starting line.
+4. **Re-verdict at cycle-7 after the mechanical fixes land.** Cycle-7 should run on a commit baseline where lockfile is clean + docs match reality. At that point M2 can be honestly verdicted GO WITH CONDITIONS, and M3 can be planned without ambiguity.
+5. **Carry-forwards remain valid**: B-05 (Sample 5), B-10 (Beehiiv DPA), B-11 (ADR-0015 v2 controls — will land alongside the M3 RSC code at item 6).
+
+## Sign-off
+
+- **Cycle-6 verdict:** **NO-GO** for Day-1 launch · **HOLD** for any planning cycle using CLAUDE.md §12 or tasks.md as load-bearing input · **GO** *(narrow)* for the M2-A cron-ingest commit `9c4284d` considered in isolation
+- **Date:** 2026-05-28
+- **Commit baseline:** `9c4284d` + 2,317 LOC uncommitted
+- **Critic gate:** **team-qa-critic dispatched against this report and the cycle-6 supporting artifacts** — see `docs/qa/critic-review.md` cycle-6 appended section for the brutal-review verdict
+- **Reviewer:** team-qa skill (Test Engineer + SRE + Release Manager personas) — Kimal-invoked
+
+**Conditions to close before cycle-7 re-verdict** (in order):
+1. Regenerate `pnpm-lock.yaml` to include the 3 untracked workers (B-18)
+2. Commit the 3 worker dirs + lockfile (B-18)
+3. Reconcile CLAUDE.md §12 + tasks.md to actual state OR commit the work that closes the gap (B-17)
+4. Re-run turbo typecheck + build → confirm green
+5. Author M3 design hand-off pre-flight (if not already current)
+6. Then re-dispatch /team-qa for cycle-7
+
+---
+
+## Cycle-6 ADDENDUM — split-repo discovery (2026-05-28, post-sign-off)
+
+**Trigger:** Kimal shared `https://romas-brief-web.vercel.app/` after cycle-6 sign-off. Three WebFetch verifications confirm a substantive deployed reader surface that the cycle-6 audit did not see.
+
+### What the deployed site actually shows
+
+| Surface | Status verified | Evidence |
+|---|---|---|
+| Homepage | 8-module pattern matches FR-028 (Hero · Today's Briefing 3 items · Editor's Note · Industry Moves 3 · Paper of the Day · Quick Hits 5 · Today's Podcast · Trending/Top Papers 5+5) | WebFetch `/` |
+| Tagline | "Radiation Oncology Intelligence, Decoded Daily" (close to canonical; verify exact match to FR §2 "Radiation oncology, decoded daily.") | WebFetch `/` |
+| Region toggle | "Switch to EU edition" header link | WebFetch `/` |
+| Audience routes | `/for/physicians`, `/for/physicists`, `/for/dosimetrists` live (3 of 5+ per FR-027) | WebFetch `/` |
+| Categories page `/categories` | All 11 categories enumerated (AI · Physics · Clinical RT · Regulatory · Guidelines · Reimbursement · Vendor · Conferences · Resident Education · Future RT · Operations) — matches FR-026 | WebFetch `/categories` |
+| Listen page `/listen` | **Partial** — Audio Brief tier has 5 visible episodes; Daily Brief / Podcast / Conference Brief tiers show RSS link only, 0 visible episodes. No AudioPlayer Variant B hero detected. | WebFetch `/listen` |
+| Signal scoring | S91-S95 labels rendered on cards (matches FR-002 surface) | WebFetch `/` |
+| Placeholder copy | None visible (no "Coming Soon", no "stub") | WebFetch `/` + `/categories` |
+
+### Why cycle-6 did not see this
+
+The reader source code does **not live in this monorepo** (`D:\dev\projects\romas-brief\`). Per CLAUDE.md §12: *"Live on Vercel at https://romasbrief.vercel.app (linked to GitHub repo `kimhons/romas-brief-web`)"*. Cycle-6's audit scope was implicitly the local working tree. The deployed surface lives in a different GitHub repository that was not pulled into the audit context. **No cycle 1-6 surfaced this split.**
+
+### Reframed cycle-6 findings
+
+| Finding | Original framing | Corrected framing |
+|---|---|---|
+| **B-17** | "CLAUDE.md §12 + tasks.md describe a fictional implementation state" | **Partially verified live + architecturally split.** The deployed reader IS substantive (verified via WebFetch). The source for that deployment is in `kimhons/romas-brief-web`, NOT in `D:\dev\projects\romas-brief\apps\web\`. The local `apps/web/app/page.tsx` stub is consistent with `apps/web` being a placeholder for a reader implementation that was authored elsewhere. Future planning load-bearing on CLAUDE.md §12 is **valid for the deployed reader surface** but **misleading for the local monorepo state**. Reconcile by either (a) consolidating reader code into this monorepo, or (b) documenting the split-repo handoff contract explicitly in `docs/specs/architecture.md` + `Docs/SSOT.md`. |
+| **B-19** | "M3 reader + Beehiiv + Resend NOT STARTED in code" | **M3 reader IS started + deployed.** Source lives in `kimhons/romas-brief-web` outside audit scope. Beehiiv webhook + Resend transactional remain **unverified** — those workers are `.gitkeep` dirs in this monorepo and the deployed reader's signup/subscribe wiring was not fetched (potential FR-014A + FR-023 status: unknown from this audit; live-site inspection of `/listen`, `/issues`, `/about` showed no obvious signup form on the homepage). |
+| **B-18** | "Lockfile drift blocks M2-B/C verification" | **UNCHANGED** — still real and binding. Affects the local audio pipeline workers regardless of where the reader source lives. |
+
+### New finding (cycle-6 addendum)
+
+| ID | Finding | Severity | Why it matters |
+|---|---|---|---|
+| **B-20** | **Split-repo architecture undocumented.** ROMAS Brief production surface is deployed across at least 2 GitHub repos (`romas-brief` monorepo holds schema + workers + design specs; `kimhons/romas-brief-web` holds reader code per CLAUDE.md §12). No integration contract exists in `docs/specs/architecture.md` describing how schema changes propagate, how types are shared, how the workers (cron-ingest, audio-producer, rss-publisher) coordinate with the reader on cache invalidation / revalidation / region-toggle / EU-edition behavior. Risk surfaces: schema migration in this repo breaks reader queries; environment-variable mismatch; deploy-coordination failures; audit-blind-spot (no /team-qa cycle has audited the reader source). | **Blocker** for any cycle that needs to verdict the reader surface. **High** for ongoing maintenance. | Until the split-repo handoff is documented + both repos are in scope for /team-qa, the verdict "GO / NO-GO for Day-1 launch" is structurally impossible. Cycle-6's NO-GO reflected only one half of the system. |
+
+### Cycle-6 verdict — addendum re-statement
+
+| Question | Verdict (with addendum) |
+|---|---|
+| Is the monorepo `D:\dev\projects\romas-brief\` ship-ready in isolation? | **NO-GO** (unchanged) — B-18 lockfile drift + 2 audio workers untracked. |
+| Is the deployed `https://romas-brief-web.vercel.app/` ship-ready? | **CANNOT VERDICT FROM THIS AUDIT** — source not in scope; only black-box WebFetch evidence. Substantive surface visible; depth + correctness of M3-A audio-QA UI, Beehiiv wiring, Resend wiring, 5-state coverage, a11y conformance, ADR-0015 v2 control implementation all **unverified**. |
+| Is the M2-A cron-ingest commit (`9c4284d`) shippable? | **GO** *(narrow, conditional on rollback rehearsal)* (unchanged) |
+| Is the audio pipeline (M2-B/C) shippable? | **NO-GO until B-18 closes** (unchanged) — and once it closes, integration with the deployed reader needs the B-20 contract. |
+
+### Updated conditions to close before cycle-7
+
+Original conditions 1-5 still apply. Add:
+
+7. **B-20 mitigation — Author the split-repo handoff contract.** Add a section to `docs/specs/architecture.md` documenting: (a) which repo owns which surface; (b) shared-types strategy (publish `packages/shared` to npm/JSR + consume in reader, OR copy-paste with drift-detection); (c) environment-variable manifest reconciliation between both `.env.example` files; (d) deploy-coordination runbook (schema migration order vs reader build order vs worker deploy order); (e) /team-qa scope rules — does the reader repo get its own cycle, or does cycle-7 pull both into scope.
+8. **B-20 follow-on — Add `kimhons/romas-brief-web` to a cycle-7 audit pull-list.** Either as a git submodule, a sibling clone path, or an explicit `--external-repo` flag for /team-qa. Without it, no future cycle can verdict the reader surface.
+9. **`/listen` page partial verification** — Tier 1 Audio Brief is populated (5 episodes); Tiers 2-4 show RSS link only with 0 episodes. Confirm whether this is expected for pre-launch state OR a bug (audio pipeline UNTRACKED locally → cannot produce Tier 2-4 episodes yet). Maps to B-18 carry.
+
+### Process learning for future cycles
+
+**Audit scope must be explicit.** Cycles 1-6 implicitly scoped to the local working tree. When CLAUDE.md cites external repos as load-bearing for the product (CLAUDE.md §12 line: *"linked to GitHub repo `kimhons/romas-brief-web`"*), `/team-qa` should fail-loud and refuse to verdict the product until the external repo is pulled into scope. **Recommend `/team-qa` skill update**: a Q0 pre-flight that scans CLAUDE.md + SSOT for external-repo references and either pulls them or declines the verdict.

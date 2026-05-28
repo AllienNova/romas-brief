@@ -141,6 +141,12 @@ importers:
         specifier: ^5.6.3
         version: 5.9.3
 
+  packages/shared:
+    devDependencies:
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
   packages/ui:
     devDependencies:
       rimraf:
@@ -150,7 +156,97 @@ importers:
         specifier: ^5.6.3
         version: 5.9.3
 
+  workers/audio-producer:
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20241218.0
+        version: 4.20260516.1
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      wrangler:
+        specifier: ^3.95.0
+        version: 3.114.17(@cloudflare/workers-types@4.20260516.1)
+
+  workers/beehiiv-webhook:
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20241218.0
+        version: 4.20260516.1
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      wrangler:
+        specifier: ^3.95.0
+        version: 3.114.17(@cloudflare/workers-types@4.20260516.1)
+
+  workers/cdn-purge-watchdog:
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20241218.0
+        version: 4.20260516.1
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      wrangler:
+        specifier: ^3.95.0
+        version: 3.114.17(@cloudflare/workers-types@4.20260516.1)
+
   workers/cron-ingest:
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20241218.0
+        version: 4.20260516.1
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      wrangler:
+        specifier: ^3.95.0
+        version: 3.114.17(@cloudflare/workers-types@4.20260516.1)
+
+  workers/email-canary:
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20241218.0
+        version: 4.20260516.1
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      wrangler:
+        specifier: ^3.95.0
+        version: 3.114.17(@cloudflare/workers-types@4.20260516.1)
+
+  workers/rss-publisher:
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20241218.0
+        version: 4.20260516.1
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      wrangler:
+        specifier: ^3.95.0
+        version: 3.114.17(@cloudflare/workers-types@4.20260516.1)
+
+  workers/source-health:
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241218.0

@@ -375,3 +375,15 @@ Business invariant: subscriber count hidden until 2,500. `subscriber_count` view
 | 2026-05-14 | 2.0.0 | Cycle-6 contract audit. 11 new findings (NEW-S-001 through NEW-S-011). Cycle-1 status review. OWASP re-mapping. 5 security blockers identified. |
 | 2026-05-21 | 2.1.0 | build-2026-05-21 qa-pass: 26 → 14 vulns (0 critical) via D-025 next 14.2.35 bump + 3 transitive overrides. ADR-0015 v2 acceptance. |
 | 2026-05-22 | 2.2.0 | /team-qa cycle-5: ADR-0015 v2 14-CVE inventory still matches; @supabase/ssr 0.10.3 + supabase-js 2.106.1 added 0 new CVEs; SECRETS.md v1.0.0 lands 27-secret inventory + rotation policy; voice consent template covers donor cascade. No new P0/P1 security findings introduced by M1-completion or M1c-closeout. |
+
+---
+
+## Cycle-6 cross-reference (2026-05-28)
+
+Cycle-6 surfaced 3 NEW BLOCKERS that supersede the prior cycle's framing for this artifact's scope. Full evidence in `Docs/qa/risk-register.md` cycle-6 section + `Docs/specs/qa-report.md` cycle-6 verdict.
+
+- **B-17** — Doc-vs-reality drift: CLAUDE.md §12 + tasks.md describe a fictional M1+M2+M3 implementation state. Future planning load-bearing on these docs will hallucinate.
+- **B-18** — Lockfile drift: `pnpm-lock.yaml` has 0 references to the 3 untracked workers (audio-producer / cdn-purge-watchdog / rss-publisher = 2,317 LOC). Turbo typecheck FAIL + build FAIL gates all M2-B/C verification.
+- **B-19** — M3 (reader + Beehiiv webhook + Resend transactional) is NOT STARTED in code; tasks.md Phase 5/6/7 `[x]` claims are false against the working tree. apps/web/app/page.tsx is a 21-line T-101 stub.
+
+Until B-17/18/19 close, this artifact's prior verdict is **superseded** for any Day-1 launch readiness decision. The artifact's M1/M2-A scope remains valid where the underlying code exists in HEAD.
