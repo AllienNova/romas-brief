@@ -1,7 +1,8 @@
-# ROMAS Brief — Target System Architecture
+# ROMAS Brief — System Architecture
 
-> Version: 1.0.0 · Date: 2026-05-14 · Owner: Kimal Honour Djam
+> Version: 2.0.0 · Date: 2026-05-28 · Owner: Kimal Honour Djam
 > ADRs for each tech-stack choice live in `docs/specs/adr/`.
+> **Phase 8 consolidation complete** — single-repo architecture as of 2026-05-28. Split-repo contract retired (see `Docs/INTEGRATION-CONTRACT.md` status: EXECUTED).
 
 ---
 
@@ -59,7 +60,7 @@ flowchart TD
 | Module | Path | Runtime | Responsibility |
 |---|---|---|---|
 | `cms` | `apps/cms/` | Next.js 14+ / Cloudflare Pages | Internal editorial dashboard — article CRUD, audio status, QA gate UI |
-| `reader` | `apps/reader/` | Next.js 14+ + Tailwind / Cloudflare Pages | Public reader surface — article pages, AudioPlayer, Listen page, ROMAS Read |
+| `web` (reader) | `apps/web/` | Next.js 14.2.35 + Tailwind / **Vercel** | Public reader surface — 8-module homepage, article pages, AudioPlayer, Listen page, ROMAS Read. **Deployed at https://romas-brief-web.vercel.app**. Source consolidated from `kimhons/romas-brief-web` into this monorepo on 2026-05-28 (Phase 8). |
 | `cron-ingest` | `workers/cron-ingest/` | Cloudflare Worker (Node 20 compat) | Scheduled fetch from all source endpoints; writes raw items; logs to source_health |
 | `audio-producer` | `workers/audio-producer/` | Cloudflare Worker | ElevenLabs → PlayHT TTS; loudness mastering; WAV/MP3 upload to R2; Whisper transcript; state flip to in_review |
 | `rss-publisher` | `workers/rss-publisher/` | Cloudflare Worker | Generates 4 per-tier RSS feeds on article publish/revoke; validates feed structure |
@@ -293,6 +294,30 @@ Full rationale in each ADR. Summary:
 | [ADR-0004](adr/0004-tts-elevenlabs-primary-playht-failover.md) | ElevenLabs primary + PlayHT failover | Accepted (retroactive) | 2026-05-14 |
 | [ADR-0005](adr/0005-rss-four-tier-feeds.md) | Four-tier RSS feeds | Accepted (retroactive) | 2026-05-14 |
 | [ADR-0006](adr/0006-audio-qa-state-machine.md) | Schema-enforced audio QA state machine | Accepted (retroactive) | 2026-05-14 |
+
+---
+
+## 8. Deployment State (as of 2026-05-28)
+
+| Surface | Host | URL | Status |
+|---|---|---|---|
+| Reader (`apps/web`) | Vercel (team: alien-nova) | https://romas-brief-web.vercel.app | **LIVE** — 8-module homepage, 79/79 pages |
+| CMS (`apps/cms`) | Not yet deployed | — | Scaffold only |
+| Workers | Not yet deployed | — | Source in `workers/`; Cloudflare deployment pending |
+| Supabase | Supabase cloud | `rjpuxfbuzispklcstuzo` | Schema ready; reader still on mock data |
+
+**Vercel project:** `romas-brief-web` (ID: `prj_U86mInvLI5mRyv6zjPIwh2Aryi`)
+**GitHub source:** `kimhons/romas-brief-web` (repoId: `1252164491`) — Vercel is currently linked to this standalone repo which mirrors the consolidated `apps/web/` source. Re-linking to `AllienNova/romas-brief` with `rootDirectory=apps/web` is a pending T-805 follow-up task.
+
+**Deploy command (manual — GitHub auto-deploys blocked due to billing):**
+```bash
+TOKEN="vcp_5DxK8mOK3N31MexvZXMi6Y7QFM5qIta8mnyrMeOaJYgV4qYY8P4KVe2n"
+TEAM="team_rt0SMeqUHlkA9Z7kJPmlcpfl"
+curl -s -X POST "https://api.vercel.com/v13/deployments?teamId=$TEAM" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"romas-brief-web","gitSource":{"type":"github","repoId":1252164491,"ref":"main"},"target":"production"}'
+```
 
 ---
 
