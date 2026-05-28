@@ -1,0 +1,23 @@
+{
+  "name": "@romas-brief/email-canary",
+  "private": true,
+  "version": "0.0.0",
+  "description": "T-310A placeholder. Resend transactional email sender — handler logic not yet implemented in this repo. See /team-qa cycle-6 + tasks.md Phase 7.",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run --outdir=dist",
+    "deploy": "wrangler deploy",
+    "lint": "echo \"(reserved-stub) lint runs on T-310A-A real implementation\" && exit 0",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"(reserved-stub) tests run on T-310A-A real implementation\" && exit 0",
+    "clean": "rimraf dist .wrangler .turbo"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3",
+    "wrangler": "^3.95.0"
+  }
+}

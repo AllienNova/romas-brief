@@ -1,0 +1,15 @@
+name = "romas-brief-email-canary"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Reserved name — handler logic to be authored under T-310A-A..E (Phase 7).
+# (Note: tasks.md historically refers to this worker as `email-transactional`;
+#  repo dir is `email-canary`. Reconcile naming when implementing.)
+# Until then, fetch() returns HTTP 501. No cron triggers.
+# Secrets that will be required at activation:
+#   RESEND_API_KEY
+#   SUPABASE_SERVICE_ROLE_KEY (read subscriber events)
+
+[vars]
+SUPABASE_URL = "https://placeholder.supabase.co"

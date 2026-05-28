@@ -1,0 +1,12 @@
+name = "romas-brief-source-health"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Reserved workspace — source-health logic currently lives inside cron-ingest
+# (writes source_health rows + source_health_summary.json). This workspace
+# is reserved for future extraction into a standalone reporter / dashboard
+# under T-120. Until extracted, fetch() returns HTTP 501. No cron triggers.
+
+[vars]
+SUPABASE_URL = "https://placeholder.supabase.co"

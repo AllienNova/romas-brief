@@ -1,0 +1,23 @@
+{
+  "name": "@romas-brief/audio-producer",
+  "private": true,
+  "version": "0.0.0",
+  "description": "T-201. Cloudflare Queues consumer: ElevenLabs TTS + PlayHT failover + ffmpeg loudnorm + R2 upload + Whisper transcript + audio_jobs state machine.",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run --outdir=dist",
+    "deploy": "wrangler deploy",
+    "lint": "echo \"(M2 stub) lint lands in T-217\" && exit 0",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"(M2 stub) tests land in T-217\" && exit 0",
+    "clean": "rimraf dist .wrangler .turbo"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3",
+    "wrangler": "^3.95.0"
+  }
+}

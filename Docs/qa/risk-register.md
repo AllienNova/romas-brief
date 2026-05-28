@@ -161,7 +161,55 @@ Sourced from `docs/qa/design-review.md` cycle-2 GO WITH CONDITIONS verdict. Thes
 | B-12 | team-build-critic dispatch reliability — 2 of 4 critic dispatches in this session had issues (truncated output, API 529). | M | M | Build Lead inline self-audit as documented fallback. Cycle-5 trace serves as critic-rerun on M1c-closeout. Flag for next cycle to re-run critic with fresh context. |
 | B-13 | `apps/cms/lib/supabase/types.ts` is placeholder until `supabase gen types typescript --linked` runs against a live Supabase project | L | H | Owner: Kimal infra (provision Supabase) + cms-engineer (regenerate types post-provisioning). Impact deferred until M3 reader build. |
 | B-14 | FR-S-003 + FR-S-005 have no T-NNN assigned | L | M | M3 planning gap; minor — both are SHOULD not MUST. Owner: editorial-director + Kimal during M2/M3 task-row authoring. |
+| B-15 | **ElevenLabs production credit budget sizing** — initially estimated as H/H based on theoretical headroom; **DOWNGRADED to L/M post-empirical-measurement** (smoke test attempt #3 GREEN, 2026-05-22 17:39). Actual cost: 1,771 credits for 2.7 min audio = ~$0.022/episode at Creator tier. Day-1 backlog (~50 episodes) ≈ $1.10; monthly production (~30-60 episodes) ≈ $0.66-1.32. Creator tier (~100k chars/mo baseline + $5-10/mo top-up packs) is sufficient. | **L** | **M** | Monthly credit-pack top-up when monthly burn exceeds Creator baseline. No tier upgrade needed for Day-1. Audio caching (synth-once-per-article) further reduces — already implied by `audio_jobs` unique constraint on `(article_id, audio_tier)`. Owner: Kimal monitors monthly. |
+| B-16 | **audio-producer Worker CANNOT use synchronous ElevenLabs fetch — 30s sync limit exceeded.** Empirical 2026-05-22: 34.13s TTS latency for 2.7 min audio (Aria, default settings). Cloudflare Worker sync `fetch()` limit is 30s. ROMAS Brief Daily Brief (10-15 min), Podcast (30-60 min), Conference Brief (15-30 min) all generate audio longer than ~2 min — all will time out a sync Worker. Only Audio Brief tier 5-7 min might fit. | **H** | **H** | audio-producer Worker (R-201, M2) MUST adopt Cloudflare Queues + Queued Consumer pattern, same as ADR-0011 Whisper. Synthesis step gets queued by the cron worker (or the editorial-director when an article publishes); the Queued Consumer worker has no wall-clock limit + handles TTS + loudnorm + R2 upload. Architectural constraint surfaced empirically; documented in Audio Architecture v1.0 §2.1.2 + decision-log D-032 update. Owner: audio-producer + DevOps at M2 design. |
 
-**Trajectory**: B-07 closed; 0 net-new blockers from cycles since cycle-1; the project is closing debt, not adding it.
+**Trajectory**: B-07 closed; B-15 downgraded H/H → L/M post-empirical-measurement; B-16 new H/H architectural risk surfaced by GREEN smoke (good news — caught at M1 not M2). 0 net-new BLOCKERS since cycle-1; the project is closing debt + surfacing real findings, not regressing.
 
 Full cycle-5 traceability + critic-rerun on M1c-closeout: see `Docs/qa/requirements-trace.md` cycle-5 section.
+
+---
+
+## Cycle-6 risk register refresh (2026-05-28 against actual in-tree state)
+
+**Trajectory inversion**: cycle-5 reported closing debt. Cycle-6 surfaces 3 NEW BLOCKERS (B-17/B-18/B-19), all stemming from doc-vs-reality drift accrued between cycle-5 (2026-05-22) and cycle-6 (2026-05-28). The underlying engineering work for M2-B/C is substantial (2,317 LOC across 3 workers) but was never integrated (untracked + lockfile-broken). M3 was claimed complete in docs but never started.
+
+### New cycle-6 blockers
+
+| ID | Risk | Severity | Likelihood | Mitigation |
+|---|---|---|---|---|
+| **B-17** | **Doc-vs-reality drift: CLAUDE.md §12 + tasks.md describe a fictional implementation state.** CLAUDE.md §12 (2026-05-28, added since cycle-5) claims "Reader App: 100% complete (74 pages), live on Vercel" and "All 6 workers implemented locally". tasks.md marks all 7 phases `[x]` complete through T-310A-E. Actual state: `apps/web/app/page.tsx` is a 22-line T-101 stub; `apps/cms` is 3 stub files; `packages/ui/src/index.ts` exports a constant; 3 worker dirs are `.gitkeep` only. Future Claude sessions reading these docs will plan against the false state. | **Blocker** | High | Reconcile CLAUDE.md §12 to the actual state OR commit the work that closes the gap. Decision required from Kimal. Until reconciled, every dispatched agent will be planning against the wrong baseline. |
+| **B-18** | **Lockfile drift: pnpm-lock.yaml has zero references to `workers/audio-producer`, `workers/cdn-purge-watchdog`, `workers/rss-publisher`.** The 3 untracked workers have 2,317 LOC of substantive source code but `pnpm install` was never re-run after they were added. Consequence: turbo typecheck FAILS (`Cannot find module typescript`) and turbo build FAILS (`Cannot find module wrangler`) on the audio-producer surface. No M2-B/M2-C verification can run until lockfile is regenerated. | **Blocker** | High | (1) `pnpm install` to regenerate lockfile inclusive of new workspaces. (2) Commit the 3 worker dirs + updated lockfile. (3) Re-run turbo typecheck + build to confirm green. ~30 min of work. |
+| **B-19** | **M3 reader + Beehiiv webhook + Resend transactional are NOT STARTED, contrary to tasks.md Phase 5–7 `[x]` claims.** apps/web has 1 stub page (zero of the 12+ routes per FR-025/26/27/28/29/31/32). apps/cms has 3 stub files (zero of the audio-qa surface per FR-009 T-209). packages/ui has 1 constant export (zero of AudioPlayer A/B, SponsorBlock, AudioStatusBadge, SubscriberCount per FR-013/19/20). 2 worker dirs (`beehiiv-webhook`, `email-canary`) are `.gitkeep` only (zero of FR-014/14A/23 per T-310C/T-310A). | **Blocker** | High | All M3 work needs to be authored. Estimate: 2-3 weeks across web-engineer + cms-engineer + design-system-keeper. Until completed, the product cannot ship Day-1 with the FR-024..FR-038 worldwide-positioning surface. Carry-forward B-11 (ADR-0015 v2 controls) must land alongside the RSC code as it is authored. |
+
+### Cycle-6 carry-forward status
+
+| ID | Status at cycle-6 |
+|---|---|
+| B-01 (40 placeholder T-NEW IDs) | Partially closed by M0c2 cycle (T-225..T-230 + T-310A..D rows authored). M3 reader T-NEW IDs (T-NEW11..T-NEW20) still un-actionable but **not the binding constraint** at cycle-6 — the binding constraint is that the underlying code is also missing (B-19). |
+| B-02 (88 unwritten A-NNN tests) | UNCHANGED. pgTAP coverage at 79 assertions (schema-only). Zero TS test files in workspace. |
+| B-05 (Sample 5 banned source) | UNCHANGED. M0 carry-forward; editorial cannot ship Sample 5 until re-sourced. |
+| B-06 (doc-version drift) | UNCHANGED. |
+| B-08 (CDN purge watchdog) | **Partially built** (untracked + lockfile-broken — see B-18). 415 LOC in `workers/cdn-purge-watchdog/src/index.ts`. |
+| B-09 (Beehiiv webhook HMAC) | **Unstarted in code** — `workers/beehiiv-webhook/` is `.gitkeep` only. Subsumed by B-19. |
+| B-10 (Beehiiv DPA + SCC) | UNCHANGED (Kimal legal track). |
+| B-11 (14 Next 14 residual CVEs) | UNCHANGED. Controls cannot land alongside RSC code yet because RSC code does not exist (subsumed by B-19). |
+| B-12 (critic dispatch reliability) | TBD this cycle. |
+| B-13 (Supabase types.ts placeholder) | UNBLOCKED per CLAUDE.md §12 (Supabase MCP provisioned `rjpuxfbuzispklcstuzo.supabase.co` + types regenerated). Verify against the actual `apps/cms/lib/supabase/types.ts` before claim-closure. |
+| B-16 (Queued Consumer architecture for audio) | **Implemented in code** — the untracked `workers/audio-producer/src/index.ts:1-1214` uses Queue consumer pattern per the architectural pivot. Cannot verify until lockfile is fixed (B-18) and code is committed. |
+
+## Cycle-6 top 5 release-readiness blockers (the binding-now gate items)
+
+1. **B-19 — M3 reader + Beehiiv + Resend NOT STARTED.** Day-1 launch impossible without the worldwide-positioning surface (FR-024..FR-038), the QA-gate CMS surface (FR-009 UI), and the subscriber-sync webhook (FR-023). 2-3 weeks of work.
+2. **B-18 — Lockfile drift.** Until pnpm-lock.yaml is regenerated to include the 3 untracked workers, M2-B/C verification cannot run green. ~30 min fix; gates all downstream M2 acceptance work.
+3. **B-17 — Doc-vs-reality drift.** Future sessions cannot plan correctly while CLAUDE.md §12 + tasks.md describe a fictional state. Reconcile or commit; either is fine; "stale" is not.
+4. **B-10 — Beehiiv DPA + SCC.** Carry-forward (Kimal legal track). Still binding on first EU subscriber.
+5. **B-05 — Sample 5 `meddeviceguide.com` Rule-4 violation.** Carry-forward (M0).
+
+## Risk-register completeness check (cycle-6)
+
+| Source | Count | Notes |
+|---|---|---|
+| Cycle-1 → cycle-5 carry-forward | 88 (consolidated) + 7 design-time + 9 cross-ref + 5 cycle-5 = 109 risk rows | unchanged |
+| **NEW cycle-6 BLOCKERS** | **3** (B-17/18/19) | doc-vs-reality drift + lockfile drift + M3 unstarted |
+| **Total tracked: 112 risks** | net +3 since cycle-5 | First net-positive BLOCKER delta since cycle-1 — trajectory inverted |

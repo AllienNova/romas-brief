@@ -486,3 +486,84 @@ The team-build-critic dispatch on the M1c-closeout cycle failed with API 529 Ove
 **Critic-rerun verdict**: no P0 or P1 findings introduced by M1c-closeout. The cycle's deliverables are consistent with their authoring intent. Equivalent to APPROVE.
 
 ---
+
+# Cycle-6 — Requirements traceability against implemented code (2026-05-28)
+
+**Cycle baseline:** HEAD = `9c4284d` (cron-ingest committed only) + 2,317 LOC untracked across 3 workers (audio-producer 1,214 / rss-publisher 688 / cdn-purge-watchdog 415).
+
+**Doc-vs-reality drift surfaced:** CLAUDE.md §12 + tasks.md describe a far more advanced state than the working tree contains. This trace is anchored in what exists at file-system level, not in what docs claim.
+
+## FR coverage at cycle-6 — actual implementation
+
+| FR | Requirement | Impl status | Evidence (file:lines or absence) |
+|---|---|---|---|
+| FR-001 | Daily ingestion Mon-Fri 10:30 UTC (now 3-edition per Q8) | Implemented (untested) | `workers/cron-ingest/src/index.ts:1-766` (committed `9c4284d`). Wrangler.toml cron triggers per T-P1-04. |
+| FR-002 | Six-axis signal scoring | Missing | No signal-scorer logic in `cron-ingest/src/index.ts`. Stub returns raw items only. |
+| FR-003 | Top-5 selection excludes embargoed | Partial | Embargo separation logic present in `cron-ingest` (Rule 2 enforced); but no top-5 selector worker/code. |
+| FR-004 | Schema-enforced `primary_source_url` NOT NULL | Implemented (schema) | `supabase/migrations/0001_create_articles.sql` + pgTAP `bucket_a_constraints.sql`. Carries from cycle-5. |
+| FR-005 | Every claim to primary source | Implemented (schema) | `supabase/migrations/0004_create_claim_trace.sql`. Carries from cycle-5. |
+| FR-006 | Embargoed to embargo_holds | Implemented (schema + code) | Migration 0005 + cron-ingest insertion logic. |
+| FR-007 | Audio Brief 10-beat ElevenLabs primary + PlayHT failover | Implemented (UNTRACKED) | `workers/audio-producer/src/index.ts:1-1214` exists but UNTRACKED + lockfile-broken (typecheck FAIL). |
+| FR-008 | -16 LUFS / -1 dBTP + DB gate [-18, -14] | Implemented (schema) + uncommitted code | Migration 0002 CHECK constraints; ffmpeg loudnorm logic in untracked audio-producer src. |
+| FR-009 | 5-condition audio QA gate (CHECK) | Implemented (schema) | `audio_publish_requires_qa` CHECK in migration 0002; pgTAP coverage `inviolable_rules.sql`. |
+| FR-010 | Whisper transcript per audio | Implemented (UNTRACKED) | Logic in untracked audio-producer src. |
+| FR-011 | 4 RSS feeds per tier | Implemented (UNTRACKED) | `workers/rss-publisher/src/index.ts:1-688` exists but UNTRACKED + lockfile-broken. |
+| FR-012 | Revoke kill switch with 60s SLA + watchdog | Implemented (UNTRACKED) | `workers/cdn-purge-watchdog/src/index.ts:1-415` exists but UNTRACKED + lockfile-broken. |
+| FR-013 | Reader site + AudioPlayer A/B inline/banner + AudioStatus badge | **Missing — Not Started** | `apps/web/app/page.tsx` is 22-line T-101 stub. `packages/ui/src/index.ts` is constant export only. No AudioPlayer Variant A. No AudioPlayer Variant B. No AudioStatusBadge. |
+| FR-014 | Beehiiv newsletter delivery on publish | **Missing — Not Started** | `workers/beehiiv-webhook/` is `.gitkeep` only. No Beehiiv issue-send code in CMS or any worker. |
+| FR-014A | Resend transactional (signup/unsub/revocation/reset) | **Missing — Not Started** | `workers/email-canary/` is `.gitkeep` only. No Resend client. No React-Email templates. |
+| FR-015 | Friday Read + sub-rubric rotation | Missing — Not Started (M4 scope) | No `friday-read-editor` agent code; no `friday_read_history.json` scaffold; no ROMASRead component. |
+| FR-016 | Conference Brief activatable per conference | Missing — Not Started (M6 scope) | No conference-mode operator; no embargo-aware lint on `conference-brief.xml`. |
+| FR-017 | openFDA verified against official FDA record | Partial (cron-ingest enforces Rule 4) | Logic present in `cron-ingest/src/index.ts` per inviolable-rules comment block. |
+| FR-018 | Insight/Take labeled (schema) | Implemented (schema) | `articles_insight_labeled` CHECK in migration 0001. |
+| FR-019 | Sponsor firewall 32px | **Missing — Not Started** | No `SponsorBlock.tsx` component in `packages/ui/src/`. |
+| FR-020 | Subscriber count hidden until 2,500 | **Missing — Not Started** | No `SubscriberCount.tsx` component in `packages/ui/src/`. |
+| FR-021 | Voice consent registry | Implemented (template only) | `Docs/voice-consent-registry.md` template per R-110 (cycle-5). Signatures = Kimal legal track (open). |
+| FR-022 | Tier 5 Video Podcast (Day 60) | Deferred (ADR-0012 pending) | Carries from cycle-5; not on Day 1 critical path. |
+| FR-023 | Beehiiv ↔ Supabase subscriber sync via HMAC webhook | **Missing — Not Started** | `workers/beehiiv-webhook/` is `.gitkeep` only. No HMAC-SHA256 verify code. |
+| FR-024 | 500-article pre-launch seed import | **Missing — Not Started** | No bulk-insert script. No articles in `supabase/seed.sql` beyond test data. |
+| FR-025 | 8 region surfaces `/regions/{slug}` | **Missing — Not Started** | apps/web has 1 page total; no routes. |
+| FR-026 | 11 category surfaces `/categories/{slug}` | **Missing — Not Started** | Same as FR-025. |
+| FR-027 | 5+ audience-filter surfaces `/for/{audience}` | **Missing — Not Started** | Same. |
+| FR-028 | Homepage = 8 modules | **Missing — Not Started** | `apps/web/app/page.tsx` is centered ROMAS Brief stub. |
+| FR-029 | 8 content-type filters | **Missing — Not Started** | Same. |
+| FR-030 | Day-1 audio inventory (~50 episodes) | **Missing — Not Started** | No bulk audio-job seeding. No `audio_jobs` rows. Audio pipeline (FR-007) UNTRACKED and lockfile-broken — cannot produce. |
+| FR-031 | `/issues/{YYYY-MM-DD}` archive | **Missing — Not Started** | No issue routes. |
+| FR-032 | Worldwide region distribution + 2-of-6 quota | **Missing — Not Started** | No homepage; no region toggle; no `cf-ipcountry` integration. |
+| FR-033 | Three-edition publish (APAC/EU/Americas) | Partial | Cron schedule wired in cron-ingest per T-P1-04; per-edition homepage re-rank impossible without homepage (FR-028). |
+| FR-034 | Locale-aware date/currency | **Missing — Not Started** | No `Intl.DateTimeFormat` integration; no homepage to host it. |
+| FR-035 | China posture read-only | Implemented (cron-ingest filter) | Source list filter in cron-ingest; no Chinese subscriber acquisition surface to gate (because no signup form). |
+| FR-036 | 6 non-US regulatory contracts | Implemented (specs/contracts) | All 6 YAML contracts on disk per cycle-5; ingestion logic in cron-ingest src. |
+| FR-037 | Lexicon expansion to ~80 entries | Missing — Owner pending | `supabase/migrations/0006_create_lexicon.sql` schema; entry count not in seed.sql at expected size. |
+| FR-038 | LATAM LLM-translate (DeepL + Claude verify) | **Missing — Not Started** | No DeepL client in any worker. No `translation_provider` column population logic. |
+
+## FR completion summary (38 MUST FRs)
+
+| Bucket | Count | Pct |
+|---|---|---|
+| Implemented (committed code + green pyramid) | 9 (FR-001 cron, FR-004/5/6/8/9/18/35/36 schema/cron-side) | 24% |
+| Implemented but UNTRACKED + lockfile-broken | 5 (FR-007/8 audio-producer + FR-010 whisper + FR-011 rss + FR-012 watchdog) | 13% |
+| Partial (1 surface present, others missing) | 3 (FR-003 embargo only, FR-017 cron-ingest only, FR-033 cron only) | 8% |
+| Template/Schema-only (no app code) | 3 (FR-021 voice consent, FR-018, FR-009) | 8% |
+| Missing — Not Started | 18 (all M3 reader surfaces FR-013/14/14A/19/20/23/25..34/38; M4 FR-015; M6 FR-016; M2.5 FR-024/30/37) | 47% |
+
+**24% of MUST FRs are shipping-quality.** Cycle-5 reported "schema-enforced MUSTs at 18% (7 of 38)" — cycle-6 confirms +cron-ingest committed (+2 MUSTs) and the rest of the alleged completion is either UNTRACKED+broken or not started.
+
+## SHOULD / NFR coverage at cycle-6
+
+| ID | Requirement | Status |
+|---|---|---|
+| FR-S-001 | Search (FTS + pgvector) | Missing — Not Started |
+| FR-S-002 | Issue archive page | Missing — Not Started |
+| FR-S-003 | Per-author/modality/disease-site tag pages | Missing — Not Started |
+| FR-S-004 | RSS feed validators on every publish | Untracked (in rss-publisher src) |
+| FR-S-005 | Source-health dashboard | Missing — Not Started |
+| NFR-001/002/003 (Web Vitals) | Untestable | No reader UI to measure. |
+| NFR-004 (publish latency ±5min) | Untestable | No publish path live. |
+| NFR-005 (CDN purge ≤60s) | Untracked | cdn-purge-watchdog src exists but lockfile-broken. |
+| NFR-006 (CHECK 100% pgTAP) | Implemented | 79 assertions in 5 pgTAP files (carry-forward from cycle-5). |
+| NFR-007 (WCAG 2.2 AA) | Untestable | No reader UI. |
+| NFR-010 (RSS Atom 1.0 + iTunes) | Untestable | rss-publisher untracked + lockfile-broken. |
+| NFR-011 (no .env in repo) | PASS | `.gitignore` covers `.env`/`.env.*`; no `.env*` tracked. |
+| NFR-013 (Supabase PITR + R2 replication) | Untestable | Requires live infra. |
+| NFR-016 (GDPR right-to-erasure) | Missing — no FR | Carry-forward H-08. |

@@ -1,0 +1,41 @@
+name = "romas-brief-audio-producer"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Cloudflare Queues consumer — required because ElevenLabs TTS latency
+# (34s+ for 2.7 min audio) exceeds the 30s Worker sync wall-clock limit.
+# See ROMAS-Brief-Audio-Architecture.md §2.1.2 (B-16).
+[[queues.consumers]]
+queue = "romas-audio-jobs"
+max_batch_size = 1
+max_batch_timeout = 5
+max_retries = 3
+dead_letter_queue = "romas-audio-jobs-dlq"
+visibility_timeout_secs = 600  # 10 min — covers longest Podcast tier TTS
+
+# R2 bindings
+[[r2_buckets]]
+binding = "AUDIO_ARCHIVE"
+bucket_name = "romas-audio-archive"
+
+[[r2_buckets]]
+binding = "AUDIO_CDN"
+bucket_name = "romas-audio-cdn"
+
+[vars]
+SUPABASE_URL = "https://placeholder.supabase.co"
+CLOUDFLARE_ZONE_ID = "placeholder"
+WHISPER_ENDPOINT = "https://api.openai.com/v1/audio/transcriptions"
+
+# Secrets (never in [vars] — use `wrangler secret put`):
+#   SUPABASE_SERVICE_ROLE_KEY
+#   ELEVENLABS_API_KEY
+#   ELEVENLABS_VOICE_ID_BRIEF
+#   ELEVENLABS_VOICE_ID_PODCAST
+#   ELEVENLABS_VOICE_ID_CONFERENCE
+#   PLAYHT_API_KEY
+#   PLAYHT_USER_ID
+#   PLAYHT_ROMAS_VOICE_ID
+#   OPENAI_API_KEY          (for Whisper)
+#   CF_PURGE_API_TOKEN      (for CDN cache purge)
