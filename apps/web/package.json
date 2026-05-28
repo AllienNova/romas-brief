@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"(stub) tests land in T-117" && exit 0",
+    "test": "echo \"(stub) tests land in T-117\" && exit 0",
     "clean": "rimraf .next .turbo"
   },
   "dependencies": {
