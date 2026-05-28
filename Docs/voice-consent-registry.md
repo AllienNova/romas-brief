@@ -1,226 +1,226 @@
 ---
-title: ROMAS Brief — Voice Consent Registry
-version: 1.0.0-template
-date: 2026-05-22 (template authored; entries to be executed by Kimal)
-status: TEMPLATE — placeholders to be filled and signed before any voice-cloned audio publishes
+title: ROMAS Brief — Voice Operations Registry (formerly Voice Consent Registry)
+version: 2.0.0
+date: 2026-05-22 (D-032 restructure)
+status: Operational record — 3 ElevenLabs Creator-tier voices by tier role per D-032; PlayHT failover voice tracked separately
 owner: Kimal Honour Djam (president@aliennova.com)
-authority_chain: SSOT v1.2.0 §2 inviolable rule 6 (no audio without QA) · ADR-0004 (TTS engines) · Docs/ROMAS-Brief-Audio-Architecture.md §2.2 (voice consent) · R-110 (remediation-plan M1) · R-213 (audio-producer reads this registry; consent withdrawal cascades to voice ID disable + fallback)
-supersedes: implicit pre-launch gate (no formal instrument prior to this file existing)
+authority_chain: SSOT v1.2.0 §3 row 9 (D-032 voice architecture) · ADR-0004 (TTS engines) · Docs/ROMAS-Brief-Audio-Architecture.md §2 · D-031 (ElevenLabs tier finding) · D-032 (3-voice architecture)
+supersedes: voice-consent-registry.md v1.0.0-template (donor-signature pattern for single Kimal voice clone — superseded by D-032 ElevenLabs Creator-tier ToS reference for 3 stock voices)
 ---
 
-# Voice Consent Registry — ROMAS Brief
+# Voice Operations Registry — ROMAS Brief
 
 ## 0. Purpose
 
-This registry is the **canonical record of voice-cloning consent for every voice ID used in ROMAS Brief audio production**. It is a legal instrument — fillable but BINDING once signed by all parties named in §3 of each entry.
+This registry is the **operational record of voices used in ROMAS Brief audio production**. It captures:
+- Which 3 ElevenLabs voices are bound to which audio tier
+- The ElevenLabs Creator-tier ToS reference (replaces per-donor signed instruments per D-032)
+- Per-voice operational metadata (selected date, last verified date, retirement procedure)
+- PlayHT failover voice details (separate consent posture — PlayHT requires its own ToS acceptance per ADR-0004)
 
-The `audio-producer` agent (per `.claude/agents/audio-producer.md` + R-213) reads this registry at start-of-pipeline. If a voice ID listed in the environment variables (`ELEVENLABS_ROMAS_VOICE_ID`, `PLAYHT_ROMAS_VOICE_ID`) is marked **WITHDRAWN** in this registry, the agent MUST:
+**D-032 architecture pivot (2026-05-22)**: the prior v1.0.0-template assumed a single Kimal-cloned voice with a signed donor instrument. That path is now **deferred to post-launch revisit**. Day 1 ships with 3 ElevenLabs Creator-tier library voices, by tier role. ElevenLabs commercial use is governed by the Creator-tier ToS (no per-donor signed instrument needed).
 
-1. Refuse to use that voice ID for new audio generation.
-2. Fall back to the designated fallback voice ID (see §4 of each entry).
-3. Log the substitution with `voice_engine_used` set to whichever vendor handled the fallback.
-4. Continue the publish workflow without interruption — the article still ships using the fallback.
-5. Trigger the revocation cascade for any **already-published** audio that used the withdrawn voice ID (see §5 of each entry).
-
-This file does NOT replace the executed legal instrument (e.g., a signed PDF held by Kimal in 1Password or with legal counsel). This file IS the operational record the audio-producer agent reads. Both must agree.
+The `audio-producer` agent reads this registry at start-of-pipeline. If a voice is marked **RETIRED** (rare; only on ElevenLabs voice removal or a Kimal editorial decision to switch), the agent MUST refuse to use it and fall back to the designated alternate. The PlayHT failover voice has its own consent + retirement procedure in §3.
 
 ---
 
-## 1. Active voice IDs (template — fill before first use)
+## 1. Active voice IDs
 
-For each voice ID in production use, complete the entry below. Add a new entry per voice ID. Never delete entries — mark withdrawn instead (§3 status field).
-
-### Entry template
-
-```yaml
-voice_id_entry:
-  vendor:                # "elevenlabs" | "playht"
-  voice_id:              # the vendor-specific voice identifier (e.g. "abc123def456")
-  env_var_name:          # which env var holds this ID (e.g. "ELEVENLABS_ROMAS_VOICE_ID")
-  status:                # "active" | "withdrawn" | "expired"
-  status_updated:        # ISO 8601 date of last status change
-
-  donor:
-    legal_name:          # voice donor's legal name as it appears on their government ID
-    role:                # voice donor's role at AllienNova (e.g. "Founder", "Editor-in-Chief", "Contractor")
-    contact_email:       # donor's primary contact email
-    contact_phone:       # donor's primary contact phone (E.164 format)
-
-  recording:
-    session_date:        # ISO 8601 date of recording session
-    session_location:    # physical location or "remote"
-    sample_minutes:      # total minutes of audio recorded for the clone
-    sample_storage:      # where the raw recording is archived (e.g. "R2 romas-audio-archive/voice-source/{voice_id}.wav")
-
-  commercial_use_scope:
-    duration:            # "indefinite" | ISO 8601 end date
-    geographic:          # "worldwide" | comma-separated ISO 3166-1 alpha-2 codes
-    tier_scope:          # which audio tiers may use this voice — comma-separated from Audio Architecture v1.0 §1 (e.g. "audio_brief, daily_brief, podcast, conference_brief, video_podcast")
-    revenue_share:       # "none" | percentage (e.g. "0.5%") | flat-fee description
-    attribution_required: # "yes" | "no" — does ROMAS Brief credit the donor in episode metadata?
-
-  withdrawal_procedure:
-    notice_period:       # how much advance notice the donor must give before withdrawal takes effect (e.g. "7 days", "immediate")
-    withdrawal_method:   # how the donor formally withdraws (e.g. "signed email to president@aliennova.com")
-    cascade:
-      - "Set status to 'withdrawn' in this file with status_updated = withdrawal date"
-      - "Disable voice ID in vendor dashboard (ElevenLabs UI → Voice Library → Delete; PlayHT UI → Clones → Archive)"
-      - "Trigger revocation cascade for all audio_jobs rows where voice_engine_used = this vendor AND voice_id = this id AND audio_status = 'published'"
-      - "Switch audio-producer pipeline to fallback voice ID (see fallback section below)"
-      - "Audit log: revocations table entry per article + cdn-purge-watchdog confirmation within 60s SLA"
-
-  fallback_voice_id:     # the voice ID the audio-producer falls back to if THIS voice is withdrawn
-                         # (typically a standard ElevenLabs voice; see ADR-0004 for the standard library)
-
-  signatures:
-    donor_signature:     # donor's signature (typed name + date or paste signed-PDF reference)
-    signed_at:           # ISO 8601 timestamp
-    aliennova_signer:    # ROMAS Brief authorized signer (legal_name + role)
-    aliennova_signed_at: # ISO 8601 timestamp
-    witness:             # optional — third-party witness if required by jurisdiction
-    witness_signed_at:   # optional
-    instrument_storage:  # where the signed PDF lives (e.g. "1Password vault 'ROMAS legal' → item 'voice-consent-{donor.legal_name}'")
-```
-
----
-
-## 2. ROMAS Clinical Narrator — Kimal (TEMPLATE; fill before first audio publish)
-
-This is the **primary voice clone** for ROMAS Brief per CLAUDE.md §6 and Audio Architecture v1.0 §2.1.
+### Voice 1 — Audio Brief + Daily Brief (tier 1+2)
 
 ```yaml
 voice_id_entry:
   vendor:                elevenlabs
-  voice_id:              # FILL: ElevenLabs voice ID from your account
-  env_var_name:          ELEVENLABS_ROMAS_VOICE_ID
-  status:                # FILL: "active" once recorded + cloned + tested
-  status_updated:        # FILL: ISO 8601 date
+  voice_id:              FILL_REQUIRED  # ElevenLabs voice ID for the "news register" voice
+  voice_name:            FILL_REQUIRED  # voice name from ElevenLabs (e.g. "Sarah", "Roger")
+  env_var_name:          ELEVENLABS_VOICE_ID_BRIEF
+  tier_role:             "tier 1 Audio Brief + tier 2 Daily Brief"
+  audio_tier_enum:       audio_brief, daily_brief
+  status:                FILL_REQUIRED  # "active" once selected + tested via tools/audio/smoke-test.mjs
+  status_updated:        FILL_REQUIRED  # ISO 8601 date
+  selected_at:           FILL_REQUIRED  # ISO 8601 date
+  selected_by:           Kimal Honour Djam
+  selection_rationale:   "Crisp, calm narrator for short-form daily content. Editorial register: news / brief."
 
-  donor:
-    legal_name:          Kimal Honour Djam
-    role:                Founder / Editor-in-Chief, AllienNova
-    contact_email:       president@aliennova.com
-    contact_phone:       # FILL: E.164 format
+  commercial_use:
+    license:             ElevenLabs Creator-tier ToS (commercial use included)
+    license_url:         https://elevenlabs.io/terms
+    license_verified:    FILL_REQUIRED  # ISO 8601 date Kimal verified ToS coverage for ROMAS Brief commercial use
+    tier_scope:          audio_brief, daily_brief
+    revenue_share:       none (ElevenLabs is a tooling provider, not a content collaborator)
 
-  recording:
-    session_date:        # FILL: ISO 8601
-    session_location:    # FILL: e.g. "Home studio, Bear DE" or "remote"
-    sample_minutes:      # FILL: total minutes recorded
-    sample_storage:      # FILL: R2 path
-
-  commercial_use_scope:
-    duration:            indefinite
-    geographic:          worldwide
-    tier_scope:          audio_brief, daily_brief, podcast, conference_brief, video_podcast
-    revenue_share:       none  # Kimal is donor + owner; no separate revenue allocation
-    attribution_required: no   # Kimal is the editorial owner; not separately credited
-
-  withdrawal_procedure:
-    notice_period:       immediate
-    withdrawal_method:   self-administered (Kimal is sole signer for own voice)
+  retirement_procedure:
+    triggers:
+      - "ElevenLabs removes the voice from the Creator-tier library"
+      - "Editorial decision to switch voice (Kimal sign-off in this file)"
+      - "Quality regression observed in audio QA flow (rare; document the regression)"
     cascade:
-      - "Set status to 'withdrawn' in this file"
-      - "Disable voice ID in ElevenLabs Voice Library"
-      - "Trigger revocation cascade for all currently-published audio using this voice ID"
-      - "Switch to fallback_voice_id below"
+      - "Set status to 'retired' in this file with status_updated = retirement date"
+      - "Pick alternate voice from the 9 ElevenLabs Creator-tier defaults"
+      - "Update ELEVENLABS_VOICE_ID_BRIEF in Cloudflare Worker Secrets + this file"
+      - "Republish: NO retroactive revocation needed — past episodes stay live (the voice was licensed at synthesis time)"
+      - "Update CLAUDE.md §6 voice section if the editorial register changes"
 
-  fallback_voice_id:     # FILL: ElevenLabs standard voice ID (e.g. "21m00Tcm4TlvDq8ikWAM" Rachel, or your preferred standard)
+  alternate_voice_id:    FILL_REQUIRED  # a second voice ID from the Creator-tier list as documented fallback
 
-  signatures:
-    donor_signature:     Kimal Honour Djam
-    signed_at:           # FILL: ISO 8601 when you sign
-    aliennova_signer:    Kimal Honour Djam (acting as authorized signer for AllienNova)
-    aliennova_signed_at: # FILL: ISO 8601
-    witness:             # optional
-    witness_signed_at:   # optional
-    instrument_storage:  1Password vault "ROMAS legal" → item "voice-consent-kimal" (FILL when populated)
+  operational_notes:     FILL_REQUIRED  # any voice-specific tuning (stability, similarity_boost recommendations from smoke tests)
+```
+
+### Voice 2 — The ROMAS Podcast (tier 3)
+
+```yaml
+voice_id_entry:
+  vendor:                elevenlabs
+  voice_id:              FILL_REQUIRED  # ElevenLabs voice ID for the "podcast register" voice
+  voice_name:            FILL_REQUIRED
+  env_var_name:          ELEVENLABS_VOICE_ID_PODCAST
+  tier_role:             "tier 3 The ROMAS Podcast"
+  audio_tier_enum:       podcast
+  status:                FILL_REQUIRED
+  status_updated:        FILL_REQUIRED
+  selected_at:           FILL_REQUIRED
+  selected_by:           Kimal Honour Djam
+  selection_rationale:   "Deeper voice for 30-60 min weekly deep-dives. Editorial register: long-form analysis / interview-ready."
+
+  commercial_use:
+    license:             ElevenLabs Creator-tier ToS
+    license_url:         https://elevenlabs.io/terms
+    license_verified:    FILL_REQUIRED  # ISO 8601
+    tier_scope:          podcast
+    revenue_share:       none
+
+  retirement_procedure:
+    triggers:
+      - "ElevenLabs removes the voice"
+      - "Editorial decision to switch voice"
+      - "Quality regression observed"
+    cascade:
+      - "Set status to 'retired'; update env var; republish; no retroactive revocation"
+
+  alternate_voice_id:    FILL_REQUIRED
+
+  operational_notes:     FILL_REQUIRED  # podcast voice may need different loudnorm parameters than brief; document
+```
+
+### Voice 3 — Conference Brief + Video Podcast (tier 4+5)
+
+```yaml
+voice_id_entry:
+  vendor:                elevenlabs
+  voice_id:              FILL_REQUIRED  # ElevenLabs voice ID for the "event-paced register" voice
+  voice_name:            FILL_REQUIRED
+  env_var_name:          ELEVENLABS_VOICE_ID_CONFERENCE
+  tier_role:             "tier 4 Conference Brief + tier 5 Video Podcast"
+  audio_tier_enum:       conference_brief, video_podcast
+  status:                FILL_REQUIRED
+  status_updated:        FILL_REQUIRED
+  selected_at:           FILL_REQUIRED
+  selected_by:           Kimal Honour Djam
+  selection_rationale:   "Event-paced voice for conference coverage + future Day-60 video podcast. Editorial register: live-event reporting / hosted interview."
+
+  commercial_use:
+    license:             ElevenLabs Creator-tier ToS
+    license_url:         https://elevenlabs.io/terms
+    license_verified:    FILL_REQUIRED  # ISO 8601
+    tier_scope:          conference_brief, video_podcast
+    revenue_share:       none
+
+  retirement_procedure:
+    triggers:
+      - "ElevenLabs removes the voice"
+      - "Editorial decision to switch voice"
+      - "Quality regression observed"
+    cascade:
+      - "Set status to 'retired'; update env var; republish; no retroactive revocation"
+
+  alternate_voice_id:    FILL_REQUIRED
+
+  operational_notes:     FILL_REQUIRED
 ```
 
 ---
 
-## 3. PlayHT failover voice (TEMPLATE; fill before R-201 audio pipeline ships)
+## 2. ElevenLabs Creator-tier license summary
 
-ADR-0004 mandates PlayHT as the failover TTS engine. The voice clone donor at PlayHT may differ from the ElevenLabs donor — even if it's the same person (Kimal), the consent is separate because PlayHT is a separate processor under different ToS + DPA.
+Per ElevenLabs Creator-tier ToS (verified by Kimal on FILL_REQUIRED):
+
+- **Commercial use of library voices**: PERMITTED. Audio generated with library voices on Creator tier or higher may be used in commercial products including subscription newsletters + podcasts + advertising surfaces.
+- **Voice attribution**: NOT REQUIRED for library voices. ROMAS Brief does NOT need to credit ElevenLabs or the voice name in episode metadata. (This differs from some other TTS providers; verify against the current ToS at each ElevenLabs plan change.)
+- **Per-voice retention**: voices remain available indefinitely while the Creator tier is active. If subscription lapses, library voices revert to free-tier restrictions and the audio-producer falls into the D-031 free-tier-blocked failure mode.
+- **API permission requirement**: production API key MUST carry both `voices_read` AND `text_to_speech` permissions (per D-031).
+
+Re-verify ToS coverage on every ElevenLabs subscription change OR when ElevenLabs sends Terms-update notice. Update the `license_verified` field for each voice entry on re-verification.
+
+---
+
+## 3. PlayHT failover voice (separate consent posture per ADR-0004)
 
 ```yaml
 voice_id_entry:
   vendor:                playht
-  voice_id:              # FILL: PlayHT voice ID from your account
+  voice_id:              # FILL: PlayHT voice ID for ROMAS failover
   env_var_name:          PLAYHT_ROMAS_VOICE_ID
-  status:                # FILL: "active" once recorded + cloned + tested
-  status_updated:        # FILL: ISO 8601 date
+  status:                # FILL
+  status_updated:        # FILL
+  selected_at:           # FILL
+  selected_by:           Kimal Honour Djam
 
-  donor:
-    legal_name:          # FILL: usually Kimal Honour Djam (same as §2) — but verify independently
-    role:                # FILL
-    contact_email:       # FILL
-    contact_phone:       # FILL
+  commercial_use:
+    license:             PlayHT Pro-tier ToS (commercial use; verify at signup)
+    license_url:         https://play.ht/terms/
+    license_verified:    # FILL
 
-  recording:
-    session_date:        # FILL — may differ from ElevenLabs session
-    session_location:    # FILL
-    sample_minutes:      # FILL — PlayHT typically needs ~30 sec to 2 min
-    sample_storage:      # FILL: R2 path
+  failover_role:         "Activated when ElevenLabs returns 429 / 5xx three times with exponential backoff (1s / 4s / 16s) per ADR-0004. Single voice covers all tiers (failover does not preserve the 3-voice tier-role distinction; an audible voice change signals the failover to listeners which is acceptable)."
 
-  commercial_use_scope:
-    duration:            # FILL — recommend matching ElevenLabs scope
-    geographic:          # FILL
-    tier_scope:          # FILL — same as §2 unless deliberately scoped narrower
-    revenue_share:       # FILL
-    attribution_required: # FILL
-
-  withdrawal_procedure:
-    notice_period:       # FILL
-    withdrawal_method:   # FILL
+  retirement_procedure:
+    triggers:
+      - "PlayHT removes the voice"
+      - "Editorial decision to switch failover voice"
     cascade:
-      - "Set status to 'withdrawn' in this file"
-      - "Archive voice ID in PlayHT Clones UI"
-      - "Trigger revocation cascade for all currently-published audio where voice_engine_used = 'playht' AND voice_id = this id"
-      - "If ElevenLabs voice (§2) is also withdrawn, audio production halts — fall back to standard ElevenLabs voice + log degraded state. If only PlayHT is withdrawn, failover stops being available; ElevenLabs solo with documented risk per cycle-1 H-12."
+      - "Set status to 'retired'; update PLAYHT_ROMAS_VOICE_ID in Worker Secrets"
+      - "If no alternate PlayHT voice exists, the failover path degrades to 'audio job skipped with skip_reason=tts_failover_exhausted' per Audio Architecture v1.0 §2.1"
 
-  fallback_voice_id:     # FILL: standard PlayHT voice OR explicit "halt PlayHT pathway" instruction
-
-  signatures:
-    donor_signature:     # FILL
-    signed_at:           # FILL
-    aliennova_signer:    # FILL
-    aliennova_signed_at: # FILL
-    witness:             # optional
-    witness_signed_at:   # optional
-    instrument_storage:  # FILL
+  operational_notes:     # FILL
 ```
 
 ---
 
-## 4. Future donor entries
+## 4. Operational checklist — populating an entry
 
-Add a new section per donor as additional voice clones are introduced (e.g. guest hosts on the Tier 5 Video Podcast per ADR-0012, Day 60+). Each entry follows the template in §1. Never use a voice clone in production without a completed + signed entry.
+Before flipping `status` to `active` for any voice:
+
+- [ ] Voice ID retrieved from ElevenLabs / PlayHT dashboard
+- [ ] Voice name + selection rationale recorded in this file
+- [ ] Smoke test passed: `node --env-file=.env tools/audio/smoke-test.mjs` produces ADR-0016 GREEN or AMBER verdict for an article archetype that maps to this tier
+- [ ] Voice tested in production-realistic conditions (full 10-beat script not just 1 sentence)
+- [ ] Env var populated in Cloudflare Worker Secrets via `wrangler secret put ELEVENLABS_VOICE_ID_BRIEF` (or equivalent)
+- [ ] ElevenLabs / PlayHT ToS verified for commercial use on the active tier; `license_verified` field updated
+- [ ] Alternate voice ID identified for the retirement cascade
 
 ---
 
-## 5. Operational checklist for every new donor
+## 5. Day-1 launch readiness gate
 
-Before flipping `status` to `active`:
+Before Day 1 (per Launch Arc Plan):
 
-- [ ] Donor has read and signed the consent instrument (typically PDF; stored in 1Password)
-- [ ] Recording session completed; raw sample archived to R2 `romas-audio-archive/voice-source/{voice_id}.wav` (private)
-- [ ] Voice clone trained at vendor (ElevenLabs or PlayHT); voice_id retrieved
-- [ ] Test sentence generated and listened to for quality (5-condition QA gate fixture)
-- [ ] Env var (`ELEVENLABS_ROMAS_VOICE_ID` / `PLAYHT_ROMAS_VOICE_ID` / future per-donor name) populated in Cloudflare Worker Secrets
-- [ ] This file updated: entry filled in with all donor + recording + scope + signature fields
-- [ ] Fallback voice ID identified and stored (for the cascade when this voice is withdrawn)
-- [ ] Audio-producer agent verified to read this registry on next run (smoke test)
-- [ ] 1Password instrument storage path recorded in `instrument_storage` field
+- [ ] All 3 ElevenLabs voices selected + smoke-tested + `status: active` in this file
+- [ ] PlayHT failover voice selected + smoke-tested + `status: active` in this file
+- [ ] ElevenLabs Creator-tier subscription confirmed active (rotation reminder per SECRETS.md §3)
+- [ ] PlayHT Pro-tier subscription confirmed active
+- [ ] All 4 env vars populated in production Worker Secrets
+- [ ] At least one audio episode produced with each voice (pre-launch backlog per Launch Arc Plan §3)
 
 ---
 
 ## 6. Cross-references
 
-- `Docs/ROMAS-Brief-Audio-Architecture.md` §2.2 — voice consent operational model
-- `Docs/specs/adr/0004-tts-elevenlabs-primary-playht-failover.md` — TTS engine selection
-- `Docs/specs/remediation-plan.md` R-110 (this file) + R-213 (audio-producer reads this file)
-- `.claude/agents/audio-producer.md` — agent definition; the consumer of this registry
-- `SECRETS.md` (when R-112 lands) — env-var → secret-store map; the voice ID env vars live in Cloudflare Worker Secrets
+- `Docs/ROMAS-Brief-Audio-Architecture.md` §2.1 — 3-voice tier-role architecture (canonical)
+- `Docs/build/decision-log.md` D-031 — ElevenLabs free-tier API empirical finding
+- `Docs/build/decision-log.md` D-032 — 3-voice tier-role architecture decision
+- `Docs/specs/adr/0004-tts-elevenlabs-primary-playht-failover.md` — TTS engine selection (still current; voice-clone-specific language updated by D-032)
+- `.claude/agents/audio-producer.md` — agent that reads this registry; needs update to consume tier-role env var pattern (R-201 / M2)
+- `SECRETS.md` §2 — env var inventory + rotation policy
+- `tools/audio/smoke-test.mjs` — uses `pickVoiceEnv(archetype)` to select the tier-appropriate env var
 
 ---
 
@@ -228,4 +228,5 @@ Before flipping `status` to `active`:
 
 | Version | Date | Change |
 |---|---|---|
-| 1.0.0-template | 2026-05-22 | Initial template (R-110 close as scaffold per Kimal /AskUserQuestion 2026-05-22). All entry fields are placeholders; Kimal fills + signs before first audio publish. |
+| 1.0.0-template | 2026-05-22 (morning) | Initial template assuming single Kimal voice clone + per-donor signed instrument pattern. |
+| 2.0.0 | 2026-05-22 (afternoon) | D-032 restructure: 3 ElevenLabs Creator-tier voices by tier role replace single Kimal clone. ElevenLabs ToS reference replaces per-donor signed instruments. Kimal clone deferred to post-launch revisit. PlayHT failover entry preserved with its own ToS reference. |
