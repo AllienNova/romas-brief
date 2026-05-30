@@ -83,7 +83,7 @@ importers:
   apps/web:
     dependencies:
       '@supabase/supabase-js':
-        specifier: ^2.49.4
+        specifier: ^2.106.1
         version: 2.106.1
       next:
         specifier: 15.5.18

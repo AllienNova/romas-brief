@@ -8,7 +8,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getAudioArticles } from "@/lib/mock-data";
+import { getAudioArticles } from "@/lib/articles";
 
 export const dynamic = "force-dynamic";
 
@@ -79,7 +79,7 @@ export default async function ListenTierPage(
   if (!VALID_TIERS.includes(tier)) notFound();
 
   const meta = TIER_META[tier];
-  const allAudio = getAudioArticles(100);
+  const allAudio = await getAudioArticles(100);
   const typedJobs: AudioItem[] = allAudio.map((a) => ({
     id: a.slug,
     audio_tier: "audio_brief",

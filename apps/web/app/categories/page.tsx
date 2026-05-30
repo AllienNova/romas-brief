@@ -2,7 +2,8 @@
  * ROMAS Brief — Categories index page
  */
 import Link from "next/link";
-import { CATEGORY_META, MOCK_ARTICLES, type Category } from "@/lib/mock-data";
+import { CATEGORY_META, type Category } from "@/lib/mock-data";
+import { getArticlesByCategory } from "@/lib/articles";
 
 export const revalidate = 300;
 
@@ -11,8 +12,11 @@ export const metadata = {
   description: "Radiation oncology intelligence by category — AI, Physics, Clinical RT, Regulatory, Guidelines, and more.",
 };
 
-export default function CategoriesIndexPage() {
+export default async function CategoriesIndexPage() {
   const categories = Object.entries(CATEGORY_META) as [Category, typeof CATEGORY_META[Category]][];
+  const counts = await Promise.all(
+    categories.map(async ([slug]) => (await getArticlesByCategory(slug, 200)).length)
+  );
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
@@ -25,8 +29,8 @@ export default function CategoriesIndexPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {categories.map(([slug, meta]) => {
-          const count = MOCK_ARTICLES.filter((a) => a.category === slug).length;
+        {categories.map(([slug, meta], i) => {
+          const count = counts[i] ?? 0;
           return (
             <Link
               key={slug}
