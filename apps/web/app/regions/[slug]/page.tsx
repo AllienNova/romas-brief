@@ -8,10 +8,10 @@ import {
   REGION_META,
   CATEGORY_META,
   CONTENT_TYPE_META,
-  getArticlesByRegion,
   type Region,
   type MockArticle,
 } from "@/lib/mock-data";
+import { getArticlesByRegion } from "@/lib/articles";
 
 export const revalidate = 120;
 
@@ -79,7 +79,7 @@ export default async function RegionPage(props: { params: Promise<{ slug: string
   const meta = REGION_META[slug];
   if (!meta) notFound();
 
-  const articles = getArticlesByRegion(slug, 30);
+  const articles = await getArticlesByRegion(slug, 30);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">

@@ -7,21 +7,21 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import {
-  MOCK_ARTICLES,
   CATEGORY_META,
   CONTENT_TYPE_META,
   REGION_META,
   AUDIENCE_META,
-  getArticleBySlug,
 } from "@/lib/mock-data";
+import { getArticleBySlug, getArticlesByCategory, getPublishedSlugs } from "@/lib/articles";
 import InlineAudioPlayer from "@/components/InlineAudioPlayer";
 import ShareButtons from "@/components/ShareButtons";
 import { renderMarkdown } from "@/lib/markdown";
 
 export const revalidate = 120;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  return MOCK_ARTICLES.map((a) => ({ slug: a.slug }));
+  return (await getPublishedSlugs()).map((slug) => ({ slug }));
 }
 
 interface ArticleDetail {
@@ -52,7 +52,7 @@ export async function generateMetadata(
   }
 ): Promise<Metadata> {
   const params = await props.params;
-  const article = getArticleBySlug(params.slug);
+  const article = await getArticleBySlug(params.slug);
   if (!article) return { title: "Article not found" };
   return {
     title: article.title,
@@ -72,8 +72,7 @@ export default async function ArticlePage(
   }
 ) {
   const params = await props.params;
-  // Use mock data (replace with Supabase query once DB is provisioned)
-  const mockArticle = getArticleBySlug(params.slug);
+  const mockArticle = await getArticleBySlug(params.slug);
   if (!mockArticle) notFound();
 
   const typedArticle: ArticleDetail = {
@@ -101,9 +100,9 @@ export default async function ArticlePage(
   const regionMeta = REGION_META[mockArticle.region];
 
   // Related articles
-  const related = MOCK_ARTICLES.filter(
-    (a) => a.category === mockArticle.category && a.slug !== mockArticle.slug
-  ).slice(0, 3);
+  const related = (await getArticlesByCategory(mockArticle.category, 4))
+    .filter((a) => a.slug !== mockArticle.slug)
+    .slice(0, 3);
 
   return (
     <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12">

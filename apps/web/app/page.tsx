@@ -14,6 +14,7 @@ import QuickHitsRotator from "@/components/QuickHitsRotator";
 import DismissibleStrip from "@/components/DismissibleStrip";
 import FromTheEditor from "@/components/FromTheEditor";
 import RotatingTopStories from "@/components/RotatingTopStories";
+import type { MockArticle } from "@/lib/mock-data";
 import {
   getTopStories,
   getIndustryMoves,
@@ -23,8 +24,8 @@ import {
   getTrendingArticles,
   getTopPapersThisWeek,
   getAudioArticles,
-  MOCK_ARTICLES,
-} from "@/lib/mock-data";
+  getArticlesByCategory,
+} from "@/lib/articles";
 
 export const dynamic = "force-dynamic";
 
@@ -70,8 +71,11 @@ function SectionHeader({
   );
 }
 
-// ── Build Hero Carousel slides from mock data ────────────────────────────
-function buildCarouselSlides(articles: ReturnType<typeof getTopStories>): HeroSlide[] {
+// ── Build Hero Carousel slides ────────────────────────────────────────────
+function buildCarouselSlides(
+  articles: MockArticle[],
+  confBrief: MockArticle | undefined,
+): HeroSlide[] {
   const slides: HeroSlide[] = [];
 
   // Slide 1 — Top Move (highest score clinical article)
@@ -131,7 +135,6 @@ function buildCarouselSlides(articles: ReturnType<typeof getTopStories>): HeroSl
   }
 
   // Slide 4 — Conference Brief
-  const confBrief = MOCK_ARTICLES.find((a) => a.category === "conferences");
   if (confBrief) {
     slides.push({
       id: "conference-brief",
@@ -167,26 +170,34 @@ function buildCarouselSlides(articles: ReturnType<typeof getTopStories>): HeroSl
 }
 
 // ── Page ─────────────────────────────────────────────────────────────────
-export default function HomePage() {
-  const topStories = getTopStories(24); // full pool for RotatingTopStories
-  const industryMoves = getIndustryMoves(3);
-  const paperOfDay = getPaperOfTheDay();
-  const quickHits = getQuickHits(12);
-  const podcast = getTodaysPodcast();
-  const trending = getTrendingArticles(5);
-  const topPapers = getTopPapersThisWeek(4);
-  const audioArticles = getAudioArticles(4);
-
-  const heroArticle = topStories[0];
-  const secondaryArticles = topStories.slice(1, 3);
-  const tertiaryArticles = topStories.slice(3, 6);
+export default async function HomePage() {
+  const [
+    topStories,
+    industryMoves,
+    paperOfDay,
+    quickHits,
+    podcast,
+    trending,
+    topPapers,
+    audioArticles,
+    conferenceArticles,
+  ] = await Promise.all([
+    getTopStories(24), // full pool for RotatingTopStories
+    getIndustryMoves(3),
+    getPaperOfTheDay(),
+    getQuickHits(12),
+    getTodaysPodcast(),
+    getTrendingArticles(5),
+    getTopPapersThisWeek(4),
+    getAudioArticles(4),
+    getArticlesByCategory("conferences", 1),
+  ]);
 
   // Hero carousel slides
-  const carouselSlides = buildCarouselSlides(topStories);
+  const carouselSlides = buildCarouselSlides(topStories, conferenceArticles[0]);
 
-  // SideStack pool — top 12 by composite score
-  const sideStackPool = [...MOCK_ARTICLES]
-    .sort((a, b) => b.composite_score - a.composite_score)
+  // SideStack pool — top 12 by composite score (topStories is score-ordered)
+  const sideStackPool = topStories
     .slice(0, 12)
     .map((a) => ({
       slug: a.slug,
