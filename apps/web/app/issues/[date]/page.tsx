@@ -8,9 +8,9 @@ import {
   ISSUE_DATES,
   CATEGORY_META,
   CONTENT_TYPE_META,
-  getArticlesByIssueDate,
   type MockArticle,
 } from "@/lib/mock-data";
+import { getArticlesByIssueDate } from "@/lib/articles";
 
 export const revalidate = 120;
 
@@ -71,7 +71,7 @@ export default async function IssuePage(props: { params: Promise<{ date: string 
   const d = new Date(params.date + "T12:00:00Z");
   if (isNaN(d.getTime())) notFound();
 
-  const articles = getArticlesByIssueDate(params.date);
+  const articles = await getArticlesByIssueDate(params.date);
   if (articles.length === 0 && !ISSUE_DATES.includes(params.date)) notFound();
 
   const label = d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });

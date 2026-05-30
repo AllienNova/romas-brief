@@ -7,10 +7,10 @@ import { notFound } from "next/navigation";
 import {
   CATEGORY_META,
   CONTENT_TYPE_META,
-  getArticlesByCategory,
   type Category,
   type MockArticle,
 } from "@/lib/mock-data";
+import { getArticlesByCategory } from "@/lib/articles";
 
 export const revalidate = 120;
 
@@ -70,7 +70,7 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
   const meta = CATEGORY_META[slug];
   if (!meta) notFound();
 
-  const articles = getArticlesByCategory(slug, 30);
+  const articles = await getArticlesByCategory(slug, 30);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
