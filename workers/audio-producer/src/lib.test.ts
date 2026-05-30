@@ -10,6 +10,7 @@ import {
   ELEVENLABS_MODEL_ID,
   TTS_MAX_ATTEMPTS,
   TTS_RETRY_BACKOFF_MS,
+  embargoGateDecision,
   formatSrtTime,
   loudnormGateDecision,
   retryBackoffMs,
@@ -45,6 +46,16 @@ test("loudnormGateDecision: endpoint absent/empty/whitespace -> skip (fail-close
 
 test("ELEVENLABS_MODEL_ID is the locked multilingual_v2 model", () => {
   assert.equal(ELEVENLABS_MODEL_ID, "eleven_multilingual_v2");
+});
+
+test("embargoGateDecision: embargoed=true -> skip (Rule 2 defense-in-depth)", () => {
+  assert.equal(embargoGateDecision({ embargoed: true }), "skip");
+});
+
+test("embargoGateDecision: not embargoed -> proceed", () => {
+  assert.equal(embargoGateDecision({ embargoed: false }), "proceed");
+  assert.equal(embargoGateDecision({ embargoed: undefined }), "proceed");
+  assert.equal(embargoGateDecision({}), "proceed");
 });
 
 test("formatSrtTime: formats hours/minutes/seconds/millis", () => {

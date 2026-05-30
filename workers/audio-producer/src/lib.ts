@@ -44,6 +44,22 @@ export function loudnormGateDecision(env: {
   return "skip";
 }
 
+/**
+ * Embargo gate decision (SHIP-15, inviolable rule 2 defense-in-depth).
+ *
+ * cron-ingest already routes embargoed candidates to embargo_holds before they
+ * become articles, but an article can be flagged embargoed AFTER its audio job
+ * is enqueued. Before generating/publishing audio we re-check the live article
+ * flag: if embargoed, skip the job with skip_reason='article_embargoed'.
+ *
+ * @returns 'skip' when the article is embargoed; 'proceed' otherwise.
+ */
+export function embargoGateDecision(article: {
+  embargoed?: boolean | undefined;
+}): "skip" | "proceed" {
+  return article.embargoed === true ? "skip" : "proceed";
+}
+
 /** Format seconds as an SRT timestamp (HH:MM:SS,mmm). */
 export function formatSrtTime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
