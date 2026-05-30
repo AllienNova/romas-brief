@@ -3,13 +3,20 @@ main = "src/index.ts"
 compatibility_date = "2026-05-01"
 compatibility_flags = ["nodejs_compat"]
 
-# Reserved name — handler logic to be authored under T-310A-A..E (Phase 7).
-# (Note: tasks.md historically refers to this worker as `email-transactional`;
-#  repo dir is `email-canary`. Reconcile naming when implementing.)
-# Until then, fetch() returns HTTP 501. No cron triggers.
-# Secrets that will be required at activation:
-#   RESEND_API_KEY
-#   SUPABASE_SERVICE_ROLE_KEY (read subscriber events)
+# SHIP-12 · Resend transactional email + delivery-webhook worker
+# (the "email-transactional" role per ADR-0007 cycle-3). The on-disk dir
+# name stays `email-canary` to avoid lockfile churn — the rename is
+# cosmetic. POST-only. Two routes:
+#   POST /webhook  Resend delivery events, Svix-signed -> bounce/complaint
+#                  mirror into Supabase `subscribers`.
+#   POST /send     internal transactional send (bearer-authed) via Resend.
+# No cron triggers.
+#
+# Worker Secrets required at activation (wrangler secret put):
+#   RESEND_API_KEY            (Bearer for the Resend send API)
+#   RESEND_WEBHOOK_SECRET     (whsec_... — Svix signing secret for /webhook)
+#   INTERNAL_SEND_SECRET      (shared bearer guarding the /send route)
+#   SUPABASE_SERVICE_ROLE_KEY (sb_secret_... — subscriber PATCH writes)
 
 [vars]
 SUPABASE_URL = "https://placeholder.supabase.co"
