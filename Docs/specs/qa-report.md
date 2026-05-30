@@ -481,3 +481,15 @@ Original conditions 1-5 still apply. Add:
 ### Process learning for future cycles
 
 **Audit scope must be explicit.** Cycles 1-6 implicitly scoped to the local working tree. When CLAUDE.md cites external repos as load-bearing for the product (CLAUDE.md §12 line: *"linked to GitHub repo `kimhons/romas-brief-web`"*), `/team-qa` should fail-loud and refuse to verdict the product until the external repo is pulled into scope. **Recommend `/team-qa` skill update**: a Q0 pre-flight that scans CLAUDE.md + SSOT for external-repo references and either pulls them or declines the verdict.
+
+---
+
+## Cycle-7 reconciliation (2026-05-30)
+
+The cycle-6 NO-GO verdict above was issued against a split-repo baseline (`9c4284d`) that **no longer exists**. Superseding facts:
+
+- **Single repo, consolidated** — reader moved into `apps/web` (Phase 8: `acf5855`/`bb5f004`/`dd7f0e0`). `INTEGRATION-CONTRACT.md` = EXECUTED. The "Q0 external-repo pre-flight" learning is now moot for ROMAS Brief (one tree).
+- **Cycle-6 blockers B-17 / B-18 / B-20 CLOSED**, **B-19 SPLIT** — see `Docs/qa/risk-register.md` cycle-7 reconciliation.
+- **CI red → green** — Next 14→15.5.18 + React 19 (SHIP-01) closed the 5 high CVEs; `<img>`→`next/image` (SHIP-02) closed the lint failure. `pnpm audit --audit-level=high` = 0 vulns; lint/typecheck/build all exit 0.
+
+**This file is now historical.** The forward verdict path is `team-qa` cycle-7 = SHIP-33, gated on the SHIP-NN backlog in `Docs/specs/ship-execution-plan.md`. No GO/NO-GO is asserted here; cycle-7 runs after Wave 5.
