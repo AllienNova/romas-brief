@@ -45,11 +45,12 @@ interface AudioJobDetail {
   duration_sec: number | null;
 }
 
-export function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Metadata {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ slug: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   const article = getArticleBySlug(params.slug);
   if (!article) return { title: "Article not found" };
   return {
@@ -81,11 +82,12 @@ function renderMarkdown(md: string): string {
     .replace(/<p><\/p>/g, "");
 }
 
-export default function ArticlePage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function ArticlePage(
+  props: {
+    params: Promise<{ slug: string }>;
+  }
+) {
+  const params = await props.params;
   // Use mock data (replace with Supabase query once DB is provisioned)
   const mockArticle = getArticleBySlug(params.slug);
   if (!mockArticle) notFound();
@@ -131,7 +133,6 @@ export default function ArticlePage({
         <span>/</span>
         <span className="text-neutral-600 line-clamp-1 max-w-xs">{typedArticle.title}</span>
       </nav>
-
       {/* Article header */}
       <header className="mb-8">
         <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -181,14 +182,12 @@ export default function ArticlePage({
           ))}
         </div>
       </header>
-
       {/* Inline audio player */}
       {audioUrl && primaryAudio && (
         <div className="mb-8">
           <InlineAudioPlayer audioUrl={audioUrl} title={typedArticle.title} />
         </div>
       )}
-
       {/* ROMAS Insight callout */}
       {typedArticle.romas_insight && (
         <div className="mb-8 bg-teal-50 border border-teal-200 rounded-xl p-5">
@@ -205,7 +204,6 @@ export default function ArticlePage({
           </div>
         </div>
       )}
-
       {/* Article body */}
       {bodyHtml && (
         <div
@@ -213,7 +211,6 @@ export default function ArticlePage({
           dangerouslySetInnerHTML={{ __html: bodyHtml }}
         />
       )}
-
       {/* Signal scores */}
       <div className="mb-8 bg-neutral-50 rounded-xl border border-neutral-100 p-5">
         <h2 className="text-sm font-bold text-neutral-700 mb-4 uppercase tracking-wide">Signal Scores</h2>
@@ -240,7 +237,6 @@ export default function ArticlePage({
           <span className="text-lg font-black text-neutral-900 tabular-nums">{mockArticle.composite_score}</span>
         </div>
       </div>
-
       {/* Primary source */}
       {typedArticle.primary_source_url && (
         <div className="mb-8 bg-white rounded-xl border border-neutral-100 p-5">
@@ -254,7 +250,6 @@ export default function ArticlePage({
           </a>
         </div>
       )}
-
       {/* Tags */}
       {typedArticle.tags && typedArticle.tags.length > 0 && (
         <div className="mb-8">
@@ -266,10 +261,8 @@ export default function ArticlePage({
           </div>
         </div>
       )}
-
       {/* Share row */}
       <ShareButtons title={typedArticle.title} slug={typedArticle.slug} />
-
       {/* Related articles */}
       {related.length > 0 && (
         <section className="mb-10">
@@ -295,7 +288,6 @@ export default function ArticlePage({
           </div>
         </section>
       )}
-
       {/* Back link */}
       <div className="mt-6 pt-6 border-t border-neutral-100">
         <Link href="/" className="text-sm text-neutral-500 hover:text-teal-700 transition-colors">
