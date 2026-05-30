@@ -169,7 +169,7 @@ All files live alongside this CLAUDE.md. Load the relevant one(s) before editing
 - **CMS surface**: Internal Next.js app on Cloudflare Pages.
 - **Reader surface**: Next.js + Tailwind on Cloudflare Pages.
 - **Search**: Postgres full-text + pgvector for embeddings.
-- **Email**: split per ADR-0007 cycle-3 — **Beehiiv** (newsletter delivery, subscriber list canonical) + **Resend** (transactional only: signup confirm, unsubscribe receipt, audio-revocation notice, password reset). Beehiiv webhook (HMAC-SHA256 with `BEEHIIV_WEBHOOK_SECRET`) syncs subscriber state to Supabase; daily reconciliation alerts at > 5 row drift.
+- **Email**: split per ADR-0007 cycle-3 — **Beehiiv** (newsletter delivery, subscriber list canonical) + **Resend** (transactional only: signup confirm, unsubscribe receipt, audio-revocation notice, password reset). Beehiiv webhook (shared-secret custom header `Authorization: Bearer BEEHIIV_WEBHOOK_SECRET` — Beehiiv has no native HMAC, per ADR-0019) syncs subscriber state to Supabase; daily reconciliation alerts at > 5 row drift.
 - **Analytics**: Plausible (privacy-first).
 
 Color tokens (added v1.1):
