@@ -6,6 +6,11 @@ compatibility_flags = ["nodejs_compat"]
 # Cloudflare Queues consumer — required because ElevenLabs TTS latency
 # (34s+ for 2.7 min audio) exceeds the 30s Worker sync wall-clock limit.
 # See ROMAS-Brief-Audio-Architecture.md §2.1.2 (B-16).
+#
+# SHIP-14: TTS is ElevenLabs-only with a 3-attempt retry (2s / 8s / 30s) — the
+# PlayHT failover was removed (PlayHT terminated 2025-12-31, ADR-0018/0019).
+# Loudness mastering REQUIRES LOUDNORM_ENDPOINT (two-pass ffmpeg microservice);
+# if unset the job is skipped fail-closed — no inline RMS approximation.
 [[queues.consumers]]
 queue = "romas-audio-jobs"
 max_batch_size = 1
@@ -34,8 +39,8 @@ WHISPER_ENDPOINT = "https://api.openai.com/v1/audio/transcriptions"
 #   ELEVENLABS_VOICE_ID_BRIEF
 #   ELEVENLABS_VOICE_ID_PODCAST
 #   ELEVENLABS_VOICE_ID_CONFERENCE
-#   PLAYHT_API_KEY
-#   PLAYHT_USER_ID
-#   PLAYHT_ROMAS_VOICE_ID
+#   LOUDNORM_ENDPOINT       (REQUIRED — two-pass ffmpeg loudnorm microservice)
 #   OPENAI_API_KEY          (for Whisper)
 #   CF_PURGE_API_TOKEN      (for CDN cache purge)
+# Optional:
+#   ELEVENLABS_MODEL_ID     (defaults to eleven_multilingual_v2)
