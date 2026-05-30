@@ -18,7 +18,8 @@ export async function generateStaticParams() {
   return ISSUE_DATES.map((date) => ({ date }));
 }
 
-export async function generateMetadata({ params }: { params: { date: string } }) {
+export async function generateMetadata(props: { params: Promise<{ date: string }> }) {
+  const params = await props.params;
   const d = new Date(params.date + "T12:00:00Z");
   if (isNaN(d.getTime())) return {};
   const label = d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
@@ -65,7 +66,8 @@ function ArticleRow({ article }: { article: MockArticle }) {
   );
 }
 
-export default function IssuePage({ params }: { params: { date: string } }) {
+export default async function IssuePage(props: { params: Promise<{ date: string }> }) {
+  const params = await props.params;
   const d = new Date(params.date + "T12:00:00Z");
   if (isNaN(d.getTime())) notFound();
 

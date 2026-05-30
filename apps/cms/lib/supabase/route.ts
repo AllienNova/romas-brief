@@ -13,7 +13,7 @@
 //   import { createRouteSupabaseClient } from "@/lib/supabase/route";
 //
 //   export async function POST(request: Request) {
-//     const supabase = createRouteSupabaseClient();
+//     const supabase = await createRouteSupabaseClient();
 //     const formData = await request.formData();
 //     const { error } = await supabase.auth.signInWithPassword({
 //       email: String(formData.get("email") ?? ""),
@@ -33,8 +33,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import type { Database } from "./types";
 
-export function createRouteSupabaseClient(): SupabaseClient<Database> {
-  const cookieStore = cookies();
+export async function createRouteSupabaseClient(): Promise<SupabaseClient<Database>> {
+  const cookieStore = await cookies();
 
   const supabaseUrl = process.env["SUPABASE_URL"];
   const supabaseAnonKey = process.env["SUPABASE_ANON_KEY"];
