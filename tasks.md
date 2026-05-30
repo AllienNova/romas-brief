@@ -31,8 +31,8 @@ The loop runs everything below to completion EXCEPT the tasks gated on these. Pr
 
 - [x] **SHIP-01** `AUTO` — Bump `next` 14.2.35 → 15.5.18 + React 19 in `apps/web` + `apps/cms`; async-request-API codemod; cms Supabase factories → async. _verify:_ `pnpm audit --audit-level=high` exit 0 (0 vulns) ✅ · typecheck 12/12 ✅ · lint ✅ · `pnpm build` 9/9 (76 static pages) ✅ (commit b4146ba). _deps:_ —
 - [x] **SHIP-02** `AUTO` — Fix lint: `<img>`→`next/image` at `apps/web/app/academy/page.tsx:196` (sweep all `<img>`). _verify:_ `pnpm turbo run lint` exit 0 ✅ (commit cb3adfc). _deps:_ —
-- [ ] **SHIP-03** `AUTO` — Real `lint`/`test` scripts in non-stub packages; CI `build` covers apps + 4 real workers; CI `test` wired (goes green after SHIP-17). _verify:_ no `echo "stub"` in non-stub lint/test; CI yaml builds apps+workers. _deps:_ SHIP-01, SHIP-02
-- [ ] **SHIP-04** `AUTO` (DOC) — Reconcile docs to HEAD: rewrite `CLAUDE.md §12`; flip `tasks.md`/Phase claims; close risk-register B-17/18/20, split B-19; append `qa-report.md` cycle-7; fix `architecture.md` (apps/reader→apps/web, drop packages/db, 10→11). _verify:_ grep finds none of "NOT IN THIS REPO"/"22-line stub"/"UNTRACKED" in §12. _deps:_ —
+- [~] **SHIP-03** `AUTO` — PARTIAL: CI `build` expanded to full graph (apps + all workers) ✅ `ci.yml`. Remaining (deferred to SHIP-17 — tests don't exist yet): real `lint`/`test` scripts in non-stub packages + wire CI `test` to real suites. _verify (done half):_ ci.yml runs `pnpm turbo run build` (no cron-ingest filter). _deps:_ SHIP-01, SHIP-02
+- [x] **SHIP-04** `AUTO` (DOC) — Reconciled docs to HEAD: rewrote `CLAUDE.md §12`; closed risk-register B-17/18/20 + split B-19 (cycle-7); appended `qa-report.md` cycle-7; fixed `architecture.md` (apps/reader→apps/web, dropped packages/db, 10→11). _verify:_ grep clean of stale claims ✅ (commit e5657db). _deps:_ —
 - [ ] **SHIP-05** `AUTO` — Repo hygiene: gitignore+remove `*.bundle` (3.4 MB), `_legacy/`, `CLAUDE.md.bak.*`; align dev Node to 20. _verify:_ `git status` clean of bundles/legacy; `node -v`=20.x. _deps:_ —
 
 ## WAVE 2 — COMPLETE (data + scorer + QA gate + email + Day-1 modules)
