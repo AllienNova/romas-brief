@@ -18,7 +18,8 @@ export async function generateStaticParams() {
   return Object.keys(CATEGORY_META).map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const meta = CATEGORY_META[params.slug as Category];
   if (!meta) return {};
   return {
@@ -63,7 +64,8 @@ function ArticleCard({ article }: { article: MockArticle }) {
   );
 }
 
-export default function CategoryPage({ params }: { params: { slug: string } }) {
+export default async function CategoryPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const slug = params.slug as Category;
   const meta = CATEGORY_META[slug];
   if (!meta) notFound();

@@ -41,7 +41,7 @@ flowchart TD
     subgraph Publish ["Publish"]
         QA -->|published / skipped| DB
         DB -->|ready_to_publish| WE[apps/cms\nweb-engineer]
-        WE -->|live article| RD[apps/reader\nNext.js + Tailwind\nCloudflare Pages]
+        WE -->|live article| RD[apps/web\nNext.js + Tailwind\nCloudflare Pages]
         DB -->|published articles| RSS[workers/rss-publisher\n4 feeds]
         DB -->|subscriber list| EM[Resend\nemail delivery]
     end
@@ -62,12 +62,11 @@ flowchart TD
 | `cms` | `apps/cms/` | Next.js 14+ / Cloudflare Pages | Internal editorial dashboard — article CRUD, audio status, QA gate UI |
 | `web` (reader) | `apps/web/` | Next.js 14.2.35 + Tailwind / **Vercel** | Public reader surface — 8-module homepage, article pages, AudioPlayer, Listen page, ROMAS Read. **Deployed at https://romas-brief-web.vercel.app**. Source consolidated from `kimhons/romas-brief-web` into this monorepo on 2026-05-28 (Phase 8). |
 | `cron-ingest` | `workers/cron-ingest/` | Cloudflare Worker (Node 20 compat) | Scheduled fetch from all source endpoints; writes raw items; logs to source_health |
-| `audio-producer` | `workers/audio-producer/` | Cloudflare Worker | ElevenLabs → PlayHT TTS; loudness mastering; WAV/MP3 upload to R2; Whisper transcript; state flip to in_review |
+| `audio-producer` | `workers/audio-producer/` | Cloudflare Worker | ElevenLabs → failover TTS (PlayHT retired, replacement per ADR-0018); loudness mastering; WAV/MP3 upload to R2; Whisper transcript; state flip to in_review |
 | `rss-publisher` | `workers/rss-publisher/` | Cloudflare Worker | Generates 4 per-tier RSS feeds on article publish/revoke; validates feed structure |
 | `cdn-purge-watchdog` | `workers/cdn-purge-watchdog/` | Cloudflare Worker | Listens for revoke events; purges CDN by tag within 60s SLA; triggers RSS regeneration |
-| `db` | `packages/db/` | TypeScript strict | Supabase client, typed query helpers, migration runner |
 | `shared` | `packages/shared/` | TypeScript strict | Types, constants, signal-scoring formula, state-machine guards, article archetypes |
-| `supabase` | `supabase/migrations/` | SQL (Postgres 15) | 10 ordered migrations — schema + RLS + triggers + seed |
+| `supabase` | `supabase/migrations/` | SQL (Postgres 15) | 11 ordered migrations (0001–0011) — schema + RLS + triggers + seed |
 | `audio-tools` | `tools/audio/` | Node 20+ TypeScript | Pre-roll/post-roll templates, loudness verification helpers, lexicon SSML renderer |
 
 ---
@@ -263,7 +262,7 @@ Supabase Vault available for application-level secret rotation without redeploym
 
 ### Accessibility
 
-Target: WCAG 2.2 AA across `apps/reader` and `apps/cms`.
+Target: WCAG 2.2 AA across `apps/web` and `apps/cms`.
 
 - AudioPlayer: keyboard-navigable play/pause/seek, ARIA live regions for status changes.
 - Audio status colors (`--rb-audio-published`, `--rb-audio-pending`, `--rb-audio-skipped`) must meet 4.5:1 contrast ratio against background.

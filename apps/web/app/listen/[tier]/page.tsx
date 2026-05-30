@@ -54,11 +54,12 @@ function formatDuration(sec: number | null): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { tier: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ tier: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   const tier = params.tier as AudioTier;
   if (!VALID_TIERS.includes(tier)) return { title: "Not found" };
   const meta = TIER_META[tier];
@@ -68,11 +69,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function ListenTierPage({
-  params,
-}: {
-  params: { tier: string };
-}) {
+export default async function ListenTierPage(
+  props: {
+    params: Promise<{ tier: string }>;
+  }
+) {
+  const params = await props.params;
   const tier = params.tier as AudioTier;
   if (!VALID_TIERS.includes(tier)) notFound();
 
@@ -105,7 +107,6 @@ export default async function ListenTierPage({
         <span className="mx-2">/</span>
         <span className="text-neutral-600">{meta.label}</span>
       </nav>
-
       {/* Header */}
       <div className="mb-8 flex items-start justify-between gap-4">
         <div>
@@ -122,12 +123,10 @@ export default async function ListenTierPage({
           RSS Feed
         </a>
       </div>
-
       {/* Episode count */}
       <p className="text-sm text-neutral-400 mb-6">
         {typedJobs.length} episode{typedJobs.length !== 1 ? "s" : ""}
       </p>
-
       {/* Episode list */}
       {typedJobs.length === 0 ? (
         <div className="text-center py-16 text-neutral-400">
@@ -144,7 +143,6 @@ export default async function ListenTierPage({
                 <div className="flex-shrink-0 w-8 text-right text-sm text-neutral-300 font-mono pt-0.5">
                   {typedJobs.length - index}
                 </div>
-
                 {/* Play button */}
                 <Link
                   href={`/article/${article.slug}`}
@@ -155,7 +153,6 @@ export default async function ListenTierPage({
                     <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                   </svg>
                 </Link>
-
                 {/* Episode info */}
                 <div className="flex-1 min-w-0">
                   <Link href={`/article/${article.slug}`} className="block">

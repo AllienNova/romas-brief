@@ -19,7 +19,8 @@ export async function generateStaticParams() {
   return Object.keys(REGION_META).map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const meta = REGION_META[params.slug as Region];
   if (!meta) return {};
   return {
@@ -72,7 +73,8 @@ function ArticleRow({ article }: { article: MockArticle }) {
   );
 }
 
-export default function RegionPage({ params }: { params: { slug: string } }) {
+export default async function RegionPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const slug = params.slug as Region;
   const meta = REGION_META[slug];
   if (!meta) notFound();

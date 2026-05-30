@@ -213,3 +213,21 @@ Full cycle-5 traceability + critic-rerun on M1c-closeout: see `Docs/qa/requireme
 | Cycle-1 → cycle-5 carry-forward | 88 (consolidated) + 7 design-time + 9 cross-ref + 5 cycle-5 = 109 risk rows | unchanged |
 | **NEW cycle-6 BLOCKERS** | **3** (B-17/18/19) | doc-vs-reality drift + lockfile drift + M3 unstarted |
 | **Total tracked: 112 risks** | net +3 since cycle-5 | First net-positive BLOCKER delta since cycle-1 — trajectory inverted |
+
+## Cycle-7 reconciliation (2026-05-30)
+
+The cycle-6 BLOCKERS above are **superseded** by the Phase 8 consolidation + Wave-1 stabilization. Authoritative forward tracking is now `Docs/specs/ship-execution-plan.md` (SHIP-NN backlog).
+
+| ID | Cycle-6 status | Cycle-7 disposition |
+|---|---|---|
+| **B-17** (doc-vs-reality drift) | Blocker | **CLOSED** — `CLAUDE.md §12` rewritten to HEAD truth (SHIP-04); `tasks.md` is now the SHIP-NN queue. |
+| **B-18** (lockfile drift) | Blocker | **CLOSED** — the 3 workers are committed + in `pnpm-lock.yaml` (commit `7cf0fc3`); lockfile re-verified green in Wave 1. |
+| **B-19** (M3 not started) | Blocker | **SPLIT.** Reader consolidated into `apps/web` (`acf5855`) → reader-shell half **closed**. Remaining, tracked as SHIP tasks: reader→Supabase wiring (SHIP-08), CMS audio-QA UI / FR-009 (SHIP-10), Beehiiv webhook (SHIP-11), Resend transactional (SHIP-12), `packages/ui` components (SHIP-20/23). |
+| **B-20** (split-repo undocumented) | Blocker | **CLOSED** — single repo; `INTEGRATION-CONTRACT.md` = EXECUTED. |
+| **B-11** (Next 14 CVEs) | Open | **CLOSED** — bumped to Next 15.5.18 + React 19 (SHIP-01); `pnpm audit --audit-level=high` = 0 vulns. |
+| **B-13** (Supabase types placeholder) | Unblocked-pending-verify | Open → SHIP-06 regenerates types. |
+| **B-02** (no JS tests) | Open | Open → SHIP-17 (test pyramid). |
+| **B-09** (Beehiiv HMAC) | Open | Open → SHIP-11. |
+| **B-05 / B-10** (banned source / Beehiiv DPA) | Open | Open — Kimal track (B-05 verify in SHIP-04 doc sweep; B-10 = provisioning P-17). |
+
+**New since cycle-6:** **ADR-0018** — PlayHT shut down 2025-12-31 (Meta acquisition); TTS failover replacement pending Q-F (Cartesia recommended). Tracked in SHIP-14.

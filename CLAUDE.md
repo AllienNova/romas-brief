@@ -33,12 +33,16 @@ When the project has an active work queue — a tracking checklist in CLAUDE.md 
 Autonomy is not permission. A task-list item describing one of these is not permission:
 
 - **Destroy data/work** — `rm -rf`, deleting files I didn't ask you to create, dropping/truncating tables, `git reset --hard` over uncommitted work, `git clean -fdx`, deleting branches.
-- **Rewrite or push shared history** — any `git push`, `--force[-with-lease]`, rebasing a pushed branch, amending pushed commits, pushing to `main`/`master`/protected.
-- **Leave the machine** — deploying, publishing packages, opening/merging PRs, network calls that mutate external state.
+- **Rewrite shared history** — `--force[-with-lease]`, rebasing an already-pushed branch, amending already-pushed commits. *(Plain `git push` of branches and `main` is permitted — see Standing authorization below.)*
+- **Leave the machine (still gated)** — production deploys (`wrangler deploy`, Cloudflare/Vercel Pages production), publishing packages, network calls that mutate external state **other than** GitHub push/PR. *(Pushing branches + opening/merging PRs on this repo is permitted — see below.)*
 - **Spend money · touch prod · weaken security** — billable resources, prod DBs/config, secrets managers, live migrations, committing/printing secrets, loosening auth/permissions/CORS/firewall.
 - **System-level outside this project** — `sudo`, global installs, editing shell profiles, killing processes you didn't start.
 
-If unsure whether an action is reversible and contained within the working tree, treat it as one of these and ask. See `~/.claude/skills/autonomous-coding/references/` for `git-safety.md`, `danger-zone.md`.
+### Standing authorization (granted by Kimal, 2026-05-30)
+
+For `AllienNova/romas-brief`, Claude **may, without re-asking**: `git push` feature branches **and `main`**, and **open + merge PRs** — provided the pre-push gates are green (`turbo run lint` · `turbo run typecheck` · `pnpm build` · `pnpm audit --audit-level=high`, all exit 0). Run those gates before every push to `main` and report the evidence. Everything in the "still gated" / "spend money · touch prod · weaken security" / "rewrite shared history" / "destroy data" lines above **still requires an explicit in-conversation okay**.
+
+If unsure whether an action is reversible and contained within the working tree (or covered by the standing authorization), treat it as gated and ask. See `~/.claude/skills/autonomous-coding/references/` for `git-safety.md`, `danger-zone.md`.
 
 ---
 
@@ -243,59 +247,37 @@ Skills (`.claude/skills/`):
 
 ---
 
-## 12. Implementation Memory (May 2026 Session)
+## 12. Implementation State (live)
 
-**Current State (2026-05-28, post /team-qa cycle-6):**
-The ROMAS Brief production system is **split across two repos**. The version of §12 in earlier commits described a single-repo implementation that does not exist — /team-qa cycle-6 surfaced the discrepancy (B-17 + B-20 in `Docs/qa/risk-register.md`). This section is the corrected ground truth.
+> **Authoritative live queue:** `Docs/specs/ship-execution-plan.md` (the SHIP-NN backlog to public deployment). **What Kimal must provide:** `Docs/FOUNDERS-BOARD.md`. **Audit baseline:** `ANALYSIS_REPORT.md`. This section is a snapshot; the plan is the source of truth for sequencing.
 
-### Repo split
+**Repo: single, consolidated.** Phase 8 (commits `acf5855` / `bb5f004` / `dd7f0e0`) moved the reader from the former `kimhons/romas-brief-web` into `apps/web/` of this monorepo. There is no split repo. `Docs/INTEGRATION-CONTRACT.md` status = EXECUTED. **Closes cycle-6 B-17 / B-18 / B-20.**
 
-| Repo | Purpose | State |
-|---|---|---|
-| **`D:\dev\projects\romas-brief`** (this monorepo, GitHub `AllienNova/romas-brief`) | Platform: Supabase schema + workers + design specs + planning docs + CMS scaffold. | M1 schema + cron-ingest committed; M2-B/C audio workers untracked + lockfile-broken (B-18); M3 reader + Beehiiv webhook + Resend transactional NOT IN THIS REPO. |
-| **`kimhons/romas-brief-web`** (separate GitHub repo) | Reader: the public-facing Next.js + Vercel surface at `https://romas-brief-web.vercel.app/`. | Deployed and substantive — 8-module homepage, all 11 categories, audience routes, audio integration. Source code NOT audited by /team-qa cycles 1-6 (audit scope was implicitly this monorepo). |
+**State at branch `fix/ci-stabilize-wave1` (Wave 1 in progress, 2026-05-30):**
 
-### What's actually in this monorepo at HEAD = `9c4284d`
+| Surface | State |
+|---|---|
+| Supabase schema | 11 migrations, RLS deny-by-default, 79 pgTAP assertions. Real. |
+| `workers/cron-ingest` | 766 LOC real (ingest + dedupe + embargo + source-health). Sets no `signal_score` yet → SHIP-09. |
+| `workers/audio-producer` | 1,214 LOC real pipeline. Committed + in lockfile. Runtime-unverified (needs ElevenLabs/R2 → SHIP-27). |
+| `workers/rss-publisher` | 688 LOC, 4 feeds. Real. |
+| `workers/cdn-purge-watchdog` | 415 LOC, 60s SLA. Real. |
+| `workers/{beehiiv-webhook,email-canary,source-health}` | 35–37 LOC HTTP-501 stubs. Unbuilt → SHIP-10 / SHIP-11 / SHIP-19. |
+| `apps/web` reader | 18 routes + 16 components, **mock-data only** — no Supabase wiring yet → SHIP-08. |
+| `apps/cms` | 3 stub files; **no audio-QA UI** → SHIP-10 (FR-009). |
+| `packages/ui` | 1-constant stub → SHIP-20 / SHIP-23. |
+| Tests (JS/TS) | none yet → SHIP-17; only 79 pgTAP DB assertions. |
+| Framework | **Next 15.5.18 + React 19** (SHIP-01). `pnpm audit --audit-level=high` = 0 vulns. |
+| CI gates | lint ✅ · typecheck ✅ · build ✅ · audit ✅ (SHIP-01/02). Tests stubbed until SHIP-17. |
 
-- **Supabase schema**: 11 migrations applied via MCP to `rjpuxfbuzispklcstuzo.supabase.co`. pgTAP coverage 79 assertions. PASS (carry-forward from cycle-5).
-- **`apps/web/`**: T-101 monorepo scaffold stub only (`app/page.tsx` = 22 lines, force-dynamic). The real reader lives in `kimhons/romas-brief-web`. ARCHITECTURE DECISION PENDING (see below).
-- **`apps/cms/`**: T-101 stub only (3 files). Audio QA UI per FR-009 NOT YET implemented in this repo.
-- **`packages/ui/`**: stub (`src/index.ts` = constant export). No AudioPlayer / SponsorBlock / SubscriberCount components in this monorepo.
-- **`packages/shared/`**: `RawItem` + `SourceHealthEntry` types. Real.
-- **`workers/cron-ingest/`**: 766 LOC, committed (`9c4284d`). Real T-115 implementation.
-- **`workers/audio-producer/`**: 1,214 LOC, **UNTRACKED**, not in lockfile. Substantial code with B-16 Queued Consumer pattern. Needs `pnpm install` + commit.
-- **`workers/cdn-purge-watchdog/`**: 415 LOC, **UNTRACKED**, not in lockfile.
-- **`workers/rss-publisher/`**: 688 LOC, **UNTRACKED**, not in lockfile.
-- **`workers/beehiiv-webhook/`**: `.gitkeep` only. Reserved name, not started.
-- **`workers/email-canary/`**: `.gitkeep` only. Reserved name, not started.
-- **`workers/source-health/`**: `.gitkeep` only. Reserved name (functionality currently in cron-ingest).
+**TTS failover:** PlayHT shut down 2025-12-31 (Meta acquisition). Replacement pending **Q-F** (Cartesia recommended) — see `Docs/specs/adr/0018-tts-failover-replacement-playht-shutdown.md`.
 
-### Architecture decision — CONSOLIDATE (decided 2026-05-28)
-
-**Kimal selected Option A: consolidate.** Reader source from `kimhons/romas-brief-web` will be moved into `apps/web/` of this monorepo. Single source of truth, single CI/CD, shared `packages/ui` + `packages/shared`. See `Docs/INTEGRATION-CONTRACT.md` §8 for the full sprint scope (10 steps, ~1-2 days). Sprint tracked as `tasks.md` Phase 8 (M2-D / consolidation).
-
-Until the consolidation sprint completes, this monorepo's `apps/web/` stub remains the canonical "not yet consolidated" marker. The deployed reader at `https://romas-brief-web.vercel.app/` continues to serve traffic from the external repo. **No /team-qa cycle-7 full-product verdict can land until consolidation completes** — the audit can verdict the platform repo in isolation and the deployed reader via WebFetch, but the Day-1 launch readiness verdict requires both surfaces in single audit scope.
-
-### Pending actions (split by ownership)
-
-**This monorepo (engineering, autonomous-drivable):**
-1. Run `pnpm install` (no `--frozen-lockfile`) in project root to absorb the 3 untracked workers into `pnpm-lock.yaml` (B-18). ~10 min.
-2. Commit `workers/{audio-producer,cdn-purge-watchdog,rss-publisher}/` + updated `pnpm-lock.yaml`. Re-run turbo typecheck + build to confirm green. ~20 min.
-3. Author M3-A CMS audio QA UI in `apps/cms/` (T-209 / T-210 / FR-009 5-condition gate UI). ~3-5 days.
-
-**Kimal (legal / infra / decisions):**
-1. **Architecture decision: consolidate vs split (above). Highest priority.**
-2. Deploy the audio pipeline workers (`wrangler deploy`) once committed.
-3. Create R2 buckets (`romas-audio-archive`, `romas-audio-cdn`).
-4. Set ElevenLabs API key + Voice IDs (`ELEVENLABS_VOICE_ID_BRIEF/PODCAST/CONFERENCE`) in Cloudflare Worker Secrets. Rotate the local `.env` ElevenLabs key per NFR-012 before Day-1.
-5. Configure Resend DNS DKIM/SPF/DMARC for `brief@romasbrief.com`.
-6. Execute Beehiiv DPA + SCC before first EU subscriber (B-10).
-7. Point Beehiiv webhook to deployed `beehiiv-webhook` worker (once that worker exists — currently `.gitkeep` only).
-8. Scrub `meddeviceguide.com` from Launch Plan §6 Sample 5 (B-05).
+**Pending — engineering:** drive the SHIP-NN queue (Waves 1→5) in `Docs/specs/ship-execution-plan.md`.
+**Pending — Kimal:** provisioning items + decisions Q-A..Q-F in `Docs/FOUNDERS-BOARD.md` (audio credentials, R2, Beehiiv DPA, the 8-week content ramp).
 
 ### Reference
 
-Full cycle-6 evidence + sign-off in `Docs/specs/qa-report.md` (cycle-6 section + ADDENDUM). Risk register at `Docs/qa/risk-register.md` (B-17/18/19/20 cycle-6 deltas).
+Plan + critic record: `Docs/specs/ship-execution-plan.md` + `Docs/specs/ship-plan-critic-review.md`. Cycle-6 history (superseded snapshots): `Docs/qa/risk-register.md` + `Docs/specs/qa-report.md`.
 
 ---
 

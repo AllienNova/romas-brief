@@ -14,7 +14,7 @@
 //   import { createServerSupabaseClient } from "@/lib/supabase/server";
 //
 //   export default async function Page() {
-//     const supabase = createServerSupabaseClient();
+//     const supabase = await createServerSupabaseClient();
 //     const { data: { user } } = await supabase.auth.getUser();
 //     return user ? <Dashboard user={user} /> : <SignIn />;
 //   }
@@ -35,8 +35,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import type { Database } from "./types";
 
-export function createServerSupabaseClient(): SupabaseClient<Database> {
-  const cookieStore = cookies();
+export async function createServerSupabaseClient(): Promise<SupabaseClient<Database>> {
+  const cookieStore = await cookies();
 
   const supabaseUrl = process.env["SUPABASE_URL"];
   const supabaseAnonKey = process.env["SUPABASE_ANON_KEY"];
