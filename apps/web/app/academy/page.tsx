@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Academy",
@@ -193,10 +194,12 @@ export default function AcademyPage() {
                     background: `linear-gradient(135deg, ${course.badgeColor}22 0%, ${course.badgeColor}08 100%)`,
                   }}
                 >
-                  <img
+                  <Image
                     src={course.thumbnail}
                     alt={course.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)" }} />
                   <span
