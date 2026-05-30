@@ -1,5 +1,7 @@
 # ROMAS Brief — Delivery Plan
 
+> **⮕ Launch sequencing now lives in [`ship-execution-plan.md`](./ship-execution-plan.md) (v1.0.0, 2026-05-29).** That file is the single authoritative ordered SHIP-NN backlog to public deployment, reconciled against `HEAD=dd7f0e0`. This delivery-plan remains the milestone/scope-lock reference; when the two disagree on ordering, ship-execution-plan wins.
+
 **Version:** 1.1.0 (cycle-2 scope lock)
 **Date:** 2026-05-14
 **Owner:** Kimal Honour Djam (president@aliennova.com)
