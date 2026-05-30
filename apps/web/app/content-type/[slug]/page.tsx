@@ -18,7 +18,8 @@ export async function generateStaticParams() {
   return Object.keys(CONTENT_TYPE_META).map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const meta = CONTENT_TYPE_META[params.slug as ContentType];
   if (!meta) return {};
   return {
@@ -63,7 +64,8 @@ function ArticleCard({ article }: { article: MockArticle }) {
   );
 }
 
-export default function ContentTypePage({ params }: { params: { slug: string } }) {
+export default async function ContentTypePage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const slug = params.slug as ContentType;
   const meta = CONTENT_TYPE_META[slug];
   if (!meta) notFound();

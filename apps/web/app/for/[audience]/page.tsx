@@ -19,7 +19,8 @@ export async function generateStaticParams() {
   return Object.keys(AUDIENCE_META).map((slug) => ({ audience: slug }));
 }
 
-export async function generateMetadata({ params }: { params: { audience: string } }) {
+export async function generateMetadata(props: { params: Promise<{ audience: string }> }) {
+  const params = await props.params;
   const meta = AUDIENCE_META[params.audience as Audience];
   if (!meta) return {};
   return {
@@ -67,7 +68,8 @@ function ArticleRow({ article }: { article: MockArticle }) {
   );
 }
 
-export default function AudiencePage({ params }: { params: { audience: string } }) {
+export default async function AudiencePage(props: { params: Promise<{ audience: string }> }) {
+  const params = await props.params;
   const slug = params.audience as Audience;
   const meta = AUDIENCE_META[slug];
   if (!meta) notFound();

@@ -1,145 +1,92 @@
-# ROMAS Brief — Implementation Task List
+# ROMAS Brief — Autonomous Execution Queue
 
 **Owner:** Kimal Honour Djam
-**Agent:** Manus (autonomous-coding mode)
-**Skills applied:** autonomous-coding · explore-first · git-safety · danger-zone · pause-conditions
-**Last updated:** 2026-05-28 (cycle-6 reconciliation — Phase 5/6/7 un-checked to reflect split-repo reality)
+**Driven by:** `/autonomous-coding` skill (autonomous-drive mode)
+**Canonical spec:** `Docs/specs/ship-execution-plan.md` v1.1.1 (team-plan-critic APPROVE WITH CONDITIONS, gate closed)
+**What Kimal must provide:** `Docs/specs/provisioning-checklist.md`
+**Baseline:** HEAD=dd7f0e0 · **Last regenerated:** 2026-05-29
 
-> **Cycle-6 reconciliation note (2026-05-28):** This file previously marked Phase 5/6/7 as `[x]` complete. /team-qa cycle-6 verified the working tree contradicts those claims — the reader source lives in `kimhons/romas-brief-web` (deployed at `romas-brief-web.vercel.app`), NOT in this monorepo's `apps/web` / `apps/cms` / `packages/ui` / `workers/beehiiv-webhook` / `workers/email-canary`. Phase 5/6/7 below are un-checked to reflect the work NOT YET done in THIS repo. See `Docs/specs/qa-report.md` cycle-6 + ADDENDUM and `CLAUDE.md §12` for the corrected ground truth.
-
-> This file is the source of truth for all in-flight implementation work.
-> Status legend: `[ ]` = todo · `[~]` = in progress · `[x]` = done · `[!]` = BLOCKED
-
----
-
-## Phase 1 — M1 Pre-Requisites (Days 1–3)
-
-These are the gating items that unlock M2 and M3. All are code/config changes inside the working tree — no external provisioning required from this agent.
-
-- [x] **T-P1-01** Upgrade `pnpm audit` gate from `continue-on-error: true` to a hard fail in `ci.yml`
-- [x] **T-P1-02** Scrub `meddeviceguide.com` from all docs (banned primary source per SSOT §6 + R-014)
-- [x] **T-P1-03** Add voice registry fill-stubs as typed `FILL_REQUIRED` constants in `Docs/voice-consent-registry.md` (operational placeholder — actual IDs are a Track-D/Kimal action)
-- [x] **T-P1-04** Update `wrangler.toml` cron triggers from single `30 10 * * 1-5` to the three-edition schedule (APAC 22:00 UTC · EU 06:00 UTC · Americas 11:00 UTC) per SSOT §3 row 16
-- [x] **T-P1-05** Wire R2 + Supabase bindings in `wrangler.toml` (uncomment + add `[vars]` block for `SUPABASE_URL`)
-- [x] **T-P1-06** Add `packages/shared` skeleton with `RawItem` type + `SourceHealthEntry` type (needed by cron-ingest and rss-publisher)
+> This file is the **work queue the autonomous-coding loop drives top-to-bottom**: pick the top open `AUTO` item whose deps are checked → implement → verify (run the `verify:` command) → commit (selective staging) → check it off → next. Full T-NNN/B-XX/RC-NN traceability is the `Merges` column in `ship-execution-plan.md`.
+>
+> **Legend:** `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` BLOCKED (external).
+> **Drivability:** `AUTO` = fully autonomous (implement + verify now/after deps) · `AUTO*` = code + unit-test now, but **live** verification needs a provisioning item (noted) · `BLOCKED` = cannot meaningfully start until the named `P-NN` / content lands. The loop **skips** `[!]`/`BLOCKED` items and continues.
 
 ---
 
-## Phase 2 — M2-A: cron-ingest worker (Days 4–8)
+## ⛔ Hard external blockers (Kimal — see `provisioning-checklist.md`)
 
-Implement the real ingestion logic in `workers/cron-ingest/src/index.ts`.
+The loop runs everything below to completion EXCEPT the tasks gated on these. Provide 🔴 first.
 
-- [x] **T-115-A** Define `Env` interface with real bindings (`RAW: R2Bucket`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, voice env vars)
-- [x] **T-115-B** Implement PubMed E-utilities fetcher (MeSH radiation oncology filter, last 24h)
-- [x] **T-115-C** Implement arXiv fetcher (physics.med-ph + eess.IV, last 24h)
-- [x] **T-115-D** Implement ClinicalTrials.gov fetcher (radiation/radiotherapy, new/updated)
-- [x] **T-115-E** Implement FDA 510(k) fetcher (with openFDA discovery → official FDA record verification)
-- [x] **T-115-F** Implement ASTRO / ESTRO / AAPM news RSS fetchers (society guidelines)
-- [x] **T-115-G** Implement dedupe logic (DOI → PMID → URL hash → title fuzzy, per source-ingestion.md)
-- [x] **T-115-H** Implement RT relevance keyword filter
-- [x] **T-115-I** Implement embargo detection (write to `embargo_holds`, not `articles`)
-- [x] **T-115-J** Write `source_health_summary.json` to R2 after each run
-- [x] **T-115-K** Implement auth-gated `fetch()` handler (shared-secret header check)
-- [x] **T-115-L** Typecheck + build verify (`pnpm turbo run typecheck build --filter=@romas-brief/cron-ingest`)
+- **[!] P-01/P-02/P-19** ElevenLabs key + 3 voice IDs + signed consent → unblocks **SHIP-27** (audio runtime) + gates #13/#14
+- **[!] P-10/P-11** R2 buckets + access keys → unblocks **SHIP-27**
+- **[!] P-13/P-16** Cloudflare token/zone + Vercel rewire → unblocks **SHIP-31** (deploy)
+- **[!] P-05/P-06/P-14** Beehiiv + Resend keys + DNS → live verification of **SHIP-11/SHIP-12**
+- **[!] P-08** Sentry DSN → live alerting in **SHIP-26**
+- **[!] P-21..P-24** 500 articles + 50 audio + podcast ep001 + 5 issues (8-wk ramp) → **SHIP-32** launch gate
+- **[!] Q-A..Q-F** six decisions (date, LATAM, NA-only, source-health, Friday Read, **TTS failover provider — PlayHT shut down, ADR-0018**) → see provisioning §D + FOUNDERS-BOARD
 
 ---
 
-## Phase 3 — M2-B: audio-producer worker (Days 9–14)
+## WAVE 1 — STABILIZE (CI red → green, doc truth)
 
-Implement the Cloudflare Queues + Consumer pattern for TTS (mandatory per Audio Architecture §2.1.2 — sync Worker times out).
+- [x] **SHIP-01** `AUTO` — Bump `next` 14.2.35 → 15.5.18 + React 19 in `apps/web` + `apps/cms`; async-request-API codemod; cms Supabase factories → async. _verify:_ `pnpm audit --audit-level=high` exit 0 (0 vulns) ✅ · typecheck 12/12 ✅ · lint ✅ · `pnpm build` 9/9 (76 static pages) ✅ (commit b4146ba). _deps:_ —
+- [x] **SHIP-02** `AUTO` — Fix lint: `<img>`→`next/image` at `apps/web/app/academy/page.tsx:196` (sweep all `<img>`). _verify:_ `pnpm turbo run lint` exit 0 ✅ (commit cb3adfc). _deps:_ —
+- [~] **SHIP-03** `AUTO` — PARTIAL: CI `build` expanded to full graph (apps + all workers) ✅ `ci.yml`. Remaining (deferred to SHIP-17 — tests don't exist yet): real `lint`/`test` scripts in non-stub packages + wire CI `test` to real suites. _verify (done half):_ ci.yml runs `pnpm turbo run build` (no cron-ingest filter). _deps:_ SHIP-01, SHIP-02
+- [x] **SHIP-04** `AUTO` (DOC) — Reconciled docs to HEAD: rewrote `CLAUDE.md §12`; closed risk-register B-17/18/20 + split B-19 (cycle-7); appended `qa-report.md` cycle-7; fixed `architecture.md` (apps/reader→apps/web, dropped packages/db, 10→11). _verify:_ grep clean of stale claims ✅ (commit e5657db). _deps:_ —
+- [ ] **SHIP-05** `AUTO` — Repo hygiene: gitignore+remove `*.bundle` (3.4 MB), `_legacy/`, `CLAUDE.md.bak.*`; align dev Node to 20. _verify:_ `git status` clean of bundles/legacy; `node -v`=20.x. _deps:_ —
 
-- [x] **T-202-A** Scaffold `workers/audio-producer/` with `wrangler.toml` (Queue consumer binding) + `package.json` + `tsconfig.json`
-- [x] **T-202-B** Implement Queue producer: `enqueueAudioJob(articleId, audioTier)` — called by cron-ingest after scoring
-- [x] **T-202-C** Implement Queue consumer worker: read `audio_jobs` row, pick voice by `audio_tier` (D-032 mapping)
-- [x] **T-202-D** Implement ElevenLabs TTS call (lift from `smoke-test.mjs` Step 2 — `eleven_multilingual_v2`, voice settings)
-- [x] **T-202-E** Implement PlayHT failover (3 retries with 1s/4s/16s backoff; on exhaustion → `skipped` + `skip_reason`)
-- [x] **T-202-F** Implement ffmpeg two-pass loudnorm (lift from `smoke-test.mjs` Steps 3–6; target -16 LUFS / -1 dBTP)
-- [x] **T-202-G** Implement R2 upload: WAV → `romas-audio-archive/{slug}-master.wav`; MP3 → `romas-audio-cdn/{slug}.mp3`
-- [x] **T-202-H** Implement Whisper transcript call + store URL in `audio_jobs.transcript_url`
-- [x] **T-202-I** Update `audio_jobs` row: set `loudness_lufs`, `true_peak_dbtp`, `transcript_url`, `audio_status = 'in_review'`
-- [x] **T-202-J** Typecheck + build verify
+## WAVE 2 — COMPLETE (data + scorer + QA gate + email + Day-1 modules)
 
----
+- [ ] **SHIP-06** `AUTO` — Regenerate DB types (Supabase MCP `generate_typescript_types` / `supabase gen types --linked`); replace empty `apps/cms/lib/supabase/types.ts` + `apps/web/lib/supabase/database.types.ts`. _verify:_ types non-empty; `tsc --noEmit` exit 0. _deps:_ —
+- [ ] **SHIP-07** `AUTO` — Sanitize markdown at `apps/web/app/article/[slug]/page.tsx:213` (`rehype-sanitize`/DOMPurify). _verify:_ unit test: injected `<script>` + `javascript:` URI render inert. _deps:_ —
+- [ ] **SHIP-08** `AUTO*` (full verify needs seeded/live data) — Wire reader to Supabase (replace `@/lib/mock-data`; honor `public_read_published` RLS; `generateStaticParams`→real slugs + `dynamicParams` + ISR). Re-home T-301-B: body-size cap in `next.config.mjs` + Zod at public query boundary. _verify:_ `/article/<seed-slug>` renders DB content; `grep -rl @/lib/mock-data apps/web` = 0; oversized-body + bad-input tests pass. _deps:_ SHIP-06, SHIP-07
+- [ ] **SHIP-09** `AUTO` — Implement six-axis Signal-Scoring engine (FR-002/003) in cron-ingest; populate `articles.signal_score`; unit-test composite. Closes B-03. _verify:_ every ingested row scored; `SELECT` reproduces §12.2 buckets; composite unit test green. _deps:_ SHIP-06
+- [ ] **SHIP-10** `AUTO` — CMS audio-QA UI (FR-009): article-list, `audio-qa/[id]`, `AudioQAChecklist` (5 conditions), `AudioStatusBadge`, status-flip route validating all 5 (gated by `audio_qa_flip` RLS). _verify:_ integration test proves flip blocked unless all 5 met, allowed when met. _deps:_ SHIP-06
+- [ ] **SHIP-11** `AUTO*` (live sync needs P-05) — `beehiiv-webhook`: HMAC verify, subscriber sync, idempotency, DLQ (TTL+retry+escalation), reconciliation worker. _verify:_ bad-sig→401, replay no-op, DLQ test green. _deps:_ SHIP-06
+- [ ] **SHIP-12** `AUTO*` (live send needs P-06/P-14) — Resend transactional (rename `email-canary`→`email-transactional`): signup/unsub/revocation/reset templates; Svix verify; `Idempotency-Key`. _verify:_ template render + Svix 401 + dedupe tests green. _deps:_ SHIP-06
+- [ ] **SHIP-13** `AUTO` — Day-1 homepage data modules: Today's-podcast embed, Trending, Top Papers on real data; Daily Brief roundup worker + `daily-brief.xml`. _verify:_ 3 modules render from DB; daily-brief feed validates. _deps:_ SHIP-08, SHIP-09
 
-## Phase 4 — M2-C: cdn-purge-watchdog + rss-publisher (Days 15–18)
+## WAVE 3 — HARDEN (correctness FIRST, then tests on corrected code)
 
-- [x] **T-211-A** Scaffold `workers/cdn-purge-watchdog/` — Durable Object or Queue consumer watching `revocations` table
-- [x] **T-211-B** Implement 60s SLA enforcement: purge R2 CDN object; alert at 45s; fail/alert at 60s
-- [x] **T-214-A** Scaffold `workers/rss-publisher/` with `wrangler.toml` + `package.json`
-- [x] **T-214-B** Implement `audio-brief.xml` feed (Tier 1 per-article audio)
-- [x] **T-214-C** Implement `daily-brief.xml` feed (Tier 2 daily roundup)
-- [x] **T-214-D** Implement `podcast.xml` feed (Tier 3 weekly, iTunes namespace, episode enclosures)
-- [x] **T-214-E** Implement `conference-brief.xml` feed (Tier 4, activates per conference)
-- [x] **T-214-F** Typecheck + build verify
+- [ ] **SHIP-14** `AUTO` (needs Q-F vendor) — Audio correctness + failover swap (**PlayHT shut down → ADR-0018**): declare `LOUDNORM_ENDPOINT` in `Env`; fail-closed when absent; handle stereo WAV; replace dead PlayHT failover with Q-F provider (Cartesia default); single failover call; retry 1→3 (2s/8s/30s); exhaustion→`skipped`. _verify:_ fail-closed test + single-failover-call test green; `grep -ri playht workers/` = 0. _deps:_ SHIP-08, Q-F
+- [ ] **SHIP-15** `AUTO` — Worker fixes: RSS `<enclosure length>`=real R2 byte size; fix `/regenerate` branch; `CDN_BASE_URL` env (drop hardcoded `cdn.romas.brief`); Whisper embargo-gate; NMPA read-only enforce (M-02). _verify:_ Apple Podcasts validator passes; invalid-tier→400; embargo + NMPA tests green. _deps:_ SHIP-08
+- [ ] **SHIP-16** `AUTO` — Data-layer hardening: migration 0012 `WITH CHECK` on `editor_publish`+`audio_qa_flip` (+down-migration); audience+region+modality NOT-NULL (gate #8); `AbortSignal.timeout(10000)` on all Supabase calls; cross-edition revocation re-check. _verify:_ pgTAP WITH-CHECK rejects unauthorized writes; 0012 down reverts clean; revoked-never-dispatched test. _deps:_ SHIP-06
+- [ ] **SHIP-17** `AUTO` — Test pyramid backfill on corrected code: unit (workers incl. scorer) + integration (CMS QA, Beehiiv, Resend, revocation race) + reader render. Wire CI `test`. _verify:_ `pnpm test` green; coverage ≥60% worker business logic; CI `test` green. _deps:_ SHIP-09, SHIP-10, SHIP-11, SHIP-12, SHIP-14, SHIP-15, SHIP-16
+- [ ] **SHIP-18** `AUTO*` (full cascade needs P-05/P-10) — Right-to-erasure endpoint (FR-039): purge subscriber PII across `subscribers` + Beehiiv + R2 (voice-consent→R2 cascade, M-04). _verify:_ erasure test purges PII end-to-end. _deps:_ SHIP-06, SHIP-11
+- [ ] **SHIP-19** `AUTO` (Q-D) — source-health decision: fold in cron-ingest (delete stub) or build T-120. _verify:_ decision in architecture.md; stub resolved; path tested. _deps:_ SHIP-04
 
----
+## WAVE 4 — POLISH (UI/UX, a11y, brand, perf)
 
-## Phase 5 — M3-A: CMS Audio QA UI (Days 19–23) — NOT STARTED IN THIS REPO
+- [ ] **SHIP-20** `AUTO` — Token unification: port `--rb-*` tokens (incl audio) to `globals.css`; `dark:` on all inner routes. _verify:_ dark mode correct on all routes (screenshots); one token set. _deps:_ SHIP-08
+- [ ] **SHIP-21** `AUTO` — Brand invariants: `SubscriberCount` (hide <2,500); strip emojis from copy; `SponsorBlock` locked labels + 32px firewall. _verify:_ grep: no numeric count, no emoji in copy; `data-firewall=32`. _deps:_ SHIP-08
+- [ ] **SHIP-22** `AUTO` — A11y WCAG 2.2 AA: skip link, homepage `<h1>`, `aria-hidden` icons, ≥44px targets, scrubber `aria-valuetext`+keyboard, modal focus trap, reduced-motion on RotatingTopStories. _verify:_ `design:accessibility-review` AA pass; axe 0 criticals. _deps:_ SHIP-20
+- [ ] **SHIP-23** `AUTO` — Spec components: `AudioPlayer` Variant A/B with QA-gated status; `AudioStatusBadge` 6-state; real tier/duration; mount/delete `SiteHeader`/`SiteFooter` dead code. _verify:_ player shows 4 statuses; no dead duplicate header. _deps:_ SHIP-10, SHIP-20
+- [ ] **SHIP-24** `AUTO` — Performance: AVIF + `srcset` + lazy-load; Web Vitals LCP<2.5s/INP<200ms/CLS<0.1; Plausible events. _verify:_ Lighthouse perf ≥90 on home/article/listen. _deps:_ SHIP-08
+- [ ] **SHIP-25** `AUTO` — Reader depth: pgvector search (T-307). _verify:_ search returns ranked DB hits. _deps:_ SHIP-08
 
-> Cycle-6 verification (2026-05-28): `apps/cms/app/` contains only T-101 stub files (`page.tsx` 24 lines + `layout.tsx` + `not-found.tsx`). No `audio-qa/[id]/page.tsx`. No `AudioQAChecklist`. No `AudioStatusBadge`. No `api/audio-qa/[id]/route.ts`. The CMS audio QA UI per FR-009 has not been implemented in this monorepo. Pending architecture decision (consolidate vs split — see CLAUDE.md §12), this work either lives in `kimhons/romas-brief-web` or needs to be authored here.
+## WAVE 5 — SHIP (ops, runtime verify, deploy, launch gate)
 
-- [ ] **T-209-A** Replace CMS `apps/cms/app/page.tsx` stub with real article list page (Supabase query, `status` filter)
-- [ ] **T-209-B** Build `apps/cms/app/audio-qa/[id]/page.tsx` — article detail + audio player + QA checklist
-- [ ] **T-210-A** Build `AudioQAChecklist` component — 5-condition gate UI (clinical_claims_checked, qa_reviewer, loudness, true_peak, transcript_url)
-- [ ] **T-210-B** Build `AudioStatusBadge` component — maps `audio_status` enum to color chip
-- [ ] **T-209-C** Implement status flip handler (route handler in `app/api/audio-qa/[id]/route.ts`) — validates 5 conditions before writing `audio_status = 'published'`
-- [ ] **T-209-D** Typecheck + build verify
-
----
-
-## Phase 6 — M3-B: Reader app (Days 24–30) — DEPLOYED OUT-OF-REPO
-
-> Cycle-6 verification (2026-05-28): `apps/web/app/page.tsx` is a 22-line T-101 stub. No `article/[slug]/`, `listen/`, `category/[slug]/` routes in this monorepo. `packages/ui/src/index.ts` is a single constant export — no AudioPlayer Variant A/B, no SponsorBlock, no SubscriberCount components. **The substantive reader site IS deployed at https://romas-brief-web.vercel.app/ and its source lives in `kimhons/romas-brief-web` per CLAUDE.md §12. The work below is "not done in THIS repo" — the reader-side equivalents likely exist in the external repo (unverified by /team-qa scope rules).**
-
-- [ ] **T-301-A** Replace `apps/web/app/page.tsx` stub with real Homepage (Top Stories grid, region re-rank, subscriber count hidden until 2,500)
-- [ ] **T-303-A** Build `apps/web/app/article/[slug]/page.tsx` (≤90 char headline, ROMAS Insight label, AudioPlayer Variant A inline)
-- [ ] **T-304-A** Build `apps/web/app/listen/page.tsx` (4-tier audio grid, AudioPlayer Variant B hero)
-- [ ] **T-305-A** Build `apps/web/app/category/[slug]/page.tsx` (11 categories)
-- [ ] **T-215-A** Build `packages/ui/src/AudioPlayer/VariantA.tsx` (inline-in-article player)
-- [ ] **T-216-A** Build `packages/ui/src/AudioPlayer/VariantB.tsx` (Listen-page hero player)
-- [ ] **T-312-A** Build `packages/ui/src/SponsorBlock.tsx` (32px firewall enforced)
-- [ ] **T-311-A** Build `SubscriberCount.tsx` (hidden until 2,500 threshold)
-- [ ] **T-301-B** Implement ADR-0015 CVE mitigations: Zod boundary validation at RSC inputs, body-size cap in `next.config.mjs`
-- [ ] **T-301-C** Typecheck + build verify
+- [ ] **SHIP-26** `AUTO*` (live alert needs P-08) — Ops readiness: SLI/SLO per critical surface; wire Sentry + ≥1 alert channel; cold-start runbook; dashboard. _verify:_ forced cron/queue failure fires an alert (test); runbook exists. _deps:_ SHIP-03
+- [!] **SHIP-27** `BLOCKED P-01/P-02/P-10/P-11` (+P-03/P-04) — Runtime-verify audio pipeline incl. one full-length Tier-3 episode through the Queue consumer (B-16, gate #14). _verify:_ Audio Brief AND 30–60 min Tier-3 both complete: WAV in archive, MP3 on CDN, transcript, correct LUFS, no sync timeout. _deps:_ SHIP-14, P-01/02/10/11
+- [ ] **SHIP-28** `AUTO*` (live kill-switch needs P-12/P-13) — Error/withdrawal pages (404/410-withdrawn/500 `error.tsx`); verify 60s revoke kill-switch. _verify:_ revoke removes article+audio ≤60s (timed test); 410 for revoked slug. _deps:_ SHIP-08
+- [ ] **SHIP-29** `AUTO*` (needs infra) — Three-edition publish verify (APAC/EU/Americas UTC); per-region re-rank; wall-clock budget (H-07). _verify:_ each edition fires at correct UTC; re-rank observed; budget model attached. _deps:_ SHIP-13
+- [!] **SHIP-30** `AUTO` (after P-01/02) — Lexicon expansion 30→~80. _verify:_ lexicon applied in TTS; pronunciation spot-check. _deps:_ SHIP-27
+- [!] **SHIP-31** `BLOCKED P-13/P-16` + all eng — Vercel/Pages rewire to monorepo `apps/web`; migrate env; archive `kimhons/romas-brief-web`. _verify:_ deployed reader serves live DB content from monorepo build. _deps:_ SHIP-08, all KX
+- [!] **SHIP-32** `BLOCKED P-21..P-24` (content) + all — Day-1 launch-readiness gate (SSOT §12.8 + ops, 19 rows). _verify:_ all 19 gate rows pass. _deps:_ §5 all
+- [ ] **SHIP-33** `AUTO` — Re-run `team-qa` cycle-7 + `/analyze` for GO. _verify:_ verdict GO; `/analyze` health ≥85. _deps:_ SHIP-32
 
 ---
 
-## Phase 7 — M3-C: Beehiiv webhook + Resend transactional (Days 31–35) — RESERVED, NOT STARTED
+## How the autonomous loop should run this
 
-> Cycle-6 verification (2026-05-28): `workers/beehiiv-webhook/`, `workers/email-canary/` are `.gitkeep`-only directories. No HMAC-SHA256 verify code. No Resend API client. No React-Email templates. Cycle-6 cleanup (post-sign-off) added minimal honest stubs returning HTTP 501 so the workspace is well-formed for typecheck/build, but no real handler logic.
-
-- [ ] **T-310C-A** Scaffold `workers/beehiiv-webhook/` — HMAC-SHA256 verify with `BEEHIIV_WEBHOOK_SECRET`
-- [ ] **T-310C-B** Implement subscriber state sync (subscribe/unsubscribe/update → Supabase `subscribers` table)
-- [ ] **T-310C-C** Implement idempotency on Beehiiv event ID
-- [ ] **T-310A-A** Scaffold `workers/email-transactional/` — Resend API client (note: dir is `email-canary/` in repo)
-- [ ] **T-310A-B** Implement signup confirmation email template
-- [ ] **T-310A-C** Implement unsubscribe receipt email template
-- [ ] **T-310A-D** Implement audio-revocation notice email template
-- [ ] **T-310A-E** Typecheck + build verify
+1. **First action:** `TaskCreate` one harness task per `AUTO` item in the current wave (per autonomous-coding mandatory inline task list).
+2. Drive **Wave 1 → 2 → 3 → 4** end-to-end — these are almost entirely `AUTO`/`AUTO*` and need **nothing** from Kimal. `AUTO*` items implement + unit-test fully; their live-integration assertion is deferred to when the matching `P-NN` lands (note it, keep moving).
+3. At **Wave 5**, drive `SHIP-26/28/29/33` (AUTO) and **stop at the `[!]` blockers** (`SHIP-27/31/32`), reporting which `P-NN` each waits on.
+4. Per task: implement → run `verify:` → commit selective paths → check `[x]` here + mark harness task `completed` → next.
+5. **Halt only** for the five pause conditions (external dep, irreversible action, real secrets, material fork, queue drains to gated-only). Provisioning blockers are `[!]` skips, not halts.
 
 ---
 
-## Phase 8 — M2-D: Consolidation sprint (Days 36–37, decided 2026-05-28)
+## Appendix — legacy phase tracking
 
-> Kimal selected INTEGRATION-CONTRACT.md §8 Option A — consolidate `kimhons/romas-brief-web` into this monorepo's `apps/web/`. Sprint scope per `Docs/INTEGRATION-CONTRACT.md` §8 closing section (10 steps). Estimated 1-2 days. Blocks /team-qa cycle-7 full-product verdict.
-
-- [ ] **T-801** `gh repo clone kimhons/romas-brief-web` to sibling workspace; inspect package.json + next.config + tailwind.config for reconciliation
-- [ ] **T-802** Move reader source into `apps/web/`, preserving git history via `git filter-repo` subtree graft (or clean re-import with handoff commit)
-- [ ] **T-803** Rename reader package to `@romas-brief/web`; reconcile dependencies with monorepo overrides (Next 14.2.35 pin + undici/glob/postcss/ws/esbuild overrides); reuse `packages/shared` / `packages/ui` / `packages/config`
-- [ ] **T-804** Run `pnpm install` + `pnpm turbo run typecheck build` — expect green
-- [ ] **T-805** Rewire Vercel project to monorepo root `D:\dev\projects\romas-brief\` with build target `apps/web/`; migrate env vars to consolidated `.env.example` + `SECRETS.md`
-- [ ] **T-806** Verify deployed reader still serves the 8-module homepage at `https://romas-brief-web.vercel.app/` (or new canonical URL)
-- [ ] **T-807** Archive `kimhons/romas-brief-web` (or freeze with README pointing to monorepo)
-- [ ] **T-808** Update `Docs/specs/architecture.md` (remove split-repo section); mark `Docs/INTEGRATION-CONTRACT.md` status: EXECUTED
-- [ ] **T-809** Re-dispatch /team-qa cycle-7 against the consolidated monorepo for full-product verdict
-
----
-
-## BLOCKED items (require Kimal / external action)
-
-- **[!] B-EL** ElevenLabs paid API key with `voices_read` + `text_to_speech` permissions — required for M2-B. Unblock: provision Creator-tier account + add `ELEVENLABS_API_KEY` to Cloudflare Worker Secrets.
-- **[!] B-VOICE** Voice IDs for `ELEVENLABS_VOICE_ID_BRIEF`, `ELEVENLABS_VOICE_ID_PODCAST`, `ELEVENLABS_VOICE_ID_CONFERENCE` — requires Kimal to select from Creator-tier library + run smoke test. Unblock: fill `Docs/voice-consent-registry.md` FILL_REQUIRED fields.
-- [x] **B-SUPABASE** Live Supabase project provisioning + `supabase gen types typescript --linked` to replace stub `types.ts`. **(COMPLETED 2026-05-28 via MCP)**
-- **[!] B-R2** Cloudflare R2 bucket provisioning (`romas-audio-archive` + `romas-audio-cdn`). Unblock: create buckets in Cloudflare dashboard.
-- **[!] B-BEEHIIV-DPA** Beehiiv DPA + SCC for EU subscribers — Track D / Kimal legal track. Unblock: execute DPA by W-4 end (2026-06-15) or launch NA-only.
-- **[!] B-RESEND** Resend domain DKIM/SPF/DMARC for `brief@romasbrief.com`. Unblock: configure DNS records.
+The previous Phase 1–8 / T-NNN checklist (pre-consolidation, cycle-6 framing) is preserved in git history at `HEAD=dd7f0e0:tasks.md`. Every legacy ID maps forward via the **Merges** column in `Docs/specs/ship-execution-plan.md` §2. Do not re-drive the legacy phases — this SHIP-NN queue supersedes them.
