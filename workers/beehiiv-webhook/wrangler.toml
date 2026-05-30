@@ -3,11 +3,13 @@ main = "src/index.ts"
 compatibility_date = "2026-05-01"
 compatibility_flags = ["nodejs_compat"]
 
-# Reserved name — handler logic to be authored under T-310C-A..C (Phase 7).
-# Until then, fetch() returns HTTP 501. No cron triggers.
-# Secrets that will be required at activation:
-#   BEEHIIV_WEBHOOK_SECRET (HMAC-SHA256 verification key)
-#   SUPABASE_SERVICE_ROLE_KEY (subscriber state writes)
+# SHIP-11 · Beehiiv -> Supabase subscriber-sync webhook. POST-only.
+# Auth: shared-secret custom header per ADR-0019 (Beehiiv has no native
+# HMAC). No cron triggers.
+# Worker Secrets required at activation (wrangler secret put):
+#   BEEHIIV_WEBHOOK_SECRET    (shared secret; also set as the Beehiiv
+#                              webhook's `Authorization: Bearer <secret>`)
+#   SUPABASE_SERVICE_ROLE_KEY (sb_secret_... — subscriber upsert writes)
 
 [vars]
 SUPABASE_URL = "https://placeholder.supabase.co"
