@@ -1,3 +1,5 @@
+export * from "./signal-scoring";
+
 export type Region = "us" | "eu" | "uk" | "ca" | "jp" | "au" | "cn" | "global";
 
 export interface RawItem {
