@@ -12,8 +12,11 @@
  *   1. Fetch article from Supabase
  *   2. Apply pronunciation lexicon
  *   3. Draft 10-beat script + inject pre-roll / post-roll
- *   4. TTS: ElevenLabs primary → PlayHT failover
- *   5. Two-pass ffmpeg loudnorm (-16 LUFS / -1 dBTP)
+ *   4. TTS: ElevenLabs with 3-attempt retry (2s / 8s / 30s backoff).
+ *      No cross-vendor failover — PlayHT terminated 2025-12-31 (ADR-0018/0019).
+ *      Second-vendor (Cartesia/Fish) seam pending Q-F.
+ *   5. Two-pass ffmpeg loudnorm (-16 LUFS / -1 dBTP) — REQUIRES LOUDNORM_ENDPOINT.
+ *      No real endpoint → fail-closed skip (no RMS-approximation loudness ships).
  *   6. WAV → MP3 128k 48kHz encode
  *   7. Upload WAV to romas-audio-archive (private) + MP3 to romas-audio-cdn (public)
  *   8. Whisper large-v3 transcript (TXT + SRT) → R2
@@ -23,6 +26,14 @@
  *   Rule 6: Never auto-publish — always hand off to audio-qa-reviewer at in_review
  *   Rule 2: Never block article publish on audio failure — skip gracefully
  */
+
+import {
+  ELEVENLABS_MODEL_ID,
+  TTS_MAX_ATTEMPTS,
+  TTS_RETRY_BACKOFF_MS,
+  formatSrtTime,
+  loudnormGateDecision,
+} from "./lib.ts";
 
 // ─── Env interface ────────────────────────────────────────────────────────────
 
@@ -43,12 +54,8 @@ export interface Env {
   ELEVENLABS_VOICE_ID_PODCAST: string;
   /** ElevenLabs voice ID for Conference Brief tier (Worker Secret) */
   ELEVENLABS_VOICE_ID_CONFERENCE: string;
-  /** PlayHT API key (Worker Secret) */
-  PLAYHT_API_KEY: string;
-  /** PlayHT user ID (Worker Secret) */
-  PLAYHT_USER_ID: string;
-  /** PlayHT cloned voice ID (Worker Secret) */
-  PLAYHT_ROMAS_VOICE_ID: string;
+  /** Optional ElevenLabs model override (default: ELEVENLABS_MODEL_ID const) */
+  ELEVENLABS_MODEL_ID?: string;
   /** OpenAI API key for Whisper (Worker Secret) */
   OPENAI_API_KEY: string;
   /** Cloudflare zone ID for CDN cache purge */
@@ -57,6 +64,12 @@ export interface Env {
   CF_PURGE_API_TOKEN: string;
   /** Whisper endpoint (default: OpenAI) */
   WHISPER_ENDPOINT: string;
+  /**
+   * Two-pass ffmpeg loudnorm microservice endpoint (REQUIRED for publish).
+   * If unset, jobs are skipped fail-closed (loudnorm_endpoint_unavailable) —
+   * the worker never ships an RMS-approximation loudness measurement. SHIP-14.
+   */
+  LOUDNORM_ENDPOINT?: string;
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -111,7 +124,7 @@ interface LoudnessResult {
 
 interface TtsResult {
   wavBuffer: ArrayBuffer;
-  engine: "elevenlabs" | "playht";
+  engine: "elevenlabs";
   voiceId: string;
 }
 
@@ -265,14 +278,12 @@ function targetLengthSec(tier: AudioTier, wordCount: number): number {
 
 // ─── Lexicon application ──────────────────────────────────────────────────────
 
-function applyLexicon(text: string, entries: LexiconEntry[], engine: "elevenlabs" | "playht"): string {
+function applyLexicon(text: string, entries: LexiconEntry[], engine: "elevenlabs"): string {
+  void engine; // single-engine since PlayHT removed (ADR-0018); kept for API stability
   let result = text;
   for (const entry of entries) {
     if (!entry.term) continue;
-    const replacement =
-      engine === "elevenlabs"
-        ? (entry.ssml ?? entry.spoken ?? null)
-        : (entry.spoken ?? null);
+    const replacement = entry.ssml ?? entry.spoken ?? null;
     if (!replacement) continue;
     // Case-insensitive whole-word replacement
     const escaped = entry.term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -396,8 +407,11 @@ async function elevenLabsTts(
   text: string,
   voiceId: string,
   apiKey: string,
+  modelId: string,
 ): Promise<ArrayBuffer> {
   const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`;
+  // SHIP-14: 3 attempts with 2s / 8s / 30s backoff (was 1s/4s/16s). No PlayHT
+  // failover — exhaustion bubbles up to generateTts which skips fail-closed.
   const res = await withRetry(
     () =>
       fetch(url, {
@@ -409,7 +423,7 @@ async function elevenLabsTts(
         },
         body: JSON.stringify({
           text,
-          model_id: "eleven_multilingual_v2",
+          model_id: modelId,
           voice_settings: {
             stability: 0.5,
             similarity_boost: 0.75,
@@ -419,8 +433,8 @@ async function elevenLabsTts(
           output_format: "pcm_44100", // raw PCM for loudnorm processing
         }),
       }),
-    3,
-    [1000, 4000, 16000],
+    TTS_MAX_ATTEMPTS,
+    [...TTS_RETRY_BACKOFF_MS],
   );
 
   if (res.status === 402) {
@@ -435,43 +449,7 @@ async function elevenLabsTts(
   return res.arrayBuffer();
 }
 
-// ─── PlayHT TTS (failover) ────────────────────────────────────────────────────
-
-async function playhtTts(
-  text: string,
-  voiceId: string,
-  apiKey: string,
-  userId: string,
-): Promise<ArrayBuffer> {
-  // PlayHT v2 streaming API
-  const res = await withRetry(
-    () =>
-      fetch("https://api.play.ht/api/v2/tts/stream", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "X-User-Id": userId,
-          "Content-Type": "application/json",
-          Accept: "audio/wav",
-        },
-        body: JSON.stringify({
-          text,
-          voice: voiceId,
-          output_format: "wav",
-          voice_engine: "PlayHT2.0",
-          sample_rate: 44100,
-        }),
-      }),
-    3,
-    [1000, 4000, 16000],
-  );
-  if (!res.ok) {
-    throw Object.assign(new Error(`PlayHT TTS HTTP ${res.status}`), { status: res.status });
-  }
-  return res.arrayBuffer();
-}
-
-// ─── TTS orchestration (ElevenLabs → PlayHT failover) ────────────────────────
+// ─── TTS orchestration (ElevenLabs, 3-attempt retry — no failover) ───────────
 
 async function generateTts(
   script: string,
@@ -479,34 +457,32 @@ async function generateTts(
   env: Env,
 ): Promise<TtsResult> {
   const elevenVoiceId = selectVoiceId(tier, env);
+  const modelId = env.ELEVENLABS_MODEL_ID ?? ELEVENLABS_MODEL_ID;
 
-  // Try ElevenLabs first
-  try {
-    const wavBuffer = await elevenLabsTts(script, elevenVoiceId, env.ELEVENLABS_API_KEY);
-    return { wavBuffer, engine: "elevenlabs", voiceId: elevenVoiceId };
-  } catch (err) {
-    const e = err as { status?: number; fatal?: boolean };
-    // 402 is fatal — no point trying PlayHT (different billing issue)
-    if (e.fatal) throw err;
-    console.warn(`[audio-producer] ElevenLabs failed (${e.status ?? "unknown"}), trying PlayHT`);
-  }
-
-  // PlayHT failover
-  const wavBuffer = await playhtTts(
+  // ElevenLabs with internal 3-attempt retry (2s / 8s / 30s). PlayHT was
+  // removed (terminated 2025-12-31, ADR-0018/0019). On exhaustion the error
+  // bubbles up to the Phase 4 handler, which skips the job fail-closed with
+  // skip_reason='tts_failed_after_retries'.
+  const wavBuffer = await elevenLabsTts(
     script,
-    env.PLAYHT_ROMAS_VOICE_ID,
-    env.PLAYHT_API_KEY,
-    env.PLAYHT_USER_ID,
+    elevenVoiceId,
+    env.ELEVENLABS_API_KEY,
+    modelId,
   );
-  return { wavBuffer, engine: "playht", voiceId: env.PLAYHT_ROMAS_VOICE_ID };
+  return { wavBuffer, engine: "elevenlabs", voiceId: elevenVoiceId };
+
+  // cross-vendor failover provider (Cartesia/Fish) pending Q-F — ADR-0018
 }
 
-// ─── ffmpeg loudnorm (two-pass via Cloudflare Workers + WASM) ─────────────────
-// NOTE: Cloudflare Workers do not have ffmpeg natively. We use the
-// ffmpeg.wasm package loaded from a CDN-hosted WASM bundle, or alternatively
-// call a dedicated loudnorm microservice. For the initial implementation we
-// call an internal loudnorm endpoint (LOUDNORM_ENDPOINT env var) that wraps
-// ffmpeg in a Durable Object / external service.
+// ─── ffmpeg loudnorm (two-pass via external microservice) ─────────────────────
+// NOTE: Cloudflare Workers do not have ffmpeg natively. We call an internal
+// loudnorm microservice (LOUDNORM_ENDPOINT env var) that wraps ffmpeg's
+// two-pass loudnorm filter.
+//
+// SHIP-14: there is NO inline fallback. A prior RMS approximation produced
+// non-BS.1770 LUFS that still passed the [-18, -14] gate — so it could ship a
+// wrong loudness measurement. That path is deleted. If LOUDNORM_ENDPOINT is
+// unset, the job is skipped fail-closed (loudnorm_endpoint_unavailable).
 //
 // The loudnorm logic is:
 //   Pass 1: measure integrated loudness, true peak, LRA, threshold, offset
@@ -573,116 +549,18 @@ async function loudnormPass(
 }
 
 /**
- * Inline loudnorm implementation for when LOUDNORM_ENDPOINT is not set.
- * Uses the Web Audio API (available in CF Workers) for a simplified
- * loudness measurement and gain normalization.
- * This is a best-effort approximation; the full two-pass ffmpeg path is
- * preferred for production. See ROMAS-Brief-Audio-Architecture.md §3.3.
+ * Two-pass master via the loudnorm microservice. SHIP-14: requires a real
+ * endpoint — there is no inline RMS fallback (it shipped wrong LUFS). The
+ * caller gates on loudnormGateDecision(env) before reaching here, so
+ * `loudnormEndpoint` is always a non-empty string at this point.
  */
-async function loudnormInline(wavBuffer: ArrayBuffer): Promise<LoudnormPassResult> {
-  // Parse WAV header to get audio data
-  const view = new DataView(wavBuffer);
-  const numChannels = view.getUint16(22, true);
-  const sampleRate = view.getUint32(24, true);
-  const bitsPerSample = view.getUint16(34, true);
-  const dataOffset = 44; // standard PCM WAV header
-
-  const bytesPerSample = bitsPerSample / 8;
-  const numSamples = (wavBuffer.byteLength - dataOffset) / (bytesPerSample * numChannels);
-  const samples = new Float32Array(numSamples);
-
-  // Convert to float32
-  for (let i = 0; i < numSamples; i++) {
-    const offset = dataOffset + i * bytesPerSample * numChannels;
-    if (bitsPerSample === 16) {
-      samples[i] = (view.getInt16(offset, true) ?? 0) / 32768.0;
-    } else if (bitsPerSample === 32) {
-      samples[i] = view.getFloat32(offset, true) ?? 0;
-    }
-  }
-
-  // Measure RMS and peak
-  let sumSquares = 0;
-  let peak = 0;
-  for (const s of samples) {
-    sumSquares += s * s;
-    const abs = Math.abs(s);
-    if (abs > peak) peak = abs;
-  }
-  const rms = Math.sqrt(sumSquares / samples.length);
-  const measuredLufs = rms > 0 ? 20 * Math.log10(rms) - 0.691 : -70;
-  const measuredTp = peak > 0 ? 20 * Math.log10(peak) : -70;
-
-  // Calculate gain needed to reach target
-  const gainDb = LUFS_TARGET - measuredLufs;
-  const gainLinear = Math.pow(10, gainDb / 20);
-
-  // Apply gain, clip to -1 dBTP ceiling
-  const tpCeilingLinear = Math.pow(10, TRUE_PEAK_CEILING / 20);
-  const effectiveGain = Math.min(gainLinear, tpCeilingLinear / (peak > 0 ? peak : 1));
-
-  const masteredSamples = new Float32Array(samples.length);
-  for (let i = 0; i < samples.length; i++) {
-    masteredSamples[i] = Math.max(-1, Math.min(1, (samples[i] ?? 0) * effectiveGain));
-  }
-
-  // Rebuild WAV
-  const masteredBuffer = new ArrayBuffer(wavBuffer.byteLength);
-  const masteredView = new DataView(masteredBuffer);
-  // Copy header
-  for (let i = 0; i < dataOffset; i++) {
-    masteredView.setUint8(i, view.getUint8(i));
-  }
-  // Write samples
-  for (let i = 0; i < masteredSamples.length; i++) {
-    const offset = dataOffset + i * bytesPerSample * numChannels;
-    if (bitsPerSample === 16) {
-      masteredView.setInt16(offset, Math.round((masteredSamples[i] ?? 0) * 32767), true);
-    }
-  }
-
-  // Final loudness measurement
-  let finalSumSq = 0;
-  let finalPeak = 0;
-  for (const s of masteredSamples) {
-    finalSumSq += s * s;
-    const abs = Math.abs(s);
-    if (abs > finalPeak) finalPeak = abs;
-  }
-  const finalRms = Math.sqrt(finalSumSq / masteredSamples.length);
-  const finalLufs = finalRms > 0 ? 20 * Math.log10(finalRms) - 0.691 : -70;
-  const finalTp = finalPeak > 0 ? 20 * Math.log10(finalPeak) : -70;
-
-  void sampleRate; void numChannels; // used in WAV header copy
-
-  return {
-    mastered: masteredBuffer,
-    loudness: {
-      integrated_loudness: Math.round(finalLufs * 100) / 100,
-      true_peak: Math.round(finalTp * 100) / 100,
-      lra: 3.1, // approximation — full LRA requires gating algorithm
-      threshold: measuredLufs - 10,
-      offset: gainDb,
-    },
-  };
-}
-
 async function masterAudio(
   wavBuffer: ArrayBuffer,
-  loudnormEndpoint: string | undefined,
+  loudnormEndpoint: string,
 ): Promise<{ mastered: ArrayBuffer; loudness: LoudnessResult; reMastered: boolean }> {
-  let mastered: ArrayBuffer;
-  let loudness: LoudnessResult;
-
-  if (loudnormEndpoint) {
-    const result = await loudnormPass(wavBuffer, loudnormEndpoint);
-    mastered = result.mastered;
-    loudness = result.loudness;
-  } else {
-    const result = await loudnormInline(wavBuffer);
-    mastered = result.mastered;
-    loudness = result.loudness;
-  }
+  const result = await loudnormPass(wavBuffer, loudnormEndpoint);
+  const mastered = result.mastered;
+  const loudness = result.loudness;
 
   // Check tight production target [-17, -15] LUFS
   const inTight =
@@ -698,19 +576,8 @@ async function masterAudio(
   console.warn(
     `[audio-producer] loudness outside tight target (${loudness.integrated_loudness} LUFS, ${loudness.true_peak} dBTP) — re-mastering`,
   );
-  let reMastered2: ArrayBuffer;
-  let loudness2: LoudnessResult;
-  if (loudnormEndpoint) {
-    const r = await loudnormPass(mastered, loudnormEndpoint);
-    reMastered2 = r.mastered;
-    loudness2 = r.loudness;
-  } else {
-    const r = await loudnormInline(mastered);
-    reMastered2 = r.mastered;
-    loudness2 = r.loudness;
-  }
-
-  return { mastered: reMastered2, loudness: loudness2, reMastered: true };
+  const r = await loudnormPass(mastered, loudnormEndpoint);
+  return { mastered: r.mastered, loudness: r.loudness, reMastered: true };
 }
 
 // ─── WAV → MP3 encoding ───────────────────────────────────────────────────────
@@ -721,14 +588,8 @@ async function masterAudio(
 
 async function encodeToMp3(
   wavBuffer: ArrayBuffer,
-  loudnormEndpoint: string | undefined,
+  loudnormEndpoint: string,
 ): Promise<ArrayBuffer> {
-  if (!loudnormEndpoint) {
-    // Fall back: return WAV as-is for CDN (acceptable for MVP)
-    console.warn("[audio-producer] No loudnorm endpoint — using WAV as CDN artifact (MVP mode)");
-    return wavBuffer;
-  }
-
   const formData = new FormData();
   formData.append("wav", new Blob([wavBuffer], { type: "audio/wav" }), "mastered.wav");
   formData.append("encode_mp3", "true");
@@ -812,14 +673,6 @@ async function generateTranscript(
     .join("\n");
 
   return { txt, srt };
-}
-
-function formatSrtTime(seconds: number): string {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = Math.floor(seconds % 60);
-  const ms = Math.round((seconds % 1) * 1000);
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")},${String(ms).padStart(3, "0")}`;
 }
 
 // ─── R2 upload helpers ────────────────────────────────────────────────────────
@@ -975,27 +828,16 @@ async function runAudioPipeline(msg: QueueMessage, env: Env): Promise<void> {
 
   let ttsResult: TtsResult;
   try {
-    // Apply lexicon for ElevenLabs first (may switch to PlayHT on failover)
     const elScript = applyLexicon(rawScript, lexiconEntries, "elevenlabs");
     ttsResult = await generateTts(elScript, audio_tier, env);
-
-    // If PlayHT was used, re-apply lexicon with PlayHT pronunciation
-    if (ttsResult.engine === "playht") {
-      const phScript = applyLexicon(rawScript, lexiconEntries, "playht");
-      const phBuffer = await playhtTts(
-        phScript,
-        env.PLAYHT_ROMAS_VOICE_ID,
-        env.PLAYHT_API_KEY,
-        env.PLAYHT_USER_ID,
-      );
-      ttsResult = { wavBuffer: phBuffer, engine: "playht", voiceId: env.PLAYHT_ROMAS_VOICE_ID };
-    }
   } catch (err) {
+    // ElevenLabs exhausted its 3 retries (2s / 8s / 30s). No cross-vendor
+    // failover (PlayHT terminated, ADR-0018) — skip fail-closed.
     const errMsg = String(err instanceof Error ? err.message : err).slice(0, 500);
     console.error(`[audio-producer] TTS failed for job ${jobId}:`, errMsg);
     await db.update("audio_jobs", jobId, {
       audio_status: "skipped",
-      skip_reason: "tts_failover_exhausted",
+      skip_reason: "tts_failed_after_retries",
       error: errMsg,
       script_md: scriptMd,
     });
@@ -1004,8 +846,23 @@ async function runAudioPipeline(msg: QueueMessage, env: Env): Promise<void> {
 
   // ── Phase 5: Loudness mastering ────────────────────────────────────────────
 
-  // LOUDNORM_ENDPOINT is optional — inline fallback used if not set
-  const loudnormEndpoint = (env as unknown as Record<string, string>)["LOUDNORM_ENDPOINT"];
+  // SHIP-14: LOUDNORM_ENDPOINT is REQUIRED. No inline RMS fallback — that path
+  // shipped non-BS.1770 LUFS that still passed the gate. Fail closed: skip.
+  if (loudnormGateDecision(env) === "skip") {
+    console.error(
+      `[audio-producer] LOUDNORM_ENDPOINT not set — skipping job ${jobId} (fail-closed, no RMS fallback)`,
+    );
+    await db.update("audio_jobs", jobId, {
+      audio_status: "skipped",
+      skip_reason: "loudnorm_endpoint_unavailable",
+      error: "LOUDNORM_ENDPOINT is required for BS.1770 loudness; no inline fallback (SHIP-14)",
+      script_md: scriptMd,
+      voice_engine_used: ttsResult.engine,
+    });
+    return;
+  }
+  // Narrowed to a non-empty string by the gate above.
+  const loudnormEndpoint = env.LOUDNORM_ENDPOINT as string;
 
   let masteredWav: ArrayBuffer;
   let loudness: LoudnessResult;
