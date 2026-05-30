@@ -23,6 +23,12 @@
  * Inviolable rule 2: embargoed items NEVER appear in conference-brief.xml
  */
 
+import {
+  VALID_FEED_TIERS,
+  estimateEnclosureBytes,
+  regenerateDecision,
+} from "./lib.ts";
+
 // ─── Env interface ────────────────────────────────────────────────────────────
 
 export interface Env {
@@ -366,6 +372,10 @@ function generateFeedXml(
       const showNotes = buildShowNotesHtml(ep, siteBase);
       const duration = formatDuration(ep.duration_sec);
       const transcriptTags = buildTranscriptTags(ep, cdnBase);
+      // SHIP-15: RSS/Apple Podcasts require a non-zero enclosure byte length.
+      // Derived deterministically from duration at the 128 kbps encode bitrate
+      // (no per-item R2 HEAD request). Missing/0 duration → minimal positive (1).
+      const enclosureBytes = estimateEnclosureBytes(ep.duration_sec ?? 0);
 
       return `  <item>
     <title>${title}</title>
@@ -378,7 +388,7 @@ Full article: ${articleUrl}]]></description>
     <content:encoded><![CDATA[${showNotes}]]></content:encoded>
     <enclosure
       url="${enclosureUrl}"
-      length="0"
+      length="${enclosureBytes}"
       type="audio/mpeg"/>
     <itunes:duration>${duration}</itunes:duration>
     <itunes:episodeType>full</itunes:episodeType>
@@ -592,37 +602,35 @@ export default {
         });
       }
 
-      const validTiers: FeedTier[] = [
-        "audio-brief",
-        "daily-brief",
-        "podcast",
-        "conference-brief",
-      ];
-      const tier = body.tier as FeedTier;
+      // SHIP-15: pure decision — missing tier → regenerate all; valid tier →
+      // regenerate one; any other value → 400 (was an empty-success path).
+      const decision = regenerateDecision(body.tier);
 
-      if (!validTiers.includes(tier)) {
-        // Regenerate all tiers if no specific tier given
-        const tiersToRegen: FeedTier[] = tier ? [] : validTiers;
-        if (!tier) {
-          for (const t of tiersToRegen) {
-            await generateAndPublishFeed(t, env).catch((err) => {
-              console.error(`[rss-publisher] Failed to regenerate ${t}:`, err);
-            });
-          }
-          return new Response(
-            JSON.stringify({ ok: true, regenerated: tiersToRegen }),
-            { status: 200, headers: { "content-type": "application/json" } },
-          );
-        }
+      if (decision.action === "invalid") {
         return new Response(
-          JSON.stringify({ error: `Invalid tier: ${tier}. Valid: ${validTiers.join(", ")}` }),
+          JSON.stringify({
+            error: `Invalid tier: ${decision.tier}. Valid: ${VALID_FEED_TIERS.join(", ")}`,
+          }),
           { status: 400, headers: { "content-type": "application/json" } },
         );
       }
 
-      await generateAndPublishFeed(tier, env);
+      if (decision.action === "all") {
+        for (const t of decision.tiers) {
+          await generateAndPublishFeed(t, env).catch((err) => {
+            console.error(`[rss-publisher] Failed to regenerate ${t}:`, err);
+          });
+        }
+        return new Response(
+          JSON.stringify({ ok: true, regenerated: decision.tiers }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        );
+      }
+
+      // decision.action === "one"
+      await generateAndPublishFeed(decision.tier, env);
       return new Response(
-        JSON.stringify({ ok: true, tier }),
+        JSON.stringify({ ok: true, tier: decision.tier }),
         { status: 200, headers: { "content-type": "application/json" } },
       );
     }

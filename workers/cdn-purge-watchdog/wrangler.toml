@@ -11,6 +11,8 @@ crons = ["* * * * *"]
 [vars]
 SUPABASE_URL = "https://placeholder.supabase.co"
 CLOUDFLARE_ZONE_ID = "placeholder"
+# Public CDN base for audio/transcript artifacts (SHIP-15) — must match rss-publisher's CDN_BASE_URL
+CDN_BASE_URL = "https://cdn.romas.brief"
 # SLA threshold in seconds (90s gives 30s grace over the 60s p99 SLA)
 PURGE_SLA_THRESHOLD_SEC = "90"
 

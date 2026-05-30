@@ -11,7 +11,7 @@
     "deploy": "wrangler deploy",
     "lint": "echo \"(M2 stub) lint lands in T-217\" && exit 0",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"(M2 stub) tests land in T-217\" && exit 0",
+    "test": "node --experimental-strip-types --test src/*.test.ts",
     "clean": "rimraf dist .wrangler .turbo"
   },
   "devDependencies": {
