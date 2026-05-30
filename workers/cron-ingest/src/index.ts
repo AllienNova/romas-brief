@@ -561,6 +561,14 @@ async function runSource(
 
 // ─── Society RSS source list ──────────────────────────────────────────────────
 
+// SHIP-15 M-02 (NMPA read-only posture): no NMPA / CSCO-RO / China-region (`cn`)
+// source is configured here. The full ingest source set is { pubmed, arxiv,
+// clinicaltrials, fda_510k } above plus the SOCIETY_FEEDS below — none target
+// China. M-02's read-only-China constraint is therefore moot at the ingest
+// surface (satisfied by absence). If an NMPA/CSCO source is ever added, it must
+// be region-tagged `cn` and treated as read-only ingest only — Chinese
+// subscriber acquisition stays a separate subscriber-surface concern per
+// CLAUDE.md locked decision #9 (PIPL data-localization).
 const SOCIETY_FEEDS: Array<{ slug: string; url: string; region: Region }> = [
   {
     slug: "astro_news",

@@ -27,6 +27,8 @@ export interface Env {
   SUPABASE_SERVICE_ROLE_KEY: string;
   CLOUDFLARE_ZONE_ID: string;
   CF_PURGE_API_TOKEN: string;
+  /** Public CDN base URL for audio/transcript artifacts (e.g. https://cdn.romasbrief.com) — same var rss-publisher reads */
+  CDN_BASE_URL: string;
   /** Seconds after revocation before watchdog retries purge (default: 90) */
   PURGE_SLA_THRESHOLD_SEC: string;
   /** Optional Sentry DSN for SLA breach alerts */
@@ -155,9 +157,10 @@ async function purgeCdnUrls(
 
 // ─── Build CDN URLs for a revocation ─────────────────────────────────────────
 
-function buildCdnUrls(job: AudioJobRow): string[] {
+function buildCdnUrls(job: AudioJobRow, cdnBase: string): string[] {
   const urls: string[] = [];
-  const cdnBase = "https://cdn.romas.brief";
+  // SHIP-15: CDN base comes from env.CDN_BASE_URL (same var rss-publisher reads),
+  // not a hardcoded non-existent domain. Caller resolves + validates it.
 
   if (job.audio_url_cdn) {
     // audio_url_cdn is a relative R2 path like "audio/brief/2026/05/slug__brief.mp3"
@@ -255,6 +258,15 @@ async function triggerRssRegeneration(
 
 async function runWatchdog(env: Env): Promise<void> {
   const db = supabase(env);
+
+  // SHIP-15: fail closed if the CDN base is unset rather than purging a fake host.
+  if (!env.CDN_BASE_URL || env.CDN_BASE_URL.trim().length === 0) {
+    throw new Error(
+      "[cdn-purge-watchdog] CDN_BASE_URL is not set — cannot build purge URLs (refusing to purge a fabricated host)",
+    );
+  }
+  const cdnBase = env.CDN_BASE_URL.replace(/\/$/, "");
+
   const thresholdSec = parseInt(env.PURGE_SLA_THRESHOLD_SEC ?? "90", 10);
   const thresholdTs = new Date(Date.now() - thresholdSec * 1000).toISOString();
   const rssThresholdTs = new Date(Date.now() - 120 * 1000).toISOString();
@@ -288,7 +300,7 @@ async function runWatchdog(env: Env): Promise<void> {
         select: "id,audio_url_cdn,transcript_url,audio_tier",
       });
       if (job) {
-        urlsToPurge = buildCdnUrls(job);
+        urlsToPurge = buildCdnUrls(job, cdnBase);
       }
     }
 

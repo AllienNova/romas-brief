@@ -31,6 +31,7 @@ import {
   ELEVENLABS_MODEL_ID,
   TTS_MAX_ATTEMPTS,
   TTS_RETRY_BACKOFF_MS,
+  embargoGateDecision,
   formatSrtTime,
   loudnormGateDecision,
 } from "./lib.ts";
@@ -104,6 +105,8 @@ interface Article {
   word_count?: number | undefined;
   primary_source_url?: string | undefined;
   primary_source_type?: string | undefined;
+  /** Inviolable rule 2 defense-in-depth (SHIP-15): article may be embargoed after a job exists. */
+  embargoed?: boolean | undefined;
 }
 
 interface LexiconEntry {
@@ -763,7 +766,7 @@ async function runAudioPipeline(msg: QueueMessage, env: Env): Promise<void> {
 
   const article = await db.selectOne<Article>("articles", {
     id: `eq.${article_id}`,
-    select: "id,slug,title,body_md,word_count,primary_source_url,primary_source_type",
+    select: "id,slug,title,body_md,word_count,primary_source_url,primary_source_type,embargoed",
   });
 
   if (!article) {
@@ -801,6 +804,23 @@ async function runAudioPipeline(msg: QueueMessage, env: Env): Promise<void> {
       });
       jobId = newJob.id;
     }
+  }
+
+  // ── Phase 0c: Embargo gate (Rule 2 defense-in-depth, SHIP-15) ──────────────
+
+  // cron-ingest routes embargoed candidates to embargo_holds before they become
+  // articles, but an article can be flagged embargoed AFTER this audio job was
+  // enqueued. Re-check the live flag and skip rather than generate/publish.
+  if (embargoGateDecision(article) === "skip") {
+    console.warn(
+      `[audio-producer] article ${article_id} is embargoed — skipping job ${jobId} (Rule 2)`,
+    );
+    await db.update("audio_jobs", jobId, {
+      audio_status: "skipped",
+      skip_reason: "article_embargoed",
+      error: "Article flagged embargoed after job enqueue (inviolable rule 2)",
+    });
+    return;
   }
 
   // ── Phase 1: Mark generating ───────────────────────────────────────────────
