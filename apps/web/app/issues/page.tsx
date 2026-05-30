@@ -3,7 +3,8 @@
  * /issues — lists all available daily issues
  */
 import Link from "next/link";
-import { ISSUE_DATES, getArticlesByIssueDate } from "@/lib/mock-data";
+import { ISSUE_DATES } from "@/lib/mock-data";
+import { getArticlesByIssueDate } from "@/lib/articles";
 
 export const revalidate = 300;
 
@@ -12,7 +13,11 @@ export const metadata = {
   description: "Browse every daily ROMAS Brief issue — radiation oncology intelligence, archived by date.",
 };
 
-export default function IssuesIndexPage() {
+export default async function IssuesIndexPage() {
+  const counts = await Promise.all(
+    ISSUE_DATES.map(async (date) => (await getArticlesByIssueDate(date)).length)
+  );
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
       <div className="mb-10">
@@ -24,8 +29,8 @@ export default function IssuesIndexPage() {
       </div>
 
       <div className="space-y-3">
-        {ISSUE_DATES.map((date) => {
-          const articles = getArticlesByIssueDate(date);
+        {ISSUE_DATES.map((date, i) => {
+          const count = counts[i] ?? 0;
           const d = new Date(date + "T12:00:00Z");
           const label = d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
           return (
@@ -36,7 +41,7 @@ export default function IssuesIndexPage() {
             >
               <div>
                 <p className="text-sm font-bold text-neutral-900 group-hover:text-teal-700 transition-colors">{label}</p>
-                <p className="text-xs text-neutral-400 mt-0.5">{articles.length} briefings</p>
+                <p className="text-xs text-neutral-400 mt-0.5">{count} briefings</p>
               </div>
               <span className="text-neutral-300 group-hover:text-teal-400 transition-colors text-lg">→</span>
             </Link>

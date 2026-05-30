@@ -3,7 +3,8 @@
  * Lists all 8 regions with article counts and links.
  */
 import Link from "next/link";
-import { REGION_META, MOCK_ARTICLES, type Region } from "@/lib/mock-data";
+import { REGION_META, type Region } from "@/lib/mock-data";
+import { getArticlesByRegion } from "@/lib/articles";
 
 export const revalidate = 300;
 
@@ -12,8 +13,11 @@ export const metadata = {
   description: "Radiation oncology intelligence filtered by region — US, Europe, UK, APAC, Canada, LATAM, MENA-Africa, and Global.",
 };
 
-export default function RegionsIndexPage() {
+export default async function RegionsIndexPage() {
   const regions = Object.entries(REGION_META) as [Region, typeof REGION_META[Region]][];
+  const counts = await Promise.all(
+    regions.map(async ([slug]) => (await getArticlesByRegion(slug, 200)).length)
+  );
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
@@ -26,10 +30,8 @@ export default function RegionsIndexPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {regions.map(([slug, meta]) => {
-          const count = MOCK_ARTICLES.filter(
-            (a) => a.region === slug || (slug === "global" && a.region === "global")
-          ).length;
+        {regions.map(([slug, meta], i) => {
+          const count = counts[i] ?? 0;
           return (
             <Link
               key={slug}

@@ -7,7 +7,7 @@
  */
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getAudioArticles, CATEGORY_META } from "@/lib/mock-data";
+import { getAudioArticles } from "@/lib/articles";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +61,7 @@ function formatDuration(sec: number | null): string {
 }
 
 export default async function ListenPage() {
-  const audioArticles = getAudioArticles(50);
+  const audioArticles = await getAudioArticles(50);
 
   // Map mock articles to AudioItem shape
   const typedJobs: AudioItem[] = audioArticles.map((a) => ({
