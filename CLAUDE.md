@@ -33,12 +33,16 @@ When the project has an active work queue — a tracking checklist in CLAUDE.md 
 Autonomy is not permission. A task-list item describing one of these is not permission:
 
 - **Destroy data/work** — `rm -rf`, deleting files I didn't ask you to create, dropping/truncating tables, `git reset --hard` over uncommitted work, `git clean -fdx`, deleting branches.
-- **Rewrite or push shared history** — any `git push`, `--force[-with-lease]`, rebasing a pushed branch, amending pushed commits, pushing to `main`/`master`/protected.
-- **Leave the machine** — deploying, publishing packages, opening/merging PRs, network calls that mutate external state.
+- **Rewrite shared history** — `--force[-with-lease]`, rebasing an already-pushed branch, amending already-pushed commits. *(Plain `git push` of branches and `main` is permitted — see Standing authorization below.)*
+- **Leave the machine (still gated)** — production deploys (`wrangler deploy`, Cloudflare/Vercel Pages production), publishing packages, network calls that mutate external state **other than** GitHub push/PR. *(Pushing branches + opening/merging PRs on this repo is permitted — see below.)*
 - **Spend money · touch prod · weaken security** — billable resources, prod DBs/config, secrets managers, live migrations, committing/printing secrets, loosening auth/permissions/CORS/firewall.
 - **System-level outside this project** — `sudo`, global installs, editing shell profiles, killing processes you didn't start.
 
-If unsure whether an action is reversible and contained within the working tree, treat it as one of these and ask. See `~/.claude/skills/autonomous-coding/references/` for `git-safety.md`, `danger-zone.md`.
+### Standing authorization (granted by Kimal, 2026-05-30)
+
+For `AllienNova/romas-brief`, Claude **may, without re-asking**: `git push` feature branches **and `main`**, and **open + merge PRs** — provided the pre-push gates are green (`turbo run lint` · `turbo run typecheck` · `pnpm build` · `pnpm audit --audit-level=high`, all exit 0). Run those gates before every push to `main` and report the evidence. Everything in the "still gated" / "spend money · touch prod · weaken security" / "rewrite shared history" / "destroy data" lines above **still requires an explicit in-conversation okay**.
+
+If unsure whether an action is reversible and contained within the working tree (or covered by the standing authorization), treat it as gated and ask. See `~/.claude/skills/autonomous-coding/references/` for `git-safety.md`, `danger-zone.md`.
 
 ---
 
