@@ -59,8 +59,8 @@ jobs:
       - name: Typecheck
         run: pnpm turbo run typecheck
 
-      - name: Build (worker only on CI; apps build separately in deploy-pages)
-        run: pnpm turbo run build --filter=@romas-brief/cron-ingest
+      - name: Build (full graph — apps + all workers; SHIP-03)
+        run: pnpm turbo run build
 
       - name: Test (pgTAP runs in deploy-migrations; turbo run test placeholder)
         run: pnpm turbo run test
