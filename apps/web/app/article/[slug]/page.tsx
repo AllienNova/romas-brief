@@ -16,6 +16,7 @@ import {
 } from "@/lib/mock-data";
 import InlineAudioPlayer from "@/components/InlineAudioPlayer";
 import ShareButtons from "@/components/ShareButtons";
+import { renderMarkdown } from "@/lib/markdown";
 
 export const revalidate = 120;
 
@@ -63,23 +64,6 @@ export async function generateMetadata(
       publishedTime: article.published_at,
     },
   };
-}
-
-/** Very simple markdown-to-HTML converter for body_md display */
-function renderMarkdown(md: string): string {
-  return md
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*([^*]+)\*/g, "<em>$1</em>")
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>\n?)+/g, "<ul>$&</ul>")
-    .replace(/\n\n/g, "</p><p>")
-    .replace(/^(?!<[hul])/gm, "<p>")
-    .replace(/(?<![>])$/gm, "</p>")
-    .replace(/<p><\/p>/g, "");
 }
 
 export default async function ArticlePage(
