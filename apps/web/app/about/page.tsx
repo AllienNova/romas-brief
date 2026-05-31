@@ -116,7 +116,7 @@ export default function AboutPage() {
             ))}
           </div>
           <div className="text-left">
-            <p className="text-2xl font-black" style={{ color: "var(--rb-text-primary)" }}>4,200+ Professionals</p>
+            <p className="text-2xl font-black" style={{ color: "var(--rb-text-primary)" }}>Trusted across the field</p>
             <p className="text-sm font-medium" style={{ color: "var(--rb-text-secondary)" }}>Radiation Oncologists, Physicists, and Dosimetrists trust our signal.</p>
           </div>
         </div>
@@ -218,7 +218,7 @@ export default function AboutPage() {
                 Claim your intellectual advantage.
               </h2>
               <p className="text-lg text-white/80 mb-10 max-w-2xl mx-auto font-medium">
-                Join the 4,200+ clinicians and physicists who start their day with clarity, not clutter. Free forever. No spam, ever.
+                Join the clinicians and physicists who start their day with clarity, not clutter. Free forever. No spam, ever.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="https://romasbrief.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer"

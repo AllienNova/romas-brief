@@ -8,6 +8,7 @@ import Link from "next/link";
 import DarkModeToggle from "@/components/DarkModeToggle";
 import MobileCTABand from "@/components/MobileCTABand";
 import { MicrophoneIcon, NewsBriefIcon, HeadphonesIcon, GlobeIcon } from "@/components/icons";
+import { SubscriberCount } from "@/components/SubscriberCount";
 
 export const metadata: Metadata = {
   title: {
@@ -344,9 +345,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </div>
                 </Link>
 
-                <p className="text-sm leading-relaxed mb-5 max-w-xs" style={{ color: "var(--rb-text-secondary)" }}>
+                <p className="text-sm leading-relaxed mb-2 max-w-xs" style={{ color: "var(--rb-text-secondary)" }}>
                   Signal-scored clinical intelligence for radiation oncology professionals. Primary-source cited. Available in audio.
                 </p>
+                {/* Subscriber count hidden until 2,500 (CLAUDE.md §3 row 5) — qualitative audience line below threshold. */}
+                <SubscriberCount count={0} className="text-xs leading-relaxed mb-5 max-w-xs" />
 
                 {/* RSS feeds */}
                 <div className="flex flex-wrap gap-2 mb-5">

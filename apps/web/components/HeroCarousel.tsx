@@ -10,6 +10,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { HeadphonesIcon } from "./icons";
+import { SPONSOR_FIREWALL_PX } from "./SponsorBlock";
 
 export type SlideType = "top_move" | "friday_read" | "audio_today" | "conference_brief" | "sponsor";
 
@@ -173,6 +174,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
           </span>
           {slide.isSponsor && (
             <span
+              data-firewall={SPONSOR_FIREWALL_PX}
               className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
               style={{ background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.8)" }}
             >

@@ -230,7 +230,7 @@ export default function HowItWorksPage() {
         <section className="text-center">
           <h2 className="text-2xl font-bold mb-4" style={{ color: "var(--rb-text-primary)" }}>Ready to start?</h2>
           <p className="text-base mb-8" style={{ color: "var(--rb-text-secondary)" }}>
-            Join 4,200+ radiation oncology professionals. Free for qualified clinicians.
+            Join radiation oncology professionals. Free for qualified clinicians.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a

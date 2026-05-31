@@ -272,7 +272,7 @@ export default async function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <ConversionWidget
           variant="inline"
-          headline="Join 4,200+ radiation oncology professionals"
+          headline="Built for radiation oncology professionals"
           subline="Clinical intelligence from PubMed, arXiv, ClinicalTrials and FDA — curated, scored, and audio-ready"
         />
       </section>
@@ -544,7 +544,7 @@ export default async function HomePage() {
             <p className="text-base sm:text-lg text-white/80 mb-2 max-w-xl mx-auto leading-relaxed">
               Clinical intelligence from PubMed, arXiv, ClinicalTrials and FDA — curated, scored, and audio-ready.
             </p>
-            <p className="text-sm text-white/65 mb-8 max-w-xl mx-auto">Join 4,200+ radiation oncology professionals who start their day with ROMAS Brief.</p>
+            <p className="text-sm text-white/65 mb-8 max-w-xl mx-auto">Join the radiation oncology professionals who start their day with ROMAS Brief.</p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a href="https://romasbrief.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white font-semibold text-sm transition-all hover:bg-white/90 hover:scale-105 active:scale-95" style={{ color: "#0066CC" }} aria-label="Subscribe to ROMAS Brief">Subscribe free — takes 30 seconds</a>
               <Link href="/listen" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 text-white font-medium text-sm transition-all hover:bg-white/10" aria-label="Browse audio library"><HeadphonesIcon size={16} /> Browse audio library</Link>
