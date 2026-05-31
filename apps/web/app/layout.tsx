@@ -139,12 +139,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="h-full antialiased" style={{ background: "var(--bg-page)", color: "var(--text-primary)" }}>
+      <body className="h-full antialiased" style={{ background: "var(--rb-bg-page)", color: "var(--rb-text-primary)" }}>
 
         {/* ── Edition Banner ─────────────────────────────────────────── */}
         <div
           className="text-center py-2 px-4"
-          style={{ background: "var(--accent)", color: "white" }}
+          style={{ background: "var(--rb-accent)", color: "white" }}
         >
           <p className="text-xs font-medium tracking-wide" style={{ letterSpacing: "0.01em" }}>
             <span
@@ -181,7 +181,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div
                   className="w-[34px] h-[34px] rounded-[10px] flex items-center justify-center flex-shrink-0 transition-all duration-200 group-hover:scale-105"
                   style={{
-                    background: "linear-gradient(135deg, var(--accent) 0%, var(--teal) 100%)",
+                    background: "linear-gradient(135deg, var(--rb-accent) 0%, var(--rb-teal) 100%)",
                     boxShadow: "0 2px 8px rgba(0,85,204,0.28), inset 0 1px 0 rgba(255,255,255,0.15)",
                   }}
                 >
@@ -202,13 +202,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="flex flex-col leading-none">
                   <span
                     className="font-black text-[17px] tracking-tight"
-                    style={{ color: "var(--text-primary)", letterSpacing: "-0.035em", lineHeight: "1" }}
+                    style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.035em", lineHeight: "1" }}
                   >
-                    ROMAS<span style={{ color: "var(--accent)" }}>Brief</span>
+                    ROMAS<span style={{ color: "var(--rb-accent)" }}>Brief</span>
                   </span>
                   <span
                     className="text-[9px] font-semibold tracking-widest uppercase mt-0.5 hidden sm:block"
-                    style={{ color: "var(--text-tertiary)", letterSpacing: "0.14em" }}
+                    style={{ color: "var(--rb-text-tertiary)", letterSpacing: "0.14em" }}
                   >
                     Radiation Oncology Intelligence
                   </span>
@@ -221,8 +221,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <Link
                     key={href}
                     href={href}
-                    className="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-150 hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]"
-                    style={{ color: "var(--text-secondary)" }}
+                    className="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-150 hover:bg-[var(--rb-bg-raised)] hover:text-[var(--rb-text-primary)]"
+                    style={{ color: "var(--rb-text-secondary)" }}
                   >
                     {label}
                   </Link>
@@ -236,13 +236,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div
                   className="hidden xl:flex items-center gap-1 px-3 py-1.5 rounded-xl"
                   style={{
-                    background: "var(--bg-raised)",
-                    border: "1px solid var(--border-subtle)",
+                    background: "var(--rb-bg-raised)",
+                    border: "1px solid var(--rb-border-subtle)",
                   }}
                 >
                   <span
                     className="text-[9px] font-bold uppercase tracking-widest mr-1"
-                    style={{ color: "var(--text-tertiary)", letterSpacing: "0.14em" }}
+                    style={{ color: "var(--rb-text-tertiary)", letterSpacing: "0.14em" }}
                   >
                     For:
                   </span>
@@ -254,13 +254,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <span key={href} className="flex items-center gap-1">
                       <Link
                         href={href}
-                        className="text-[11px] font-semibold transition-colors hover:text-[var(--accent)] px-0.5"
-                        style={{ color: "var(--text-secondary)" }}
+                        className="text-[11px] font-semibold transition-colors hover:text-[var(--rb-accent)] px-0.5"
+                        style={{ color: "var(--rb-text-secondary)" }}
                       >
                         {label}
                       </Link>
                       {i < arr.length - 1 && (
-                        <span style={{ color: "var(--border-strong)", fontSize: "9px" }}>·</span>
+                        <span style={{ color: "var(--rb-border-strong)", fontSize: "9px" }}>·</span>
                       )}
                     </span>
                   ))}
@@ -293,8 +293,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   href={href}
                   className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                   style={{
-                    border: "1px solid var(--border-default)",
-                    color: "var(--text-secondary)",
+                    border: "1px solid var(--rb-border-default)",
+                    color: "var(--rb-text-secondary)",
                   }}
                 >
                   {label}
@@ -313,7 +313,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* ── Footer ────────────────────────────────────────────────── */}
         <footer
           className="mt-20 border-t"
-          style={{ borderColor: "var(--border-subtle)", background: "var(--bg-raised)" }}
+          style={{ borderColor: "var(--rb-border-subtle)", background: "var(--rb-bg-raised)" }}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-10 mb-12">
@@ -323,7 +323,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/" className="flex items-center gap-2.5 mb-4 group">
                   <div
                     className="w-8 h-8 rounded-[9px] flex items-center justify-center flex-shrink-0"
-                    style={{ background: "linear-gradient(135deg, var(--accent) 0%, var(--teal) 100%)" }}
+                    style={{ background: "linear-gradient(135deg, var(--rb-accent) 0%, var(--rb-teal) 100%)" }}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="2" fill="white" stroke="none"/>
@@ -334,16 +334,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     </svg>
                   </div>
                   <div className="flex flex-col leading-none">
-                    <span className="font-black text-base tracking-tight" style={{ color: "var(--text-primary)", letterSpacing: "-0.03em" }}>
-                      ROMAS<span style={{ color: "var(--accent)" }}>Brief</span>
+                    <span className="font-black text-base tracking-tight" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.03em" }}>
+                      ROMAS<span style={{ color: "var(--rb-accent)" }}>Brief</span>
                     </span>
-                    <span className="text-[9px] font-semibold tracking-widest uppercase mt-0.5" style={{ color: "var(--text-tertiary)", letterSpacing: "0.12em" }}>
+                    <span className="text-[9px] font-semibold tracking-widest uppercase mt-0.5" style={{ color: "var(--rb-text-tertiary)", letterSpacing: "0.12em" }}>
                       Radiation Oncology Multi-Agentic System
                     </span>
                   </div>
                 </Link>
 
-                <p className="text-sm leading-relaxed mb-5 max-w-xs" style={{ color: "var(--text-secondary)" }}>
+                <p className="text-sm leading-relaxed mb-5 max-w-xs" style={{ color: "var(--rb-text-secondary)" }}>
                   Signal-scored clinical intelligence for radiation oncology professionals. Primary-source cited. Available in audio.
                 </p>
 
@@ -370,8 +370,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     href="https://twitter.com/romasbrief"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-medium transition-colors hover:text-[var(--accent)]"
-                    style={{ color: "var(--text-tertiary)" }}
+                    className="text-xs font-medium transition-colors hover:text-[var(--rb-accent)]"
+                    style={{ color: "var(--rb-text-tertiary)" }}
                   >
                     𝕏 Twitter
                   </a>
@@ -379,8 +379,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     href="https://linkedin.com/company/romasbrief"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-medium transition-colors hover:text-[var(--accent)]"
-                    style={{ color: "var(--text-tertiary)" }}
+                    className="text-xs font-medium transition-colors hover:text-[var(--rb-accent)]"
+                    style={{ color: "var(--rb-text-tertiary)" }}
                   >
                     LinkedIn
                   </a>
@@ -395,15 +395,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <li key={href}>
                       <Link
                         href={href}
-                        className="text-sm transition-colors hover:text-[var(--accent)]"
-                        style={{ color: "var(--text-secondary)" }}
+                        className="text-sm transition-colors hover:text-[var(--rb-accent)]"
+                        style={{ color: "var(--rb-text-secondary)" }}
                       >
                         {label}
                       </Link>
                     </li>
                   ))}
                   <li>
-                    <Link href="/categories" className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
+                    <Link href="/categories" className="text-sm font-semibold" style={{ color: "var(--rb-accent)" }}>
                       All topics →
                     </Link>
                   </li>
@@ -418,8 +418,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <li key={href}>
                       <Link
                         href={href}
-                        className="text-sm transition-colors hover:text-[var(--accent)]"
-                        style={{ color: "var(--text-secondary)" }}
+                        className="text-sm transition-colors hover:text-[var(--rb-accent)]"
+                        style={{ color: "var(--rb-text-secondary)" }}
                       >
                         {label}
                       </Link>
@@ -436,8 +436,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <li key={href}>
                       <Link
                         href={href}
-                        className="text-sm transition-colors hover:text-[var(--accent)]"
-                        style={{ color: "var(--text-secondary)" }}
+                        className="text-sm transition-colors hover:text-[var(--rb-accent)]"
+                        style={{ color: "var(--rb-text-secondary)" }}
                       >
                         {label}
                       </Link>
@@ -455,15 +455,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <li key={href}>
                       <Link
                         href={href}
-                        className="text-sm transition-colors hover:text-[var(--accent)]"
-                        style={{ color: "var(--text-secondary)" }}
+                        className="text-sm transition-colors hover:text-[var(--rb-accent)]"
+                        style={{ color: "var(--rb-text-secondary)" }}
                       >
                         {label}
                       </Link>
                     </li>
                   ))}
                   <li>
-                    <Link href="/regions" className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
+                    <Link href="/regions" className="text-sm font-semibold" style={{ color: "var(--rb-accent)" }}>
                       All regions →
                     </Link>
                   </li>
@@ -474,35 +474,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {/* Bottom bar */}
             <div
               className="pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4"
-              style={{ borderColor: "var(--border-subtle)" }}
+              style={{ borderColor: "var(--rb-border-subtle)" }}
             >
               <div className="flex flex-wrap items-center gap-4">
-                <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
+                <p className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
                   © {new Date().getFullYear()} ROMAS Brief · AlienNova Inc.
                 </p>
-                <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>
+                <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
                   Not medical advice. For educational purposes only.
                 </span>
               </div>
               <div className="flex items-center gap-4">
                 <a
                   href="mailto:president@aliennova.com"
-                  className="text-xs transition-colors hover:text-[var(--accent)]"
-                  style={{ color: "var(--text-tertiary)" }}
+                  className="text-xs transition-colors hover:text-[var(--rb-accent)]"
+                  style={{ color: "var(--rb-text-tertiary)" }}
                 >
                   Contact
                 </a>
                 <Link
                   href="/about"
-                  className="text-xs transition-colors hover:text-[var(--accent)]"
-                  style={{ color: "var(--text-tertiary)" }}
+                  className="text-xs transition-colors hover:text-[var(--rb-accent)]"
+                  style={{ color: "var(--rb-text-tertiary)" }}
                 >
                   About
                 </Link>
                 <Link
                   href="/issues"
-                  className="text-xs transition-colors hover:text-[var(--accent)]"
-                  style={{ color: "var(--text-tertiary)" }}
+                  className="text-xs transition-colors hover:text-[var(--rb-accent)]"
+                  style={{ color: "var(--rb-text-tertiary)" }}
                 >
                   Archive
                 </Link>

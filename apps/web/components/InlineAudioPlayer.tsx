@@ -119,19 +119,19 @@ export function InlineAudioPlayer({
       {/* Top row */}
       <div className="flex items-center justify-between w-full">
         {tier && (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--accent-subtle)] text-[var(--accent)] text-xs font-medium">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--rb-accent-subtle)] text-[var(--rb-accent)] text-xs font-medium">
             🎧 {TIER_LABELS[tier] ?? tier}
           </span>
         )}
-        {title && <p className="text-xs font-medium text-[var(--text-primary)] truncate flex-1 mx-3">{title}</p>}
-        {duration > 0 && <span className="kicker text-[var(--text-tertiary)]">{formatTime(duration)}</span>}
+        {title && <p className="text-xs font-medium text-[var(--rb-text-primary)] truncate flex-1 mx-3">{title}</p>}
+        {duration > 0 && <span className="kicker text-[var(--rb-text-tertiary)]">{formatTime(duration)}</span>}
       </div>
 
       {error && <p className="text-xs text-red-500 w-full">{error}</p>}
 
       {/* Controls */}
       <div className="flex items-center gap-3 w-full">
-        <button onClick={() => skip(-15)} className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors" aria-label="Back 15s">
+        <button onClick={() => skip(-15)} className="text-[var(--rb-text-tertiary)] hover:text-[var(--rb-text-secondary)] transition-colors" aria-label="Back 15s">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
           </svg>
@@ -140,7 +140,7 @@ export function InlineAudioPlayer({
         <button
           onClick={togglePlay}
           disabled={!!error}
-          className="w-9 h-9 rounded-full bg-[var(--accent)] text-white flex items-center justify-center hover:bg-[var(--accent-hover)] disabled:opacity-40 transition-colors shadow-apple-sm flex-shrink-0"
+          className="w-9 h-9 rounded-full bg-[var(--rb-accent)] text-white flex items-center justify-center hover:bg-[var(--rb-accent-hover)] disabled:opacity-40 transition-colors shadow-apple-sm flex-shrink-0"
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isLoading ? (
@@ -159,7 +159,7 @@ export function InlineAudioPlayer({
           )}
         </button>
 
-        <button onClick={() => skip(30)} className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors" aria-label="Forward 30s">
+        <button onClick={() => skip(30)} className="text-[var(--rb-text-tertiary)] hover:text-[var(--rb-text-secondary)] transition-colors" aria-label="Forward 30s">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3" />
           </svg>
@@ -168,8 +168,8 @@ export function InlineAudioPlayer({
         {/* Scrubber */}
         <div className="flex-1 flex items-center gap-2">
           <span className="kicker w-8 text-right flex-shrink-0">{formatTime(currentTime)}</span>
-          <div className="flex-1 relative h-1.5 bg-[var(--bg-sunken)] rounded-full overflow-hidden">
-            <div className="absolute left-0 top-0 h-full bg-[var(--accent)] rounded-full" style={{ width: `${progress}%` }} />
+          <div className="flex-1 relative h-1.5 bg-[var(--rb-bg-sunken)] rounded-full overflow-hidden">
+            <div className="absolute left-0 top-0 h-full bg-[var(--rb-accent)] rounded-full" style={{ width: `${progress}%` }} />
             <input
               type="range" min={0} max={duration || 100} step={0.1} value={currentTime}
               onChange={handleScrub}
@@ -187,7 +187,7 @@ export function InlineAudioPlayer({
               key={s}
               onClick={() => handleSpeedChange(s)}
               className={`px-1.5 py-0.5 rounded text-xs font-mono font-semibold transition-colors ${
-                speed === s ? "bg-[var(--accent)] text-white" : "text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-sunken)]"
+                speed === s ? "bg-[var(--rb-accent)] text-white" : "text-[var(--rb-text-tertiary)] hover:text-[var(--rb-text-secondary)] hover:bg-[var(--rb-bg-sunken)]"
               }`}
             >
               {s}×
@@ -197,7 +197,7 @@ export function InlineAudioPlayer({
       </div>
 
       {transcriptUrl && (
-        <a href={transcriptUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[var(--accent)] hover:underline w-full">
+        <a href={transcriptUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[var(--rb-accent)] hover:underline w-full">
           View transcript →
         </a>
       )}

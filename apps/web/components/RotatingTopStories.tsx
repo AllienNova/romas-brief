@@ -131,7 +131,7 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
       {/* Progress bar */}
       <div
         className="absolute top-0 left-0 right-0 h-[2px] z-10 rounded-full overflow-hidden"
-        style={{ background: "var(--border-subtle)" }}
+        style={{ background: "var(--rb-border-subtle)" }}
       >
         <div
           className="h-full rounded-full transition-none"
@@ -156,7 +156,7 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
               style={{
                 width: i === page ? "16px" : "6px",
                 height: "6px",
-                background: i === page ? catColor : "var(--border-default)",
+                background: i === page ? catColor : "var(--rb-border-default)",
               }}
             />
           ))}
@@ -165,7 +165,7 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
           onClick={retreat}
           aria-label="Previous stories"
           className="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 hover:scale-110 active:scale-95"
-          style={{ background: "var(--bg-raised)", border: "1px solid var(--border-subtle)", color: "var(--text-secondary)" }}
+          style={{ background: "var(--rb-bg-raised)", border: "1px solid var(--rb-border-subtle)", color: "var(--rb-text-secondary)" }}
         >
           ‹
         </button>
@@ -173,12 +173,12 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
           onClick={advance}
           aria-label="Next stories"
           className="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 hover:scale-110 active:scale-95"
-          style={{ background: "var(--bg-raised)", border: "1px solid var(--border-subtle)", color: "var(--text-secondary)" }}
+          style={{ background: "var(--rb-bg-raised)", border: "1px solid var(--rb-border-subtle)", color: "var(--rb-text-secondary)" }}
         >
           ›
         </button>
         {paused && (
-          <span className="kicker ml-1" style={{ color: "var(--text-tertiary)" }}>Paused</span>
+          <span className="kicker ml-1" style={{ color: "var(--rb-text-tertiary)" }}>Paused</span>
         )}
       </div>
 
@@ -190,16 +190,16 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
             <article
               className="overflow-hidden rounded-2xl transition-all duration-300"
               style={{
-                background: "var(--bg-surface)",
-                border: "1px solid var(--border-subtle)",
-                boxShadow: "var(--shadow-sm)",
+                background: "var(--rb-bg-surface)",
+                border: "1px solid var(--rb-border-subtle)",
+                boxShadow: "var(--rb-shadow-sm)",
               }}
               onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.boxShadow = "var(--shadow-lg)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "var(--rb-shadow-lg)";
                 (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)";
               }}
               onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.boxShadow = "var(--shadow-sm)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "var(--rb-shadow-sm)";
                 (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
               }}
             >
@@ -241,27 +241,27 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
               <div className="p-6 sm:p-8">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="kicker font-bold" style={{ color: catColor }}>{heroArticle.category}</span>
-                  <span className="kicker" style={{ color: "var(--text-tertiary)" }}>
+                  <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>
                     {heroArticle.content_type.replace(/_/g, " ")}
                   </span>
                   <SignalBadge score={heroArticle.composite_score} />
                 </div>
                 <h2
-                  className="text-2xl sm:text-3xl font-bold mb-3 group-hover:text-[var(--accent)] transition-colors duration-200"
-                  style={{ color: "var(--text-primary)", letterSpacing: "-0.025em", lineHeight: "1.2" }}
+                  className="text-2xl sm:text-3xl font-bold mb-3 group-hover:text-[var(--rb-accent)] transition-colors duration-200"
+                  style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.025em", lineHeight: "1.2" }}
                 >
                   {heroArticle.title}
                 </h2>
-                <p className="text-base leading-relaxed mb-5" style={{ color: "var(--text-secondary)" }}>
+                <p className="text-base leading-relaxed mb-5" style={{ color: "var(--rb-text-secondary)" }}>
                   {heroArticle.standfirst}
                 </p>
-                <div className="flex items-center justify-between pt-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-                  <time className="kicker" dateTime={heroArticle.published_at} style={{ color: "var(--text-tertiary)" }}>
+                <div className="flex items-center justify-between pt-3" style={{ borderTop: "1px solid var(--rb-border-subtle)" }}>
+                  <time className="kicker" dateTime={heroArticle.published_at} style={{ color: "var(--rb-text-tertiary)" }}>
                     {formatDate(heroArticle.published_at)}
                   </time>
                   <span
                     className="text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all duration-200"
-                    style={{ color: "var(--accent)" }}
+                    style={{ color: "var(--rb-accent)" }}
                   >
                     Read brief <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
                   </span>
@@ -280,19 +280,19 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
                 <article
                   className="overflow-hidden rounded-xl flex flex-col transition-all duration-250"
                   style={{
-                    background: "var(--bg-surface)",
-                    border: "1px solid var(--border-subtle)",
-                    boxShadow: "var(--shadow-xs)",
+                    background: "var(--rb-bg-surface)",
+                    border: "1px solid var(--rb-border-subtle)",
+                    boxShadow: "var(--rb-shadow-xs)",
                   }}
                   onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.boxShadow = "var(--shadow-md)";
+                    (e.currentTarget as HTMLElement).style.boxShadow = "var(--rb-shadow-md)";
                     (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
-                    (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "var(--rb-border-default)";
                   }}
                   onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.boxShadow = "var(--shadow-xs)";
+                    (e.currentTarget as HTMLElement).style.boxShadow = "var(--rb-shadow-xs)";
                     (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                    (e.currentTarget as HTMLElement).style.borderColor = "var(--border-subtle)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "var(--rb-border-subtle)";
                   }}
                 >
                   {article.thumbnail_url && (
@@ -317,31 +317,31 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
                       {article.romas_insight && <span className="badge-insight">✦ RI</span>}
                     </div>
                     <h3
-                      className="text-[15px] font-semibold leading-snug line-clamp-3 mb-2 transition-colors duration-200 group-hover:text-[var(--accent)]"
-                      style={{ color: "var(--text-primary)", letterSpacing: "-0.015em" }}
+                      className="text-[15px] font-semibold leading-snug line-clamp-3 mb-2 transition-colors duration-200 group-hover:text-[var(--rb-accent)]"
+                      style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.015em" }}
                     >
                       {article.title}
                     </h3>
                     <p
                       className="text-[13px] line-clamp-2 leading-relaxed mb-3"
-                      style={{ color: "var(--text-secondary)" }}
+                      style={{ color: "var(--rb-text-secondary)" }}
                     >
                       {article.standfirst}
                     </p>
                     <div
                       className="flex items-center justify-between pt-3"
-                      style={{ borderTop: "1px solid var(--border-subtle)" }}
+                      style={{ borderTop: "1px solid var(--rb-border-subtle)" }}
                     >
                       <time
                         className="kicker"
                         dateTime={article.published_at}
-                        style={{ color: "var(--text-tertiary)" }}
+                        style={{ color: "var(--rb-text-tertiary)" }}
                       >
                         {new Date(article.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </time>
                       <div className="flex items-center gap-2">
-                        {article.has_audio && <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>🎧</span>}
-                        {article.region && <span className="kicker" style={{ color: "var(--text-tertiary)" }}>{article.region}</span>}
+                        {article.has_audio && <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>🎧</span>}
+                        {article.region && <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>{article.region}</span>}
                       </div>
                     </div>
                   </div>

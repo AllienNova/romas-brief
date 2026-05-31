@@ -38,8 +38,8 @@ export default function DismissibleStrip() {
     <div
       className="relative border-b"
       style={{
-        background: "var(--accent-subtle)",
-        borderColor: "var(--border-subtle)",
+        background: "var(--rb-accent-subtle)",
+        borderColor: "var(--rb-border-subtle)",
       }}
       role="complementary"
       aria-label="How ROMAS Brief works"
@@ -47,14 +47,14 @@ export default function DismissibleStrip() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-start sm:items-center justify-between gap-4">
         <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
           <span className="flex-shrink-0 text-base" aria-hidden="true">ℹ️</span>
-          <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-            <strong style={{ color: "var(--text-primary)" }}>How this works:</strong>{" "}
+          <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>
+            <strong style={{ color: "var(--rb-text-primary)" }}>How this works:</strong>{" "}
             Every briefing is ingested from PubMed, arXiv, ClinicalTrials, and FDA, then scored by clinical relevance,
             physics impact, and novelty. Only items above signal threshold S70 reach the brief.{" "}
             <Link
               href="/about/how-it-works"
               className="font-semibold underline underline-offset-2 hover:no-underline transition-colors"
-              style={{ color: "var(--accent)" }}
+              style={{ color: "var(--rb-accent)" }}
               onClick={dismiss}
             >
               Learn more →
@@ -63,8 +63,8 @@ export default function DismissibleStrip() {
         </div>
         <button
           onClick={dismiss}
-          className="flex-shrink-0 p-1.5 rounded-full transition-colors hover:bg-[var(--bg-raised)]"
-          style={{ color: "var(--text-tertiary)" }}
+          className="flex-shrink-0 p-1.5 rounded-full transition-colors hover:bg-[var(--rb-bg-raised)]"
+          style={{ color: "var(--rb-text-tertiary)" }}
           aria-label="Dismiss explanation strip"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

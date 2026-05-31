@@ -93,20 +93,20 @@ function FeatureCard({ article }: { article: ArticleCardProps }) {
           <div className="flex items-center gap-2 mb-3">
             <span className="kicker font-bold" style={{ color }}>{article.category}</span>
             {article.contentType && (
-              <span className="kicker" style={{ color: "var(--text-tertiary)" }}>
+              <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>
                 {CONTENT_TYPE_LABELS[article.contentType] || article.contentType}
               </span>
             )}
             {article.signalScore !== undefined && <span className="ml-auto"><SignalBadge score={article.signalScore} /></span>}
           </div>
-          <h3 className="text-xl font-bold leading-snug mb-2.5 transition-colors duration-200 group-hover:text-[var(--accent)]"
-            style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}>{article.title}</h3>
+          <h3 className="text-xl font-bold leading-snug mb-2.5 transition-colors duration-200 group-hover:text-[var(--rb-accent)]"
+            style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>{article.title}</h3>
           {article.summary && (
-            <p className="text-sm leading-relaxed line-clamp-3 mb-4" style={{ color: "var(--text-secondary)" }}>{article.summary}</p>
+            <p className="text-sm leading-relaxed line-clamp-3 mb-4" style={{ color: "var(--rb-text-secondary)" }}>{article.summary}</p>
           )}
-          <div className="flex items-center justify-between pt-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-            <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
-            <span className="text-xs font-semibold flex items-center gap-1 transition-all duration-200 group-hover:gap-2" style={{ color: "var(--accent)" }}>
+          <div className="flex items-center justify-between pt-3" style={{ borderTop: "1px solid var(--rb-border-subtle)" }}>
+            <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--rb-text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
+            <span className="text-xs font-semibold flex items-center gap-1 transition-all duration-200 group-hover:gap-2" style={{ color: "var(--rb-accent)" }}>
               Read brief <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
             </span>
           </div>
@@ -136,16 +136,16 @@ function StandardCard({ article }: { article: ArticleCardProps }) {
             {article.signalScore !== undefined && <SignalBadge score={article.signalScore} />}
             {article.isRomasInsight && <span className="badge-insight">✦ RI</span>}
           </div>
-          <h3 className="text-[15px] font-semibold leading-snug line-clamp-3 mb-2 flex-1 transition-colors duration-200 group-hover:text-[var(--accent)]"
-            style={{ color: "var(--text-primary)", letterSpacing: "-0.015em" }}>{article.title}</h3>
+          <h3 className="text-[15px] font-semibold leading-snug line-clamp-3 mb-2 flex-1 transition-colors duration-200 group-hover:text-[var(--rb-accent)]"
+            style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.015em" }}>{article.title}</h3>
           {article.summary && (
-            <p className="text-[13px] line-clamp-2 leading-relaxed mb-3" style={{ color: "var(--text-secondary)" }}>{article.summary}</p>
+            <p className="text-[13px] line-clamp-2 leading-relaxed mb-3" style={{ color: "var(--rb-text-secondary)" }}>{article.summary}</p>
           )}
-          <div className="flex items-center justify-between mt-auto pt-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-            <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
+          <div className="flex items-center justify-between mt-auto pt-3" style={{ borderTop: "1px solid var(--rb-border-subtle)" }}>
+            <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--rb-text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
             <div className="flex items-center gap-2">
-              {article.hasAudio && <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>🎧</span>}
-              {article.region && <span className="kicker" style={{ color: "var(--text-tertiary)" }}>{article.region}</span>}
+              {article.hasAudio && <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>🎧</span>}
+              {article.region && <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>{article.region}</span>}
             </div>
           </div>
         </div>
@@ -159,24 +159,24 @@ function CompactCard({ article }: { article: ArticleCardProps }) {
   const color = article.categoryColor || CATEGORY_COLORS[article.category] || CATEGORY_COLORS.default;
   return (
     <Link href={`/article/${article.slug}`} className="block group" aria-label={article.title}>
-      <article className="flex items-start gap-3 py-3.5 hover:bg-[var(--bg-raised)] rounded-xl px-3 -mx-3 transition-colors duration-150"
-        style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+      <article className="flex items-start gap-3 py-3.5 hover:bg-[var(--rb-bg-raised)] rounded-xl px-3 -mx-3 transition-colors duration-150"
+        style={{ borderBottom: "1px solid var(--rb-border-subtle)" }}>
         <div className="flex-shrink-0 w-[3px] self-stretch rounded-full" style={{ background: color, minHeight: "36px" }} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
             <span className="kicker font-bold" style={{ color }}>{article.category}</span>
             {article.signalScore !== undefined && <SignalBadge score={article.signalScore} />}
           </div>
-          <h4 className="text-sm font-semibold line-clamp-2 transition-colors duration-150 group-hover:text-[var(--accent)]"
-            style={{ color: "var(--text-primary)", letterSpacing: "-0.01em" }}>{article.title}</h4>
+          <h4 className="text-sm font-semibold line-clamp-2 transition-colors duration-150 group-hover:text-[var(--rb-accent)]"
+            style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.01em" }}>{article.title}</h4>
           <div className="flex items-center gap-2 mt-1">
-            <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
-            {article.region && <span className="kicker" style={{ color: "var(--text-tertiary)" }}>{article.region}</span>}
+            <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--rb-text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
+            {article.region && <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>{article.region}</span>}
           </div>
         </div>
         {article.hasAudio && (
           <span className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs"
-            style={{ background: "var(--accent-subtle)", color: "var(--accent)" }}>🎧</span>
+            style={{ background: "var(--rb-accent-subtle)", color: "var(--rb-accent)" }}>🎧</span>
         )}
       </article>
     </Link>
@@ -188,8 +188,8 @@ function QuickHitCard({ article }: { article: ArticleCardProps }) {
   const color = article.categoryColor || CATEGORY_COLORS[article.category] || CATEGORY_COLORS.default;
   return (
     <Link href={`/article/${article.slug}`} className="block group" aria-label={article.title}>
-      <article className="p-4 rounded-xl transition-all duration-150 hover:bg-[var(--bg-raised)]"
-        style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)" }}>
+      <article className="p-4 rounded-xl transition-all duration-150 hover:bg-[var(--rb-bg-raised)]"
+        style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)" }}>
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 w-[3px] rounded-full mt-0.5" style={{ background: color, minHeight: "40px" }} />
           <div className="flex-1 min-w-0">
@@ -197,16 +197,16 @@ function QuickHitCard({ article }: { article: ArticleCardProps }) {
               <span className="kicker font-bold" style={{ color }}>{article.category}</span>
               {article.signalScore !== undefined && <SignalBadge score={article.signalScore} />}
               {article.isRomasInsight && <span className="badge-insight">✦ RI</span>}
-              {article.region && <span className="kicker ml-auto" style={{ color: "var(--text-tertiary)" }}>{article.region}</span>}
+              {article.region && <span className="kicker ml-auto" style={{ color: "var(--rb-text-tertiary)" }}>{article.region}</span>}
             </div>
-            <h4 className="text-[13.5px] font-semibold line-clamp-2 transition-colors duration-150 group-hover:text-[var(--accent)]"
-              style={{ color: "var(--text-primary)", letterSpacing: "-0.01em" }}>{article.title}</h4>
+            <h4 className="text-[13.5px] font-semibold line-clamp-2 transition-colors duration-150 group-hover:text-[var(--rb-accent)]"
+              style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.01em" }}>{article.title}</h4>
             {article.summary && (
-              <p className="text-xs line-clamp-2 mt-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>{article.summary}</p>
+              <p className="text-xs line-clamp-2 mt-1 leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{article.summary}</p>
             )}
             <div className="flex items-center gap-2 mt-2">
-              <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
-              {article.hasAudio && <span className="kicker" style={{ color: "var(--text-tertiary)" }}>🎧 Audio</span>}
+              <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--rb-text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
+              {article.hasAudio && <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>🎧 Audio</span>}
             </div>
           </div>
         </div>

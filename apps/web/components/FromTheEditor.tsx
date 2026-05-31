@@ -58,9 +58,9 @@ export default function FromTheEditor() {
     <div
       className="rounded-2xl overflow-hidden"
       style={{
-        background: "var(--bg-surface)",
-        border: "1px solid var(--border-subtle)",
-        boxShadow: "var(--shadow-card)",
+        background: "var(--rb-bg-surface)",
+        border: "1px solid var(--rb-border-subtle)",
+        boxShadow: "var(--rb-shadow-card)",
       }}
     >
       {/* Header bar */}
@@ -98,13 +98,13 @@ export default function FromTheEditor() {
           <div>
             <p
               className="text-sm font-semibold leading-tight"
-              style={{ color: "var(--text-primary)" }}
+              style={{ color: "var(--rb-text-primary)" }}
             >
               {note.editorName}
             </p>
             <p
               className="text-xs leading-tight mt-0.5"
-              style={{ color: "var(--text-tertiary)" }}
+              style={{ color: "var(--rb-text-tertiary)" }}
             >
               {note.editorTitle}
             </p>
@@ -114,7 +114,7 @@ export default function FromTheEditor() {
         {/* Editorial note */}
         <p
           className="text-sm leading-relaxed mb-6"
-          style={{ color: "var(--text-secondary)", fontStyle: "italic" }}
+          style={{ color: "var(--rb-text-secondary)", fontStyle: "italic" }}
         >
           &ldquo;{note.note}&rdquo;
         </p>
@@ -123,8 +123,8 @@ export default function FromTheEditor() {
         <div
           className="rounded-xl p-4"
           style={{
-            background: "var(--bg-raised)",
-            border: "1px solid var(--border-subtle)",
+            background: "var(--rb-bg-raised)",
+            border: "1px solid var(--rb-border-subtle)",
           }}
         >
           <div className="flex items-center gap-2 mb-3">
@@ -146,9 +146,9 @@ export default function FromTheEditor() {
                 <span
                   className="flex-shrink-0 mt-0.5 text-xs font-bold px-1.5 py-0.5 rounded"
                   style={{
-                    background: "var(--bg-surface)",
-                    color: "var(--text-tertiary)",
-                    border: "1px solid var(--border-subtle)",
+                    background: "var(--rb-bg-surface)",
+                    color: "var(--rb-text-tertiary)",
+                    border: "1px solid var(--rb-border-subtle)",
                     fontSize: "10px",
                     letterSpacing: "0.05em",
                   }}
@@ -159,14 +159,14 @@ export default function FromTheEditor() {
                   <Link
                     href={delta.href}
                     className="text-sm leading-snug hover:underline transition-colors"
-                    style={{ color: "var(--text-primary)" }}
+                    style={{ color: "var(--rb-text-primary)" }}
                   >
                     {delta.text}
                   </Link>
                 ) : (
                   <span
                     className="text-sm leading-snug"
-                    style={{ color: "var(--text-primary)" }}
+                    style={{ color: "var(--rb-text-primary)" }}
                   >
                     {delta.text}
                   </span>
@@ -182,7 +182,7 @@ export default function FromTheEditor() {
             <Link
               href={note.readMoreHref}
               className="text-xs font-semibold transition-colors hover:opacity-80"
-              style={{ color: "var(--accent)" }}
+              style={{ color: "var(--rb-accent)" }}
             >
               How we score & curate →
             </Link>

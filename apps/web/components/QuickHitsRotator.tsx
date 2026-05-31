@@ -40,7 +40,7 @@ const CATEGORY_CONFIG: Record<string, { color: string; bg: string; label: string
 };
 
 function getCategoryConfig(cat: string) {
-  return CATEGORY_CONFIG[cat] ?? { color: "var(--accent)", bg: "#EBF3FF", label: cat };
+  return CATEGORY_CONFIG[cat] ?? { color: "var(--rb-accent)", bg: "#EBF3FF", label: cat };
 }
 
 function getScoreStyle(score: number): { bg: string; ring: string; text: string } {
@@ -82,8 +82,8 @@ function HitRow({
       <div
         className="relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-200"
         style={{
-          background: "var(--bg-surface)",
-          border: "1px solid var(--border-subtle)",
+          background: "var(--rb-bg-surface)",
+          border: "1px solid var(--rb-border-subtle)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
         }}
         onMouseEnter={e => {
@@ -94,7 +94,7 @@ function HitRow({
         onMouseLeave={e => {
           (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
           (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)";
-          (e.currentTarget as HTMLDivElement).style.borderColor = "var(--border-subtle)";
+          (e.currentTarget as HTMLDivElement).style.borderColor = "var(--rb-border-subtle)";
         }}
       >
         {/* Left accent bar */}
@@ -106,7 +106,7 @@ function HitRow({
         {/* Rank number */}
         <span
           className="flex-shrink-0 w-8 text-center text-xl font-black tabular-nums select-none"
-          style={{ color: "var(--border-strong)", lineHeight: "1" }}
+          style={{ color: "var(--rb-border-strong)", lineHeight: "1" }}
         >
           {String(rank).padStart(2, "0")}
         </span>
@@ -137,23 +137,23 @@ function HitRow({
                 Live
               </span>
             )}
-            <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>
+            <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
               {formatDate(item.publishedAt)}
             </span>
             {item.region && (
-              <span className="text-xs font-medium" style={{ color: "var(--text-tertiary)" }}>
+              <span className="text-xs font-medium" style={{ color: "var(--rb-text-tertiary)" }}>
                 · {item.region.toUpperCase()}
               </span>
             )}
             {item.hasAudio && (
-              <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>· 🎧</span>
+              <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>· 🎧</span>
             )}
           </div>
 
           {/* Title */}
           <h3
             className="text-sm font-semibold leading-snug line-clamp-2 transition-colors duration-150"
-            style={{ color: "var(--text-primary)" }}
+            style={{ color: "var(--rb-text-primary)" }}
           >
             {item.title}
           </h3>

@@ -52,7 +52,7 @@ const CONTENT_TYPES = [
 
 export default function HowItWorksPage() {
   return (
-    <div style={{ background: "var(--bg-page)" }}>
+    <div style={{ background: "var(--rb-bg-page)" }}>
       {/* Hero */}
       <section
         className="py-16 sm:py-20"
@@ -79,10 +79,10 @@ export default function HowItWorksPage() {
         {/* Step 1 — Ingestion */}
         <section>
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-lg" style={{ background: "var(--accent)" }}>1</div>
-            <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}>Ingestion</h2>
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-lg" style={{ background: "var(--rb-accent)" }}>1</div>
+            <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>Ingestion</h2>
           </div>
-          <p className="text-base leading-relaxed mb-8" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-base leading-relaxed mb-8" style={{ color: "var(--rb-text-secondary)" }}>
             ROMAS Brief monitors six primary source categories continuously. New items are ingested within minutes
             of publication and queued for scoring. We do not republish press releases verbatim — every item is
             independently summarised and fact-checked against the primary source.
@@ -92,12 +92,12 @@ export default function HowItWorksPage() {
               <div
                 key={name}
                 className="flex items-start gap-4 p-5 rounded-2xl border"
-                style={{ background: "var(--bg-surface)", borderColor: "var(--border-subtle)" }}
+                style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)" }}
               >
                 <span className="text-2xl flex-shrink-0">{icon}</span>
                 <div>
-                  <p className="text-sm font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{name}</p>
-                  <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>{desc}</p>
+                  <p className="text-sm font-semibold mb-1" style={{ color: "var(--rb-text-primary)" }}>{name}</p>
+                  <p className="text-xs leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{desc}</p>
                 </div>
               </div>
             ))}
@@ -108,11 +108,11 @@ export default function HowItWorksPage() {
         <section>
           <div className="flex items-center gap-4 mb-8">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-lg" style={{ background: "#5E5CE6" }}>2</div>
-            <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}>Signal Scoring</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>Signal Scoring</h2>
           </div>
-          <p className="text-base leading-relaxed mb-8" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-base leading-relaxed mb-8" style={{ color: "var(--rb-text-secondary)" }}>
             Each item receives a composite signal score (S0–S100) derived from three independently weighted dimensions.
-            The composite score is the weighted sum: <strong style={{ color: "var(--text-primary)" }}>S = C + P + N</strong>.
+            The composite score is the weighted sum: <strong style={{ color: "var(--rb-text-primary)" }}>S = C + P + N</strong>.
             Items below S70 are suppressed. Items above S90 are promoted to the hero carousel.
           </p>
           <div className="space-y-5">
@@ -120,7 +120,7 @@ export default function HowItWorksPage() {
               <div
                 key={name}
                 className="p-6 rounded-2xl border"
-                style={{ background: "var(--bg-surface)", borderColor: "var(--border-subtle)" }}
+                style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)" }}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -130,12 +130,12 @@ export default function HowItWorksPage() {
                     >
                       {abbr}
                     </span>
-                    <h3 className="text-base font-semibold" style={{ color: "var(--text-primary)" }}>{name}</h3>
+                    <h3 className="text-base font-semibold" style={{ color: "var(--rb-text-primary)" }}>{name}</h3>
                   </div>
                   <span className="text-sm font-mono font-bold" style={{ color }}>max {max} pts</span>
                 </div>
-                <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{desc}</p>
-                <div className="mt-4 h-2 rounded-full overflow-hidden" style={{ background: "var(--bg-raised)" }}>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{desc}</p>
+                <div className="mt-4 h-2 rounded-full overflow-hidden" style={{ background: "var(--rb-bg-raised)" }}>
                   <div className="h-full rounded-full" style={{ width: `${max}%`, background: color }} />
                 </div>
               </div>
@@ -143,8 +143,8 @@ export default function HowItWorksPage() {
           </div>
 
           {/* Score legend */}
-          <div className="mt-6 p-5 rounded-2xl" style={{ background: "var(--bg-raised)" }}>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-tertiary)" }}>Score legend</p>
+          <div className="mt-6 p-5 rounded-2xl" style={{ background: "var(--rb-bg-raised)" }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--rb-text-tertiary)" }}>Score legend</p>
             <div className="flex flex-wrap gap-3">
               {[
                 { range: "S90–100", label: "Landmark", color: "#1A7F37", bg: "#DCFCE7" },
@@ -166,9 +166,9 @@ export default function HowItWorksPage() {
         <section>
           <div className="flex items-center gap-4 mb-8">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-lg" style={{ background: "#0F766E" }}>3</div>
-            <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}>Content Types</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>Content Types</h2>
           </div>
-          <p className="text-base leading-relaxed mb-8" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-base leading-relaxed mb-8" style={{ color: "var(--rb-text-secondary)" }}>
             Each item is assigned a content type that determines its structure, depth, and editorial treatment.
             This helps you quickly calibrate how much time to invest in reading.
           </p>
@@ -177,12 +177,12 @@ export default function HowItWorksPage() {
               <div
                 key={label}
                 className="flex items-start gap-4 p-5 rounded-2xl border"
-                style={{ background: "var(--bg-surface)", borderColor: "var(--border-subtle)" }}
+                style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)" }}
               >
                 <span className="text-2xl flex-shrink-0">{icon}</span>
                 <div>
-                  <p className="text-sm font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{label}</p>
-                  <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>{desc}</p>
+                  <p className="text-sm font-semibold mb-1" style={{ color: "var(--rb-text-primary)" }}>{label}</p>
+                  <p className="text-xs leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{desc}</p>
                 </div>
               </div>
             ))}
@@ -193,9 +193,9 @@ export default function HowItWorksPage() {
         <section>
           <div className="flex items-center gap-4 mb-8">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-lg" style={{ background: "#FF9F0A" }}>4</div>
-            <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}>Audio Intelligence</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>Audio Intelligence</h2>
           </div>
-          <p className="text-base leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-base leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>
             Items above S80 are automatically converted to a natural-sounding audio brief using ElevenLabs voice synthesis.
             The daily podcast compiles the top 5–8 items into an 8–12 minute briefing, available on Apple Podcasts, Spotify,
             Overcast, and RSS. Audio is generated within 2 hours of the daily editorial cut-off at 06:00 ET.
@@ -205,15 +205,15 @@ export default function HowItWorksPage() {
         {/* Editorial independence */}
         <section
           className="p-8 rounded-3xl"
-          style={{ background: "var(--accent-subtle)", border: "1px solid var(--border-subtle)" }}
+          style={{ background: "var(--rb-accent-subtle)", border: "1px solid var(--rb-border-subtle)" }}
         >
-          <h2 className="text-xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>Editorial independence</h2>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--text-secondary)" }}>
+          <h2 className="text-xl font-bold mb-4" style={{ color: "var(--rb-text-primary)" }}>Editorial independence</h2>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--rb-text-secondary)" }}>
             ROMAS Brief maintains a strict editorial firewall between commercial content and editorial content.
-            Sponsored items are clearly labelled <strong style={{ color: "var(--text-primary)" }}>PARTNER MESSAGE</strong> and
+            Sponsored items are clearly labelled <strong style={{ color: "var(--rb-text-primary)" }}>PARTNER MESSAGE</strong> and
             are never scored by the signal algorithm. Sponsors cannot influence editorial scoring, selection, or framing.
           </p>
-          <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>
             ROMAS Brief is not a medical device and does not provide clinical advice. All content is for
             educational and informational purposes only. Always consult primary sources and qualified colleagues
             before making clinical or practice decisions.
@@ -222,8 +222,8 @@ export default function HowItWorksPage() {
 
         {/* CTA */}
         <section className="text-center">
-          <h2 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>Ready to start?</h2>
-          <p className="text-base mb-8" style={{ color: "var(--text-secondary)" }}>
+          <h2 className="text-2xl font-bold mb-4" style={{ color: "var(--rb-text-primary)" }}>Ready to start?</h2>
+          <p className="text-base mb-8" style={{ color: "var(--rb-text-secondary)" }}>
             Join 4,200+ radiation oncology professionals. Free for qualified clinicians.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -235,7 +235,7 @@ export default function HowItWorksPage() {
             >
               Subscribe free →
             </a>
-            <Link href="/" className="px-6 py-3 rounded-full border text-sm font-medium transition-all hover:bg-[var(--bg-raised)]" style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}>
+            <Link href="/" className="px-6 py-3 rounded-full border text-sm font-medium transition-all hover:bg-[var(--rb-bg-raised)]" style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}>
               Back to home
             </Link>
           </div>

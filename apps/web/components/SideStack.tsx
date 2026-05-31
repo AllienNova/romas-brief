@@ -47,7 +47,7 @@ function getCategoryColor(category: string): string {
     "conferences": "#FF6961",
     "operations": "#30D158",
   };
-  return map[category] ?? "var(--accent)";
+  return map[category] ?? "var(--rb-accent)";
 }
 
 function formatDate(iso: string): string {
@@ -80,18 +80,18 @@ function SlotCard({ item }: { item: SideStackItem }) {
         </div>
         <h4
           className="text-sm font-semibold line-clamp-2 leading-snug"
-          style={{ color: "var(--text-primary)" }}
+          style={{ color: "var(--rb-text-primary)" }}
         >
           {item.title}
         </h4>
       </div>
       <div className="flex items-center gap-2 mt-2">
-        {item.hasAudio && <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>🎧</span>}
-        <time className="kicker text-xs" style={{ color: "var(--text-tertiary)" }}>
+        {item.hasAudio && <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>🎧</span>}
+        <time className="kicker text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
           {formatDate(item.publishedAt)}
         </time>
         {item.region && (
-          <span className="kicker text-xs ml-auto" style={{ color: "var(--text-tertiary)" }}>
+          <span className="kicker text-xs ml-auto" style={{ color: "var(--rb-text-tertiary)" }}>
             {item.region.toUpperCase()}
           </span>
         )}
@@ -215,7 +215,7 @@ export default function SideStack({ items }: SideStackProps) {
                   transition: prefersReduced ? "none" : "transform 0.35s ease-in",
                   opacity: slot.flipping && !prefersReduced ? 0 : 1,
                 }}
-                className="group-hover:bg-[var(--bg-raised)] transition-colors"
+                className="group-hover:bg-[var(--rb-bg-raised)] transition-colors"
               >
                 <SlotCard item={item} />
               </div>

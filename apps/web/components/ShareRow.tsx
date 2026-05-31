@@ -60,15 +60,15 @@ export default function ShareRow({
     <div className="space-y-4">
       {/* Share row */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wider mr-1" style={{ color: "var(--text-tertiary)" }}>
+        <span className="text-xs font-semibold uppercase tracking-wider mr-1" style={{ color: "var(--rb-text-tertiary)" }}>
           Share
         </span>
 
         {/* Primary share button (Web Share API or copy) */}
         <button
           onClick={handleShare}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--bg-raised)] active:scale-95"
-          style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--rb-bg-raised)] active:scale-95"
+          style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}
           aria-label={`Share article: ${title}`}
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -80,8 +80,8 @@ export default function ShareRow({
         {/* Copy link */}
         <button
           onClick={copyLink}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--bg-raised)] active:scale-95"
-          style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--rb-bg-raised)] active:scale-95"
+          style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}
           aria-label="Copy link to clipboard"
         >
           {copied ? (
@@ -106,8 +106,8 @@ export default function ShareRow({
           href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}&via=romasbrief`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--bg-raised)]"
-          style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--rb-bg-raised)]"
+          style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}
           aria-label={`Share on X (Twitter): ${title}`}
         >
           𝕏 Post
@@ -118,8 +118,8 @@ export default function ShareRow({
           href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--bg-raised)]"
-          style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--rb-bg-raised)]"
+          style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}
           aria-label={`Share on LinkedIn: ${title}`}
         >
           in Share
@@ -129,27 +129,27 @@ export default function ShareRow({
       {/* Useful / Not useful feedback */}
       {showFeedback && (
         <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-tertiary)" }}>
+          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--rb-text-tertiary)" }}>
             Was this useful?
           </span>
           {feedbackGiven ? (
-            <span className="text-xs font-medium" style={{ color: "var(--accent)" }}>
+            <span className="text-xs font-medium" style={{ color: "var(--rb-accent)" }}>
               {feedbackGiven === "useful" ? "👍 Thanks for the feedback!" : "👎 Noted — we'll improve."}
             </span>
           ) : (
             <div className="flex items-center gap-2">
               <button
                 onClick={() => handleFeedback("useful")}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--bg-raised)] active:scale-95"
-                style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--rb-bg-raised)] active:scale-95"
+                style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}
                 aria-label="Mark as useful"
               >
                 👍 Useful
               </button>
               <button
                 onClick={() => handleFeedback("not_useful")}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--bg-raised)] active:scale-95"
-                style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--rb-bg-raised)] active:scale-95"
+                style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}
                 aria-label="Mark as not useful"
               >
                 👎 Not useful
@@ -163,9 +163,9 @@ export default function ShareRow({
       {showAudioSubscribe && (
         <div
           className="flex flex-wrap items-center gap-2 pt-3 border-t"
-          style={{ borderColor: "var(--border-subtle)" }}
+          style={{ borderColor: "var(--rb-border-subtle)" }}
         >
-          <span className="text-xs font-semibold uppercase tracking-wider mr-1" style={{ color: "var(--text-tertiary)" }}>
+          <span className="text-xs font-semibold uppercase tracking-wider mr-1" style={{ color: "var(--rb-text-tertiary)" }}>
             🎧 Subscribe on
           </span>
           {[
@@ -179,8 +179,8 @@ export default function ShareRow({
               href={href}
               target={href.startsWith("http") ? "_blank" : undefined}
               rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--bg-raised)]"
-              style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all hover:bg-[var(--rb-bg-raised)]"
+              style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}
               aria-label={`Subscribe on ${label}`}
             >
               {icon} {label}

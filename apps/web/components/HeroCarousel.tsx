@@ -145,7 +145,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
       style={{
         background: slide.gradient,
         minHeight: "220px",
-        boxShadow: "var(--shadow-md)",
+        boxShadow: "var(--rb-shadow-md)",
       }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}

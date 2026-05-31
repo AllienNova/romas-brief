@@ -7,27 +7,27 @@
 /* ── Design Tokens ────────────────────────────────────────────────────── */
 :root {
   /* Surfaces */
-  --bg-page:    #F8F8FA;
-  --bg-surface: #FFFFFF;
-  --bg-raised:  #F2F2F7;
-  --bg-sunken:  #E5E5EA;
+  --rb-bg-page:    #F8F8FA;
+  --rb-bg-surface: #FFFFFF;
+  --rb-bg-raised:  #F2F2F7;
+  --rb-bg-sunken:  #E5E5EA;
 
   /* Text */
-  --text-primary:   #1C1C1E;
-  --text-secondary: #636366;
-  --text-tertiary:  #AEAEB2;
+  --rb-text-primary:   #1C1C1E;
+  --rb-text-secondary: #636366;
+  --rb-text-tertiary:  #AEAEB2;
 
   /* Borders */
-  --border-subtle:  rgba(0,0,0,0.055);
-  --border-default: rgba(0,0,0,0.10);
-  --border-strong:  rgba(0,0,0,0.18);
+  --rb-border-subtle:  rgba(0,0,0,0.055);
+  --rb-border-default: rgba(0,0,0,0.10);
+  --rb-border-strong:  rgba(0,0,0,0.18);
 
   /* Brand */
-  --accent:        #0055CC;
-  --accent-hover:  #003F99;
-  --accent-subtle: #EBF2FF;
-  --teal:          #0D766E;
-  --teal-subtle:   #E6F4F3;
+  --rb-accent:        #0055CC;
+  --rb-accent-hover:  #003F99;
+  --rb-accent-subtle: #EBF2FF;
+  --rb-teal:          #0D766E;
+  --rb-teal-subtle:   #E6F4F3;
 
   /* Audio status (CLAUDE.md §7 / Design Spec v1.1 — canonical --rb-* names).
      Consumed by AudioStatusBadge (SHIP-23) + the QA-gated player. */
@@ -36,54 +36,54 @@
   --rb-audio-skipped:   #94A3B8;
 
   /* Shadows — refined, less heavy */
-  --shadow-xs: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-sm: 0 2px 8px -1px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
-  --shadow-md: 0 6px 20px -4px rgba(0,0,0,0.09), 0 2px 6px rgba(0,0,0,0.04);
-  --shadow-lg: 0 16px 40px -8px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.05);
-  --shadow-xl: 0 32px 64px -16px rgba(0,0,0,0.16), 0 8px 20px rgba(0,0,0,0.06);
+  --rb-shadow-xs: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --rb-shadow-sm: 0 2px 8px -1px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
+  --rb-shadow-md: 0 6px 20px -4px rgba(0,0,0,0.09), 0 2px 6px rgba(0,0,0,0.04);
+  --rb-shadow-lg: 0 16px 40px -8px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.05);
+  --rb-shadow-xl: 0 32px 64px -16px rgba(0,0,0,0.16), 0 8px 20px rgba(0,0,0,0.06);
 
   /* Motion */
-  --ease-apple:  cubic-bezier(0.25, 0.1, 0.25, 1.0);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1.0);
-  --ease-out:    cubic-bezier(0.0, 0.0, 0.2, 1.0);
+  --rb-ease-apple:  cubic-bezier(0.25, 0.1, 0.25, 1.0);
+  --rb-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1.0);
+  --rb-ease-out:    cubic-bezier(0.0, 0.0, 0.2, 1.0);
 
   /* Radius */
-  --radius-sm:  8px;
-  --radius-md:  12px;
-  --radius-lg:  16px;
-  --radius-xl:  20px;
-  --radius-2xl: 24px;
-  --radius-pill: 100px;
+  --rb-radius-sm:  8px;
+  --rb-radius-md:  12px;
+  --rb-radius-lg:  16px;
+  --rb-radius-xl:  20px;
+  --rb-radius-2xl: 24px;
+  --rb-radius-pill: 100px;
 }
 
 .dark {
-  --bg-page:    #000000;
-  --bg-surface: #0F0F10;
-  --bg-raised:  #1C1C1E;
-  --bg-sunken:  #2C2C2E;
+  --rb-bg-page:    #000000;
+  --rb-bg-surface: #0F0F10;
+  --rb-bg-raised:  #1C1C1E;
+  --rb-bg-sunken:  #2C2C2E;
 
-  --text-primary:   #F5F5F7;
-  --text-secondary: #8E8E93;
-  --text-tertiary:  #636366;
+  --rb-text-primary:   #F5F5F7;
+  --rb-text-secondary: #8E8E93;
+  --rb-text-tertiary:  #636366;
 
-  --border-subtle:  rgba(255,255,255,0.055);
-  --border-default: rgba(255,255,255,0.10);
-  --border-strong:  rgba(255,255,255,0.18);
+  --rb-border-subtle:  rgba(255,255,255,0.055);
+  --rb-border-default: rgba(255,255,255,0.10);
+  --rb-border-strong:  rgba(255,255,255,0.18);
 
-  --accent:        #2997FF;
-  --accent-hover:  #0A84FF;
-  --accent-subtle: #001A3D;
-  --teal:          #30D5C8;
-  --teal-subtle:   #001A18;
+  --rb-accent:        #2997FF;
+  --rb-accent-hover:  #0A84FF;
+  --rb-accent-subtle: #001A3D;
+  --rb-teal:          #30D5C8;
+  --rb-teal-subtle:   #001A18;
 
   /* Audio status — brightened for contrast on near-black surfaces */
   --rb-audio-published: #22D3EE;
   --rb-audio-pending:   #FBBF24;
   --rb-audio-skipped:   #8E8E93;
 
-  --shadow-sm: 0 2px 8px -1px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);
-  --shadow-md: 0 6px 20px -4px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.35);
-  --shadow-lg: 0 16px 40px -8px rgba(0,0,0,0.65), 0 4px 12px rgba(0,0,0,0.40);
+  --rb-shadow-sm: 0 2px 8px -1px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);
+  --rb-shadow-md: 0 6px 20px -4px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.35);
+  --rb-shadow-lg: 0 16px 40px -8px rgba(0,0,0,0.65), 0 4px 12px rgba(0,0,0,0.40);
 }
 
 /* ── Base Layer ───────────────────────────────────────────────────────── */
@@ -101,10 +101,10 @@
   }
 
   body {
-    background-color: var(--bg-page);
-    color: var(--text-primary);
+    background-color: var(--rb-bg-page);
+    color: var(--rb-text-primary);
     line-height: 1.6;
-    transition: background-color 0.3s var(--ease-apple), color 0.3s var(--ease-apple);
+    transition: background-color 0.3s var(--rb-ease-apple), color 0.3s var(--rb-ease-apple);
     min-height: 100vh;
   }
 
@@ -113,33 +113,33 @@
     font-weight: 700;
     letter-spacing: -0.022em;
     line-height: 1.18;
-    color: var(--text-primary);
+    color: var(--rb-text-primary);
     text-wrap: balance;
   }
 
   p { text-wrap: pretty; }
 
   a {
-    color: var(--accent);
+    color: var(--rb-accent);
     text-decoration: none;
-    transition: color 0.18s var(--ease-apple);
+    transition: color 0.18s var(--rb-ease-apple);
   }
-  a:hover { color: var(--accent-hover); }
+  a:hover { color: var(--rb-accent-hover); }
 
-  ::selection { background-color: var(--accent); color: white; }
+  ::selection { background-color: var(--rb-accent); color: white; }
 
   /* Refined scrollbar */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: var(--border-strong);
+    background: var(--rb-border-strong);
     border-radius: 3px;
   }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--rb-text-tertiary); }
 
   /* Focus ring */
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--rb-accent);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -150,34 +150,34 @@
 
   /* ─ Cards ─────────────────────────────────────────────────────────── */
   .card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xs);
+    background: var(--rb-bg-surface);
+    border: 1px solid var(--rb-border-subtle);
+    border-radius: var(--rb-radius-lg);
+    box-shadow: var(--rb-shadow-xs);
     transition:
-      box-shadow 0.25s var(--ease-apple),
-      transform 0.25s var(--ease-apple),
-      border-color 0.25s var(--ease-apple);
+      box-shadow 0.25s var(--rb-ease-apple),
+      transform 0.25s var(--rb-ease-apple),
+      border-color 0.25s var(--rb-ease-apple);
     overflow: hidden;
   }
   .card:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--rb-shadow-md);
     transform: translateY(-2px);
-    border-color: var(--border-default);
+    border-color: var(--rb-border-default);
   }
 
   .card-feature {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-sm);
+    background: var(--rb-bg-surface);
+    border: 1px solid var(--rb-border-subtle);
+    border-radius: var(--rb-radius-xl);
+    box-shadow: var(--rb-shadow-sm);
     transition:
-      box-shadow 0.3s var(--ease-apple),
-      transform 0.3s var(--ease-apple);
+      box-shadow 0.3s var(--rb-ease-apple),
+      transform 0.3s var(--rb-ease-apple);
     overflow: hidden;
   }
   .card-feature:hover {
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--rb-shadow-lg);
     transform: translateY(-3px);
   }
 
@@ -188,7 +188,7 @@
     font-weight: 600;
     letter-spacing: 0.09em;
     text-transform: uppercase;
-    color: var(--text-tertiary);
+    color: var(--rb-text-tertiary);
   }
 
   .section-label {
@@ -197,7 +197,7 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--text-tertiary);
+    color: var(--rb-text-tertiary);
     display: block;
     margin-bottom: 6px;
   }
@@ -207,14 +207,14 @@
     display: inline-flex;
     align-items: center;
     gap: 3px;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--teal) 100%);
+    background: linear-gradient(135deg, var(--rb-accent) 0%, var(--rb-teal) 100%);
     color: white;
     font-size: 9.5px;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 2.5px 7px;
-    border-radius: var(--radius-pill);
+    border-radius: var(--rb-radius-pill);
     white-space: nowrap;
   }
 
@@ -225,7 +225,7 @@
     font-size: 11px;
     font-weight: 700;
     padding: 2px 7px;
-    border-radius: var(--radius-pill);
+    border-radius: var(--rb-radius-pill);
     letter-spacing: 0.02em;
   }
   .badge-signal-amber {
@@ -235,7 +235,7 @@
     font-size: 11px;
     font-weight: 700;
     padding: 2px 7px;
-    border-radius: var(--radius-pill);
+    border-radius: var(--rb-radius-pill);
     letter-spacing: 0.02em;
   }
   .badge-signal-red {
@@ -245,7 +245,7 @@
     font-size: 11px;
     font-weight: 700;
     padding: 2px 7px;
-    border-radius: var(--radius-pill);
+    border-radius: var(--rb-radius-pill);
     letter-spacing: 0.02em;
   }
 
@@ -259,24 +259,24 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    background: var(--accent);
+    background: var(--rb-accent);
     color: white;
     font-size: 13.5px;
     font-weight: 600;
     letter-spacing: -0.01em;
     padding: 9px 20px;
-    border-radius: var(--radius-pill);
+    border-radius: var(--rb-radius-pill);
     border: none;
     cursor: pointer;
     transition:
-      background 0.18s var(--ease-apple),
-      transform 0.12s var(--ease-apple),
-      box-shadow 0.18s var(--ease-apple);
+      background 0.18s var(--rb-ease-apple),
+      transform 0.12s var(--rb-ease-apple),
+      box-shadow 0.18s var(--rb-ease-apple);
     white-space: nowrap;
     user-select: none;
   }
   .btn-primary:hover {
-    background: var(--accent-hover);
+    background: var(--rb-accent-hover);
     transform: scale(1.02);
     box-shadow: 0 4px 14px rgba(0, 85, 204, 0.32);
   }
@@ -288,22 +288,22 @@
     justify-content: center;
     gap: 6px;
     background: transparent;
-    color: var(--accent);
+    color: var(--rb-accent);
     font-size: 13.5px;
     font-weight: 600;
     letter-spacing: -0.01em;
     padding: 9px 20px;
-    border-radius: var(--radius-pill);
-    border: 1.5px solid var(--accent);
+    border-radius: var(--rb-radius-pill);
+    border: 1.5px solid var(--rb-accent);
     cursor: pointer;
     transition:
-      background 0.18s var(--ease-apple),
-      transform 0.12s var(--ease-apple);
+      background 0.18s var(--rb-ease-apple),
+      transform 0.12s var(--rb-ease-apple);
     white-space: nowrap;
     user-select: none;
   }
   .btn-secondary:hover {
-    background: var(--accent-subtle);
+    background: var(--rb-accent-subtle);
     transform: scale(1.02);
   }
 
@@ -315,21 +315,21 @@
     backdrop-filter: saturate(200%) blur(24px);
     -webkit-backdrop-filter: saturate(200%) blur(24px);
     background: rgba(248, 248, 250, 0.88);
-    border-bottom: 1px solid var(--border-subtle);
-    transition: background 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
+    border-bottom: 1px solid var(--rb-border-subtle);
+    transition: background 0.3s var(--rb-ease-apple), box-shadow 0.3s var(--rb-ease-apple);
   }
   .dark .nav-sticky {
     background: rgba(0, 0, 0, 0.88);
   }
   .nav-sticky.scrolled {
-    box-shadow: 0 1px 0 var(--border-subtle), var(--shadow-sm);
+    box-shadow: 0 1px 0 var(--rb-border-subtle), var(--rb-shadow-sm);
   }
 
   /* ─ Conversion Widget ─────────────────────────────────────────────── */
   .conversion-widget {
     background: linear-gradient(135deg, #EEF5FF 0%, #E8F4F3 100%);
     border: 1px solid rgba(0, 85, 204, 0.10);
-    border-radius: var(--radius-xl);
+    border-radius: var(--rb-radius-xl);
     padding: 2.5rem;
   }
   .dark .conversion-widget {
@@ -339,9 +339,9 @@
 
   /* ─ Audio Player ──────────────────────────────────────────────────── */
   .audio-player {
-    background: var(--bg-raised);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    background: var(--rb-bg-raised);
+    border: 1px solid var(--rb-border-subtle);
+    border-radius: var(--rb-radius-md);
     padding: 0.875rem 1.25rem;
     display: flex;
     align-items: center;
@@ -352,13 +352,13 @@
   .skeleton {
     background: linear-gradient(
       90deg,
-      var(--bg-raised) 25%,
-      var(--bg-sunken) 50%,
-      var(--bg-raised) 75%
+      var(--rb-bg-raised) 25%,
+      var(--rb-bg-sunken) 50%,
+      var(--rb-bg-raised) 75%
     );
     background-size: 200% 100%;
     animation: skeleton-loading 1.6s ease infinite;
-    border-radius: var(--radius-sm);
+    border-radius: var(--rb-radius-sm);
   }
   @keyframes skeleton-loading {
     0%   { background-position: 200% 0; }
@@ -377,21 +377,21 @@
   /* ─ Divider ───────────────────────────────────────────────────────── */
   .section-divider {
     height: 1px;
-    background: var(--border-subtle);
+    background: var(--rb-border-subtle);
     margin: 0;
   }
 
   /* ─ Quick Hit Card ────────────────────────────────────────────────── */
   .card-quick-hit {
     padding: 14px 16px;
-    border-radius: var(--radius-md);
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    transition: background 0.18s var(--ease-apple), border-color 0.18s var(--ease-apple);
+    border-radius: var(--rb-radius-md);
+    background: var(--rb-bg-surface);
+    border: 1px solid var(--rb-border-subtle);
+    transition: background 0.18s var(--rb-ease-apple), border-color 0.18s var(--rb-ease-apple);
   }
   .card-quick-hit:hover {
-    background: var(--bg-raised);
-    border-color: var(--border-default);
+    background: var(--rb-bg-raised);
+    border-color: var(--rb-border-default);
   }
 
   /* ─ Pill tag ──────────────────────────────────────────────────────── */
@@ -400,31 +400,31 @@
     align-items: center;
     gap: 4px;
     padding: 3px 10px;
-    border-radius: var(--radius-pill);
+    border-radius: var(--rb-radius-pill);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.02em;
-    border: 1px solid var(--border-subtle);
-    background: var(--bg-raised);
-    color: var(--text-secondary);
+    border: 1px solid var(--rb-border-subtle);
+    background: var(--rb-bg-raised);
+    color: var(--rb-text-secondary);
     transition: background 0.15s, border-color 0.15s;
     white-space: nowrap;
   }
   .pill-tag:hover {
-    background: var(--bg-sunken);
-    border-color: var(--border-default);
+    background: var(--rb-bg-sunken);
+    border-color: var(--rb-border-default);
   }
 
   /* ─ Section strip ─────────────────────────────────────────────────── */
   .section-strip {
-    background: var(--bg-raised);
-    border-top: 1px solid var(--border-subtle);
-    border-bottom: 1px solid var(--border-subtle);
+    background: var(--rb-bg-raised);
+    border-top: 1px solid var(--rb-border-subtle);
+    border-bottom: 1px solid var(--rb-border-subtle);
   }
 
   /* ─ Gradient text ─────────────────────────────────────────────────── */
   .gradient-text {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--teal) 100%);
+    background: linear-gradient(135deg, var(--rb-accent) 0%, var(--rb-teal) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -444,7 +444,7 @@
   .line-clamp-4 { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 
   .focus-ring:focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--rb-accent);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -476,10 +476,10 @@
   50%       { opacity: 1;   transform: scale(1.2); }
 }
 
-.animate-fade-in    { animation: fadeIn 0.35s var(--ease-out) forwards; }
-.animate-slide-up   { animation: slideUp 0.45s var(--ease-out) forwards; }
-.animate-slide-down { animation: slideDown 0.35s var(--ease-out) forwards; }
-.animate-scale-in   { animation: scaleIn 0.3s var(--ease-spring) forwards; }
+.animate-fade-in    { animation: fadeIn 0.35s var(--rb-ease-out) forwards; }
+.animate-slide-up   { animation: slideUp 0.45s var(--rb-ease-out) forwards; }
+.animate-slide-down { animation: slideDown 0.35s var(--rb-ease-out) forwards; }
+.animate-scale-in   { animation: scaleIn 0.3s var(--rb-ease-spring) forwards; }
 
 /* ── Print ────────────────────────────────────────────────────────────── */
 @media print {

@@ -87,7 +87,7 @@ const CATEGORIES = [
 
 export default function AcademyPage() {
   return (
-    <div className="min-h-screen" style={{ background: "var(--bg-page)" }}>
+    <div className="min-h-screen" style={{ background: "var(--rb-bg-page)" }}>
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
@@ -142,7 +142,7 @@ export default function AcademyPage() {
         {/* ── Category Grid ─────────────────────────────────────────────── */}
         <section className="py-16">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-black" style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
+            <h2 className="text-xl font-black" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>
               Browse by Topic
             </h2>
           </div>
@@ -152,7 +152,7 @@ export default function AcademyPage() {
                 key={href}
                 href={href}
                 className="rounded-2xl p-4 text-center group hover:scale-105 transition-transform"
-                style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", boxShadow: "var(--shadow-card)" }}
+                style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-card)" }}
               >
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center text-xl mx-auto mb-3"
@@ -160,10 +160,10 @@ export default function AcademyPage() {
                 >
                   {icon}
                 </div>
-                <p className="text-xs font-bold mb-1 group-hover:text-[var(--accent)] transition-colors" style={{ color: "var(--text-primary)" }}>
+                <p className="text-xs font-bold mb-1 group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>
                   {label}
                 </p>
-                <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>{count} resources</p>
+                <p className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>{count} resources</p>
               </Link>
             ))}
           </div>
@@ -173,8 +173,8 @@ export default function AcademyPage() {
         <section id="courses" className="pb-16">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <p className="kicker mb-1" style={{ color: "var(--text-tertiary)" }}>Featured</p>
-              <h2 className="text-2xl font-black" style={{ color: "var(--text-primary)", letterSpacing: "-0.025em" }}>
+              <p className="kicker mb-1" style={{ color: "var(--rb-text-tertiary)" }}>Featured</p>
+              <h2 className="text-2xl font-black" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.025em" }}>
                 In-Depth Learning
               </h2>
             </div>
@@ -185,7 +185,7 @@ export default function AcademyPage() {
                 key={course.id}
                 href={course.href}
                 className="group rounded-2xl overflow-hidden hover:shadow-xl transition-shadow"
-                style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", boxShadow: "var(--shadow-card)" }}
+                style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-card)" }}
               >
                 {/* Thumbnail */}
                 <div
@@ -220,13 +220,13 @@ export default function AcademyPage() {
                   <p className="text-xs font-semibold mb-2 uppercase tracking-wider" style={{ color: course.badgeColor }}>
                     {course.category}
                   </p>
-                  <h3 className="text-base font-bold mb-2 group-hover:text-[var(--accent)] transition-colors" style={{ color: "var(--text-primary)" }}>
+                  <h3 className="text-base font-bold mb-2 group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>
                     {course.title}
                   </h3>
-                  <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--text-secondary)" }}>
+                  <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--rb-text-secondary)" }}>
                     {course.description}
                   </p>
-                  <div className="flex items-center gap-4 text-xs" style={{ color: "var(--text-tertiary)" }}>
+                  <div className="flex items-center gap-4 text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
                     <span>📖 {course.duration}</span>
                     <span>📚 {course.modules} modules</span>
                   </div>
@@ -240,34 +240,34 @@ export default function AcademyPage() {
         <section className="pb-16">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <p className="kicker mb-1" style={{ color: "var(--text-tertiary)" }}>Quick Reads</p>
-              <h2 className="text-2xl font-black" style={{ color: "var(--text-primary)", letterSpacing: "-0.025em" }}>
+              <p className="kicker mb-1" style={{ color: "var(--rb-text-tertiary)" }}>Quick Reads</p>
+              <h2 className="text-2xl font-black" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.025em" }}>
                 5–12 Minute Explainers
               </h2>
             </div>
           </div>
-          <div className="rounded-2xl overflow-hidden" style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", boxShadow: "var(--shadow-card)" }}>
+          <div className="rounded-2xl overflow-hidden" style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-card)" }}>
             {QUICK_READS.map(({ title, category, time, href }, i) => (
               <Link
                 key={href}
                 href={href}
-                className="flex items-center justify-between px-6 py-4 group hover:bg-[var(--bg-raised)] transition-colors"
-                style={{ borderBottom: i < QUICK_READS.length - 1 ? "1px solid var(--border-subtle)" : "none" }}
+                className="flex items-center justify-between px-6 py-4 group hover:bg-[var(--rb-bg-raised)] transition-colors"
+                style={{ borderBottom: i < QUICK_READS.length - 1 ? "1px solid var(--rb-border-subtle)" : "none" }}
               >
                 <div className="flex items-center gap-4">
                   <span
                     className="flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded"
-                    style={{ background: "var(--bg-raised)", color: "var(--text-tertiary)", border: "1px solid var(--border-subtle)" }}
+                    style={{ background: "var(--rb-bg-raised)", color: "var(--rb-text-tertiary)", border: "1px solid var(--rb-border-subtle)" }}
                   >
                     {category}
                   </span>
-                  <span className="text-sm font-medium group-hover:text-[var(--accent)] transition-colors" style={{ color: "var(--text-primary)" }}>
+                  <span className="text-sm font-medium group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>
                     {title}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0 ml-4">
-                  <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>⏱ {time}</span>
-                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ color: "var(--text-tertiary)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>⏱ {time}</span>
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ color: "var(--rb-text-tertiary)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -280,7 +280,7 @@ export default function AcademyPage() {
         <section className="pb-20">
           <div
             className="rounded-2xl p-10 text-center"
-            style={{ background: "linear-gradient(135deg, #1E1B4B 0%, #312E81 100%)", boxShadow: "var(--shadow-xl)" }}
+            style={{ background: "linear-gradient(135deg, #1E1B4B 0%, #312E81 100%)", boxShadow: "var(--rb-shadow-xl)" }}
           >
             <div className="text-4xl mb-4">🎓</div>
             <h2 className="text-2xl font-black text-white mb-3" style={{ letterSpacing: "-0.025em" }}>

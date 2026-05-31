@@ -44,7 +44,7 @@ export default function MobileCTABand() {
       className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between gap-3 px-4"
       style={{
         height: "48px",
-        background: "var(--accent)",
+        background: "var(--rb-accent)",
         boxShadow: "0 -2px 16px rgba(0,0,0,0.18)",
       }}
       role="complementary"

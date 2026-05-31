@@ -69,7 +69,7 @@ const VALUES = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen" style={{ background: "var(--bg-page)" }}>
+    <div className="min-h-screen" style={{ background: "var(--rb-bg-page)" }}>
       {/* ── Hero: Aspirational & Identity-Driven ───────────────────────── */}
       <section
         className="relative overflow-hidden py-32 px-4"
@@ -98,44 +98,44 @@ export default function AboutPage() {
         
         {/* ── Social Proof / Belonging ─────────────────────────────────── */}
         <div className="rounded-2xl p-8 text-center shadow-xl flex flex-col sm:flex-row items-center justify-center gap-8 mb-24"
-          style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)" }}>
+          style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)" }}>
           <div className="flex -space-x-4">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="w-12 h-12 rounded-full border-2 border-[var(--bg-surface)] bg-gray-200 overflow-hidden relative"
+              <div key={i} className="w-12 h-12 rounded-full border-2 border-[var(--rb-bg-surface)] bg-gray-200 overflow-hidden relative"
                 style={{ background: `linear-gradient(135deg, hsl(${i * 60}, 70%, 60%), hsl(${i * 60 + 40}, 70%, 50%))` }}>
                 <div className="absolute inset-0 bg-black/10 mix-blend-overlay"></div>
               </div>
             ))}
           </div>
           <div className="text-left">
-            <p className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>4,200+ Professionals</p>
-            <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>Radiation Oncologists, Physicists, and Dosimetrists trust our signal.</p>
+            <p className="text-2xl font-black" style={{ color: "var(--rb-text-primary)" }}>4,200+ Professionals</p>
+            <p className="text-sm font-medium" style={{ color: "var(--rb-text-secondary)" }}>Radiation Oncologists, Physicists, and Dosimetrists trust our signal.</p>
           </div>
         </div>
 
         {/* ── The Acronym Reveal (What is ROMAS?) ──────────────────────── */}
         <section className="mb-32">
           <div className="text-center mb-16">
-            <p className="kicker mb-3 font-bold tracking-widest uppercase text-sm" style={{ color: "var(--accent)" }}>The Acronym</p>
-            <h2 className="text-4xl font-black" style={{ color: "var(--text-primary)", letterSpacing: "-0.025em" }}>
+            <p className="kicker mb-3 font-bold tracking-widest uppercase text-sm" style={{ color: "var(--rb-accent)" }}>The Acronym</p>
+            <h2 className="text-4xl font-black" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.025em" }}>
               What does ROMAS stand for?
             </h2>
-            <p className="mt-4 text-lg max-w-2xl mx-auto" style={{ color: "var(--text-secondary)" }}>
-              <strong style={{ color: "var(--text-primary)" }}>Radiation Oncology Multi-Agentic System.</strong> Not a newsletter. Not a digest. An autonomous AI intelligence system built from the ground up for radiation oncology professionals.
+            <p className="mt-4 text-lg max-w-2xl mx-auto" style={{ color: "var(--rb-text-secondary)" }}>
+              <strong style={{ color: "var(--rb-text-primary)" }}>Radiation Oncology Multi-Agentic System.</strong> Not a newsletter. Not a digest. An autonomous AI intelligence system built from the ground up for radiation oncology professionals.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {ROMAS_ACRONYM.map((item, i) => (
               <div key={item.letter} className="rounded-2xl p-6 relative overflow-hidden group transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-                style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", boxShadow: "var(--shadow-sm)" }}>
+                style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-sm)" }}>
                 <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full opacity-10 transition-transform duration-500 group-hover:scale-150"
                   style={{ background: item.color }}></div>
                 <div className="text-5xl font-black mb-4 transition-colors duration-300" style={{ color: item.color }}>
                   {item.letter}
                 </div>
-                <h3 className="text-xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>{item.word}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{item.desc}</p>
+                <h3 className="text-xl font-bold mb-3" style={{ color: "var(--rb-text-primary)" }}>{item.word}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{item.desc}</p>
               </div>
             ))}
           </div>
@@ -144,20 +144,20 @@ export default function AboutPage() {
         {/* ── The Problem & The Solution (Psychological Contrast) ──────── */}
         <section className="mb-32 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-black mb-6" style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
+            <h2 className="text-3xl sm:text-4xl font-black mb-6" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>
               The literature is drowning you. <br/>
-              <span style={{ color: "var(--accent)" }}>We are the lifeboat.</span>
+              <span style={{ color: "var(--rb-accent)" }}>We are the lifeboat.</span>
             </h2>
-            <p className="text-lg leading-relaxed mb-6" style={{ color: "var(--text-secondary)" }}>
+            <p className="text-lg leading-relaxed mb-6" style={{ color: "var(--rb-text-secondary)" }}>
               Over 4,000 oncology papers are published every month. FDA clearances happen weekly. Guidelines shift quietly. You cannot read it all, but missing a critical practice delta is not an option.
             </p>
-            <p className="text-lg leading-relaxed font-medium" style={{ color: "var(--text-primary)" }}>
+            <p className="text-lg leading-relaxed font-medium" style={{ color: "var(--rb-text-primary)" }}>
               ROMAS Brief acts as your personal intelligence agency. We ingest the noise, apply our rigorous scoring algorithm, and deliver only the pure, practice-changing signal.
             </p>
           </div>
-          <div className="rounded-3xl p-8 relative overflow-hidden" style={{ background: "var(--bg-raised)", border: "1px solid var(--border-subtle)", boxShadow: "var(--shadow-lg)" }}>
+          <div className="rounded-3xl p-8 relative overflow-hidden" style={{ background: "var(--rb-bg-raised)", border: "1px solid var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-lg)" }}>
              <div className="absolute top-0 left-0 w-full h-1" style={{ background: "linear-gradient(90deg, #0066CC, #0F766E, #7C3AED)" }}></div>
-             <h3 className="text-xl font-bold mb-6 text-center" style={{ color: "var(--text-primary)" }}>The ROMAS Signal Filter</h3>
+             <h3 className="text-xl font-bold mb-6 text-center" style={{ color: "var(--rb-text-primary)" }}>The ROMAS Signal Filter</h3>
              
              <div className="space-y-4 relative">
                {/* Funnel visual */}
@@ -172,8 +172,8 @@ export default function AboutPage() {
                <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 text-center border border-gray-200 dark:border-gray-700 mx-16">
                  <p className="text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wide">Expert Scoring (C, P, N)</p>
                </div>
-               <div className="flex justify-center"><div className="w-1 h-8" style={{ background: "linear-gradient(180deg, var(--border-subtle), var(--accent))" }}></div></div>
-               <div className="rounded-xl p-5 text-center shadow-md transform scale-105" style={{ background: "var(--accent)", color: "white" }}>
+               <div className="flex justify-center"><div className="w-1 h-8" style={{ background: "linear-gradient(180deg, var(--rb-border-subtle), var(--rb-accent))" }}></div></div>
+               <div className="rounded-xl p-5 text-center shadow-md transform scale-105" style={{ background: "var(--rb-accent)", color: "white" }}>
                  <p className="text-base font-black uppercase tracking-widest mb-1">The Daily Brief</p>
                  <p className="text-xs font-medium opacity-90">Only items scoring S70+ reach your inbox</p>
                </div>
@@ -184,15 +184,15 @@ export default function AboutPage() {
         {/* ── Values ───────────────────────────────────────────────────── */}
         <section className="mb-32">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-black" style={{ color: "var(--text-primary)", letterSpacing: "-0.025em" }}>The Code We Operate By</h2>
+            <h2 className="text-3xl sm:text-4xl font-black" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.025em" }}>The Code We Operate By</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             {VALUES.map(({ icon, title, description }) => (
               <div key={title} className="rounded-2xl p-8 group hover:shadow-xl transition-all duration-300"
-                style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)" }}>
+                style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)" }}>
                 <span className="text-4xl mb-6 block transform group-hover:scale-110 transition-transform origin-left">{icon}</span>
-                <h3 className="text-xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>{title}</h3>
-                <p className="text-base leading-relaxed" style={{ color: "var(--text-secondary)" }}>{description}</p>
+                <h3 className="text-xl font-bold mb-3" style={{ color: "var(--rb-text-primary)" }}>{title}</h3>
+                <p className="text-base leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{description}</p>
               </div>
             ))}
           </div>
@@ -201,7 +201,7 @@ export default function AboutPage() {
         {/* ── CTA: Aspirational Identity ───────────────────────────────── */}
         <section className="pb-32">
           <div className="rounded-3xl p-12 text-center relative overflow-hidden"
-            style={{ background: "linear-gradient(135deg, #001D3D 0%, #003366 100%)", boxShadow: "var(--shadow-xl)" }}>
+            style={{ background: "linear-gradient(135deg, #001D3D 0%, #003366 100%)", boxShadow: "var(--rb-shadow-xl)" }}>
             <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#5EEAD4] opacity-10 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
             

@@ -131,7 +131,7 @@ export default function SiteHeader() {
       <header
         className="nav-sticky"
         style={{
-          boxShadow: scrolled ? "var(--shadow-md)" : "none",
+          boxShadow: scrolled ? "var(--rb-shadow-md)" : "none",
           transition: "box-shadow 0.2s ease",
         }}
       >
@@ -140,13 +140,13 @@ export default function SiteHeader() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group" aria-label="ROMAS Brief — Home">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[#0F766E] flex items-center justify-center shadow-apple-sm group-hover:shadow-apple-md transition-shadow">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--rb-accent)] to-[#0F766E] flex items-center justify-center shadow-apple-sm group-hover:shadow-apple-md transition-shadow">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <span className="font-black text-lg tracking-tight" style={{ color: "var(--text-primary)", letterSpacing: "-0.03em" }}>
-                ROMAS<span style={{ color: "var(--accent)" }}>Brief</span>
+              <span className="font-black text-lg tracking-tight" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.03em" }}>
+                ROMAS<span style={{ color: "var(--rb-accent)" }}>Brief</span>
               </span>
             </Link>
 
@@ -154,8 +154,8 @@ export default function SiteHeader() {
             <nav className="hidden lg:flex items-center gap-0.5" aria-label="Primary navigation">
               <Link
                 href="/"
-                className="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--bg-raised)]"
-                style={{ color: pathname === "/" ? "var(--accent)" : "var(--text-secondary)" }}
+                className="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--rb-bg-raised)]"
+                style={{ color: pathname === "/" ? "var(--rb-accent)" : "var(--rb-text-secondary)" }}
               >
                 Home
               </Link>
@@ -163,8 +163,8 @@ export default function SiteHeader() {
               {/* Topics */}
               <div className="relative" onMouseEnter={() => openDropdown("topics")} onMouseLeave={closeDropdown}>
                 <button
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--bg-raised)]"
-                  style={{ color: "var(--text-secondary)" }}
+                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--rb-bg-raised)]"
+                  style={{ color: "var(--rb-text-secondary)" }}
                   aria-expanded={activeDropdown === "topics"}
                   aria-haspopup="true"
                   onClick={() => setActiveDropdown(activeDropdown === "topics" ? null : "topics")}
@@ -177,22 +177,22 @@ export default function SiteHeader() {
                 {activeDropdown === "topics" && (
                   <div
                     className="absolute top-full left-0 mt-1 w-[500px] rounded-2xl border overflow-hidden z-50"
-                    style={{ background: "var(--bg-surface)", borderColor: "var(--border-subtle)", boxShadow: "var(--shadow-xl)" }}
+                    style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-xl)" }}
                     onMouseEnter={keepDropdown}
                     onMouseLeave={closeDropdown}
                   >
                     <div className="p-3 grid grid-cols-3 gap-1">
                       {TOPICS.map(({ href, label, icon, desc }) => (
-                        <Link key={href} href={href} className="flex flex-col gap-0.5 p-3 rounded-xl transition-colors hover:bg-[var(--bg-raised)] group">
+                        <Link key={href} href={href} className="flex flex-col gap-0.5 p-3 rounded-xl transition-colors hover:bg-[var(--rb-bg-raised)] group">
                           <span className="text-lg mb-0.5">{icon}</span>
-                          <span className="text-xs font-semibold group-hover:text-[var(--accent)] transition-colors" style={{ color: "var(--text-primary)" }}>{label}</span>
-                          <span className="text-xs leading-snug" style={{ color: "var(--text-tertiary)" }}>{desc}</span>
+                          <span className="text-xs font-semibold group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
+                          <span className="text-xs leading-snug" style={{ color: "var(--rb-text-tertiary)" }}>{desc}</span>
                         </Link>
                       ))}
                     </div>
-                    <div className="border-t px-4 py-3 flex items-center justify-between" style={{ borderColor: "var(--border-subtle)", background: "var(--bg-raised)" }}>
-                      <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>9 topic categories</span>
-                      <Link href="/categories" className="text-xs font-semibold" style={{ color: "var(--accent)" }}>Browse all →</Link>
+                    <div className="border-t px-4 py-3 flex items-center justify-between" style={{ borderColor: "var(--rb-border-subtle)", background: "var(--rb-bg-raised)" }}>
+                      <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>9 topic categories</span>
+                      <Link href="/categories" className="text-xs font-semibold" style={{ color: "var(--rb-accent)" }}>Browse all →</Link>
                     </div>
                   </div>
                 )}
@@ -201,8 +201,8 @@ export default function SiteHeader() {
               {/* Regions */}
               <div className="relative" onMouseEnter={() => openDropdown("regions")} onMouseLeave={closeDropdown}>
                 <button
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--bg-raised)]"
-                  style={{ color: "var(--text-secondary)" }}
+                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--rb-bg-raised)]"
+                  style={{ color: "var(--rb-text-secondary)" }}
                   aria-expanded={activeDropdown === "regions"}
                   aria-haspopup="true"
                   onClick={() => setActiveDropdown(activeDropdown === "regions" ? null : "regions")}
@@ -215,15 +215,15 @@ export default function SiteHeader() {
                 {activeDropdown === "regions" && (
                   <div
                     className="absolute top-full left-0 mt-1 w-52 rounded-2xl border overflow-hidden z-50"
-                    style={{ background: "var(--bg-surface)", borderColor: "var(--border-subtle)", boxShadow: "var(--shadow-xl)" }}
+                    style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-xl)" }}
                     onMouseEnter={keepDropdown}
                     onMouseLeave={closeDropdown}
                   >
                     <div className="p-2">
                       {REGIONS.map(({ href, label, flag }) => (
-                        <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-[var(--bg-raised)] group">
+                        <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-[var(--rb-bg-raised)] group">
                           <span className="text-base">{flag}</span>
-                          <span className="text-sm font-medium group-hover:text-[var(--accent)] transition-colors" style={{ color: "var(--text-primary)" }}>{label}</span>
+                          <span className="text-sm font-medium group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
                         </Link>
                       ))}
                     </div>
@@ -234,8 +234,8 @@ export default function SiteHeader() {
               {/* For You */}
               <div className="relative" onMouseEnter={() => openDropdown("audience")} onMouseLeave={closeDropdown}>
                 <button
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--bg-raised)]"
-                  style={{ color: "var(--text-secondary)" }}
+                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--rb-bg-raised)]"
+                  style={{ color: "var(--rb-text-secondary)" }}
                   aria-expanded={activeDropdown === "audience"}
                   aria-haspopup="true"
                   onClick={() => setActiveDropdown(activeDropdown === "audience" ? null : "audience")}
@@ -248,15 +248,15 @@ export default function SiteHeader() {
                 {activeDropdown === "audience" && (
                   <div
                     className="absolute top-full left-0 mt-1 w-56 rounded-2xl border overflow-hidden z-50"
-                    style={{ background: "var(--bg-surface)", borderColor: "var(--border-subtle)", boxShadow: "var(--shadow-xl)" }}
+                    style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-xl)" }}
                     onMouseEnter={keepDropdown}
                     onMouseLeave={closeDropdown}
                   >
                     <div className="p-2">
                       {AUDIENCE.map(({ href, label, icon }) => (
-                        <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-[var(--bg-raised)] group">
+                        <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-[var(--rb-bg-raised)] group">
                           <span className="text-base">{icon}</span>
-                          <span className="text-sm font-medium group-hover:text-[var(--accent)] transition-colors" style={{ color: "var(--text-primary)" }}>{label}</span>
+                          <span className="text-sm font-medium group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
                         </Link>
                       ))}
                     </div>
@@ -264,10 +264,10 @@ export default function SiteHeader() {
                 )}
               </div>
 
-              <Link href="/listen" className="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--bg-raised)]" style={{ color: pathname === "/listen" ? "var(--accent)" : "var(--text-secondary)" }}>
+              <Link href="/listen" className="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--rb-bg-raised)]" style={{ color: pathname === "/listen" ? "var(--rb-accent)" : "var(--rb-text-secondary)" }}>
                 Listen
               </Link>
-              <Link href="/issues" className="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--bg-raised)]" style={{ color: pathname === "/issues" ? "var(--accent)" : "var(--text-secondary)" }}>
+              <Link href="/issues" className="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--rb-bg-raised)]" style={{ color: pathname === "/issues" ? "var(--rb-accent)" : "var(--rb-text-secondary)" }}>
                 Archive
               </Link>
             </nav>
@@ -277,15 +277,15 @@ export default function SiteHeader() {
               {/* Search Cmd-K button */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl border text-sm transition-all hover:bg-[var(--bg-raised)]"
-                style={{ borderColor: "var(--border-default)", color: "var(--text-tertiary)" }}
+                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl border text-sm transition-all hover:bg-[var(--rb-bg-raised)]"
+                style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-tertiary)" }}
                 aria-label="Open search (Cmd+K)"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <span className="text-xs hidden lg:inline">Search</span>
-                <kbd className="hidden lg:inline text-xs px-1.5 py-0.5 rounded border font-mono" style={{ borderColor: "var(--border-default)", background: "var(--bg-raised)" }}>⌘K</kbd>
+                <kbd className="hidden lg:inline text-xs px-1.5 py-0.5 rounded border font-mono" style={{ borderColor: "var(--rb-border-default)", background: "var(--rb-bg-raised)" }}>⌘K</kbd>
               </button>
 
               <DarkModeToggle />
@@ -303,8 +303,8 @@ export default function SiteHeader() {
               {/* Mobile hamburger */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden p-2 rounded-xl transition-colors hover:bg-[var(--bg-raised)]"
-                style={{ color: "var(--text-secondary)" }}
+                className="lg:hidden p-2 rounded-xl transition-colors hover:bg-[var(--rb-bg-raised)]"
+                style={{ color: "var(--rb-text-secondary)" }}
                 aria-label={mobileOpen ? "Close menu" : "Open menu"}
                 aria-expanded={mobileOpen}
               >
@@ -332,7 +332,7 @@ export default function SiteHeader() {
                 { href: "/for/physicists", label: "Physicists" },
                 { href: "/for/physicians", label: "Physicians" },
               ].map(({ href, label }) => (
-                <Link key={href} href={href} className="flex-shrink-0 px-3 py-1.5 rounded-full border text-xs font-medium transition-all" style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}>
+                <Link key={href} href={href} className="flex-shrink-0 px-3 py-1.5 rounded-full border text-xs font-medium transition-all" style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}>
                   {label}
                 </Link>
               ))}
@@ -342,12 +342,12 @@ export default function SiteHeader() {
 
         {/* Mobile full nav */}
         {mobileOpen && (
-          <div className="lg:hidden border-t" style={{ background: "var(--bg-surface)", borderColor: "var(--border-subtle)" }}>
+          <div className="lg:hidden border-t" style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)" }}>
             <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
               <button
                 onClick={() => { setSearchOpen(true); setMobileOpen(false); }}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-sm"
-                style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)", background: "var(--bg-raised)" }}
+                style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)", background: "var(--rb-bg-raised)" }}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -355,23 +355,23 @@ export default function SiteHeader() {
                 Search ROMAS Brief…
               </button>
               <div>
-                <p className="kicker mb-3" style={{ color: "var(--text-tertiary)" }}>Topics</p>
+                <p className="kicker mb-3" style={{ color: "var(--rb-text-tertiary)" }}>Topics</p>
                 <div className="grid grid-cols-2 gap-2">
                   {TOPICS.slice(0, 6).map(({ href, label, icon }) => (
-                    <Link key={href} href={href} className="flex items-center gap-2 p-3 rounded-xl border transition-colors hover:bg-[var(--bg-raised)]" style={{ borderColor: "var(--border-subtle)", background: "var(--bg-surface)" }}>
+                    <Link key={href} href={href} className="flex items-center gap-2 p-3 rounded-xl border transition-colors hover:bg-[var(--rb-bg-raised)]" style={{ borderColor: "var(--rb-border-subtle)", background: "var(--rb-bg-surface)" }}>
                       <span>{icon}</span>
-                      <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{label}</span>
+                      <span className="text-sm font-medium" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
                     </Link>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="kicker mb-3" style={{ color: "var(--text-tertiary)" }}>For You</p>
+                <p className="kicker mb-3" style={{ color: "var(--rb-text-tertiary)" }}>For You</p>
                 <div className="grid grid-cols-2 gap-2">
                   {AUDIENCE.map(({ href, label, icon }) => (
-                    <Link key={href} href={href} className="flex items-center gap-2 p-3 rounded-xl border transition-colors hover:bg-[var(--bg-raised)]" style={{ borderColor: "var(--border-subtle)", background: "var(--bg-surface)" }}>
+                    <Link key={href} href={href} className="flex items-center gap-2 p-3 rounded-xl border transition-colors hover:bg-[var(--rb-bg-raised)]" style={{ borderColor: "var(--rb-border-subtle)", background: "var(--rb-bg-surface)" }}>
                       <span>{icon}</span>
-                      <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{label}</span>
+                      <span className="text-sm font-medium" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
                     </Link>
                   ))}
                 </div>
@@ -396,10 +396,10 @@ export default function SiteHeader() {
         >
           <div
             className="w-full max-w-xl rounded-2xl overflow-hidden"
-            style={{ background: "var(--bg-surface)", boxShadow: "var(--shadow-xl)", border: "1px solid var(--border-subtle)" }}
+            style={{ background: "var(--rb-bg-surface)", boxShadow: "var(--rb-shadow-xl)", border: "1px solid var(--rb-border-subtle)" }}
           >
-            <div className="flex items-center gap-3 px-4 py-4 border-b" style={{ borderColor: "var(--border-subtle)" }}>
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: "var(--text-tertiary)" }}>
+            <div className="flex items-center gap-3 px-4 py-4 border-b" style={{ borderColor: "var(--rb-border-subtle)" }}>
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: "var(--rb-text-tertiary)" }}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
@@ -409,13 +409,13 @@ export default function SiteHeader() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 bg-transparent text-base outline-none"
-                style={{ color: "var(--text-primary)" }}
+                style={{ color: "var(--rb-text-primary)" }}
                 aria-label="Search query"
               />
               <button
                 onClick={() => setSearchOpen(false)}
-                className="flex-shrink-0 px-2 py-1 rounded-lg text-xs font-mono transition-colors hover:bg-[var(--bg-raised)]"
-                style={{ color: "var(--text-tertiary)", border: "1px solid var(--border-default)" }}
+                className="flex-shrink-0 px-2 py-1 rounded-lg text-xs font-mono transition-colors hover:bg-[var(--rb-bg-raised)]"
+                style={{ color: "var(--rb-text-tertiary)", border: "1px solid var(--rb-border-default)" }}
                 aria-label="Close search"
               >
                 Esc
@@ -425,39 +425,39 @@ export default function SiteHeader() {
               {searchResults.length > 0 ? (
                 <div className="p-2">
                   {!searchQuery && (
-                    <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-tertiary)" }}>Recent articles</p>
+                    <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--rb-text-tertiary)" }}>Recent articles</p>
                   )}
                   {searchResults.map((result) => (
                     <Link
                       key={result.slug}
                       href={`/article/${result.slug}`}
                       onClick={() => setSearchOpen(false)}
-                      className="flex items-start gap-3 px-3 py-3 rounded-xl transition-colors hover:bg-[var(--bg-raised)] group"
+                      className="flex items-start gap-3 px-3 py-3 rounded-xl transition-colors hover:bg-[var(--rb-bg-raised)] group"
                     >
-                      <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} style={{ color: "var(--text-tertiary)" }}>
+                      <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} style={{ color: "var(--rb-text-tertiary)" }}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium line-clamp-1 group-hover:text-[var(--accent)] transition-colors" style={{ color: "var(--text-primary)" }}>{result.title}</p>
-                        <p className="text-xs mt-0.5" style={{ color: "var(--text-tertiary)" }}>{result.category}</p>
+                        <p className="text-sm font-medium line-clamp-1 group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{result.title}</p>
+                        <p className="text-xs mt-0.5" style={{ color: "var(--rb-text-tertiary)" }}>{result.category}</p>
                       </div>
                     </Link>
                   ))}
                 </div>
               ) : (
                 <div className="px-4 py-8 text-center">
-                  <p className="text-sm" style={{ color: "var(--text-tertiary)" }}>No results for &ldquo;{searchQuery}&rdquo;</p>
-                  <p className="text-xs mt-1" style={{ color: "var(--text-tertiary)" }}>Try a different search term</p>
+                  <p className="text-sm" style={{ color: "var(--rb-text-tertiary)" }}>No results for &ldquo;{searchQuery}&rdquo;</p>
+                  <p className="text-xs mt-1" style={{ color: "var(--rb-text-tertiary)" }}>Try a different search term</p>
                 </div>
               )}
             </div>
-            <div className="px-4 py-3 border-t flex items-center justify-between" style={{ borderColor: "var(--border-subtle)", background: "var(--bg-raised)" }}>
-              <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-tertiary)" }}>
+            <div className="px-4 py-3 border-t flex items-center justify-between" style={{ borderColor: "var(--rb-border-subtle)", background: "var(--rb-bg-raised)" }}>
+              <div className="flex items-center gap-3 text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
                 <span>↑↓ navigate</span>
                 <span>↵ open</span>
                 <span>Esc close</span>
               </div>
-              <Link href="/search" onClick={() => setSearchOpen(false)} className="text-xs font-medium" style={{ color: "var(--accent)" }}>
+              <Link href="/search" onClick={() => setSearchOpen(false)} className="text-xs font-medium" style={{ color: "var(--rb-accent)" }}>
                 Full search →
               </Link>
             </div>
