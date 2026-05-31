@@ -105,13 +105,17 @@ function rowToArticle(r: DbArticleRow): MockArticle {
   };
 }
 
+/** Per-query timeout (M-01 / SHIP-16) — guards the reader against a hung DB. */
+const QUERY_TIMEOUT_MS = 10000;
+
 /** Base SELECT constrained to the public_read_published RLS shape. */
 function publishedQuery() {
   return createPublicSupabaseClient()
     .from("articles")
     .select(COLUMNS)
     .eq("status", "published")
-    .is("revoked_at", null);
+    .is("revoked_at", null)
+    .abortSignal(AbortSignal.timeout(QUERY_TIMEOUT_MS));
 }
 
 function mapRows(data: unknown): MockArticle[] {
@@ -228,6 +232,7 @@ export async function getPublishedSlugs(): Promise<string[]> {
     .from("articles")
     .select("slug")
     .eq("status", "published")
-    .is("revoked_at", null);
+    .is("revoked_at", null)
+    .abortSignal(AbortSignal.timeout(QUERY_TIMEOUT_MS));
   return Array.isArray(data) ? (data as { slug: string }[]).map((r) => r.slug) : [];
 }
