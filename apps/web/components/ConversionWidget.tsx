@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { StarMark } from "./icons";
+import { track, Events } from "@/lib/analytics";
 
 interface ConversionWidgetProps {
   variant?: "hero" | "inline" | "sticky-bottom";
@@ -28,6 +29,7 @@ export default function ConversionWidget({
     setLoading(true);
     // Placeholder — wire to Beehiiv subscribe API
     await new Promise((r) => setTimeout(r, 800));
+    track(Events.newsletterSubscribe, { variant });
     setSubmitted(true);
     setLoading(false);
   }

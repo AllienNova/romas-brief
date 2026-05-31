@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import { HeadphonesIcon } from "./icons";
+import { track, Events } from "@/lib/analytics";
 
 interface InlineAudioPlayerProps {
   src?: string;
@@ -57,7 +58,7 @@ export function InlineAudioPlayer({
     if (!audio) return;
     const onTimeUpdate = () => setCurrentTime(audio.currentTime);
     const onDurationChange = () => { if (isFinite(audio.duration)) setDuration(audio.duration); };
-    const onPlay = () => { setIsPlaying(true); setIsLoading(false); };
+    const onPlay = () => { setIsPlaying(true); setIsLoading(false); track(Events.audioPlay, tier ? { tier } : undefined); };
     const onPause = () => setIsPlaying(false);
     const onEnded = () => { setIsPlaying(false); setCurrentTime(0); };
     const onWaiting = () => setIsLoading(true);
@@ -81,7 +82,7 @@ export function InlineAudioPlayer({
       audio.removeEventListener("canplay", onCanPlay);
       audio.removeEventListener("error", onError);
     };
-  }, []);
+  }, [tier]);
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;

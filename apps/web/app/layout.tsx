@@ -9,6 +9,7 @@ import DarkModeToggle from "@/components/DarkModeToggle";
 import MobileCTABand from "@/components/MobileCTABand";
 import { MicrophoneIcon, NewsBriefIcon, HeadphonesIcon, GlobeIcon } from "@/components/icons";
 import { SubscriberCount } from "@/components/SubscriberCount";
+import { WebVitals } from "@/components/WebVitals";
 
 export const metadata: Metadata = {
   title: {
@@ -142,6 +143,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="h-full antialiased" style={{ background: "var(--rb-bg-page)", color: "var(--rb-text-primary)" }}>
+        <WebVitals />
 
         {/* Skip-to-content (WCAG 2.4.1) — first focusable element. */}
         <a
