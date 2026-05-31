@@ -27,6 +27,10 @@
   --rb-accent:        #0055CC;
   --rb-accent-hover:  #003F99;
   --rb-accent-subtle: #EBF2FF;
+  /* Button bg holds white text at ≥4.5:1 in BOTH themes (the link accent is
+     too light for white text once brightened for dark). */
+  --rb-accent-button:       #0055CC;
+  --rb-accent-button-hover: #003F99;
   --rb-teal:          #0D766E;
   --rb-teal-subtle:   #E6F4F3;
 
@@ -75,6 +79,8 @@
   --rb-accent:        #2997FF;
   --rb-accent-hover:  #0A84FF;
   --rb-accent-subtle: #001A3D;
+  --rb-accent-button:       #0A66D9;
+  --rb-accent-button-hover: #0A5AC2;
   --rb-teal:          #30D5C8;
   --rb-teal-subtle:   #001A18;
 
@@ -261,7 +267,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    background: var(--rb-accent);
+    background: var(--rb-accent-button);
     color: white;
     font-size: 13.5px;
     font-weight: 600;
@@ -278,7 +284,7 @@
     user-select: none;
   }
   .btn-primary:hover {
-    background: var(--rb-accent-hover);
+    background: var(--rb-accent-button-hover);
     transform: scale(1.02);
     box-shadow: 0 4px 14px rgba(0, 85, 204, 0.32);
   }

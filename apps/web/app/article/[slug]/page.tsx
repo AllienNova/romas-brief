@@ -130,7 +130,7 @@ export default async function ArticlePage(
             {regionMeta.flag} {regionMeta.label}
           </span>
           {mockArticle.has_audio && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-teal-50 text-teal-600 border border-teal-100">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium border" style={{ background: "var(--rb-teal-subtle)", color: "var(--rb-teal)", borderColor: "var(--rb-border-subtle)" }}>
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 3a7 7 0 100 14A7 7 0 0010 3zm-1 9.5V7.5l5 2.5-5 2.5z" /></svg>
               Audio available
             </span>
@@ -152,7 +152,7 @@ export default async function ArticlePage(
               })}
             </time>
           )}
-          <Link href={`/issues/${mockArticle.issue_date}`} className="hover:text-teal-600 transition-colors">
+          <Link href={`/issues/${mockArticle.issue_date}`} className="hover:text-[var(--rb-teal)] transition-colors">
             Issue: {mockArticle.issue_date}
           </Link>
           <span>Score: <strong className="text-[var(--rb-text-secondary)]">{mockArticle.composite_score}</strong></span>
@@ -160,7 +160,7 @@ export default async function ArticlePage(
         <div className="mt-3 flex flex-wrap gap-1.5">
           {mockArticle.audience.map((aud) => (
             <Link key={aud} href={`/for/${aud}`}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-[var(--rb-border-default)] text-xs text-[var(--rb-text-tertiary)] hover:border-teal-300 hover:text-teal-700 transition-colors">
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-[var(--rb-border-default)] text-xs text-[var(--rb-text-tertiary)] hover:border-teal-300 hover:text-[var(--rb-teal)] transition-colors">
               {AUDIENCE_META[aud].icon} {AUDIENCE_META[aud].label}
             </Link>
           ))}
@@ -183,16 +183,16 @@ export default async function ArticlePage(
       )}
       {/* ROMAS Insight callout */}
       {typedArticle.romas_insight && (
-        <div className="mb-8 bg-teal-50 border border-teal-200 rounded-xl p-5">
+        <div className="mb-8 rounded-xl p-5 border" style={{ background: "var(--rb-teal-subtle)", borderColor: "var(--rb-border-subtle)" }}>
           <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "var(--rb-teal)" }}>
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
             <div>
-              <p className="text-xs font-bold text-teal-800 uppercase tracking-wide mb-1">ROMAS Insight</p>
-              <p className="text-sm text-teal-900 leading-relaxed">{typedArticle.romas_insight}</p>
+              <p className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: "var(--rb-teal)" }}>ROMAS Insight</p>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--rb-text-primary)" }}>{typedArticle.romas_insight}</p>
             </div>
           </div>
         </div>
@@ -200,7 +200,7 @@ export default async function ArticlePage(
       {/* Article body */}
       {bodyHtml && (
         <div
-          className="prose prose-neutral max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-[var(--rb-text-primary)] mb-10"
+          className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-[var(--rb-teal)] prose-a:no-underline hover:prose-a:underline prose-strong:text-[var(--rb-text-primary)] mb-10"
           dangerouslySetInnerHTML={{ __html: bodyHtml }}
         />
       )}
@@ -232,13 +232,13 @@ export default async function ArticlePage(
       </div>
       {/* Primary source */}
       {typedArticle.primary_source_url && (
-        <div className="mb-8 bg-white rounded-xl border border-[var(--rb-border-subtle)] p-5">
+        <div className="mb-8 rounded-xl border border-[var(--rb-border-subtle)] p-5" style={{ background: "var(--rb-bg-surface)" }}>
           <h2 className="text-sm font-bold text-[var(--rb-text-secondary)] mb-3 uppercase tracking-wide">Primary Source</h2>
           <p className="text-xs text-[var(--rb-text-tertiary)] mb-1 uppercase tracking-wide">
             {typedArticle.primary_source_type?.replace(/_/g, " ")}
           </p>
           <a href={typedArticle.primary_source_url} target="_blank" rel="noopener noreferrer"
-            className="text-sm text-teal-600 hover:underline break-all transition-colors">
+            className="text-sm text-[var(--rb-teal)] hover:underline break-all transition-colors">
             {typedArticle.primary_source_url}
           </a>
         </div>
@@ -264,14 +264,14 @@ export default async function ArticlePage(
             {related.map((rel) => {
               const relCat = CATEGORY_META[rel.category];
               return (
-                <article key={rel.slug} className="group flex gap-4 bg-white rounded-xl border border-[var(--rb-border-subtle)] hover:border-teal-100 p-4 transition-all">
+                <article key={rel.slug} className="group flex gap-4 rounded-xl border border-[var(--rb-border-subtle)] p-4 transition-all hover:border-[var(--rb-border-default)]" style={{ background: "var(--rb-bg-surface)" }}>
                   <div className="flex-1 min-w-0">
                     <Link href={`/article/${rel.slug}`} className="block">
                       <div className="flex items-center gap-2 mb-1.5">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${relCat.color}`}>{relCat.label}</span>
                         {rel.has_audio && <AudioStatusBadge status="published" />}
                       </div>
-                      <h3 className="text-sm font-bold text-[var(--rb-text-primary)] group-hover:text-teal-700 transition-colors leading-snug">{rel.title}</h3>
+                      <h3 className="text-sm font-bold text-[var(--rb-text-primary)] group-hover:text-[var(--rb-teal)] transition-colors leading-snug">{rel.title}</h3>
                       <p className="mt-1 text-xs text-[var(--rb-text-tertiary)] line-clamp-2">{rel.standfirst}</p>
                     </Link>
                   </div>
@@ -283,7 +283,7 @@ export default async function ArticlePage(
       )}
       {/* Back link */}
       <div className="mt-6 pt-6 border-t border-[var(--rb-border-subtle)]">
-        <Link href="/" className="text-sm text-[var(--rb-text-tertiary)] hover:text-teal-700 transition-colors">
+        <Link href="/" className="text-sm text-[var(--rb-text-tertiary)] hover:text-[var(--rb-teal)] transition-colors">
           ← Back to briefings
         </Link>
       </div>

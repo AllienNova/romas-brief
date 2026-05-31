@@ -15,17 +15,19 @@ interface AudioStatusBadgeProps {
 
 export function AudioStatusBadge({ status, className }: AudioStatusBadgeProps) {
   const meta = AUDIO_STATUS_META[status];
-  const color = `var(${meta.token})`;
+  // Label uses neutral text (AA on both themes); the status color rides the
+  // decorative dot. A mid-tone status hue (e.g. #00B4C6) can't hold 4.5:1 as
+  // text on white, so it must not carry the textual meaning alone.
   return (
     <span
       className={`inline-flex items-center gap-1.5 text-xs font-medium ${className ?? ""}`}
-      style={{ color }}
+      style={{ color: "var(--rb-text-secondary)" }}
       role="status"
       aria-label={`Audio status: ${meta.label}`}
     >
       <span
         aria-hidden="true"
-        style={{ width: 6, height: 6, borderRadius: "9999px", backgroundColor: color, display: "inline-block" }}
+        style={{ width: 6, height: 6, borderRadius: "9999px", backgroundColor: `var(${meta.token})`, display: "inline-block" }}
       />
       {meta.label}
     </span>
