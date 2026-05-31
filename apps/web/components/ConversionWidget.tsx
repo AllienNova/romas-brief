@@ -34,7 +34,12 @@ export default function ConversionWidget({
   if (submitted) {
     return (
       <div className={`conversion-widget text-center ${className}`}>
-        <div className="text-3xl mb-3">✅</div>
+        <div className="mb-3 flex justify-center" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--rb-teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 12.5l2.5 2.5L16 9.5" />
+          </svg>
+        </div>
         <h3 className="text-lg font-bold text-[var(--rb-text-primary)] mb-1">You&apos;re in.</h3>
         <p className="text-sm text-[var(--rb-text-secondary)]">
           Your first brief arrives tomorrow morning. Check your inbox.
