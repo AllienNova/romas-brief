@@ -65,8 +65,8 @@
 
   --rb-text-primary:   #F5F5F7;
   --rb-text-secondary: #8E8E93;
-  /* WCAG 1.4.3: ≥4.5:1 on the darkest surface (#000) while staying below secondary. */
-  --rb-text-tertiary:  #7C7C82;
+  /* WCAG 1.4.3: ≥4.5:1 on the raised dark surface (#1C1C1E), the worst common case. */
+  --rb-text-tertiary:  #8A8A90;
 
   --rb-border-subtle:  rgba(255,255,255,0.055);
   --rb-border-default: rgba(255,255,255,0.10);

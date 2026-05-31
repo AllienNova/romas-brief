@@ -22,8 +22,8 @@ export default async function IssuesIndexPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
       <div className="mb-10">
         <p className="text-xs uppercase tracking-widest font-semibold text-teal-600 mb-2">Archive</p>
-        <h1 className="text-3xl font-black text-neutral-900 tracking-tight">Issue Archive</h1>
-        <p className="mt-2 text-neutral-500 text-sm max-w-xl">
+        <h1 className="text-3xl font-black text-[var(--rb-text-primary)] tracking-tight">Issue Archive</h1>
+        <p className="mt-2 text-[var(--rb-text-tertiary)] text-sm max-w-xl">
           Every daily ROMAS Brief issue, archived. Each issue contains the day&apos;s top briefings, signal-scored and primary-source cited.
         </p>
       </div>
@@ -37,13 +37,13 @@ export default async function IssuesIndexPage() {
             <Link
               key={date}
               href={`/issues/${date}`}
-              className="group flex items-center justify-between bg-white rounded-xl border border-neutral-100 hover:border-teal-200 hover:shadow-sm px-5 py-4 transition-all"
+              className="group flex items-center justify-between bg-white rounded-xl border border-[var(--rb-border-subtle)] hover:border-teal-200 hover:shadow-sm px-5 py-4 transition-all"
             >
               <div>
-                <p className="text-sm font-bold text-neutral-900 group-hover:text-teal-700 transition-colors">{label}</p>
-                <p className="text-xs text-neutral-400 mt-0.5">{count} briefings</p>
+                <p className="text-sm font-bold text-[var(--rb-text-primary)] group-hover:text-teal-700 transition-colors">{label}</p>
+                <p className="text-xs text-[var(--rb-text-tertiary)] mt-0.5">{count} briefings</p>
               </div>
-              <span className="text-neutral-300 group-hover:text-teal-400 transition-colors text-lg">→</span>
+              <span className="text-[var(--rb-text-tertiary)] group-hover:text-teal-400 transition-colors text-lg">→</span>
             </Link>
           );
         })}

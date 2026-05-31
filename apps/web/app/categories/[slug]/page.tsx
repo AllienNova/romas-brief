@@ -31,7 +31,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
 function ArticleCard({ article }: { article: MockArticle }) {
   const ctMeta = CONTENT_TYPE_META[article.content_type];
   return (
-    <article className="group bg-white rounded-xl border border-neutral-100 hover:border-teal-100 hover:shadow-sm p-5 transition-all">
+    <article className="group bg-white rounded-xl border border-[var(--rb-border-subtle)] hover:border-teal-100 hover:shadow-sm p-5 transition-all">
       <Link href={`/article/${article.slug}`} className="block">
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <span className={`inline-flex items-center px-2 py-0.5 rounded border text-xs font-medium ${ctMeta.color}`}>
@@ -43,12 +43,12 @@ function ArticleCard({ article }: { article: MockArticle }) {
               Audio
             </span>
           )}
-          <span className="ml-auto text-xs font-bold tabular-nums text-neutral-400">{article.composite_score}</span>
+          <span className="ml-auto text-xs font-bold tabular-nums text-[var(--rb-text-tertiary)]">{article.composite_score}</span>
         </div>
-        <h2 className="text-base font-bold text-neutral-900 group-hover:text-teal-700 transition-colors leading-snug">
+        <h2 className="text-base font-bold text-[var(--rb-text-primary)] group-hover:text-teal-700 transition-colors leading-snug">
           {article.title}
         </h2>
-        <p className="mt-2 text-sm text-neutral-600 leading-relaxed line-clamp-3">{article.standfirst}</p>
+        <p className="mt-2 text-sm text-[var(--rb-text-secondary)] leading-relaxed line-clamp-3">{article.standfirst}</p>
         {article.romas_insight && (
           <div className="mt-3 pl-3 border-l-2 border-teal-200">
             <p className="text-xs text-teal-700 italic line-clamp-2">
@@ -56,7 +56,7 @@ function ArticleCard({ article }: { article: MockArticle }) {
             </p>
           </div>
         )}
-        <time dateTime={article.published_at} className="mt-3 block text-xs text-neutral-400">
+        <time dateTime={article.published_at} className="mt-3 block text-xs text-[var(--rb-text-tertiary)]">
           {new Date(article.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
         </time>
       </Link>
@@ -75,12 +75,12 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-8">
-        <Link href="/" className="hover:text-neutral-600 transition-colors">Home</Link>
+      <nav className="flex items-center gap-2 text-xs text-[var(--rb-text-tertiary)] mb-8">
+        <Link href="/" className="hover:text-[var(--rb-text-secondary)] transition-colors">Home</Link>
         <span>/</span>
-        <Link href="/categories" className="hover:text-neutral-600 transition-colors">Categories</Link>
+        <Link href="/categories" className="hover:text-[var(--rb-text-secondary)] transition-colors">Categories</Link>
         <span>/</span>
-        <span className="text-neutral-600">{meta.label}</span>
+        <span className="text-[var(--rb-text-secondary)]">{meta.label}</span>
       </nav>
 
       {/* Header */}
@@ -88,9 +88,9 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
         <span className={`inline-flex items-center px-3 py-1 rounded text-sm font-medium ${meta.color} mb-3`}>
           {meta.label}
         </span>
-        <h1 className="text-3xl font-black text-neutral-900 tracking-tight">{meta.label}</h1>
-        <p className="mt-2 text-neutral-500 text-sm max-w-xl leading-relaxed">{meta.description}</p>
-        <p className="mt-2 text-xs text-neutral-400">{articles.length} articles</p>
+        <h1 className="text-3xl font-black text-[var(--rb-text-primary)] tracking-tight">{meta.label}</h1>
+        <p className="mt-2 text-[var(--rb-text-tertiary)] text-sm max-w-xl leading-relaxed">{meta.description}</p>
+        <p className="mt-2 text-xs text-[var(--rb-text-tertiary)]">{articles.length} articles</p>
       </div>
 
       {/* Other categories */}
@@ -110,7 +110,7 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
 
       {/* Article grid */}
       {articles.length === 0 ? (
-        <div className="text-center py-16 text-neutral-400">
+        <div className="text-center py-16 text-[var(--rb-text-tertiary)]">
           <p>No articles in this category yet.</p>
         </div>
       ) : (

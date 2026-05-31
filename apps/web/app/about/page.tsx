@@ -170,15 +170,15 @@ export default function AboutPage() {
              <div className="space-y-4 relative">
                {/* Funnel visual */}
                <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 text-center border border-gray-200 dark:border-gray-700">
-                 <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">4,000+ Monthly Publications</p>
+                 <p className="text-sm font-bold text-[var(--rb-text-tertiary)] dark:text-[var(--rb-text-tertiary)] uppercase tracking-wide">4,000+ Monthly Publications</p>
                </div>
                <div className="flex justify-center"><div className="w-0.5 h-6 bg-gray-300 dark:bg-gray-600"></div></div>
                <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 text-center border border-gray-200 dark:border-gray-700 mx-8">
-                 <p className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Algorithmic Triage</p>
+                 <p className="text-sm font-bold text-[var(--rb-text-secondary)] dark:text-[var(--rb-text-tertiary)] uppercase tracking-wide">Algorithmic Triage</p>
                </div>
                <div className="flex justify-center"><div className="w-0.5 h-6 bg-gray-300 dark:bg-gray-600"></div></div>
                <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 text-center border border-gray-200 dark:border-gray-700 mx-16">
-                 <p className="text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wide">Expert Scoring (C, P, N)</p>
+                 <p className="text-sm font-bold text-[var(--rb-text-secondary)] dark:text-[var(--rb-text-tertiary)] uppercase tracking-wide">Expert Scoring (C, P, N)</p>
                </div>
                <div className="flex justify-center"><div className="w-1 h-8" style={{ background: "linear-gradient(180deg, var(--rb-border-subtle), var(--rb-accent))" }}></div></div>
                <div className="rounded-xl p-5 text-center shadow-md transform scale-105" style={{ background: "var(--rb-accent)", color: "white" }}>

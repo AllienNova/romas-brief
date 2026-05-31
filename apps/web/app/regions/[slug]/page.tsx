@@ -33,7 +33,7 @@ function ArticleRow({ article }: { article: MockArticle }) {
   const catMeta = CATEGORY_META[article.category];
   const ctMeta = CONTENT_TYPE_META[article.content_type];
   return (
-    <article className="group py-5 border-b border-neutral-100 last:border-0">
+    <article className="group py-5 border-b border-[var(--rb-border-subtle)] last:border-0">
       <Link href={`/article/${article.slug}`} className="block">
         <div className="flex flex-wrap items-center gap-2 mb-2">
           <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${catMeta.color}`}>
@@ -48,14 +48,14 @@ function ArticleRow({ article }: { article: MockArticle }) {
               Audio
             </span>
           )}
-          <span className="ml-auto text-xs font-bold tabular-nums text-neutral-400">
+          <span className="ml-auto text-xs font-bold tabular-nums text-[var(--rb-text-tertiary)]">
             Score: {article.composite_score}
           </span>
         </div>
-        <h2 className="text-base font-bold text-neutral-900 group-hover:text-teal-700 transition-colors leading-snug">
+        <h2 className="text-base font-bold text-[var(--rb-text-primary)] group-hover:text-teal-700 transition-colors leading-snug">
           {article.title}
         </h2>
-        <p className="mt-1.5 text-sm text-neutral-600 leading-relaxed line-clamp-2">
+        <p className="mt-1.5 text-sm text-[var(--rb-text-secondary)] leading-relaxed line-clamp-2">
           {article.standfirst}
         </p>
         {article.romas_insight && (
@@ -65,7 +65,7 @@ function ArticleRow({ article }: { article: MockArticle }) {
             </p>
           </div>
         )}
-        <time dateTime={article.published_at} className="mt-2 block text-xs text-neutral-400">
+        <time dateTime={article.published_at} className="mt-2 block text-xs text-[var(--rb-text-tertiary)]">
           {new Date(article.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
         </time>
       </Link>
@@ -84,21 +84,21 @@ export default async function RegionPage(props: { params: Promise<{ slug: string
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-8">
-        <Link href="/" className="hover:text-neutral-600 transition-colors">Home</Link>
+      <nav className="flex items-center gap-2 text-xs text-[var(--rb-text-tertiary)] mb-8">
+        <Link href="/" className="hover:text-[var(--rb-text-secondary)] transition-colors">Home</Link>
         <span>/</span>
-        <Link href="/regions" className="hover:text-neutral-600 transition-colors">Regions</Link>
+        <Link href="/regions" className="hover:text-[var(--rb-text-secondary)] transition-colors">Regions</Link>
         <span>/</span>
-        <span className="text-neutral-600">{meta.label}</span>
+        <span className="text-[var(--rb-text-secondary)]">{meta.label}</span>
       </nav>
 
       {/* Header */}
       <div className="mb-8 flex items-start gap-4">
         <span className="text-5xl leading-none flex-shrink-0">{meta.flag}</span>
         <div>
-          <h1 className="text-3xl font-black text-neutral-900 tracking-tight">{meta.label}</h1>
-          <p className="mt-2 text-neutral-500 text-sm max-w-xl leading-relaxed">{meta.description}</p>
-          <p className="mt-2 text-xs text-neutral-400">{articles.length} articles</p>
+          <h1 className="text-3xl font-black text-[var(--rb-text-primary)] tracking-tight">{meta.label}</h1>
+          <p className="mt-2 text-[var(--rb-text-tertiary)] text-sm max-w-xl leading-relaxed">{meta.description}</p>
+          <p className="mt-2 text-xs text-[var(--rb-text-tertiary)]">{articles.length} articles</p>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ export default async function RegionPage(props: { params: Promise<{ slug: string
             <Link
               key={s}
               href={`/regions/${s}`}
-              className="inline-flex items-center gap-1 px-3 py-1 rounded-full border border-neutral-200 text-xs text-neutral-600 hover:border-teal-300 hover:text-teal-700 transition-colors"
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full border border-[var(--rb-border-default)] text-xs text-[var(--rb-text-secondary)] hover:border-teal-300 hover:text-teal-700 transition-colors"
             >
               <span>{m.flag}</span> {m.label}
             </Link>
@@ -119,7 +119,7 @@ export default async function RegionPage(props: { params: Promise<{ slug: string
 
       {/* Article list */}
       {articles.length === 0 ? (
-        <div className="text-center py-16 text-neutral-400">
+        <div className="text-center py-16 text-[var(--rb-text-tertiary)]">
           <p>No articles for this region yet.</p>
         </div>
       ) : (

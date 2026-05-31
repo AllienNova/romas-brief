@@ -23,8 +23,8 @@ export default async function RegionsIndexPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
       <div className="mb-10">
         <p className="text-xs uppercase tracking-widest font-semibold text-teal-600 mb-2">Browse</p>
-        <h1 className="text-3xl font-black text-neutral-900 tracking-tight">By Region</h1>
-        <p className="mt-2 text-neutral-500 text-sm max-w-xl">
+        <h1 className="text-3xl font-black text-[var(--rb-text-primary)] tracking-tight">By Region</h1>
+        <p className="mt-2 text-[var(--rb-text-tertiary)] text-sm max-w-xl">
           Radiation oncology intelligence filtered by geography — regulatory decisions, clinical trials, and practice updates from your region.
         </p>
       </div>
@@ -36,17 +36,17 @@ export default async function RegionsIndexPage() {
             <Link
               key={slug}
               href={`/regions/${slug}`}
-              className="group flex items-start gap-4 bg-white rounded-xl border border-neutral-100 hover:border-teal-200 hover:shadow-sm p-5 transition-all"
+              className="group flex items-start gap-4 bg-white rounded-xl border border-[var(--rb-border-subtle)] hover:border-teal-200 hover:shadow-sm p-5 transition-all"
             >
               <span className="text-3xl leading-none flex-shrink-0">{meta.flag}</span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base font-bold text-neutral-900 group-hover:text-teal-700 transition-colors">
+                  <h2 className="text-base font-bold text-[var(--rb-text-primary)] group-hover:text-teal-700 transition-colors">
                     {meta.label}
                   </h2>
-                  <span className="text-xs text-neutral-400 tabular-nums">{count} articles</span>
+                  <span className="text-xs text-[var(--rb-text-tertiary)] tabular-nums">{count} articles</span>
                 </div>
-                <p className="mt-1 text-xs text-neutral-500 leading-relaxed line-clamp-2">
+                <p className="mt-1 text-xs text-[var(--rb-text-tertiary)] leading-relaxed line-clamp-2">
                   {meta.description}
                 </p>
               </div>

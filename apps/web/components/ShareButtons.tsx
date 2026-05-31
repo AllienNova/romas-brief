@@ -17,13 +17,13 @@ export default function ShareButtons({ title, slug }: ShareButtonsProps) {
   };
 
   return (
-    <div className="mb-10 flex flex-wrap items-center gap-3 py-4 border-t border-b border-neutral-100">
-      <span className="text-xs text-neutral-500 font-medium">Share:</span>
+    <div className="mb-10 flex flex-wrap items-center gap-3 py-4 border-t border-b border-[var(--rb-border-subtle)]">
+      <span className="text-xs text-[var(--rb-text-tertiary)] font-medium">Share:</span>
       <a
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-200 text-xs text-neutral-600 hover:bg-neutral-50 transition-colors"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--rb-border-default)] text-xs text-[var(--rb-text-secondary)] hover:bg-[var(--rb-bg-raised)] transition-colors"
       >
         𝕏 Twitter
       </a>
@@ -31,13 +31,13 @@ export default function ShareButtons({ title, slug }: ShareButtonsProps) {
         href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-200 text-xs text-neutral-600 hover:bg-neutral-50 transition-colors"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--rb-border-default)] text-xs text-[var(--rb-text-secondary)] hover:bg-[var(--rb-bg-raised)] transition-colors"
       >
         in LinkedIn
       </a>
       <button
         onClick={handleCopy}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-200 text-xs text-neutral-600 hover:bg-neutral-50 transition-colors"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--rb-border-default)] text-xs text-[var(--rb-text-secondary)] hover:bg-[var(--rb-bg-raised)] transition-colors"
       >
         <LinkIcon size={14} /> Copy link
       </button>

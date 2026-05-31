@@ -95,10 +95,10 @@ export default async function ListenPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
       {/* Page header */}
       <div className="mb-10">
-        <h1 className="text-3xl font-bold tracking-tight text-neutral-900">
+        <h1 className="text-3xl font-bold tracking-tight text-[var(--rb-text-primary)]">
           Listen to ROMAS Brief
         </h1>
-        <p className="mt-3 text-neutral-600 max-w-xl">
+        <p className="mt-3 text-[var(--rb-text-secondary)] max-w-xl">
           Every briefing is available as audio. Subscribe via RSS, Apple Podcasts, or
           Spotify — or listen directly below.
         </p>
@@ -109,7 +109,7 @@ export default async function ListenPage() {
             <a
               key={tier}
               href={`/feeds/${tier.replace(/_/g, "-")}.xml`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-200 text-xs font-medium text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--rb-border-default)] text-xs font-medium text-[var(--rb-text-secondary)] hover:border-[var(--rb-border-strong)] hover:bg-[var(--rb-bg-raised)] transition-colors"
             >
               <svg className="w-3 h-3 text-orange-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path d="M3.75 3a.75.75 0 000 1.5A11.75 11.75 0 0115.5 16.25a.75.75 0 001.5 0A13.25 13.25 0 003.75 3zM3.75 7.5a.75.75 0 000 1.5A7.25 7.25 0 0111 16.25a.75.75 0 001.5 0A8.75 8.75 0 003.75 7.5zM5 14.5a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
@@ -122,7 +122,7 @@ export default async function ListenPage() {
 
       {/* No audio yet */}
       {sortedTiers.length === 0 && (
-        <div className="text-center py-16 text-neutral-400">
+        <div className="text-center py-16 text-[var(--rb-text-tertiary)]">
           <p>No audio briefings published yet. Check back soon.</p>
         </div>
       )}
@@ -136,9 +136,9 @@ export default async function ListenPage() {
           <section key={tier} className="mb-12">
             <div className="flex items-baseline justify-between mb-4">
               <div>
-                <h2 className="text-xl font-bold text-neutral-900">{meta.label}</h2>
+                <h2 className="text-xl font-bold text-[var(--rb-text-primary)]">{meta.label}</h2>
                 {meta.description && (
-                  <p className="text-sm text-neutral-500 mt-0.5">{meta.description}</p>
+                  <p className="text-sm text-[var(--rb-text-tertiary)] mt-0.5">{meta.description}</p>
                 )}
               </div>
               <Link
@@ -149,7 +149,7 @@ export default async function ListenPage() {
               </Link>
             </div>
 
-            <div className="divide-y divide-neutral-100">
+            <div className="divide-y divide-[var(--rb-border-subtle)]">
               {jobs.slice(0, 5).map((job) => {
                 const article = job.articles;
                 if (!article) return null;
@@ -169,15 +169,15 @@ export default async function ListenPage() {
                     {/* Article info */}
                     <div className="flex-1 min-w-0">
                       <Link href={`/article/${article.slug}`} className="block">
-                        <h3 className="font-semibold text-neutral-900 group-hover:text-teal-700 transition-colors leading-snug line-clamp-2">
+                        <h3 className="font-semibold text-[var(--rb-text-primary)] group-hover:text-teal-700 transition-colors leading-snug line-clamp-2">
                           {article.title}
                         </h3>
                         {article.standfirst && (
-                          <p className="mt-1 text-sm text-neutral-500 line-clamp-1">
+                          <p className="mt-1 text-sm text-[var(--rb-text-tertiary)] line-clamp-1">
                             {article.standfirst}
                           </p>
                         )}
-                        <div className="mt-1.5 flex items-center gap-3 text-xs text-neutral-400">
+                        <div className="mt-1.5 flex items-center gap-3 text-xs text-[var(--rb-text-tertiary)]">
                           {job.published_at && (
                             <time dateTime={job.published_at}>
                               {new Date(job.published_at).toLocaleDateString("en-US", {
