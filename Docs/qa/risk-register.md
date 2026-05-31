@@ -231,3 +231,17 @@ The cycle-6 BLOCKERS above are **superseded** by the Phase 8 consolidation + Wav
 | **B-05 / B-10** (banned source / Beehiiv DPA) | Open | Open — Kimal track (B-05 verify in SHIP-04 doc sweep; B-10 = provisioning P-17). |
 
 **New since cycle-6:** **ADR-0018** — PlayHT shut down 2025-12-31 (Meta acquisition); TTS failover replacement pending Q-F (Cartesia recommended). Tracked in SHIP-14.
+
+## Cycle-7 risk register (2026-05-31 · commit 741c993 · post Waves 1–3)
+
+| ID | Risk | Severity | Likelihood | Trigger | Mitigation status | Owner |
+|---|---|---|---|---|---|---|
+| **R-C7-1** | **Leaked live Vercel deploy token in git history** (`vcp_…`, was in architecture.md/AGENTS.md) | **Blocker** | High | Anyone with repo/history access uses it to deploy to prod | Working tree redacted (741c993); **token still in history → MUST be rotated at vercel.com**. History-scrub (force-push) gated. | **Kimal (rotate now)** |
+| R-C7-2 | Not Day-1 launchable — no published content + deploy env unset | Blocker | High | Launch attempted before the 8-week content ramp + env | Editorial ramp P-21 (long pole); deploy env P-16/P-09; reader uses mock fallback until then | Kimal / editorial |
+| R-C7-3 | No integration/E2E tests on auth-class surfaces (CMS QA gate, Beehiiv, Resend, reader↔DB) | High | Medium | A regression in publish-gate / sync ships untested | Unit + pure-fn tests exist (~96); integration + coverage + E2E = SHIP-17 | ENG |
+| R-C7-4 | Migration 0012 (RLS WITH CHECK + gate-#8 tags) not applied to live DB | Medium | Medium | Live DB lacks the hardening until applied | Validated via rollback txn; applies via deploy-migrations pipeline or Kimal OK | ENG/Kimal |
+| R-C7-5 | TTS failover undecided (Q-F) → single-vendor (ElevenLabs) audio risk | Medium | Medium | ElevenLabs outage halts all audio | SHIP-14 added retry + a documented failover seam; ADR-0018 awaits Q-F | Kimal |
+| R-C7-6 | Audio pipeline runtime-unverified (never executed end-to-end) | Medium | Medium | First real audio job fails in prod | SHIP-27 (needs ElevenLabs key + R2 + LOUDNORM_ENDPOINT) | ENG/Kimal |
+| R-C7-7 | Reader audio modules / `has_audio` not wired to `audio_jobs` | Low | High | Listen page empty against real DB | Deferred to SHIP-23 (audio surface) | ENG |
+
+**Top 3 gating release:** R-C7-1 (rotate the Vercel token — only true P0 that's actionable now), R-C7-2 (content + deploy), R-C7-3 (integration tests). All Blocker-severity rows must be resolved or formally accepted before any GO.
