@@ -176,6 +176,7 @@ export function InlineAudioPlayer({
               onChange={handleScrub}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               aria-label="Audio scrubber"
+              aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
             />
           </div>
           <span className="kicker w-8 flex-shrink-0">{formatTime(duration)}</span>

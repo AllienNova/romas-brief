@@ -240,6 +240,8 @@ export default async function HomePage() {
 
   return (
     <div style={{ background: "var(--rb-bg-page)" }}>
+      {/* Single page h1 for document outline (WCAG 1.3.1 / 2.4.6) — visually hidden; the hero carousel carries the visible headings. */}
+      <h1 className="sr-only">ROMAS Brief — radiation oncology, decoded daily</h1>
 
       {/* ── Dismissible explanation strip ──────────────────────────── */}
       <DismissibleStrip />

@@ -75,9 +75,10 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
     goTo((page - 1 + pageCount) % pageCount, "prev");
   }, [page, pageCount, goTo]);
 
-  // Auto-advance
+  // Auto-advance — suppressed under prefers-reduced-motion (WCAG 2.3.3 / 2.2.2)
   useEffect(() => {
     if (paused) return;
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     timerRef.current = setInterval(advance, interval * 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [advance, interval, paused]);
@@ -105,6 +106,7 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
   useEffect(() => {
     setProgress(0);
     if (paused) return;
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const step = 100 / (interval * 20); // update every 50ms
     const prog = setInterval(() => {
       setProgress(p => {

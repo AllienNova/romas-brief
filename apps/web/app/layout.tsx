@@ -143,6 +143,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="h-full antialiased" style={{ background: "var(--rb-bg-page)", color: "var(--rb-text-primary)" }}>
 
+        {/* Skip-to-content (WCAG 2.4.1) — first focusable element. */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:z-[300] focus:top-3 focus:left-3 focus:px-4 focus:py-2 focus:rounded-lg focus:text-white focus:shadow-lg"
+          style={{ background: "var(--rb-accent)" }}
+        >
+          Skip to content
+        </a>
+
         {/* ── Edition Banner ─────────────────────────────────────────── */}
         <div
           className="text-center py-2 px-4"
