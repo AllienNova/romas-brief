@@ -27,6 +27,15 @@ Which worker needs which secret is listed per item below. When in doubt, tell me
 
 # 🔴 CRITICAL PATH — do these first
 
+## P-00 · Enable GitHub Actions billing for the AllienNova org — *CI is dead until you do*
+**Why:** GitHub Actions has **never run** on this repo. Every push/PR since 2026-05-22 fails at `startup_failure`. Diagnosed 2026-05-31 (commit cb5b406): not a code bug — a trivial `echo` workflow also failed. Cause: `AllienNova` is a **GitHub Free-plan org** and `romas-brief` is **private**, so Actions is blocked (exhausted free minutes / no payment method / spending limit at $0). Until fixed, there is **no CI verification** — every merge rests only on the local `agent-verify` gates. Blocks the deploy workflows (`deploy-pages`, `deploy-workers`, `deploy-migrations`) entirely → blocks SHIP-31/SHIP-32 launch.
+**Time:** ~5 min.
+Pick **one**:
+1. **Add billing (recommended):** https://github.com/organizations/AllienNova/settings/billing → add a payment method → set an **Actions spending limit > $0**. Private-repo Actions resume immediately.
+2. **Make the repo public:** repo → Settings → General → Danger Zone → *Change visibility → Public*. Actions are free + unlimited for public repos. (Only if the codebase is OK to open-source.)
+3. **Self-hosted runner:** repo → Settings → Actions → Runners → *New self-hosted runner*. Free minutes not consumed; you run the compute.
+**Done when:** a pushed commit produces a **non-`startup_failure`** run with attributed jobs. Verify: `gh run list --branch main --limit 1` shows a real workflow name + `success`/`failure` (not blank + `startup_failure`).
+
 ## P-01 · ElevenLabs Creator API key
 **Why:** primary TTS for all audio tiers. Blocks SHIP-27 (audio runtime) + launch gates #13/#14.
 **Time:** ~15 min.

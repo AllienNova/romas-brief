@@ -71,8 +71,7 @@ jobs:
         run: pnpm audit --audit-level=high
         continue-on-error: false
 
-      - name: No-stub guard (no TODO/FIXME/HACK in source other than the
-              T-115 auth-gate placeholder per Bucket C C9)
+      - name: "No-stub guard (TODO/FIXME/HACK allow-list: T-115 auth-gate placeholder)"
         run: |
           set -uo pipefail
           unexpected=$(grep -rn -E 'TODO|FIXME|HACK' \
