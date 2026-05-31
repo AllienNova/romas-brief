@@ -493,3 +493,51 @@ The cycle-6 NO-GO verdict above was issued against a split-repo baseline (`9c428
 - **CI red → green** — Next 14→15.5.18 + React 19 (SHIP-01) closed the 5 high CVEs; `<img>`→`next/image` (SHIP-02) closed the lint failure. `pnpm audit --audit-level=high` = 0 vulns; lint/typecheck/build all exit 0.
 
 **This file is now historical.** The forward verdict path is `team-qa` cycle-7 = SHIP-33, gated on the SHIP-NN backlog in `Docs/specs/ship-execution-plan.md`. No GO/NO-GO is asserted here; cycle-7 runs after Wave 5.
+
+---
+
+# Cycle-7 team-qa VERDICT — 2026-05-31 · commit 741c993
+
+## Verdict: **NO-GO** (for Day-1 launch) · engineering foundation **healthy**
+
+One actionable P0 (leaked deploy token) plus unmet launch prerequisites. The code on `main` after Waves 1–3 is sound and CI-green; it is not a *launch* yet (no content, not deployed, audio unverified, integration tests absent). NO-GO is the expected pre-launch state, not a regression.
+
+### Executive summary (3 sentences)
+This session shipped 15 SHIP tasks across Waves 1–3 to `main` (10 PRs, CI green throughout): Next 15 + 0 CVEs, real CI, reader↔Supabase with XSS closed, signal-scoring engine, CMS audio-QA gate, Beehiiv + Resend workers, audio-producer correctness, RLS hardening. team-qa cycle-7 found **one P0** — a live Vercel deploy token in git history (working tree redacted in `741c993`; **rotation required**) — and confirmed the rest of the session's surfaces sound. The product cannot launch until the token is rotated, content is produced (P-21), the deploy env is set (P-16), the audio pipeline is runtime-verified (SHIP-27), and integration/E2E tests + Wave 4–5 land.
+
+### Pass/fail by dimension
+| Dimension | Status | Evidence |
+|---|---|---|
+| Build/lint/typecheck/audit | ✅ PASS | all exit 0; 0 high CVEs (`test-results.md`) |
+| Unit tests | ✅ PASS | 9 suites / ~96 cases green |
+| Integration / E2E tests | ❌ MISSING | no real-backend integration, no E2E (→ SHIP-17) |
+| Coverage instrumentation | ❌ MISSING | not wired (→ SHIP-17) |
+| Secrets (working tree) | ✅ CLEAN | gitleaks protect --staged clean post-redaction |
+| Secrets (git history) | ❌ **P0** | Vercel token `vcp_…` (S-C7-01) — **rotate** |
+| RLS / authz | ✅ SOUND | 0011 + 0012 WITH CHECK; CMS gate 3-layer |
+| Reader XSS | ✅ FIXED | SHIP-07 sanitizer + tests |
+| Webhook auth (Beehiiv/Resend) | ✅ SOUND | shared-secret + Svix, constant-time |
+| Audio pipeline runtime | ⚠️ UNVERIFIED | never executed (→ SHIP-27, needs keys/R2) |
+| Migration 0012 (live) | ⚠️ NOT APPLIED | validated via rollback; applies via pipeline |
+| Content (500 articles + audio) | ❌ NOT STARTED | P-21 (8-week ramp) |
+| Deploy env / hosting | ❌ NOT SET | P-16/P-09 |
+| Perf / a11y (Lighthouse/axe) | ⏸️ NOT RUN | reader on mock data; needs deploy+content (Wave 4: SHIP-22/24) |
+
+### Top 3 risks (gating)
+1. **R-C7-1 / S-C7-01 — leaked Vercel token in history → ROTATE now** (only P0 actionable today; Kimal).
+2. **R-C7-2 — content + deploy** (P-21 long pole + P-16).
+3. **R-C7-3 — no integration/E2E tests** on auth-class surfaces (SHIP-17).
+
+### Top 3 confident wins
+1. CI red→green + 0 CVEs + ~96 passing unit tests — a real, gated foundation (was: red CI, mock-only reader, no tests).
+2. The Rule-6 audio-QA gate is enforced in 3 independent layers (RLS · DB CHECK · route handler), verified identical to the schema.
+3. Reader↔Supabase data layer + signal-scoring engine + Beehiiv/Resend integration workers built, tested, and merged.
+
+### Conditions to reach GO (next iteration)
+- **Now:** rotate the Vercel token (S-C7-01); apply migration 0012 via the deploy pipeline.
+- **Eng:** SHIP-17 (integration + E2E + coverage + wire CI test), SHIP-18/19, Wave 4 (SHIP-20–25 UI/a11y/brand/perf), Wave 5 (SHIP-26 ops, SHIP-27 audio runtime verify, SHIP-28–33).
+- **Kimal:** Q-F failover vendor; provisioning (audio keys/R2/Resend DNS/Beehiiv DPA); the P-21 content ramp; the SSOT §12.8 18-item Day-1 gate.
+
+### Sign-off
+- Date: 2026-05-31 · Commit: `741c993` · Verdict: **NO-GO** (pre-launch; foundation healthy) · pending `team-qa-critic`.
+

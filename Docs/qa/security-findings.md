@@ -375,6 +375,33 @@ Business invariant: subscriber count hidden until 2,500. `subscriber_count` view
 | 2026-05-14 | 2.0.0 | Cycle-6 contract audit. 11 new findings (NEW-S-001 through NEW-S-011). Cycle-1 status review. OWASP re-mapping. 5 security blockers identified. |
 | 2026-05-21 | 2.1.0 | build-2026-05-21 qa-pass: 26 → 14 vulns (0 critical) via D-025 next 14.2.35 bump + 3 transitive overrides. ADR-0015 v2 acceptance. |
 | 2026-05-22 | 2.2.0 | /team-qa cycle-5: ADR-0015 v2 14-CVE inventory still matches; @supabase/ssr 0.10.3 + supabase-js 2.106.1 added 0 new CVEs; SECRETS.md v1.0.0 lands 27-secret inventory + rotation policy; voice consent template covers donor cascade. No new P0/P1 security findings introduced by M1-completion or M1c-closeout. |
+| 2026-05-31 | 3.0.0 | /team-qa cycle-7 (code-bearing, commit 741c993). See section below. |
+
+---
+
+## Cycle-7 security findings (2026-05-31 · commit 741c993 · post Waves 1–3)
+
+### Findings
+
+| ID | Severity | OWASP | Finding | Evidence | Status / fix |
+|---|---|---|---|---|---|
+| **S-C7-01** | **P0** | A07 / secrets mgmt | **Live Vercel API deploy token (`vcp_…`) + team id committed in plaintext** in a working `curl` deploy command | `Docs/specs/architecture.md:314` + `apps/web/AGENTS.md:35` (history); `gitleaks detect` flags both | Working tree **redacted** (commit 741c993 → `$VERCEL_TOKEN`/`$VERCEL_TEAM_ID`). **Token still in git history → MUST be rotated at vercel.com (revoke + reissue).** History-scrub (force-push) is gated + secondary to rotation. **Blocks GO.** |
+| S-C7-02 | RESOLVED | A06 | 5 high Next.js CVEs (14.2.35) | prior cycle | Closed — SHIP-01 bumped to 15.5.18; `pnpm audit --audit-level=high` = 0. |
+| S-C7-03 | RESOLVED | A03 | Reader markdown XSS (`dangerouslySetInnerHTML` on unsanitized hand-rolled renderer) | `apps/web/app/article/[slug]/page.tsx:213` | Closed — SHIP-07 `apps/web/lib/markdown.ts` escapes input first + protocol-allowlists hrefs; 8 tests (script/img-onerror inert, javascript:/data: dropped). |
+| S-C7-04 | INFO (sound) | A01 | RLS UPDATE policies lacked WITH CHECK | `0011_rls_policies.sql` | SHIP-16 migration 0012 adds WITH CHECK to editor_publish + audio_qa_flip (validated via rollback txn; pending live apply). |
+| S-C7-05 | INFO (sound) | A07 | Beehiiv webhook auth = shared-secret custom header (Beehiiv has no HMAC) | `workers/beehiiv-webhook/src/sync.ts` | Constant-time `verifySecret`; ADR-0019. Acceptable per Beehiiv's capabilities. |
+| S-C7-06 | INFO (sound) | A07 | Resend webhook = Svix signature verify | `workers/email-canary/src/svix.ts` | Per-spec HMAC-SHA256 + 300s replay tolerance + constant-time compare; 35 tests. |
+| S-C7-07 | INFO (sound) | A01 | CMS audio-QA publish gate | `apps/cms/app/api/audio-qa/[id]/route.ts` + `lib/audio-qa-gate.ts` | 3-layer defense (RLS who · DB CHECK whether · route-handler re-fetch+gate); state-machine guards. |
+| S-C7-08 | P2 | A09 | Audio worker `LOUDNORM_ENDPOINT` fail-closed now correct | SHIP-14 | Closed — skips rather than ship wrong loudness. |
+
+### Independent verification (this cycle)
+- `gitleaks detect --source .` (full history): exactly **2** findings, both the **same** S-C7-01 Vercel token (architecture.md + AGENTS.md). No other secrets in history. `svix.test.ts` `whsec_` fixtures correctly annotated `gitleaks:allow`.
+- Working-tree secret scan (`gitleaks protect --staged`, the pre-commit gate): **CLEAN** after redaction.
+- `.env` untracked + gitignored; no hardcoded keys in `apps/**` / `workers/**` / `packages/**` source.
+- `pnpm audit --audit-level=high`: **0** high/critical.
+
+### Verdict
+**Secret scan: working tree CLEAN · git history NOT CLEAN (the Vercel token).** One P0 (S-C7-01) — rotation required. All other this-session surfaces (XSS, RLS, webhook auth, QA gate) reviewed and sound. **Counts: P0×1 · P1×0 · P2×1 · INFO×5.**
 
 ---
 
