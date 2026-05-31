@@ -155,13 +155,19 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
               key={i}
               onClick={() => goTo(i, i > page ? "next" : "prev")}
               aria-label={`Go to page ${i + 1}`}
-              className="rounded-full transition-all duration-300"
-              style={{
-                width: i === page ? "16px" : "6px",
-                height: "6px",
-                background: i === page ? catColor : "var(--rb-border-default)",
-              }}
-            />
+              className="flex items-center justify-center transition-all duration-300"
+              style={{ minWidth: 24, minHeight: 24 }}
+            >
+              <span
+                aria-hidden="true"
+                className="block rounded-full transition-all duration-300"
+                style={{
+                  width: i === page ? "16px" : "6px",
+                  height: "6px",
+                  background: i === page ? catColor : "var(--rb-border-default)",
+                }}
+              />
+            </button>
           ))}
         </div>
         <button

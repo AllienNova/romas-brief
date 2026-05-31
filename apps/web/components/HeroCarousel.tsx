@@ -282,15 +282,21 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
               aria-selected={i === current}
               aria-label={`Slide ${i + 1}: ${s.title}`}
               onClick={() => goTo(i, i > current ? "next" : "prev")}
-              className="transition-all"
-              style={{
-                width: i === current ? "20px" : "6px",
-                height: "6px",
-                borderRadius: "3px",
-                background: i === current ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.4)",
-                transition: prefersReduced ? "none" : "width 0.3s ease, background 0.3s ease",
-              }}
-            />
+              className="flex items-center justify-center"
+              style={{ minWidth: 24, minHeight: 24 }}
+            >
+              <span
+                aria-hidden="true"
+                className="block transition-all"
+                style={{
+                  width: i === current ? "20px" : "6px",
+                  height: "6px",
+                  borderRadius: "3px",
+                  background: i === current ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.4)",
+                  transition: prefersReduced ? "none" : "width 0.3s ease, background 0.3s ease",
+                }}
+              />
+            </button>
           ))}
         </div>
       )}

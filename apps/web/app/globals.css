@@ -15,7 +15,8 @@
   /* Text */
   --rb-text-primary:   #1C1C1E;
   --rb-text-secondary: #636366;
-  --rb-text-tertiary:  #AEAEB2;
+  /* WCAG 1.4.3: tertiary must hold ≥4.5:1 on the lightest surface (#FFF). */
+  --rb-text-tertiary:  #6E6E73;
 
   /* Borders */
   --rb-border-subtle:  rgba(0,0,0,0.055);
@@ -64,7 +65,8 @@
 
   --rb-text-primary:   #F5F5F7;
   --rb-text-secondary: #8E8E93;
-  --rb-text-tertiary:  #636366;
+  /* WCAG 1.4.3: ≥4.5:1 on the darkest surface (#000) while staying below secondary. */
+  --rb-text-tertiary:  #7C7C82;
 
   --rb-border-subtle:  rgba(255,255,255,0.055);
   --rb-border-default: rgba(255,255,255,0.10);
