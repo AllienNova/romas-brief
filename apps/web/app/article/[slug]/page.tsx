@@ -13,7 +13,8 @@ import {
   AUDIENCE_META,
 } from "@/lib/mock-data";
 import { getArticleBySlug, getArticlesByCategory, getPublishedSlugs } from "@/lib/articles";
-import InlineAudioPlayer from "@/components/InlineAudioPlayer";
+import { AudioPlayer } from "@/components/AudioPlayer";
+import { AudioStatusBadge } from "@/components/AudioStatusBadge";
 import ShareButtons from "@/components/ShareButtons";
 import { renderMarkdown } from "@/lib/markdown";
 
@@ -91,7 +92,7 @@ export default async function ArticlePage(
 
   const audioUrl = mockArticle.has_audio ? (mockArticle.audio_url ?? null) : null;
   const transcriptUrl = null;
-  const primaryAudio = mockArticle.has_audio ? { audio_tier: "standard", duration_sec: null } : null;
+  const primaryAudio = mockArticle.has_audio ? { audio_tier: "audio_brief", duration_sec: null } : null;
 
   const bodyHtml = typedArticle.body_md ? renderMarkdown(typedArticle.body_md) : null;
 
@@ -168,7 +169,16 @@ export default async function ArticlePage(
       {/* Inline audio player */}
       {audioUrl && primaryAudio && (
         <div className="mb-8">
-          <InlineAudioPlayer audioUrl={audioUrl} title={typedArticle.title} />
+          {/* QA-gated: reader RLS only exposes published audio (Rule 6). */}
+          <AudioPlayer
+            variant="banner"
+            status="published"
+            audioUrl={audioUrl}
+            title={typedArticle.title}
+            tier={primaryAudio.audio_tier}
+            durationSec={primaryAudio.duration_sec}
+            transcriptUrl={transcriptUrl}
+          />
         </div>
       )}
       {/* ROMAS Insight callout */}
@@ -259,7 +269,7 @@ export default async function ArticlePage(
                     <Link href={`/article/${rel.slug}`} className="block">
                       <div className="flex items-center gap-2 mb-1.5">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${relCat.color}`}>{relCat.label}</span>
-                        {rel.has_audio && <span className="text-xs text-teal-600">▶ Audio</span>}
+                        {rel.has_audio && <AudioStatusBadge status="published" />}
                       </div>
                       <h3 className="text-sm font-bold text-neutral-900 group-hover:text-teal-700 transition-colors leading-snug">{rel.title}</h3>
                       <p className="mt-1 text-xs text-neutral-500 line-clamp-2">{rel.standfirst}</p>
