@@ -29,6 +29,12 @@
   --teal:          #0D766E;
   --teal-subtle:   #E6F4F3;
 
+  /* Audio status (CLAUDE.md §7 / Design Spec v1.1 — canonical --rb-* names).
+     Consumed by AudioStatusBadge (SHIP-23) + the QA-gated player. */
+  --rb-audio-published: #00B4C6;
+  --rb-audio-pending:   #F59E0B;
+  --rb-audio-skipped:   #94A3B8;
+
   /* Shadows — refined, less heavy */
   --shadow-xs: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
   --shadow-sm: 0 2px 8px -1px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
@@ -69,6 +75,11 @@
   --accent-subtle: #001A3D;
   --teal:          #30D5C8;
   --teal-subtle:   #001A18;
+
+  /* Audio status — brightened for contrast on near-black surfaces */
+  --rb-audio-published: #22D3EE;
+  --rb-audio-pending:   #FBBF24;
+  --rb-audio-skipped:   #8E8E93;
 
   --shadow-sm: 0 2px 8px -1px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.30);
   --shadow-md: 0 6px 20px -4px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.35);
