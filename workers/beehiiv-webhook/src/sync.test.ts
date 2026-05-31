@@ -1,5 +1,5 @@
 // =====================================================================
-// workers/beehiiv-webhook/src/sync.test.ts · ROMAS Brief · SHIP-11
+// workers/beehiiv-webhook/src/sync.test.ts · ROMAS Wire · SHIP-11
 // node:test unit suite for the pure sync core. Run with:
 //   node --experimental-strip-types --test src/sync.test.ts
 // =====================================================================

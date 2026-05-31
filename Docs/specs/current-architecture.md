@@ -1,11 +1,11 @@
 ---
-title: Current Architecture — ROMAS Brief (as-of 2026-05-14)
+title: Current Architecture — ROMAS Wire (as-of 2026-05-14)
 version: 1.0.0
 date: 2026-05-14
 note: Repo is code-empty. "Current" architecture is the planning kit + documented workflow contracts. Target architecture is at `architecture.md`.
 ---
 
-# Current Architecture — ROMAS Brief
+# Current Architecture — ROMAS Wire
 
 ## 0. State at index time
 

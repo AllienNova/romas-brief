@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Audio Architecture
+title: ROMAS Wire — Audio Architecture
 version: 1.0.0
 date: 2026-05-21
 status: Canonical sibling to Master-Strategy v2.1 + Daily-Production-Runbook v1.1 + Launch-Plan v1.1
@@ -9,11 +9,11 @@ supersedes: implicit reference target in CLAUDE.md §6 + AGENT.md §12 prior to 
 sibling_docs: Docs/ROMAS-Brief-Master-Strategy.md, Docs/ROMAS-Brief-Daily-Production-Runbook.md, Docs/ROMAS-Brief-500-Article-Launch-Plan.md, Docs/ROMAS-Brief-Design-Specification.md (when R-005 lands)
 ---
 
-# ROMAS Brief — Audio Architecture v1.0
+# ROMAS Wire — Audio Architecture v1.0
 
 ## 0. Purpose
 
-This document is the canonical reference for **how ROMAS Brief produces, masters, validates, distributes, and revokes audio**. It synthesises the audio-related decisions scattered across SSOT, the ADRs, the runtime skills, and the agent definitions into a single sibling-doc to the Master-Strategy + Runbook. When `audio-producer` or `audio-qa-reviewer` agents load context, they should refer here for the operational model and to the ADRs for the underlying decisions.
+This document is the canonical reference for **how ROMAS Wire produces, masters, validates, distributes, and revokes audio**. It synthesises the audio-related decisions scattered across SSOT, the ADRs, the runtime skills, and the agent definitions into a single sibling-doc to the Master-Strategy + Runbook. When `audio-producer` or `audio-qa-reviewer` agents load context, they should refer here for the operational model and to the ADRs for the underlying decisions.
 
 This file does NOT introduce new decisions. Every numeric, every threshold, every state-machine value is sourced from SSOT or an ADR.
 
@@ -21,7 +21,7 @@ This file does NOT introduce new decisions. Every numeric, every threshold, ever
 
 ## 1. Tier overview
 
-ROMAS Brief ships **four audio tiers Day 1** and **one video tier Day 60** (SSOT §3 row 6, Kimal-locked 2026-05-14; ADR-0005 cycle-3).
+ROMAS Wire ships **four audio tiers Day 1** and **one video tier Day 60** (SSOT §3 row 6, Kimal-locked 2026-05-14; ADR-0005 cycle-3).
 
 | Tier | Name | Length | Cadence | RSS feed | Voice engine | Launch | Reference |
 |---|---|---|---|---|---|---|---|
@@ -47,11 +47,48 @@ Pace: **145–160 wpm** (SSOT §3 row 13).
 
 ### 2.1 Engines (ADR-0004)
 
-**Primary**: ElevenLabs Multilingual v2, voice ID held in `ELEVENLABS_ROMAS_VOICE_ID` (Worker secret). Voice clone of the ROMAS Clinical Narrator (Kimal-authorised; see voice-consent-registry once R-110 lands).
+**Primary**: ElevenLabs Multilingual v2, **3 Creator-tier voices selected by tier role** per D-032 (2026-05-22). Replaces the single ROMAS Clinical Narrator (Kimal clone) path; Kimal clone deferred to post-launch revisit.
+
+| Env var | Tier(s) | Editorial register |
+|---|---|---|
+| `ELEVENLABS_VOICE_ID_BRIEF` | Audio Brief (tier 1) + Daily Brief (tier 2) | Crisp, calm narrator for short-form daily content. ~70% of production volume. |
+| `ELEVENLABS_VOICE_ID_PODCAST` | The ROMAS Podcast (tier 3) | Deeper voice for 30-60 min weekly deep-dives. ~10% of production volume but highest per-episode minutes. |
+| `ELEVENLABS_VOICE_ID_CONFERENCE` | Conference Brief (tier 4) + Video Podcast (tier 5) | Event-paced voice for conference + future Day-60 video coverage. |
+
+The audio-producer agent picks the voice by `audio_jobs.audio_tier` enum value (see migration `0002_create_audio_jobs.sql` for the canonical 5-value enum). When a new audio job arrives, the producer reads its `audio_tier` field, selects the matching env var, and uses that voice ID for the synthesis call. Tier→voice mapping is the operational contract.
 
 **Failover**: PlayHT Play3.0 mini, voice ID held in `PLAYHT_ROMAS_VOICE_ID`. Activated when ElevenLabs returns 429 / 5xx three times with exponential backoff (1s / 4s / 16s).
 
 **Never silently swap voices.** If both fail, the audio job is marked `skipped` with `error` populated and `skip_reason = 'tts_failover_exhausted'`. The article still ships without audio (`reader` UI surfaces "no audio for this brief").
+
+#### 2.1.2 Cloudflare Worker sync limit — Queued Consumer required (B-16, empirical 2026-05-22)
+
+ElevenLabs TTS latency measured at **34.13 s for 2.7 min audio** (Aria, default voice settings) in smoke test attempt #3. Cloudflare Workers have a **30 s sync wall-clock limit** on `fetch()`. Synchronous TTS from a CF Worker times out on most ROMAS Wire audio:
+
+| Tier | Typical audio length | TTS latency estimate (linear extrapolation) | Worker sync? |
+|---|---|---|---|
+| Audio Brief (tier 1) | 5-7 min | ~60-90s | **NO** |
+| Daily Brief (tier 2) | 10-15 min | ~130-190s | **NO** |
+| The ROMAS Podcast (tier 3) | 30-60 min | ~6-13min | **NO** |
+| Conference Brief (tier 4) | 15-30 min | ~190-380s | **NO** |
+| Video Podcast (tier 5) | 20-40 min | ~250-510s | **NO** |
+
+**Architectural constraint**: the audio-producer Worker (R-201, M2) MUST use **Cloudflare Queues + Queued Consumer pattern** — same pattern as ADR-0011 specifies for Whisper transcription. The publish event enqueues an audio synthesis job; a separate Queued Consumer worker (no wall-clock limit) handles the TTS call + loudnorm + R2 upload + transcript + `audio_jobs` row update.
+
+This is a P0 design constraint for M2. The cron-ingest worker (running synchronously per `wrangler.toml`) does NOT call ElevenLabs directly — it enqueues, then returns. The Queue + Consumer architecture also lets us retry transient failures (ElevenLabs 429/5xx) without burning the cron's 30s budget on backoff sleeps.
+
+See `Docs/build/decision-log.md` D-032 smoke test attempt #3 + risk-register B-16 for the empirical trail.
+
+#### 2.1.1 ElevenLabs tier + permission requirements (D-031, empirical 2026-05-22)
+
+Production deployment requires **one of**:
+
+- (a) ElevenLabs **paid tier** (Creator plan or higher) for the operating account. Free-tier API calls receive HTTP 402 `paid_plan_required` for ALL library voices including the 9 default voices (Aria / Roger / Sarah / Laura / Charlie / George / Callum / River / Liam). This was verified empirically against `voice_id 9BWtsMINqrJLrRacOk9x` (Aria, default) on 2026-05-22 — same 402 response as for library voices.
+- (b) Kimal's **personal voice clone** trained in the operating account. Personal voices bypass the library-voice restriction even on free tier. This is the ROMAS Clinical Narrator path per CLAUDE.md §6 + voice-consent-registry §2 anyway, so the path (b) requirement aligns with the existing plan.
+
+The production `ELEVENLABS_API_KEY` MUST carry **both** `voices_read` AND `text_to_speech` permissions. TTS-only keys can call `/v1/text-to-speech/{voice}` but cannot enumerate `/v1/voices` — required for the audio-producer's start-of-pipeline voice-availability health check + the operations dashboard.
+
+See `Docs/build/decision-log.md` D-031 for the empirical smoke-test trail.
 
 ### 2.2 Voice consent
 
@@ -118,6 +155,25 @@ measured_I=...:measured_LRA=...:measured_TP=...:measured_thresh=...:offset=... \
 | **Reviewer agent** (audio-qa-reviewer) | Green tick inside `[-17, -15]`; amber soft-warn inside `[-18, -14]` but outside the tight target; cannot approve outside DB gate | Human judgment for near-target episodes; DB CHECK is the floor. |
 
 True peak `> -1 dBTP` always re-masters. After re-master, if still above `-1 dBTP`, mark `skipped` with `true_peak_too_hot`.
+
+#### 3.3.1 Empirical validation (2026-05-22 smoke test attempt #3)
+
+The loudnorm parameters above were empirically validated against a real ElevenLabs Multilingual v2 output via `tools/audio/smoke-test.mjs`:
+
+| Measurement | Value | Notes |
+|---|---|---|
+| Input source | Aria default voice, 405-word 10-beat script (~2.7 min audio) | Pre-roll injected + script.txt captured |
+| ElevenLabs raw output (`input_i`) | **-26.04 LUFS** | Roughly 10 LUFS BELOW broadcast spec; confirms loudnorm is mandatory |
+| Pass-1 measured `input_tp` | -9.42 dBTP | Very low true peak; lots of headroom |
+| Pass-1 `input_lra` | 3.10 LU | Tight dynamic range |
+| Pass-2 final `output_i` | **-16.01 LUFS** | Within ADR-0016 tight target `[-17, -15]` |
+| Pass-2 final `output_tp` | **-1.0 dBTP** | Exactly at the publish-gate ceiling |
+| ADR-0016 verdict | **GREEN** (first-pass; no soft-warn) | DB gate PASS + tight target PASS + true_peak PASS |
+
+**Operational implications for M2 R-202 audio-producer Worker**:
+1. ElevenLabs raw output is consistently quiet; the two-pass loudnorm step is non-negotiable.
+2. `loudnorm I=-16:TP=-1:LRA=11` with `linear=true` (pass 2) produces first-pass GREEN on this voice's characteristics. Other voices may need per-voice tuning — re-validate when PODCAST + CONFERENCE voices are selected.
+3. The pipeline's automatic re-master-on-out-of-target logic was not triggered (first-pass already inside `[-17, -15]`). Validates the re-master semantic but doesn't exercise the failure path; M2 should add a synthetic test with an artificially-loud input to verify re-master behavior end-to-end.
 
 ### 3.4 Transcription (ADR-0011)
 
@@ -208,7 +264,7 @@ Feed validity gates (T-309 / A-036..A-042):
 
 ## 6. Revoke kill switch (60s SLA)
 
-The ROMAS Brief revoke pathway is a **post-publish-only kill switch** that withdraws content from the public CDN within 60 seconds p99. This is an operational SLA (NFR-005) and a Rule 4 enforcement mechanism (citation correction).
+The ROMAS Wire revoke pathway is a **post-publish-only kill switch** that withdraws content from the public CDN within 60 seconds p99. This is an operational SLA (NFR-005) and a Rule 4 enforcement mechanism (citation correction).
 
 ### 6.1 Flow
 
@@ -265,8 +321,10 @@ The `lexicon` table is the canonical pronunciation vocabulary. Schema in `0006_c
 
 | Variable | Purpose |
 |---|---|
-| `ELEVENLABS_API_KEY` | Worker secret; TTS primary |
-| `ELEVENLABS_ROMAS_VOICE_ID` | Voice clone identifier |
+| `ELEVENLABS_API_KEY` | Worker secret; TTS primary (Creator tier; full permissions per D-031) |
+| `ELEVENLABS_VOICE_ID_BRIEF` | Voice ID for Audio Brief + Daily Brief (tier 1+2) per D-032 |
+| `ELEVENLABS_VOICE_ID_PODCAST` | Voice ID for The ROMAS Podcast (tier 3) per D-032 |
+| `ELEVENLABS_VOICE_ID_CONFERENCE` | Voice ID for Conference Brief + Video Podcast (tier 4+5) per D-032 |
 | `PLAYHT_API_KEY` | Worker secret; TTS failover |
 | `PLAYHT_USER_ID` | PlayHT account scope |
 | `PLAYHT_ROMAS_VOICE_ID` | Voice clone identifier (separate from ElevenLabs) |

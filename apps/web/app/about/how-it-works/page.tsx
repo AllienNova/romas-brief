@@ -8,9 +8,9 @@ import {
 import type { IconProps } from "@/components/icons";
 
 export const metadata: Metadata = {
-  title: "How It Works — ROMAS Brief",
+  title: "How It Works — ROMAS Wire",
   description:
-    "Learn how ROMAS Brief ingests, scores, and curates clinical intelligence from PubMed, arXiv, ClinicalTrials, and FDA for radiation oncology professionals.",
+    "Learn how ROMAS Wire ingests, scores, and curates clinical intelligence from PubMed, arXiv, ClinicalTrials, and FDA for radiation oncology professionals.",
 };
 
 const SOURCES: { name: string; Icon: FC<IconProps>; desc: string }[] = [
@@ -70,10 +70,10 @@ export default function HowItWorksPage() {
             className="text-4xl sm:text-5xl font-black text-white mb-5 text-balance"
             style={{ letterSpacing: "-0.04em" }}
           >
-            How ROMAS Brief works
+            How ROMAS Wire works
           </h1>
           <p className="text-lg text-white/75 max-w-2xl mx-auto leading-relaxed">
-            Every item in ROMAS Brief is ingested from primary sources, scored by three independent dimensions,
+            Every item in ROMAS Wire is ingested from primary sources, scored by three independent dimensions,
             and curated by an editorial layer before reaching your inbox or feed.
             Only items above signal threshold <strong className="text-white">S70</strong> are published.
           </p>
@@ -89,7 +89,7 @@ export default function HowItWorksPage() {
             <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>Ingestion</h2>
           </div>
           <p className="text-base leading-relaxed mb-8" style={{ color: "var(--rb-text-secondary)" }}>
-            ROMAS Brief monitors six primary source categories continuously. New items are ingested within minutes
+            ROMAS Wire monitors six primary source categories continuously. New items are ingested within minutes
             of publication and queued for scoring. We do not republish press releases verbatim — every item is
             independently summarised and fact-checked against the primary source.
           </p>
@@ -215,12 +215,12 @@ export default function HowItWorksPage() {
         >
           <h2 className="text-xl font-bold mb-4" style={{ color: "var(--rb-text-primary)" }}>Editorial independence</h2>
           <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--rb-text-secondary)" }}>
-            ROMAS Brief maintains a strict editorial firewall between commercial content and editorial content.
+            ROMAS Wire maintains a strict editorial firewall between commercial content and editorial content.
             Sponsored items are clearly labelled <strong style={{ color: "var(--rb-text-primary)" }}>PARTNER MESSAGE</strong> and
             are never scored by the signal algorithm. Sponsors cannot influence editorial scoring, selection, or framing.
           </p>
           <p className="text-sm leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>
-            ROMAS Brief is not a medical device and does not provide clinical advice. All content is for
+            ROMAS Wire is not a medical device and does not provide clinical advice. All content is for
             educational and informational purposes only. Always consult primary sources and qualified colleagues
             before making clinical or practice decisions.
           </p>

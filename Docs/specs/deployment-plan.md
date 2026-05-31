@@ -1,4 +1,4 @@
-# ROMAS Brief — Deployment Plan
+# ROMAS Wire — Deployment Plan
 
 **Version**: 1.0.0
 **Owner**: QA / Platform — drafted by QA Lead, Kimal sign-off
@@ -211,7 +211,7 @@ External monitors:
 | Supabase DB | Point-in-time recovery (PITR) enabled — built into Supabase paid tier | 1 min | `supabase db restore --project-ref=... --backup-id=...` |
 | R2 archive bucket | Cross-region replication to a second R2 region (hypothesis — confirm at provisioning) | 24h | `rclone sync` from replica back to primary |
 | R2 CDN bucket | Regeneratable from archive bucket + DB | 24h | Re-encode from archive WAV |
-| Source code | GitHub (`kimhons/ROMAS` and ROMAS Brief repo TBD — confirm) | 0 | `git clone` |
+| Source code | GitHub (`kimhons/ROMAS` and ROMAS Wire repo TBD — confirm) | 0 | `git clone` |
 | Secrets | Documented manifest; secrets themselves cannot be exported from Cloudflare — must be rotated | n/a | Rotate per §5 schedule |
 
 DR drill: quarterly. Restore Supabase to a scratch project, regenerate one tier's RSS feed end-to-end, verify reader serves it. Time recorded.
@@ -238,7 +238,7 @@ Escalation paths (`AGENT.md` §11):
 
 | Topic | Posture | Reference |
 |---|---|---|
-| PHI | **Not in scope.** ROMAS Brief covers published clinical-trial results, regulatory clearances, vendor news. No patient-identifiable data ingests. | `CLAUDE.md` §1 audience |
+| PHI | **Not in scope.** ROMAS Wire covers published clinical-trial results, regulatory clearances, vendor news. No patient-identifiable data ingests. | `CLAUDE.md` §1 audience |
 | Voice consent registry | Required pre-launch. Custom ElevenLabs voice + PlayHT clone both need signed voice-use consent on file in `infrastructure/legal/voice-consent.md`. Block production deploy without it. | `CLAUDE.md` §5 voice |
 | GDPR | EU subscribers handled via Plausible (cookie-free, GDPR-clean). Email captures store IP-derived country code only, no IP itself, per Resend / Postmark defaults. Unsubscribe one-click compliant. | `CLAUDE.md` §7 analytics |
 | Cookies | None for analytics (Plausible). Auth cookies on CMS only, scoped to `cms.romas.brief`, `Secure`, `HttpOnly`, `SameSite=Lax`. | Standard |

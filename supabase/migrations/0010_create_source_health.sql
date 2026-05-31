@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0010_create_source_health.sql
--- T-112 (MIP §B.1) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-21 (M1-completion cycle)
+-- T-112 (MIP §B.1) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-21 (M1-completion cycle)
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql lines 226-235
 -- Anchors: SSOT §2 inviolable rule 5 (source-fetch failures surface in
 --          source health, never silently dropped) · CLAUDE.md §6 source

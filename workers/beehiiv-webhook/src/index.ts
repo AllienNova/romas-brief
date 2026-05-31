@@ -1,5 +1,5 @@
 /**
- * beehiiv-webhook · ROMAS Brief · SHIP-11
+ * beehiiv-webhook · ROMAS Wire · SHIP-11
  *
  * Beehiiv -> Supabase subscriber-sync webhook (FR-014 / FR-023, ADR-0007
  * cycle-3). Beehiiv is the canonical subscriber list; this worker mirrors

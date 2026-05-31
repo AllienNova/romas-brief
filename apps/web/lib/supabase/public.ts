@@ -1,5 +1,5 @@
 /**
- * apps/web/lib/supabase/public.ts · ROMAS Brief
+ * apps/web/lib/supabase/public.ts · ROMAS Wire
  * T-302 Reader app
  *
  * Public (anon-key) Supabase client for the reader web app.
@@ -26,7 +26,7 @@ export function createPublicSupabaseClient(): SupabaseClient<Database> {
     // with mock data without crashing when env vars are not set.
     if (process.env["NODE_ENV"] !== "production") {
       console.warn(
-        "[ROMAS Brief] SUPABASE_URL or SUPABASE_ANON_KEY not set. " +
+        "[ROMAS Wire] SUPABASE_URL or SUPABASE_ANON_KEY not set. " +
           "The app will render with mock data. Set these in .env.",
       );
       return {

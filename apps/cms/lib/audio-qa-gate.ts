@@ -1,5 +1,5 @@
 // =====================================================================
-// apps/cms/lib/audio-qa-gate.ts · ROMAS Brief · SHIP-10
+// apps/cms/lib/audio-qa-gate.ts · ROMAS Wire · SHIP-10
 // Single source of truth for the 5-condition audio publish gate
 // (inviolable rule 6, CLAUDE.md §4 / §5). This module mirrors the DB
 // CHECK `audio_publish_requires_qa` (0002_create_audio_jobs.sql lines

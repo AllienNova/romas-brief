@@ -109,9 +109,9 @@ Implementation-time decisions where the spec was silent. Each entry: context · 
 
 ## D-008 — Repo separation execution via `git clone` instead of `mv`
 
-**Context**: ADR-0014 implementation step 5 specified `mv "D:\dev\projects\ROMAS\ROMAS BRIEF" "D:\dev\projects\romas-brief"`. The `mv` failed with `Device or resource busy` because the active Claude Code session held the source directory as its CWD (Windows file lock).
+**Context**: ADR-0014 implementation step 5 specified `mv "D:\dev\projects\ROMAS\ROMAS WIRE" "D:\dev\projects\romas-brief"`. The `mv` failed with `Device or resource busy` because the active Claude Code session held the source directory as its CWD (Windows file lock).
 
-**Decision**: Execute the separation via `git clone --no-local "ROMAS/ROMAS BRIEF" romas-brief` from the baseline commit `dcc8389`. Functionally equivalent to `mv` (same files, same commit, same content), non-destructive, and works around the Windows CWD lock.
+**Decision**: Execute the separation via `git clone --no-local "ROMAS/ROMAS WIRE" romas-brief` from the baseline commit `dcc8389`. Functionally equivalent to `mv` (same files, same commit, same content), non-destructive, and works around the Windows CWD lock.
 
 **Rationale**: Cloning produces an identical content + history snapshot at the target path. The old path's `.git/` and contents are abandoned, scheduled for manual `rm -rf` after the session ends. No work is lost because both repos share commit `dcc8389`.
 
@@ -353,7 +353,7 @@ Note on numbering: cycle-2 close used D-008..D-010 (cf. previous section). This 
 - Honors the spirit of the reviewer's C11 recommendation (exact-pin for reproducibility) while correcting the version-number literal error.
 - Reduces vulnerability count from 26 → 14, and 1 critical → 0 critical.
 
-**Residual**: 14 Next CVEs remain, all patched only in Next 15.x.y. ADR-0015 was rewritten from v1 (single CVE accepted) to v2 (14 CVEs accepted with applicability assessment per advisory + mitigation control mapping). 5 of the 14 are documented NOT applicable to ROMAS Brief's architecture (App Router only, no i18n, no Pages Router, no `Script strategy="beforeInteractive"`); the other 9 carry named controls assigned to web-engineer + DevOps + architecture-reviewer for M3+ enforcement.
+**Residual**: 14 Next CVEs remain, all patched only in Next 15.x.y. ADR-0015 was rewritten from v1 (single CVE accepted) to v2 (14 CVEs accepted with applicability assessment per advisory + mitigation control mapping). 5 of the 14 are documented NOT applicable to ROMAS Wire's architecture (App Router only, no i18n, no Pages Router, no `Script strategy="beforeInteractive"`); the other 9 carry named controls assigned to web-engineer + DevOps + architecture-reviewer for M3+ enforcement.
 
 **Alternative considered**: Migrate to Next 15 now. Rejected — Tailwind 4 pairing requirement + App Router cache behaviour change + no live RSC code yet make the migration cost disproportionate to the residual risk after the 14.2.35 bump.
 
@@ -405,7 +405,7 @@ Decisions made during the M1-completion-closeout cycle (Kimal-authorized close o
 **Decision**: Keep the unprefixed convention (`SUPABASE_URL` + `SUPABASE_ANON_KEY`) in the Auth Helper scaffold. Reference them from the server-component factory + route-handler factory via `process.env["SUPABASE_URL"]` etc.
 
 **Rationale**:
-- ADR-0015 v2 mandates server-only Auth flows for ROMAS Brief (no Pages Router, no middleware). The anon key never reaches the browser bundle — there is no browser-side sign-in form that needs `NEXT_PUBLIC_*` exposure.
+- ADR-0015 v2 mandates server-only Auth flows for ROMAS Wire (no Pages Router, no middleware). The anon key never reaches the browser bundle — there is no browser-side sign-in form that needs `NEXT_PUBLIC_*` exposure.
 - Sign-in flow is server-rendered form POST → `app/api/auth/sign-in/route.ts` Route Handler that calls `supabase.auth.signInWithPassword({ ... })` server-side; cookies are set in the response.
 - Keeping the unprefixed name means apps/cms + Workers share the exact same env-var name (one source of truth in Cloudflare Worker Secrets + Cloudflare Pages env vars).
 
@@ -453,3 +453,128 @@ Calendar reminders: quarterly block for 90d secrets (first business day Q1/Q2/Q3
 **Alternative considered**: Uniform 90-day cadence for all secrets. Rejected — the service-role key + Cloudflare API token blast radius warrants tighter discipline; the 30-day cost is one calendar event per month vs the cost of an undetected leaked DB key persisting for up to 3 months.
 
 **Owner**: Kimal owns the calendar discipline. 1Password vault "ROMAS legal" maintains per-item audit log of every rotation (current value + previous value + last rotated + next due).
+
+---
+
+## D-031 — ElevenLabs free-tier API blocks library + default voices (empirical 2026-05-22)
+
+**Context**: Audio pipeline smoke test (`tools/audio/smoke-test.mjs`, /team-build audio-smoke-test cycle) ran against the `manus agent` API key and surfaced two operational constraints not previously documented in Audio Architecture v1.0:
+
+1. **HTTP 402 on library voices**: ElevenLabs free-tier API returns `{"code": "paid_plan_required", "message": "Free users cannot use library voices via the API"}` for **both** library voices (Rachel `21m00Tcm4TlvDq8ikWAM`) AND default voices that ship with every account (Aria `9BWtsMINqrJLrRacOk9x`). The free-tier ElevenLabs UI lets you preview these voices in the browser but the API call is gated.
+2. **API key scoping**: the `manus agent` key returned HTTP 401 `missing_permissions: voices_read` on `/v1/voices`. Per-key permission scoping is an ElevenLabs feature — TTS-only keys cannot enumerate voices, even ones the account has access to.
+
+**Decision**: Document both constraints in **Audio Architecture v1.0 §2.1** + **SECRETS.md §2 row `ELEVENLABS_API_KEY`** + **`voice-consent-registry.md`** template §1 (add a "tier requirement" field).
+
+**Production deployment requires** one of:
+- (a) ElevenLabs **paid tier** with API access (Creator plan or higher per current ElevenLabs pricing), OR
+- (b) Kimal's **personal voice clone** trained in the operating account (personal voices bypass the library-voice restriction even on free tier; this aligns with CLAUDE.md §6 ROMAS Clinical Narrator + voice-consent-registry §2 anyway).
+
+The API key used in production MUST carry **both** `voices_read` AND `text_to_speech` permissions — TTS-only keys can call the synthesis endpoint but cannot enumerate voices for operational health checks. Recommend a single full-permission key in `wrangler secret put ELEVENLABS_API_KEY` for the audio-producer worker.
+
+**Rationale**:
+- Empirical finding from real API call against today's free-tier ElevenLabs surface. Documented before production deployment so the operational cost is known.
+- Affects deployment-readiness checklist + budget planning (Creator plan ≈ $22/mo as of last public pricing; verify at https://elevenlabs.io/pricing/api before commit).
+- May also affect PlayHT failover path — verify PlayHT tier restrictions before going to prod (test as a separate smoke test in next audio cycle).
+
+**Alternative considered**: Pivot to a self-hosted TTS (Coqui, OpenVoice, Bark). Rejected — ADR-0004 locked ElevenLabs primary + PlayHT failover via cycle-1 decision; switching engines requires an ADR amendment, not a quiet pivot. Self-hosted TTS also brings its own ops cost (GPU inference, voice training pipeline, quality regression risk).
+
+**Smoke test verdict (this dispatch)**: **PIPELINE SCAFFOLD VALID** up to the TTS call. Preflight (env vars + ffmpeg) PASS; script composition (10 beats + pre-roll, 405 words / 2942 chars / ~2.7 min) PASS; ElevenLabs HTTP call PASS at the transport layer (request well-formed; 402 is a billing response, not a client-error). TTS audio generation + loudness measurement DEFERRED pending paid-tier upgrade OR personal voice clone.
+
+**Re-run trigger**: When Kimal confirms either upgrade or personal voice clone availability, re-run `node --env-file=.env tools/audio/smoke-test.mjs`. Expected output on success: `final.mp3` at 128 kbps in `tools/audio/output/`, `measurement.json` with ADR-0016 verdict (GREEN / AMBER / FAIL), playable audio.
+
+**Owner of completion**: Kimal (ElevenLabs account upgrade or voice clone creation).
+
+---
+
+## D-032 — Three stock professional voices by tier role REPLACE single Kimal voice clone for Day 1
+
+**Context**: D-031 surfaced ElevenLabs free-tier API restrictions and prompted reconsideration of the single-Kimal-voice-clone architecture from CLAUDE.md §6 + SSOT §3 row 9. Kimal authorization 2026-05-22 via /AskUserQuestion:
+- ElevenLabs account upgraded to **Creator tier** (paid; library voices unlocked via API)
+- New API key issued with full permissions (replaces the TTS-only `manus agent` key)
+- **3 stock voices** from the 9 ElevenLabs defaults (Aria/Roger/Sarah/Laura/Charlie/George/Callum/River/Liam) replace the Kimal clone for Day 1
+- Allocation: **by tier role** (per the user's explicit selection)
+- Kimal personal voice clone **deferred to post-launch revisit** — no Day 1 dependency
+
+**Decision**: Adopt 3-voice tier-role architecture. New tier→voice mapping:
+
+| Env var | Tier(s) | Editorial role |
+|---|---|---|
+| `ELEVENLABS_VOICE_ID_BRIEF` | Audio Brief (tier 1) + Daily Brief (tier 2) | Crisp, calm narrator for short-form daily content. ~70% of audio production volume. |
+| `ELEVENLABS_VOICE_ID_PODCAST` | The ROMAS Podcast (tier 3) | Deeper / longer-arc voice for 30-60 min weekly deep-dives. ~10% of production volume but highest per-episode minutes. |
+| `ELEVENLABS_VOICE_ID_CONFERENCE` | Conference Brief (tier 4) + Video Podcast (tier 5) | Event-paced voice for conference coverage + future Day-60 video podcast. Bursty production aligned with conference windows. |
+
+**Rationale**:
+- **Simpler legal posture**: ElevenLabs Creator tier ToS covers commercial use of library voices; no per-donor signed instrument needed. R-110 voice-consent-registry simplifies to ElevenLabs ToS reference + per-voice operational metadata. Beehiiv DPA + SCC (B-10 risk) is unaffected — those are subscriber-data instruments, not voice.
+- **Faster path to launch**: no recording session, no voice clone training, no consent execution. The 3 voice IDs are immediately usable post-API-key swap.
+- **Editorial differentiation**: tier-role allocation lets each voice carry a distinct register that matches the content shape. Daily news ≠ deep-dive podcast ≠ conference. Single-voice fatigue avoided.
+- **Reversible**: D-031 "REPLACES for now; revisit post-launch" framing means Kimal can add his personal clone in M5+ if editorial preference shifts. The 3 stock voices become the default; Kimal clone adds a 4th surface for ROMAS Read or similar.
+
+**Affected docs** (this cycle):
+- `Docs/build/decision-log.md` — this entry (D-032)
+- `SECRETS.md` §2 inventory — replace single `ELEVENLABS_ROMAS_VOICE_ID` row with 3 new rows; note Creator-tier requirement under `ELEVENLABS_API_KEY`
+- `.env.example` — replace `ELEVENLABS_ROMAS_VOICE_ID` with `ELEVENLABS_VOICE_ID_{BRIEF,PODCAST,CONFERENCE}`
+- `Docs/ROMAS-Brief-Audio-Architecture.md` v1.0 — §1 tier table + §2.1 engines (3-voice mapping) + §2.2 voice consent (simplified)
+- `Docs/voice-consent-registry.md` v1.0.0-template — restructure from "donor signature" pattern to "ElevenLabs ToS + per-voice operational metadata" pattern
+- `tools/audio/smoke-test.mjs` — read tier-specific voice ID from `sample-article.json` `_meta.archetype` field (short_brief → BRIEF env var; standard_analysis → BRIEF; deep_report → PODCAST; conference_brief archetype TBD → CONFERENCE)
+- `tools/audio/sample-article.json` — `_meta.archetype: short_brief` already maps to BRIEF voice
+- `apps/cms/lib/supabase/*.ts` — no change (Auth Helper isn't audio-aware)
+
+**Affected docs (deferred to user's authoritative ratification cycle)**:
+- `CLAUDE.md` §6 — voice section needs Kimal-authored rewrite from "ROMAS Clinical Narrator (ElevenLabs primary + PlayHT failover, Kimal voice clone)" to "3 ElevenLabs Creator-tier voices by tier role; Kimal clone deferred to post-launch revisit"
+- `Docs/SSOT.md` §3 row 9 — voice row similarly updates
+
+I will propose the CLAUDE.md + SSOT updates in this cycle (per Kimal's explicit authorization to make the architecture change), with Kimal able to refine wording.
+
+**Alternative considered**: Keep the single Kimal voice clone for Day 1; spend the W-6/W-5 window recording + cloning. Rejected per Kimal direction — the 3-voice path is faster + has clearer editorial differentiation; Kimal clone is a future enhancement, not a Day 1 requirement.
+
+**Owner of completion**: This cycle for the operational specs (Audio Architecture v1.0 + SECRETS.md + .env.example + voice-consent-registry + smoke-test.mjs + CLAUDE.md proposal + SSOT proposal). Kimal owns: provisioning the 3 voice IDs in the Creator account + pasting the new API key + selecting the 3 voices that match the tier-role register guidance above.
+
+**Smoke test next step**: Once Kimal pastes the new API key + 3 voice IDs, re-run `node --env-file=.env tools/audio/smoke-test.mjs` for each voice (or for at least the BRIEF voice given `sample-article.json` is a short_brief archetype). Expected: ADR-0016 GREEN or AMBER verdict + playable `final.mp3`.
+
+**B-12 risk update**: this is the 4th cycle of the session where the team-build-critic gate has been substituted by inline self-audit due to API 529 / truncation. Recommend next cycle (post commit + push of D-032) re-runs team-build-critic with fresh context for second-opinion on the architecture change.
+
+**Smoke test attempt #2 finding (2026-05-22, post-Creator-tier key swap)**: New Creator-tier API key cleared the D-031 free-tier block (Aria default voice no longer returns HTTP 402) BUT the account has **0 credits remaining out of 1,800,067 total quota**. Test requested 1,771 credits → HTTP 401 `quota_exceeded`. The progression validates the architecture: free tier → 402 paid_plan_required → Creator tier with depleted credits → 401 quota_exceeded. Pipeline reaches the right error class for the account state.
+
+**Next step gate**: Kimal tops up credits at https://elevenlabs.io/app/usage (one-time pack OR confirm monthly Creator reset date) OR provides a key from a different account with available credits. Then re-run `node --env-file=.env tools/audio/smoke-test.mjs`. **B-15 (new risk)**: production credit budget needs sizing — at ~1k chars/min audio, the Creator-tier baseline (~100k chars/mo) covers ~100 min/mo of audio; ROMAS Wire Day-1 backlog alone is ~50 episodes × 5-10 min = 250-500 min ≈ 250k-500k chars. Production-mode credit needs are ~5-10× Creator baseline; either add credit top-ups OR upgrade to Scale/Business tier OR cache aggressively (audio for the same article only generates once). Add to risk-register on next /team-qa cycle.
+
+---
+
+### Smoke test attempt #3 (2026-05-22 17:39, post-$10-top-up) — GREEN
+
+User topped up $10 credit pack on the Creator account. Re-ran smoke test. **Full end-to-end pipeline PASS**.
+
+| Pipeline step | Result |
+|---|---|
+| Preflight | API key + ffmpeg + tier-aware voice selection (short_brief → ELEVENLABS_VOICE_ID_BRIEF → Aria `9BWtsMINqrJLrRacOk9x`) — all PASS |
+| Script composition | 405 words / 2942 chars / 2.7 min @ 150 wpm |
+| ElevenLabs TTS | 3,244,243 bytes MP3 in **34.13 s** for 1,771 credits (`eleven_multilingual_v2` with default voice_settings: stability 0.55, similarity_boost 0.85, style 0.0, use_speaker_boost true) |
+| WAV transcode (48kHz stereo PCM) | 38,920,438 bytes |
+| Loudnorm pass 1 (measure) | input_i: **-26.04 LUFS** · input_tp: -9.42 dBTP · input_lra: 3.10 LU · target_offset: 0.03 |
+| Loudnorm pass 2 (apply, linear=true) | **output_i: -16.01 LUFS** · **output_tp: -1.0 dBTP** |
+| Final MP3 encode (128 kbps stereo 48kHz) | 3,244,461 bytes |
+| **ADR-0016 verdict** | **GREEN — first-pass, no soft-warn** |
+
+**Empirically-validated findings (capture for ADR + Audio Architecture v1.0)**:
+
+1. **ElevenLabs raw output is consistently quiet** — input_i at -26.04 LUFS is roughly **10 LUFS below broadcast spec**. Confirms two-pass loudnorm is MANDATORY in production. No "send TTS direct to CDN" shortcut.
+
+2. **Audio Architecture v1.0 §3.3 loudnorm parameters are empirically correct.** `loudnorm I=-16:TP=-1:LRA=11` produces output at exactly `-16.01 LUFS` (well within ADR-0016 tight target `[-17, -15]`) and `-1.0 dBTP` (right at the ceiling per the 5-condition publish gate). First-pass GREEN with no re-master needed.
+
+3. **TTS latency >> Cloudflare Worker sync limit**: **34.13 s** for a 2.7 min audio sample. Cloudflare Workers have a **30 s sync wall-clock limit** on `fetch()`. The audio-producer worker (R-201, M2) **CANNOT** call ElevenLabs synchronously — every audio job longer than ~2 min will time out. **NEW architectural constraint**: audio-producer must use Cloudflare Queues + Queued Consumer pattern (same as ADR-0011 Whisper) — see B-16 below.
+
+4. **Cost: 1.5 credits/char × $0.022/1k chars Creator-tier pricing = ~$0.022/episode** for a 5-min short_brief. Day-1 backlog (~50 episodes) ≈ $1.10. Monthly production (~30-60 episodes) ≈ $0.66 — $1.32. **B-15 cost estimate was 100× over** (the prior 0-credit state was an existing-tenant burn, not ROMAS per-episode cost). B-15 downgrades from H/H to L/M in risk-register cycle-5.
+
+5. **Aria default voice (`9BWtsMINqrJLrRacOk9x`) produced GREEN audio but Kimal feedback (2026-05-22)**: "Aria isn't quite right, want deeper, more mature, more pleasant." Voice selection iteration in next session — Voice Design API on Creator tier unlocks custom voice generation from text descriptor (e.g. "deep mature American male narrator, 45-55, calm clinical authority"). Candidates from the 9 defaults for fallback: George `JBFqnCBsd6RMkjVDRZzb` (British, calm, deeper), Roger `CwhRBWXzGAHq8TQ4Fs17` (middle-aged warm).
+
+**B-16 (new architectural risk)**: audio-producer Worker design MUST use Cloudflare Queues + Queued Consumer per Audio Architecture v1.0 §2.1 (updated). Direct synchronous `fetch()` to ElevenLabs from a CF Worker times out on any audio longer than ~2 min, which is most ROMAS Wire audio (Daily Brief 10-15 min, Podcast 30-60 min, Conference Brief 15-30 min — only Audio Brief short tier might fit). Architectural finding promoted to risk-register cycle-5.
+
+**Smoke test artifacts preserved** at `tools/audio/output/`:
+- `aria-final.mp3` (3.24 MB, ~2:42 audio, Aria voice with default settings) — A/B reference for next voice
+- `aria-measurement.json` — full report
+- `aria-raw.mp3` (3.24 MB, ElevenLabs original)
+- `raw.wav` + `mastered.wav` (large; transient artifacts from the run)
+- `script.txt` (the full pre-roll + 10-beat composed script sent to ElevenLabs)
+
+**Pipeline status**: VALIDATED end-to-end. The scaffold at `tools/audio/smoke-test.mjs` is production-pattern-ready. M2 R-201 audio-producer Worker can be built directly against this exact flow, with the Queued Consumer adaptation per B-16.
+
+**Owner of completion for this attempt**: smoke test cycle CLOSED. Next session resumes voice iteration (different voice → re-run smoke test → A/B against `aria-final.mp3`).

@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Interaction Patterns
+title: ROMAS Wire — Interaction Patterns
 version: 1.0.0
 date: 2026-05-15
 authority: ui-spec.md · web-engineer agent

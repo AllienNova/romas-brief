@@ -132,7 +132,7 @@ paths:
                 external_id:
                   type: string
                   description: |
-                    ROMAS Brief uses this for idempotency dedupe (issue_date=YYYY-MM-DD).
+                    ROMAS Wire uses this for idempotency dedupe (issue_date=YYYY-MM-DD).
                     Re-running publish with same external_id is rejected.
       responses:
         '201': { description: Created }
@@ -159,7 +159,7 @@ paths:
       responses:
         '201': { description: Journey triggered }
 
-# Webhook endpoints — Beehiiv → workers/beehiiv-webhook on ROMAS Brief side
+# Webhook endpoints — Beehiiv → workers/beehiiv-webhook on ROMAS Wire side
 x-beehiiv-webhooks:
   endpoint: https://api.romasbrief.com/webhooks/beehiiv
   signature_header: X-Beehiiv-Signature

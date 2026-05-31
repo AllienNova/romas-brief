@@ -2,7 +2,7 @@
   "name": "@romas-brief/web",
   "private": true,
   "version": "0.0.0",
-  "description": "ROMAS Brief — public reader (Next.js 14 on Vercel).",
+  "description": "ROMAS Wire — public reader (Next.js 14 on Vercel).",
   "type": "module",
   "scripts": {
     "dev": "next dev --port 3000",

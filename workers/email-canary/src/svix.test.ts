@@ -1,5 +1,5 @@
 // =====================================================================
-// workers/email-canary/src/svix.test.ts · ROMAS Brief · SHIP-12
+// workers/email-canary/src/svix.test.ts · ROMAS Wire · SHIP-12
 // node:test suite for Svix webhook verification. Run with:
 //   node --experimental-strip-types --test src/svix.test.ts
 //

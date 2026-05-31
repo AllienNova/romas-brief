@@ -11,7 +11,7 @@ supersedes: none
 
 ## Context
 
-Cycle-5 region rebalance grew LATAM from 2% → 8% (Launch Plan §2.2 supersession: 40 LATAM articles at Day 1 + ~1–2/day ongoing). Source records are predominantly Portuguese (ANVISA, Brazilian Society of Radiation Oncology / SBR, ALATRO) and Spanish (COFEPRIS, ANMAT, SLAGO, ALATRO mixed). ROMAS Brief publishes in English. Three options were considered:
+Cycle-5 region rebalance grew LATAM from 2% → 8% (Launch Plan §2.2 supersession: 40 LATAM articles at Day 1 + ~1–2/day ongoing). Source records are predominantly Portuguese (ANVISA, Brazilian Society of Radiation Oncology / SBR, ALATRO) and Spanish (COFEPRIS, ANMAT, SLAGO, ALATRO mixed). ROMAS Wire publishes in English. Three options were considered:
 
 1. **Hire** Spanish/Portuguese contributor — adds payroll line; takes weeks to onboard; misaligns with 1-person ops org at launch.
 2. **LLM-translate** — DeepL/Claude/GPT-4 translation pipeline; near-zero ongoing cost; risk on medical-term accuracy.
@@ -26,7 +26,7 @@ Kimal locked **option 2 (LLM-translate) on 2026-05-14.**
 1. **Primary translation: DeepL Pro API** (`POST /v2/translate`).
    - Best BLEU on ES↔EN and PT↔EN; documented for medical/scientific corpora.
    - Cost: ~$0.020/1k chars; 40 launch + 1–2/day ongoing → well within free tier (500k chars/mo).
-2. **Verification pass: Claude 3.5 Sonnet** (or GPT-4 Turbo) called via the **`packages/llm-orchestrator/`** package authored fresh inside the ROMAS Brief monorepo (TypeScript; not imported from parent ROMAS COS — see ADR-0014).
+2. **Verification pass: Claude 3.5 Sonnet** (or GPT-4 Turbo) called via the **`packages/llm-orchestrator/`** package authored fresh inside the ROMAS Wire monorepo (TypeScript; not imported from parent ROMAS COS — see ADR-0014).
    - Prompt: "You are a radiation oncology editor. Verify this DeepL translation against the original Spanish/Portuguese source. Flag any technical-term mistranslation. Return JSON `{verified: bool, mistranslations: [...], suggested_fixes: [...]}`."
    - Runs only on articles with `composite_score >= 70` (Strong-band + Hero); Standard/Quick-Hit/Reference articles ship with DeepL alone (cost + latency control).
 3. **Article footer attribution (mandatory)**: every LLM-translated article carries `Source originally in {Spanish|Portuguese}; translated with editorial review.` Visible to readers; non-removable.
@@ -34,7 +34,7 @@ Kimal locked **option 2 (LLM-translate) on 2026-05-14.**
 ## Citation discipline (Rule 1 preserved)
 
 - `articles.primary_source_url` cites the **original-language source** (e.g., ANVISA Portuguese record URL, not the DeepL translation).
-- `articles.body_md` is in English (the ROMAS Brief editorial language).
+- `articles.body_md` is in English (the ROMAS Wire editorial language).
 - Quoting verbatim from a non-English source uses the LLM-translated text **with the original-language quote shown in italics inside parentheses** for transparency.
 - `claims` table: every clinical claim still requires a source URL (the original-language one) per cycle-1 Rule 1 schema enforcement.
 
@@ -103,4 +103,4 @@ CHECK constraint: if `source_language != 'en'` then `translation_provider IS NOT
 ## Revision history
 
 - **2026-05-14 (cycle-6 author)** — initial.
-- **2026-05-14 (M0 cycle-2 repo separation)** — REL-010 closed. The `llm-orchestrator` reference no longer points at the parent ROMAS COS Python package. ROMAS Brief now contains its own TypeScript `packages/llm-orchestrator/` per ADR-0014 (repo separation). No cross-monorepo import required. Verification-pass code path: TypeScript Node 20+ Worker calling Anthropic/OpenAI SDKs directly through the new internal package.
+- **2026-05-14 (M0 cycle-2 repo separation)** — REL-010 closed. The `llm-orchestrator` reference no longer points at the parent ROMAS COS Python package. ROMAS Wire now contains its own TypeScript `packages/llm-orchestrator/` per ADR-0014 (repo separation). No cross-monorepo import required. Verification-pass code path: TypeScript Node 20+ Worker calling Anthropic/OpenAI SDKs directly through the new internal package.

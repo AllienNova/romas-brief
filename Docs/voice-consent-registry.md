@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Voice Operations Registry (formerly Voice Consent Registry)
+title: ROMAS Wire — Voice Operations Registry (formerly Voice Consent Registry)
 version: 2.0.0
 date: 2026-05-22 (D-032 restructure)
 status: Operational record — 3 ElevenLabs Creator-tier voices by tier role per D-032; PlayHT failover voice tracked separately
@@ -8,11 +8,11 @@ authority_chain: SSOT v1.2.0 §3 row 9 (D-032 voice architecture) · ADR-0004 (T
 supersedes: voice-consent-registry.md v1.0.0-template (donor-signature pattern for single Kimal voice clone — superseded by D-032 ElevenLabs Creator-tier ToS reference for 3 stock voices)
 ---
 
-# Voice Operations Registry — ROMAS Brief
+# Voice Operations Registry — ROMAS Wire
 
 ## 0. Purpose
 
-This registry is the **operational record of voices used in ROMAS Brief audio production**. It captures:
+This registry is the **operational record of voices used in ROMAS Wire audio production**. It captures:
 - Which 3 ElevenLabs voices are bound to which audio tier
 - The ElevenLabs Creator-tier ToS reference (replaces per-donor signed instruments per D-032)
 - Per-voice operational metadata (selected date, last verified date, retirement procedure)
@@ -45,7 +45,7 @@ voice_id_entry:
   commercial_use:
     license:             ElevenLabs Creator-tier ToS (commercial use included)
     license_url:         https://elevenlabs.io/terms
-    license_verified:    FILL_REQUIRED  # ISO 8601 date Kimal verified ToS coverage for ROMAS Brief commercial use
+    license_verified:    FILL_REQUIRED  # ISO 8601 date Kimal verified ToS coverage for ROMAS Wire commercial use
     tier_scope:          audio_brief, daily_brief
     revenue_share:       none (ElevenLabs is a tooling provider, not a content collaborator)
 
@@ -145,7 +145,7 @@ voice_id_entry:
 Per ElevenLabs Creator-tier ToS (verified by Kimal on FILL_REQUIRED):
 
 - **Commercial use of library voices**: PERMITTED. Audio generated with library voices on Creator tier or higher may be used in commercial products including subscription newsletters + podcasts + advertising surfaces.
-- **Voice attribution**: NOT REQUIRED for library voices. ROMAS Brief does NOT need to credit ElevenLabs or the voice name in episode metadata. (This differs from some other TTS providers; verify against the current ToS at each ElevenLabs plan change.)
+- **Voice attribution**: NOT REQUIRED for library voices. ROMAS Wire does NOT need to credit ElevenLabs or the voice name in episode metadata. (This differs from some other TTS providers; verify against the current ToS at each ElevenLabs plan change.)
 - **Per-voice retention**: voices remain available indefinitely while the Creator tier is active. If subscription lapses, library voices revert to free-tier restrictions and the audio-producer falls into the D-031 free-tier-blocked failure mode.
 - **API permission requirement**: production API key MUST carry both `voices_read` AND `text_to_speech` permissions (per D-031).
 

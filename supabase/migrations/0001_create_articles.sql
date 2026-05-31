@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0001_create_articles.sql
--- T-103 (MIP §B.1) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-16
+-- T-103 (MIP §B.1) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-16
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql
 -- Anchors: SSOT v1.2.0 §3 (locked decisions), §7 (state machines),
 --          §12.2 (11 categories × 8 content types), ADR-0013 (LATAM LLM-translate)

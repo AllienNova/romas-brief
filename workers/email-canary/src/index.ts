@@ -1,5 +1,5 @@
 /**
- * email-canary · ROMAS Brief · SHIP-12
+ * email-canary · ROMAS Wire · SHIP-12
  *
  * Resend transactional-email + delivery-webhook worker (the
  * "email-transactional" role per ADR-0007 cycle-3). The on-disk dir name

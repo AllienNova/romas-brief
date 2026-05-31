@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief Icon System (SHIP-21b)
+ * ROMAS Wire Icon System (SHIP-21b)
  *
  * Inline SVG icons — no external package dependency.
  * All icons: viewBox="0 0 24 24", stroke="currentColor", fill="none",

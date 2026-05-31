@@ -1,5 +1,5 @@
 // =====================================================================
-// apps/cms/app/audio-qa/[id]/page.tsx · ROMAS Brief · SHIP-10
+// apps/cms/app/audio-qa/[id]/page.tsx · ROMAS Wire · SHIP-10
 // Audio QA detail surface. Fetches one audio_jobs row (+ its article),
 // renders the player, the 5-condition checklist, qa_notes, and the
 // action bar. params is an async Promise in Next 15 — await it.

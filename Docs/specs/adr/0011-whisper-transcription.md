@@ -27,7 +27,7 @@ Contract written at `docs/specs/contracts/whisper.yaml`.
 | Option | Rejection reason |
 |---|---|
 | **Deepgram** | Strong WER but different model family; lexicon pronunciation tuning would diverge from the ElevenLabs lexicon. |
-| **AssemblyAI** | Similar concern; also pricier per minute at ROMAS Brief's volume. |
+| **AssemblyAI** | Similar concern; also pricier per minute at ROMAS Wire's volume. |
 | **Self-hosted Whisper on Cloudflare Workers AI** | Workers AI supports whisper.large-v3 (`@cf/openai/whisper-large-v3-turbo`) — appealing for single-vendor stack. **Revisit trigger**: lock this as primary once it exits beta with documented WER on clinical narration. Currently still maturing. |
 | **No transcript** | Violates audio-production-pipeline.md:154 (transcript URL mandatory). Schema CHECK rejects. Not an option. |
 

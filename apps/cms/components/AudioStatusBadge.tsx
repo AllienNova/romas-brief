@@ -1,5 +1,5 @@
 // =====================================================================
-// apps/cms/components/AudioStatusBadge.tsx · ROMAS Brief · SHIP-10
+// apps/cms/components/AudioStatusBadge.tsx · ROMAS Wire · SHIP-10
 // Pill-shaped audio-status indicator. Color is NEVER the sole signal —
 // every state ships a text label (Docs/design/components/AudioStatusBadge.md
 // v1.2). Labels + AA-verified foreground hexes come straight from the

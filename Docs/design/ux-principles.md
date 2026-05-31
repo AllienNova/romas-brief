@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Applied UX Principles
+title: ROMAS Wire — Applied UX Principles
 version: 1.0.0
 date: 2026-05-15
 authority: product-spec FR-001..FR-038 · Master-Strategy §3..§6 · CLAUDE.md §1..§4
@@ -24,7 +24,7 @@ authority: product-spec FR-001..FR-038 · Master-Strategy §3..§6 · CLAUDE.md 
 
 ## 2. Mental model
 
-The reader's mental model is **"radiation oncology literature is dense, scattered, and time-poor to navigate"**. ROMAS Brief stands in for the 7-minute window a clinician has between arriving at the hospital and the first patient. Every interaction either:
+The reader's mental model is **"radiation oncology literature is dense, scattered, and time-poor to navigate"**. ROMAS Wire stands in for the 7-minute window a clinician has between arriving at the hospital and the first patient. Every interaction either:
 - Saves them a search → primary source URL one click away.
 - Saves them a translation → ROMAS Insight states the clinical implication in one labelled line.
 - Saves them a queue → audio version playable from any RSS app, no site visit needed.
@@ -51,7 +51,7 @@ We do **not** fight this model. We do not pretend to replace primary literature;
 
 - Embargoed items **cannot** be rendered to readers — schema-enforced (`articles_embargo_consistency` CHECK constraint) + reader query filters. The UI never has to handle "embargoed article rendered" because the database refuses to return one.
 - Subscriber count under 2,500 is **hidden** — replaced with qualitative copy ("Built for radiation oncologists, physicists, dosimetrists, therapists, and oncology leaders.") via `SubscriberCount` component. Forces UI not to leak premature scale.
-- Sponsor logo cannot render within 32px of the ROMAS Brief wordmark — `data-firewall="32"` attribute + layout test asserting DOM distance. Forces UI to maintain sponsor independence.
+- Sponsor logo cannot render within 32px of the ROMAS Wire wordmark — `data-firewall="32"` attribute + layout test asserting DOM distance. Forces UI to maintain sponsor independence.
 - Audio "Listen" CTA cannot appear when `audio_status != 'published'` — component double-checks even though schema CHECK enforces it.
 
 ### Mapping (structure mirrors task)

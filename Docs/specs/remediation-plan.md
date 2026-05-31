@@ -1,11 +1,11 @@
 ---
-title: Remediation Plan — ROMAS Brief
+title: Remediation Plan — ROMAS Wire
 version: 1.0.0
 date: 2026-05-14
 input: docs/specs/gap-analysis.md (19 findings)
 ---
 
-# Remediation Plan — ROMAS Brief
+# Remediation Plan — ROMAS Wire
 
 ## Effort × Impact matrix
 

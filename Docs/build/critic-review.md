@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — team-build-critic review (M0 cycle-1)
+title: ROMAS Wire — team-build-critic review (M0 cycle-1)
 version: 1.0.0
 date: 2026-05-14 (verdict) · 2026-05-15 (reconstruction)
 reconstructed: 2026-05-15 (recovered from conversation history; verdict reconstructed from documented critic conditions, not the original critic agent's raw output)
@@ -47,7 +47,7 @@ M0 cycle-1 doc reconciliation work — 14 files modified, 6 new files, ~120 line
 |---|---|---|---|
 | C-1 | T-NEW1..T-NEW20 + T-225..T-230 + T-310A..D placeholder task rows must be renumbered into stable T-IDs across MASTER_IMPLEMENTATION_PLAN.md + delivery-plan.md | P0 → P1 with plan in place | Traceability matrix breaks at M1 dispatch if T-IDs are unstable |
 | C-4 | docs/qa/test-coverage.md Tables 1+2 refresh | P1 | Architecture-reviewer pass stale; cosmetic for plan readability |
-| C-7 | llm-orchestrator cross-monorepo import verification | P3 (later: obsoleted by ADR-0014 repo separation) | If ROMAS Brief Workers can't import the package, author `contracts/anthropic-translation-fallback.yaml` |
+| C-7 | llm-orchestrator cross-monorepo import verification | P3 (later: obsoleted by ADR-0014 repo separation) | If ROMAS Wire Workers can't import the package, author `contracts/anthropic-translation-fallback.yaml` |
 | C-005 | `.env.example` (pulled forward from R-111 M1) | Closed in cycle-1 | Pulled into scope at cycle's end |
 | C-006 | `/team-design` as M3 predecessor | Closed in cycle-1 | Lock added to delivery-plan.md §3.4 |
 

@@ -1,5 +1,5 @@
 ---
-title: Critic Review — ROMAS Brief ship-execution-plan.md
+title: Critic Review — ROMAS Wire ship-execution-plan.md
 reviewer: team-plan-critic (Plan Savage)
 mode: HYBRID (delivery planning over completed audit)
 artifact: Docs/specs/ship-execution-plan.md

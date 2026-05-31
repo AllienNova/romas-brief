@@ -12,7 +12,7 @@
 
 ## Context
 
-ROMAS Brief has three distinct compute needs:
+ROMAS Wire has three distinct compute needs:
 
 1. **Scheduled background work** — source ingestion (cron 10:30 UTC daily), audio production, RSS regeneration. These are latency-tolerant but must execute reliably on a schedule.
 2. **Edge-served web surfaces** — reader app and CMS app. Both are Next.js 14+ App Router. Both serve a globally distributed clinical audience; CDN-edge rendering minimizes latency.
@@ -53,7 +53,7 @@ Rejected. Netlify supports Next.js but its edge functions runtime is less mature
 
 ### Fly.io + Tigris (S3-compatible)
 
-Rejected. Fly.io provides long-running containers — appropriate for persistent workers but over-engineered for the stateless cron + event-driven pattern ROMAS Brief uses. Tigris (S3-compatible, built on Fly) is not CDN-native; a separate CDN layer would be required for the public MP3 bucket, complicating the tag-based purge path.
+Rejected. Fly.io provides long-running containers — appropriate for persistent workers but over-engineered for the stateless cron + event-driven pattern ROMAS Wire uses. Tigris (S3-compatible, built on Fly) is not CDN-native; a separate CDN layer would be required for the public MP3 bucket, complicating the tag-based purge path.
 
 ### Self-hosted VPS (e.g., Hetzner) + nginx + CDN (Bunny.net)
 

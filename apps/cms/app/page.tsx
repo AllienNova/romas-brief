@@ -1,5 +1,5 @@
 // =====================================================================
-// apps/cms/app/page.tsx · ROMAS Brief · SHIP-10
+// apps/cms/app/page.tsx · ROMAS Wire · SHIP-10
 // Audio QA queue (FR-009 operator surface). Server component: lists
 // audio_jobs awaiting review (audio_status='in_review') plus a smaller
 // recently-published list. RLS returns empty without an audio_qa

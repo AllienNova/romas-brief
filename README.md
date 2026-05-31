@@ -1,6 +1,6 @@
-# ROMAS Brief — Claude Code Agent Kit
+# ROMAS Wire — Claude Code Agent Kit
 
-This kit gives Claude Code everything it needs to build, operate, and ship ROMAS Brief — the public media surface of ROMAS Intelligence (clinical intelligence for modern radiation oncology).
+This kit gives Claude Code everything it needs to build, operate, and ship ROMAS Wire — the public media surface of ROMAS Intelligence (clinical intelligence for modern radiation oncology).
 
 > Tagline: **Radiation oncology, decoded daily.**
 
@@ -68,7 +68,7 @@ romas-brief-agent-kit/
 
 ## Install into your repo
 
-Drop the contents into the root of your ROMAS Brief repo:
+Drop the contents into the root of your ROMAS Wire repo:
 
 ```bash
 # Copy in
@@ -120,7 +120,7 @@ Podcast (tier 3) is the only place that closes with: *"Not headlines. Clinical i
 
 | Time (ET) | What happens |
 |---|---|
-| 06:30 | Cron `ROMAS Brief — Global Morning Brief` fires. |
+| 06:30 | Cron `ROMAS Wire — Global Morning Brief` fires. |
 | 06:30–06:45 | `editorial-director` + `signal-scorer` rank candidate pool. |
 | 06:50–08:30 | Article drafting (top-5). |
 | 08:30–09:30 | `clinical-fact-checker` + `physics-reviewer` review. |

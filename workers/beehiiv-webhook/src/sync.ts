@@ -1,5 +1,5 @@
 // =====================================================================
-// workers/beehiiv-webhook/src/sync.ts · ROMAS Brief · SHIP-11
+// workers/beehiiv-webhook/src/sync.ts · ROMAS Wire · SHIP-11
 // Pure, unit-testable core for the Beehiiv -> Supabase subscriber sync.
 //
 // Auth model (ADR-0019): Beehiiv has NO native HMAC/signature. The

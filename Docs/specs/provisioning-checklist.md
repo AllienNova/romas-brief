@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Provisioning Checklist (what Kimal must provide)
+title: ROMAS Wire — Provisioning Checklist (what Kimal must provide)
 version: 1.0.0
 date: 2026-05-29
 status: ACTIVE

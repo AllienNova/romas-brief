@@ -7,7 +7,7 @@ firewall: 32px (locked, Master-Strategy §3 ledger row 3)
 
 # SponsorBlock
 
-Sponsor surface with strict 32px firewall from the ROMAS Brief wordmark. Never inside the masthead, never inside the article body, never above the hero.
+Sponsor surface with strict 32px firewall from the ROMAS Wire wordmark. Never inside the masthead, never inside the article body, never above the hero.
 
 ## Props
 

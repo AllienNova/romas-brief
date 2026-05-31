@@ -1,8 +1,8 @@
 ---
-description: Run the full morning ROMAS Brief production loop — ingest, dedupe, score, select top-5, draft, fact-check, audio QA handoff, RSS regen, publish. Use Mon–Fri at 06:30 ET.
+description: Run the full morning ROMAS Wire production loop — ingest, dedupe, score, select top-5, draft, fact-check, audio QA handoff, RSS regen, publish. Use Mon–Fri at 06:30 ET.
 ---
 
-Run the daily ROMAS Brief production loop.
+Run the daily ROMAS Wire production loop.
 
 1. Read the morning cron output for today's date.
 2. Invoke `editorial-director` to orchestrate end-to-end:

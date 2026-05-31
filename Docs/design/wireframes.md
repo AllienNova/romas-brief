@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Wireframes
+title: ROMAS Wire — Wireframes
 version: 1.0.0
 date: 2026-05-15
 authority: information-architecture.md §3 routes inventory · web-engineer agent surfaces · component-library skill
@@ -26,7 +26,7 @@ Common footer on every route (described once, referenced as `[FOOTER]`):
 
 ```
 +---------------------------------------------------------------+
-| ROMAS Brief — Radiation oncology, decoded daily.              |
+| ROMAS Wire — Radiation oncology, decoded daily.              |
 |                                                                 |
 | Listen · Subscribe · About · Sponsor program · RSS feeds       |
 | © 2026 ROMAS Intelligence · AlienNova                          |
@@ -494,7 +494,7 @@ Same content; full-width max-w-prose with 16px gutters. Sub-rubric label stays p
 [HEADER]
 
 +----------------------------------------------------------------+
-| Subscribe to ROMAS Brief                                       |
+| Subscribe to ROMAS Wire                                       |
 | Daily clinical intelligence for radiation oncology — free.     |
 +----------------------------------------------------------------+
 
@@ -544,7 +544,7 @@ Same content; full-width max-w-prose with 16px gutters. Sub-rubric label stays p
 [HEADER]
 
 +----------------------------------------------------------------+
-| About ROMAS Brief                                              |
+| About ROMAS Wire                                              |
 | Radiation oncology, decoded daily.                             |
 +----------------------------------------------------------------+
 
@@ -601,7 +601,7 @@ Same content; full-width max-w-prose with 16px gutters. Sub-rubric label stays p
 [HEADER]
 
 +----------------------------------------------------------------+
-| Sponsor ROMAS Brief                                            |
+| Sponsor ROMAS Wire                                            |
 +----------------------------------------------------------------+
 
 +----------------------------------------------------------------+
@@ -673,7 +673,7 @@ Same content; full-width max-w-prose with 16px gutters. Sub-rubric label stays p
 ```
 [CMS HEADER — not the public reader header]
 +----------------------------------------------------------------+
-| ROMAS Brief CMS · Audio QA · Job #{audio_job_id}              |
+| ROMAS Wire CMS · Audio QA · Job #{audio_job_id}              |
 +----------------------------------------------------------------+
 
 +----------------------------------------------------------------+

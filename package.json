@@ -2,7 +2,7 @@
   "name": "romas-brief",
   "private": true,
   "version": "0.0.0",
-  "description": "ROMAS Brief — the public media surface of ROMAS Intelligence. Daily Mon–Fri brief on radiation oncology. Monorepo (pnpm workspaces + Turborepo).",
+  "description": "ROMAS Wire — the public media surface of ROMAS Intelligence. Daily Mon–Fri brief on radiation oncology. Monorepo (pnpm workspaces + Turborepo).",
   "license": "UNLICENSED",
   "packageManager": "pnpm@9.0.0",
   "engines": {

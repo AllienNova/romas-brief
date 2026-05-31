@@ -41,7 +41,7 @@ The four other inviolable-rule-6 conditions (`clinical_claims_checked`, `qa_revi
 
 ### Positive
 - **Layered defense.** The DB is the floor (broken masters fail), the pipeline is the production target (re-master before reviewer sees it), the reviewer is the human judgment layer (taste call on near-target episodes).
-- **Eliminates false-positive rejections.** Episodes that land at `-15.1` or `-16.9` are real ROMAS Brief audio that previously would have been blocked by the schema. They now publish with an amber soft-warning rather than a hard reject.
+- **Eliminates false-positive rejections.** Episodes that land at `-15.1` or `-16.9` are real ROMAS Wire audio that previously would have been blocked by the schema. They now publish with an amber soft-warning rather than a hard reject.
 - **Reduces re-master churn.** Pipeline cost (R-202 retry) is reduced for near-target episodes.
 
 ### Negative

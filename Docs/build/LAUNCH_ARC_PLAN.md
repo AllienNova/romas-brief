@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Launch Arc Plan (W-7 → Day 1)
+title: ROMAS Wire — Launch Arc Plan (W-7 → Day 1)
 version: 1.0.0
 date: 2026-05-15
 window: 2026-05-15 (prep weekend) → 2026-07-07 (Day 1 target)
@@ -101,7 +101,7 @@ By Sun 2026-07-05 end-of-day, all 18 must be GREEN. Any RED → defer Day 1 by 1
 
 1. All 10 migrations applied clean on production Supabase + pgTAP green
 2. All 6 inviolable rules enforced at DB CHECK level
-3. Cron `ROMAS Brief — Global Morning Brief` Mon-Fri 10:30 UTC live with last 5 runs green
+3. Cron `ROMAS Wire — Global Morning Brief` Mon-Fri 10:30 UTC live with last 5 runs green
 4. ElevenLabs voice cloning ID resolved + 50 pre-mastered audio episodes in `romas-audio-cdn` R2
 5. Audio QA reviewer state machine flip-tested end-to-end (in_review → published → revoked rehearsed)
 6. CDN purge watchdog tested + alert wired to PagerDuty / email
@@ -116,7 +116,7 @@ By Sun 2026-07-05 end-of-day, all 18 must be GREEN. Any RED → defer Day 1 by 1
 15. 500 articles drafted across 11 categories × 7 regions × 8 audiences × 8 content types per SSOT §12 distribution matrix
 16. Audio Podcast Episode 001 (30–60 min) mastered + transcript + RSS entry ready
 17. /team-qa cycle-3 verdict: GO or GO WITH CONDITIONS
-18. First 5 issues of ROMAS Brief drafted and queued for live cron handoff
+18. First 5 issues of ROMAS Wire drafted and queued for live cron handoff
 
 ---
 

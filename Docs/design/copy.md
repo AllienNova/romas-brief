@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — UX Copy Library
+title: ROMAS Wire — UX Copy Library
 version: 1.0.0
 date: 2026-05-15
 authority: editorial-style-guide.md · CLAUDE.md §8 voice rules · banned vocabulary list · LATAM footer rule
@@ -14,7 +14,7 @@ voice: calm, expert, never urgent. Cite, never moralize. No empty-promise adject
 
 | Slot | Copy | Notes |
 |---|---|---|
-| Logo wordmark | `ROMAS BRIEF` (with teal dot under "i" per variant c) | Locked design-tokens.md |
+| Logo wordmark | `ROMAS WIRE` (with teal dot under "i" per variant c) | Locked design-tokens.md |
 | Nav: Today | "Today" | Goes to `/` |
 | Nav: Listen | "Listen" | Goes to `/listen` |
 | Nav: Read | "Read" | Opens dropdown / drawer |
@@ -130,7 +130,7 @@ Never display "Listen" when `audio_status != 'published'` — schema CHECK + com
 | Audio file 404 | "Audio is temporarily unavailable. The transcript is available below." | Transcript link inline |
 | Audio mid-listen revoke | "This audio has been withdrawn. Read the article for the corrected information." | Article link |
 | Search — pgvector unhealthy | "Search results are limited while we tune the index. Falling back to text-only search." | Banner; results continue |
-| Region toggle — China detected | "ROMAS Brief reader access from China is not guaranteed (Cloudflare GFW). Reader site may be unavailable; RSS feeds are accessible globally." | RSS link |
+| Region toggle — China detected | "ROMAS Wire reader access from China is not guaranteed (Cloudflare GFW). Reader site may be unavailable; RSS feeds are accessible globally." | RSS link |
 | Generic 500 | "Something on our end is broken. The page should be back soon — try again in a minute." | Retry + status page link |
 
 **Banned in error states**: "Something went wrong", "Oops!", "Sorry, an error occurred", "Try again later" (without specifying), "Our team has been notified" (without naming the recourse), `delve`, `tapestry`, `seamless`, `elegant`.
@@ -161,7 +161,7 @@ Verbatim quote pattern (within article body):
 
 Locked content in `wireframes.md` Route 10. Key strings:
 
-- Headline: "About ROMAS Brief"
+- Headline: "About ROMAS Wire"
 - Subheadline: "Radiation oncology, decoded daily."
 - "What we do" paragraph: "Built for radiation oncologists, physicists, dosimetrists, therapists, and oncology leaders. We turn the global signal in radiation oncology into 5 items you can act on before clinic."
 - Editorial standards = six inviolable rules (verbatim from SSOT §2).
@@ -172,7 +172,7 @@ Locked content in `wireframes.md` Route 10. Key strings:
 
 Locked content in `wireframes.md` Route 11. Key strings:
 
-- Headline: "Sponsor ROMAS Brief"
+- Headline: "Sponsor ROMAS Wire"
 - Firewall diagram label: "Sponsor block only · 32px firewall · No co-branded mastheads."
 - "What we DON'T offer" list: locked items from Master-Strategy §3 ledger row 3.
 

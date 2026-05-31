@@ -1,4 +1,4 @@
-# ROMAS Brief — Project Status Tracker
+# ROMAS Wire — Project Status Tracker
 
 > **Date:** 2026-05-28
 > **Status:** Active Development — Phase 8 (Monorepo Consolidation) COMPLETE
@@ -10,7 +10,7 @@
 
 ## Current State Summary
 
-ROMAS Brief is a fully functional specialist intelligence platform for radiation oncology professionals. The site is live on Vercel with a complete design system, 8-module homepage, rotating editorial components, photorealistic article thumbnails, SEO infrastructure, and dedicated pages for About, Academy, and How It Works.
+ROMAS Wire is a fully functional specialist intelligence platform for radiation oncology professionals. The site is live on Vercel with a complete design system, 8-module homepage, rotating editorial components, photorealistic article thumbnails, SEO infrastructure, and dedicated pages for About, Academy, and How It Works.
 
 **Phase 8 (Monorepo Consolidation) is complete as of 2026-05-28.** The reader source has been consolidated from the standalone `kimhons/romas-brief-web` repo into `apps/web/` of the `AllienNova/romas-brief` monorepo. The standalone repo has been archived. QA blockers B-17, B-18, and B-20 are all closed.
 
@@ -84,7 +84,7 @@ Nothing currently in progress. Phase 8 complete.
 
 ## Design Principles (do not violate)
 
-The overall page layout must never be changed without explicit instruction from the owner. Every component should meet an Apple-level standard of visual precision — clean spacing, consistent tokens, smooth animations, and purposeful colour use. The ROMAS Brief brand voice is authoritative, precise, and trusted — never sensationalist or vague.
+The overall page layout must never be changed without explicit instruction from the owner. Every component should meet an Apple-level standard of visual precision — clean spacing, consistent tokens, smooth animations, and purposeful colour use. The ROMAS Wire brand voice is authoritative, precise, and trusted — never sensationalist or vague.
 
 Photorealistic clinical photography is the only acceptable image style for article thumbnails. Illustrated, abstract, or AI-generated non-photorealistic images are not appropriate for this publication.
 

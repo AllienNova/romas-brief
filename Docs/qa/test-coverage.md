@@ -1,4 +1,4 @@
-# ROMAS Brief — Cross-Reference Integrity Coverage
+# ROMAS Wire — Cross-Reference Integrity Coverage
 **Generated**: 2026-05-14  
 **Reviewer**: architecture-reviewer (read-only)  
 **Scope**: plan-QA cross-reference integrity — not code coverage  
@@ -225,7 +225,7 @@ SSOT §10 Q-numbering is canonical. delivery-plan.md Q-numbering drifts (deliver
 
 ## Verdict
 
-**APPROVE WITH CONDITIONS** — the ROMAS Brief plan corpus is architecturally coherent at its core (audio QA state machine, schema-enforced safety gates, six inviolable rules, ADRs 0001–0002 hardened). The critical path to Day 1 is sound. However, 4 P0 breaks must be resolved before any implementation work begins on cycle-5/6 features (worldwide, LATAM translate, three-edition). The 6 P1 gaps are high-urgency documentation debt that will cause agent mis-execution if not closed in M0.
+**APPROVE WITH CONDITIONS** — the ROMAS Wire plan corpus is architecturally coherent at its core (audio QA state machine, schema-enforced safety gates, six inviolable rules, ADRs 0001–0002 hardened). The critical path to Day 1 is sound. However, 4 P0 breaks must be resolved before any implementation work begins on cycle-5/6 features (worldwide, LATAM translate, three-edition). The 6 P1 gaps are high-urgency documentation debt that will cause agent mis-execution if not closed in M0.
 
 **Summary** (148 words): The plan's core safety architecture — the 5-condition `audio_publish_requires_qa` CHECK, the six inviolable rules enforced at both schema and agent levels, and ADRs 0001–0006 — is sound and consistent across docs. The four P0 breaks are entirely in cycle-5/6 territory: the all-tiers-Day-1 lock has not propagated to ADR-0005, AGENT.md §13, or CLAUDE.md §5; ADR-0013's schema delta is absent from `cms-schema.md` the day it was signed; the `subscribers.region` column needed for three-edition publish has no schema entry; and 15 FRs carry placeholder T-NEW task IDs with no MASTER_IMPLEMENTATION_PLAN entries. The six P1 gaps are documentation lag: architecture.md's decision log is 7 ADRs behind, CLAUDE.md still offers Postmark as an option after ADR-0007 locked Resend, the physics-reviewer agent has no skill, and all 15 integration contracts are unauthored. No code should be written for FR-024 through FR-038 until the P0 gaps are closed.
 

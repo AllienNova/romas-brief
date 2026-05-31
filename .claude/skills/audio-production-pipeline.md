@@ -3,7 +3,7 @@ name: audio-production-pipeline
 description: Full TTS audio production pipeline for ROMAS Audio Brief, Daily Brief, Podcast, and Conference Brief. Covers voice selection, script prep, 10-beat structure, ElevenLabs + PlayHT failover, loudness mastering to -16 LUFS, R2 storage, transcript generation, and QA gate handoff. Load before any audio job.
 ---
 
-# ROMAS Brief — Audio Production Pipeline
+# ROMAS Wire — Audio Production Pipeline
 
 ## Voice: ROMAS Clinical Narrator
 

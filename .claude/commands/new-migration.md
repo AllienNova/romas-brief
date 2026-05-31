@@ -1,5 +1,5 @@
 ---
-description: Draft a new Supabase migration following ROMAS Brief schema discipline. Migration is append-only and invariant-preserving.
+description: Draft a new Supabase migration following ROMAS Wire schema discipline. Migration is append-only and invariant-preserving.
 ---
 
 Draft a new Supabase migration for `$ARGUMENTS` (intent description).

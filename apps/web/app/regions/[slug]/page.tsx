@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Region detail page (FR-025)
+ * ROMAS Wire — Region detail page (FR-025)
  * /regions/[slug] — 8 regions: us · europe · uk · apac · canada · latam · mena-africa · global
  */
 import Link from "next/link";

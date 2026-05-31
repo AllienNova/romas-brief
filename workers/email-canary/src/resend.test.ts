@@ -1,5 +1,5 @@
 // =====================================================================
-// workers/email-canary/src/resend.test.ts · ROMAS Brief · SHIP-12
+// workers/email-canary/src/resend.test.ts · ROMAS Wire · SHIP-12
 // node:test suite for the Resend payload builder + send wrapper. Run with:
 //   node --experimental-strip-types --test src/resend.test.ts
 // =====================================================================

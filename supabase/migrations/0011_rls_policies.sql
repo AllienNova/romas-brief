@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0011_rls_policies.sql
--- T-113 (MIP §B.1) + R-114 (RLS wiring for apps/cms) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-21 (M1-completion cycle)
+-- T-113 (MIP §B.1) + R-114 (RLS wiring for apps/cms) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-21 (M1-completion cycle)
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql lines 320-368
 -- Anchors: SSOT §2 inviolable rule 6 (audio QA gate enforced by RLS +
 --          schema CHECK) · CLAUDE.md §7 internal CMS Cloudflare

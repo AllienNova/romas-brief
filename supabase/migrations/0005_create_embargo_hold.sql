@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0005_create_embargo_hold.sql
--- T-107 (MIP §B.1) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-16
+-- T-107 (MIP §B.1) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-16
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql lines 213-224
 -- Anchors: SSOT v1.2.0 §2 inviolable rule 2 (embargoed items never enter
 --          the publish queue — surface in embargo hold list only).

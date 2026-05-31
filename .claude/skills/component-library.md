@@ -1,9 +1,9 @@
 ---
 name: component-library
-description: Canonical React component specs for ROMAS Brief — AudioPlayer (Variant A inline, Variant B banner), AudioStatusBadge, SponsorBlock, ROMASRead, IssueHeader, ArticleHeader, ListenPage. Load before building or modifying any reader-facing component.
+description: Canonical React component specs for ROMAS Wire — AudioPlayer (Variant A inline, Variant B banner), AudioStatusBadge, SponsorBlock, ROMASRead, IssueHeader, ArticleHeader, ListenPage. Load before building or modifying any reader-facing component.
 ---
 
-# ROMAS Brief — Component Library
+# ROMAS Wire — Component Library
 
 All components TypeScript, function components, Tailwind via design-tokens, accessibility-first.
 

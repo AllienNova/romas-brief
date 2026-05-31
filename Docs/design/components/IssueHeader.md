@@ -70,6 +70,6 @@ Default: detected via `cf-ipcountry` → `region` cookie → edition map.
 
 - Logo variant other than c → flag (allow override only via explicit prop with rationale).
 - Sponsor logo inside this header → BLOCK (firewall violation).
-- Co-branded masthead (sponsor name + ROMAS BRIEF together) → BLOCK Day 1–90.
+- Co-branded masthead (sponsor name + ROMAS WIRE together) → BLOCK Day 1–90.
 - Issue meta in larger font than wordmark → flag.
 - Wordmark color other than `--rb-ink` → BLOCK.

@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Listen Page
+ * ROMAS Wire — Listen Page
  * T-302 Reader app
  *
  * Server component. Shows all published audio jobs grouped by tier.
@@ -12,9 +12,9 @@ import { getAudioArticles } from "@/lib/articles";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Listen — ROMAS Brief Audio",
+  title: "Listen — ROMAS Wire Audio",
   description:
-    "Browse all ROMAS Brief audio briefings. Clinical intelligence for radiation oncology, available as audio.",
+    "Browse all ROMAS Wire audio briefings. Clinical intelligence for radiation oncology, available as audio.",
 };
 
 interface AudioItem {
@@ -96,7 +96,7 @@ export default async function ListenPage() {
       {/* Page header */}
       <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight text-[var(--rb-text-primary)]">
-          Listen to ROMAS Brief
+          Listen to ROMAS Wire
         </h1>
         <p className="mt-3 text-[var(--rb-text-secondary)] max-w-xl">
           Every briefing is available as audio. Subscribe via RSS, Apple Podcasts, or

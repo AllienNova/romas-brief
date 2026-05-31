@@ -1,5 +1,5 @@
 # =====================================================================
-# deploy-pages.yml · ROMAS Brief Cloudflare Pages deploys
+# deploy-pages.yml · ROMAS Wire Cloudflare Pages deploys
 # R-106 (remediation-plan M1) · /team-build M1-completion cycle
 # Anchors: ADR-0003 (Cloudflare Workers + Pages + R2) · SSOT §5 (Next 14
 #   lock) · ADR-0015 v2 closed-CVE class (no Pages Router, no i18n,

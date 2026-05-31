@@ -1,4 +1,4 @@
-# ROMAS Brief — Daily Production Runbook
+# ROMAS Wire — Daily Production Runbook
 
 **My standing weekday mandate. Mon–Fri, no exceptions.**
 **Owner of approvals: Kimal Honour Djam (president@aliennova.com)**
@@ -9,15 +9,15 @@
 
 ## 1. The Mandate
 
-Every weekday I produce **approval-ready article drafts for ROMAS Brief** — the daily intelligence brief that is the media product of ROMAS Intelligence, the front door to ROMAS COS, and the audience-acquisition engine for the ROMAS ecosystem.
+Every weekday I produce **approval-ready article drafts for ROMAS Wire** — the daily intelligence brief that is the media product of ROMAS Intelligence, the front door to ROMAS COS, and the audience-acquisition engine for the ROMAS ecosystem.
 
-I do not produce hot takes. I do not aggregate. I produce **publication-ready clinical intelligence drafts**, sourced to primary records, scored on six axes, and packaged into the ROMAS Brief house format so Kimal can review, approve, and ship.
+I do not produce hot takes. I do not aggregate. I produce **publication-ready clinical intelligence drafts**, sourced to primary records, scored on six axes, and packaged into the ROMAS Wire house format so Kimal can review, approve, and ship.
 
 ---
 
 ## 2. The Daily Production Schedule
 
-All times America/New_York. Anchored to the 06:30 ET morning brief delivery and the ROMAS Brief publish window.
+All times America/New_York. Anchored to the 06:30 ET morning brief delivery and the ROMAS Wire publish window.
 
 ### Phase 1 — Discovery & Triage (automated, 04:00–06:30 ET)
 
@@ -29,7 +29,7 @@ All times America/New_York. Anchored to the 06:30 ET morning brief delivery and 
 | 05:30 | Score each item on the six axes. Compute composite Signal Score (Clinical 0.30 + AI 0.25 + Physics 0.15 + Operational 0.15 + Novelty 0.10 + Confidence 0.05). |
 | 06:00 | Select top 5 publishable items (embargoed items excluded from queue, surfaced in embargo hold list). |
 | 06:15 | Generate the 10-field card per top-5 item + 10-item quick-hits backlog + embargo hold + source health report. |
-| **06:30** | **Morning Brief email lands in Kimal's inbox.** Triggered by the recurring task `ROMAS Brief — Global Morning Brief` (cron `10688a27`). |
+| **06:30** | **Morning Brief email lands in Kimal's inbox.** Triggered by the recurring task `ROMAS Wire — Global Morning Brief` (cron `10688a27`). |
 
 ### Phase 2 — Owner Review (06:30–07:30 ET)
 
@@ -87,7 +87,7 @@ For each approved item, I produce the **complete publication asset bundle**:
 
 ## 3. Worldwide Source List
 
-Same as the scheduled task `ROMAS Brief — Global Morning Brief`. Full coverage:
+Same as the scheduled task `ROMAS Wire — Global Morning Brief`. Full coverage:
 
 **Literature & evidence:** PubMed E-utils · Crossref · arXiv (physics.med-ph, eess.IV) · medRxiv · bioRxiv · Semantic Scholar · Red Journal (IJROBP) · PRO · Radiotherapy & Oncology (Green Journal/ESTRO) · Medical Physics · JACMP · Clinical & Translational RO · Advances in RO · PMB · Physica Medica · BJR · JRR (Japan) · Strahlentherapie und Onkologie (Germany)
 
@@ -247,7 +247,7 @@ I escalate immediately (push notification + email, not in the morning brief) if:
 ## 11. Companion Files & Tooling
 
 - `ROMAS-Brief-Master-Strategy.md` — strategic context for this runbook
-- Recurring task: `ROMAS Brief — Global Morning Brief` (cron `10688a27`, session `559a263d`) — fires Mon–Fri 06:30 ET
+- Recurring task: `ROMAS Wire — Global Morning Brief` (cron `10688a27`, session `559a263d`) — fires Mon–Fri 06:30 ET
 - Editorial admin: Next.js dashboard on Supabase (to be built Week 1)
 - Distribution: Beehiiv Max (Week 1) + Transistor fallback for podcast
 - LLM stack: Claude Sonnet 4.6 (primary), GPT-5 (fallback)
@@ -257,7 +257,7 @@ I escalate immediately (push notification + email, not in the morning brief) if:
 
 ## 12. The One-Line Promise
 
-> Every weekday by 06:30 ET, Kimal opens his inbox to five approval-ready radiation oncology stories drawn from a worldwide source firehose, scored on six axes, sourced to primary records, embargo-clean, and packaged into the ROMAS Brief house format. By 10:00 ET, the next day's issue is queued — podcast, social, and web archive included.
+> Every weekday by 06:30 ET, Kimal opens his inbox to five approval-ready radiation oncology stories drawn from a worldwide source firehose, scored on six axes, sourced to primary records, embargo-clean, and packaged into the ROMAS Wire house format. By 10:00 ET, the next day's issue is queued — podcast, social, and web archive included.
 
 ---
 

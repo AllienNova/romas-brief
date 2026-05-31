@@ -1,4 +1,4 @@
-# ROMAS Brief — Test & QA Plan
+# ROMAS Wire — Test & QA Plan
 
 **Version**: 1.0.0
 **Owner**: QA Lead (this plan) · Kimal final sign-off
@@ -9,7 +9,7 @@
 
 ## 1. Goal & scope
 
-This plan is the verification contract for ROMAS Brief — the public media surface of ROMAS Intelligence. It defines what must be tested, how, at what thresholds, and which gates block merge / deploy / publish. ROMAS Brief sells **clinical intelligence** into a trust market; a single un-cited claim, mispronounced drug, or embargo violation causes irreversible reputational harm. Test discipline is therefore brand discipline.
+This plan is the verification contract for ROMAS Wire — the public media surface of ROMAS Intelligence. It defines what must be tested, how, at what thresholds, and which gates block merge / deploy / publish. ROMAS Wire sells **clinical intelligence** into a trust market; a single un-cited claim, mispronounced drug, or embargo violation causes irreversible reputational harm. Test discipline is therefore brand discipline.
 
 In scope:
 
@@ -21,7 +21,7 @@ In scope:
 
 Out of scope:
 
-- PHI handling: **no PHI exists in ROMAS Brief scope**. Patient-identifiable data never enters the pipeline. (Hypothesis: confirmed by `CLAUDE.md` §1 audience and `AGENT.md` §5; the closest data is published clinical-trial results.)
+- PHI handling: **no PHI exists in ROMAS Wire scope**. Patient-identifiable data never enters the pipeline. (Hypothesis: confirmed by `CLAUDE.md` §1 audience and `AGENT.md` §5; the closest data is published clinical-trial results.)
 - ROMAS COS clinical platform tests (separate plan).
 
 ---
@@ -182,7 +182,7 @@ Pre-roll insertion verified by **A-031** below.
 | A-043 | AudioPlayer Variant A inline renders for published | E (Playwright) | Given published article with `audio_status='published'`; When visit article page; Then `[data-testid="audio-player-variant-a"]` visible, play button enabled | `component-library` skill; `CLAUDE.md` §7 color tokens v1.1 |
 | A-044 | AudioPlayer Variant B banner renders on Listen page | E | Given Listen page route; When load; Then Variant B banner visible per design tokens | `component-library` skill |
 | A-045 | Status badge color matches DB state | E | For each of `in_review` / `published` / `skipped`; When fetch article; Then badge background equals the matching CSS var (`--rb-audio-pending` / `--rb-audio-published` / `--rb-audio-skipped`) | `CLAUDE.md` §7 color tokens; `design-tokens` skill |
-| A-046 | Sponsor firewall 32px enforced | E | Given a sponsored issue; When measure sponsor block bounding box vs ROMAS Brief wordmark bounding box; Then min separation ≥ 32px on both desktop + mobile breakpoints | `CLAUDE.md` §3 ledger row 3 + sponsor-firewall sentence |
+| A-046 | Sponsor firewall 32px enforced | E | Given a sponsored issue; When measure sponsor block bounding box vs ROMAS Wire wordmark bounding box; Then min separation ≥ 32px on both desktop + mobile breakpoints | `CLAUDE.md` §3 ledger row 3 + sponsor-firewall sentence |
 | A-047 | Subscriber count hidden until 2,500 | E | Given subscriber_count view returns 1,200; When load homepage; Then no count rendered, qualitative copy shown. Given 2,500+; When load; Then exact count rendered | `CLAUDE.md` §3 row 5, §8; `cms-schema.md` `subscriber_count` view |
 | A-048 | No co-branded masthead before Day 90 | E | Given site config flag `launch_day < 90`; When load homepage; Then no partner logo rendered above the fold; only "Sponsored by [X]" or "Partner message from [X]" allowed in body slots | `CLAUDE.md` §3 row 3 |
 
@@ -342,4 +342,4 @@ See §5 matrix. Re-stated for clarity:
 
 ---
 
-*This plan is the verification contract for ROMAS Brief. When the gates change, this file changes in the same PR.*
+*This plan is the verification contract for ROMAS Wire. When the gates change, this file changes in the same PR.*

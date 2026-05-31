@@ -1,5 +1,5 @@
 // =====================================================================
-// apps/cms/lib/supabase/server.ts · ROMAS Brief
+// apps/cms/lib/supabase/server.ts · ROMAS Wire
 // R-114 (remediation-plan M1) · D-026 close · /team-build M1-closeout cycle
 // Anchors: @supabase/ssr@0.10.3 createServerClient (per official docs
 //   fetched 2026-05-22 via context7 /supabase/ssr). ADR-0015 v2 closed-CVE
@@ -25,7 +25,7 @@
 // factory in `./route.ts` instead.
 //
 // Environment variable convention: this scaffold uses unprefixed
-// SUPABASE_URL + SUPABASE_ANON_KEY because Auth flows in ROMAS Brief are
+// SUPABASE_URL + SUPABASE_ANON_KEY because Auth flows in ROMAS Wire are
 // fully server-rendered per ADR-0015 v2. The anon key never reaches the
 // browser bundle. If a future cycle adds client-side auth state hydration,
 // add NEXT_PUBLIC_* duplicates and update the factory references here.

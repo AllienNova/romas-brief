@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Homepage
+ * ROMAS Wire — Homepage
  * Apple-level visual craft. 8 curated editorial modules.
  * Rotating components: HeroCarousel (above Top Stories), SideStack (side column),
  * QuickHitsRotator (top row only), DismissibleStrip, MobileCTABand.
@@ -241,7 +241,7 @@ export default async function HomePage() {
   return (
     <div style={{ background: "var(--rb-bg-page)" }}>
       {/* Single page h1 for document outline (WCAG 1.3.1 / 2.4.6) — visually hidden; the hero carousel carries the visible headings. */}
-      <h1 className="sr-only">ROMAS Brief — radiation oncology, decoded daily</h1>
+      <h1 className="sr-only">ROMAS Wire — radiation oncology, decoded daily</h1>
 
       {/* ── Dismissible explanation strip ──────────────────────────── */}
       <DismissibleStrip />
@@ -384,7 +384,7 @@ export default async function HomePage() {
                   <div className="flex items-center gap-3 mb-5">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.8)" }}><MicrophoneIcon size={28} /></div>
                     <div>
-                      <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">ROMAS Brief Podcast</p>
+                      <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">ROMAS Wire Podcast</p>
                       <p className="text-sm font-medium text-white/80">
                         {new Date(podcast.published_at).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
                       </p>
@@ -546,9 +546,9 @@ export default async function HomePage() {
             <p className="text-base sm:text-lg text-white/80 mb-2 max-w-xl mx-auto leading-relaxed">
               Clinical intelligence from PubMed, arXiv, ClinicalTrials and FDA — curated, scored, and audio-ready.
             </p>
-            <p className="text-sm text-white/65 mb-8 max-w-xl mx-auto">Join the radiation oncology professionals who start their day with ROMAS Brief.</p>
+            <p className="text-sm text-white/65 mb-8 max-w-xl mx-auto">Join the radiation oncology professionals who start their day with ROMAS Wire.</p>
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <a href="https://romasbrief.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white font-semibold text-sm transition-all hover:bg-white/90 hover:scale-105 active:scale-95" style={{ color: "#0066CC" }} aria-label="Subscribe to ROMAS Brief">Subscribe free — takes 30 seconds</a>
+              <a href="https://romasbrief.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white font-semibold text-sm transition-all hover:bg-white/90 hover:scale-105 active:scale-95" style={{ color: "#0066CC" }} aria-label="Subscribe to ROMAS Wire">Subscribe free — takes 30 seconds</a>
               <Link href="/listen" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 text-white font-medium text-sm transition-all hover:bg-white/10" aria-label="Browse audio library"><HeadphonesIcon size={16} /> Browse audio library</Link>
             </div>
             <p className="text-xs text-white/50 mt-5">No spam. Unsubscribe anytime. GDPR compliant.</p>

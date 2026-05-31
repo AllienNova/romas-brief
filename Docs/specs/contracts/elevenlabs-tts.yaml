@@ -6,7 +6,7 @@ info:
     Derived contract for the ElevenLabs TTS calls used by `workers/audio-producer`.
     Direct HTTP — no ElevenLabs SDK (per F-S-007).
   contact:
-    name: audio-producer (ROMAS Brief)
+    name: audio-producer (ROMAS Wire)
 servers:
   - url: https://api.elevenlabs.io
 paths:
@@ -84,7 +84,7 @@ components:
       in: header
       name: xi-api-key
 
-# ROMAS Brief usage policy (non-OpenAPI)
+# ROMAS Wire usage policy (non-OpenAPI)
 x-romas-policy:
   retry:
     strategy: exponential

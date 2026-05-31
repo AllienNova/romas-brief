@@ -33,7 +33,7 @@ paths:
                       type: array
                       items: { type: string }
                       maxItems: 30
-                      description: Cache-Tag header values; preferred for ROMAS Brief
+                      description: Cache-Tag header values; preferred for ROMAS Wire
                 - type: object
                   required: [files]
                   properties:

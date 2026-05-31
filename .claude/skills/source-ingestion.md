@@ -1,12 +1,12 @@
 ---
 name: source-ingestion
-description: Daily source ingestion pipeline for ROMAS Brief — global radiation oncology sources across literature, regulatory (multi-jurisdiction), societies, reimbursement, vendors, conferences. Dedupe rules, source-health logging, embargo detection. Load before any ingestion / scanning work.
+description: Daily source ingestion pipeline for ROMAS Wire — global radiation oncology sources across literature, regulatory (multi-jurisdiction), societies, reimbursement, vendors, conferences. Dedupe rules, source-health logging, embargo detection. Load before any ingestion / scanning work.
 canonical_status: CANONICAL SOURCE LIST per SSOT §6 and CLAUDE.md §9 (promoted M0 cycle-1 per R-007). When CLAUDE.md §9 instructs to "refer to the active cron task spec", this skill IS that spec.
 ---
 
-# ROMAS Brief — Source Ingestion (canonical)
+# ROMAS Wire — Source Ingestion (canonical)
 
-**This is the canonical source list for ROMAS Brief** (per SSOT §6, promoted from agent-skill to canonical reference in M0 cycle-1 per R-007). Any conflict between this skill and another doc resolves in favor of this skill UNLESS SSOT §6 explicitly supersedes (e.g., the cycle-2 R-014 ban on `meddeviceguide.com` / `MDCG.eu` as primary sources).
+**This is the canonical source list for ROMAS Wire** (per SSOT §6, promoted from agent-skill to canonical reference in M0 cycle-1 per R-007). Any conflict between this skill and another doc resolves in favor of this skill UNLESS SSOT §6 explicitly supersedes (e.g., the cycle-2 R-014 ban on `meddeviceguide.com` / `MDCG.eu` as primary sources).
 
 Runs daily Mon–Fri at the three-edition cron times per SSOT §3 row 16: APAC 22:00 UTC (prior-day) · EU 06:00 UTC · Americas 11:00 UTC (cycle-5 lock supersedes cycle-1 single 10:30 UTC). Worldwide RT scope per SSOT §3 row 15 (cycle-5 rebalance: NA 26% / EU 32% / APAC 26% / LATAM 8% / MENA-Africa 4% / Global 4%).
 

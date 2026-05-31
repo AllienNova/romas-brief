@@ -1,5 +1,5 @@
 # =====================================================================
-# deploy-workers.yml · ROMAS Brief Cloudflare Workers deploys
+# deploy-workers.yml · ROMAS Wire Cloudflare Workers deploys
 # R-106 (remediation-plan M1) · /team-build M1-completion cycle
 # Anchors: ADR-0003 (Cloudflare Workers + Pages + R2) · SSOT §6 source
 #   ingestion + §12 cron schedule · workers/cron-ingest is the first

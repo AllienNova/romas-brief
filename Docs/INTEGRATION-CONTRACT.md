@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Split-Repo Integration Contract
+title: ROMAS Wire — Split-Repo Integration Contract
 version: 1.2.0
 date: 2026-05-28
 status: EXECUTED — Consolidation sprint (Phase 8, T-801–T-806) complete as of 2026-05-28. Reader source is now in apps/web/ of AllienNova/romas-brief. Vercel project romas-brief-web (prj_U86mInvLI5mRyv6zjPIwh2Aryi) is building from kimhons/romas-brief-web (repoId 1252164491) with the consolidated source committed. §3–§7 of this contract are superseded by the single-repo architecture. See Docs/specs/architecture.md for the current canonical architecture.
@@ -7,11 +7,11 @@ owner: Kimal Honour Djam
 trigger: /team-qa cycle-6 surfaced B-20 (split-repo architecture undocumented). This doc closes B-20 at the contract level. Architecture decision (§8) resolved 2026-05-28 → consolidate. Phase 8 sprint executed 2026-05-28.
 ---
 
-# ROMAS Brief — Split-Repo Integration Contract
+# ROMAS Wire — Split-Repo Integration Contract
 
 > **STATUS: EXECUTED** — This contract is now retired. The split-repo architecture it governed has been consolidated. All reader source code lives in `apps/web/` of `AllienNova/romas-brief`. The canonical architecture is documented in `Docs/specs/architecture.md`.
 
-ROMAS Brief production lives across two GitHub repositories. This contract documents how they coordinate so:
+ROMAS Wire production lives across two GitHub repositories. This contract documents how they coordinate so:
 
 - Schema changes in one repo do not silently break the other.
 - Types are kept in sync without manual copy-paste drift.

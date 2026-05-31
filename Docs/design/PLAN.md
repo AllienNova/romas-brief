@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — /team-design Plan
+title: ROMAS Wire — /team-design Plan
 version: 1.0.0
 date: 2026-05-15 (M0c2 close · session executes D1-D12 + D15)
 authority: docs/specs/product-spec.md FR-001..FR-038 + LAUNCH_ARC_PLAN.md §2 trigger 2

@@ -6,8 +6,8 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: { default: "ROMAS Brief CMS", template: "%s · ROMAS Brief CMS" },
-  description: "Internal editorial CMS for ROMAS Brief. Cloudflare Access-gated.",
+  title: { default: "ROMAS Wire CMS", template: "%s · ROMAS Wire CMS" },
+  description: "Internal editorial CMS for ROMAS Wire. Cloudflare Access-gated.",
   robots: { index: false, follow: false },
 };
 

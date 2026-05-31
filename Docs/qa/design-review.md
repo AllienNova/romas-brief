@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Design Review (team-qa Savage)
+title: ROMAS Wire — Design Review (team-qa Savage)
 version: 1.0.0
 date: 2026-05-15
 qa_lead: team-qa skill — Kimal-invoked, "review the design"
@@ -183,7 +183,7 @@ All occurrences in `design-tokens.md`, `tokens.json`, `a11y-audit.md`, `brand-ap
 | Risk | Severity | Owner | Fix track |
 |---|---|---|---|
 | AAA target on long-form body text (Friday Read) — wireframes.md Route 4 implies AAA but only `ink` on `bg` (18.1:1) and `ink-muted` on `bg` (7.69:1) pass AAA; standfirst color (`ink-muted`) just barely passes; if it ever drifts to `ink-subtle` the AAA claim breaks | P2 | design-system-keeper W-6 audit | Token discipline |
-| AudioStatusBadge state colors all chosen from default Tailwind palette without brand input — `amber-700`/`slate-600`/`red-700` are off-brand for ROMAS Brief which uses teal as single accent | P3 | brand-designer W-6 | Consider custom darker values aligned with brand neutrals (e.g., `slate-700` mapped to `--rb-ink-muted`) |
+| AudioStatusBadge state colors all chosen from default Tailwind palette without brand input — `amber-700`/`slate-600`/`red-700` are off-brand for ROMAS Wire which uses teal as single accent | P3 | brand-designer W-6 | Consider custom darker values aligned with brand neutrals (e.g., `slate-700` mapped to `--rb-ink-muted`) |
 | Tag pill 32×32 vs AAA 44×44 mobile target | P2 | web-engineer | Run-time test in W-6 prototype |
 | Focus indicator 2px outline + 3px offset = "visible" but does not satisfy WCAG 2.4.13 AAA "Focus Appearance" which requires 2 CSS px outline OR ≥3:1 contrast on the perimeter AND being unobscured — currently AA-only and the contrast claim was 3.4:1 (false; actually 2.41:1). After Fix 5 (focus ring → accent-strong) achieves AA, 2.4.13 AAA still requires verification | P2 | design-system-keeper W-6 | Token discipline |
 

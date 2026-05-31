@@ -5,7 +5,7 @@ info:
   description: |
     Primary translation provider for LATAM editorial per ADR-0013 (Kimal lock 2026-05-14).
     Translates ANVISA / COFEPRIS / ANMAT / SBR / SLAGO / ALATRO source records
-    from Portuguese / Spanish into English for ROMAS Brief publication.
+    from Portuguese / Spanish into English for ROMAS Wire publication.
 servers:
   - url: https://api.deepl.com
     description: DeepL Pro
@@ -34,7 +34,7 @@ paths:
                 source_lang:
                   type: string
                   enum: [PT, ES, JA, ZH, KO, DE, FR, IT, EN]
-                  description: ROMAS Brief uses PT (Portuguese) + ES (Spanish) for LATAM; others reserved for future
+                  description: ROMAS Wire uses PT (Portuguese) + ES (Spanish) for LATAM; others reserved for future
                 target_lang:
                   type: string
                   enum: [EN-US, EN-GB]
@@ -45,7 +45,7 @@ paths:
                   default: default
                 glossary_id:
                   type: string
-                  description: Reference to a ROMAS Brief glossary of medical-specialty terms (M1 deliverable)
+                  description: Reference to a ROMAS Wire glossary of medical-specialty terms (M1 deliverable)
                 tag_handling:
                   type: string
                   enum: [xml, html]

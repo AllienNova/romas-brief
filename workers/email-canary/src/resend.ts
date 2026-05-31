@@ -1,5 +1,5 @@
 // =====================================================================
-// workers/email-canary/src/resend.ts · ROMAS Brief · SHIP-12
+// workers/email-canary/src/resend.ts · ROMAS Wire · SHIP-12
 // Pure builder + thin send wrapper for the Resend email API.
 //
 // Resend send contract (official docs, verified 2026-05-30):
@@ -15,7 +15,7 @@
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
 
 /** Default sender per ADR-0007 (Resend = transactional). */
-export const DEFAULT_FROM = "ROMAS Brief <brief@romasbrief.com>";
+export const DEFAULT_FROM = "ROMAS Wire <brief@romasbrief.com>";
 
 /** The 5-field Resend send payload. */
 export interface ResendPayload {

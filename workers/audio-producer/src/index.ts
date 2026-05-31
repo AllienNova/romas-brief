@@ -1,5 +1,5 @@
 /**
- * audio-producer · ROMAS Brief
+ * audio-producer · ROMAS Wire
  * T-201 full implementation
  *
  * Architecture: Cloudflare Queues consumer (NOT a cron or fetch worker).

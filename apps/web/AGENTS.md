@@ -1,4 +1,4 @@
-# ROMAS Brief — Project Memory & Agent Instructions
+# ROMAS Wire — Project Memory & Agent Instructions
 
 > **Last updated:** 2026-05-28
 > **Live URL:** https://romas-brief-web.vercel.app
@@ -12,11 +12,11 @@
 
 ---
 
-## What Is ROMAS Brief?
+## What Is ROMAS Wire?
 
 **ROMAS = Radiation Oncology Multi-Agentic System**
 
-ROMAS Brief is a specialist intelligence platform for radiation oncology professionals — oncologists, physicists, and dosimetrists. It is a daily curated news brief powered by a multi-agentic AI system that ingests, scores, and summarises clinical literature, regulatory updates, conference highlights, and industry news from PubMed, arXiv, ClinicalTrials.gov, and FDA databases.
+ROMAS Wire is a specialist intelligence platform for radiation oncology professionals — oncologists, physicists, and dosimetrists. It is a daily curated news brief powered by a multi-agentic AI system that ingests, scores, and summarises clinical literature, regulatory updates, conference highlights, and industry news from PubMed, arXiv, ClinicalTrials.gov, and FDA databases.
 
 **Owner:** Honour (Radiation Oncology Physicist)
 **Audience:** Radiation oncologists · Medical physicists · Dosimetrists · RT researchers
@@ -278,7 +278,7 @@ MODULE 9: Audio Briefs (4-column grid)
 
 1. **Layout is sacred** — never change the overall page layout without explicit instruction
 2. **No editorial team section on /about** — owner is still building the team; do not add placeholder team members
-3. **Editorial independence** — ROMAS Brief accepts sponsorships but they are clearly labelled and never influence scoring. The editorial independence statement reflects this (transparent, not absolute rejection of sponsors)
+3. **Editorial independence** — ROMAS Wire accepts sponsorships but they are clearly labelled and never influence scoring. The editorial independence statement reflects this (transparent, not absolute rejection of sponsors)
 4. **ROMAS acronym** — always "Radiation Oncology Multi-Agentic System" (not "Multi-Agent" or any other variant)
 5. **Audience labels** — "Oncologists · Physicists · Dosimetrists" (not "Radiation / Medical / Dosimetrists")
 6. **Score badge format** — always "S{score}" (e.g. S94, S87) — never "Score: 94" or just "94"

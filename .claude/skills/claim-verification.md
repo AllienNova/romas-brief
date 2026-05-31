@@ -1,9 +1,9 @@
 ---
 name: claim-verification
-description: Primary-source citation discipline for every clinical claim in every ROMAS Brief article. Defines what counts as a primary source per claim type, the claim-trace JSON, and the verification workflow owned by clinical-fact-checker. Load before drafting or reviewing any article body.
+description: Primary-source citation discipline for every clinical claim in every ROMAS Wire article. Defines what counts as a primary source per claim type, the claim-trace JSON, and the verification workflow owned by clinical-fact-checker. Load before drafting or reviewing any article body.
 ---
 
-# ROMAS Brief — Claim Verification
+# ROMAS Wire — Claim Verification
 
 ## The rule
 

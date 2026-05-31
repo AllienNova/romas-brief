@@ -29,7 +29,7 @@ interface EditorNote {
 const TODAY_NOTE: EditorNote = {
   date: "Thursday, May 28, 2026",
   editorName: "Dr. R. Honour",
-  editorTitle: "Editor-in-Chief, ROMAS Brief",
+  editorTitle: "Editor-in-Chief, ROMAS Wire",
   editorInitials: "RH",
   note: `This week's brief is dominated by two converging forces: the maturation of FLASH proton therapy from bench to Phase II clinical evidence, and the regulatory machinery catching up with AI-driven contouring. The SABR-COMET-3 result for oligometastatic liver disease is the most practice-changing finding in SBRT in three years — read it carefully. The ASTRO MR-Linac guideline also lands with teeth: daily online adaptation is now a recommendation, not an aspiration.`,
   deltas: [

@@ -1,6 +1,6 @@
 -- =====================================================================
 -- 0012_rls_with_check_and_tags.sql
--- SHIP-16 (ship-execution-plan Wave 3) · ROMAS Brief
+-- SHIP-16 (ship-execution-plan Wave 3) · ROMAS Wire
 -- Depends: 0011_rls_policies.sql (editor_publish + audio_qa_flip policies)
 -- =====================================================================
 --

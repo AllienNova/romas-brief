@@ -2,7 +2,7 @@
   "name": "@romas-brief/cms",
   "private": true,
   "version": "0.0.0",
-  "description": "ROMAS Brief — internal CMS (Next.js 14, Cloudflare Access-gated).",
+  "description": "ROMAS Wire — internal CMS (Next.js 14, Cloudflare Access-gated).",
   "type": "module",
   "scripts": {
     "dev": "next dev --port 3001",

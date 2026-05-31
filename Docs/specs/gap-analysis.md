@@ -1,11 +1,11 @@
 ---
-title: Gap Analysis — ROMAS Brief
+title: Gap Analysis — ROMAS Wire
 version: 1.0.0
 date: 2026-05-14
 sources: /team-review synthesis (19 findings) + team-planning audit
 ---
 
-# Gap Analysis — ROMAS Brief
+# Gap Analysis — ROMAS Wire
 
 ## Severity scale
 

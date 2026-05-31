@@ -1,4 +1,4 @@
--- ROMAS Brief — canonical Supabase schema reference
+-- ROMAS Wire — canonical Supabase schema reference
 -- This file is the source-of-truth schema (derived from .claude/skills/cms-schema.md).
 -- M1 migrations (supabase/migrations/0001..0010) implement this incrementally.
 -- pgTAP tests (R-105) enforce every CHECK constraint listed here.

@@ -1,5 +1,5 @@
 // =====================================================================
-// workers/email-canary/src/subscribers.test.ts · ROMAS Brief · SHIP-12
+// workers/email-canary/src/subscribers.test.ts · ROMAS Wire · SHIP-12
 // node:test suite for the delivery-event -> subscriber-update mapping.
 // Run with:
 //   node --experimental-strip-types --test src/subscribers.test.ts

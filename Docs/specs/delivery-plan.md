@@ -1,4 +1,4 @@
-# ROMAS Brief — Delivery Plan
+# ROMAS Wire — Delivery Plan
 
 > **⮕ Launch sequencing now lives in [`ship-execution-plan.md`](./ship-execution-plan.md) (v1.0.0, 2026-05-29).** That file is the single authoritative ordered SHIP-NN backlog to public deployment, reconciled against `HEAD=dd7f0e0`. This delivery-plan remains the milestone/scope-lock reference; when the two disagree on ordering, ship-execution-plan wins.
 
@@ -28,7 +28,7 @@ This plan was authored in cycle-1 with a staggered audio launch (Audio Brief Day
 
 ## 1. Goal
 
-Ship ROMAS Brief — the public media surface of ROMAS Intelligence — as a daily weekday brief with a 4-tier audio architecture, primary-source discipline, and a non-negotiable editorial QA gate, within a 60-day cut-line from `Day -7` (repo scaffold) through `Day 60` (Conference Brief readiness + auto-publish graduation review). M0 burns down the 19 findings from /team-review (7 Critical + 4 High + 8 Medium/Low) before any code lands; M1 lays foundation; M2 brings the Audio Brief tier live with the QA gate enforced; M3 launches the public reader, Daily Brief tier, and Podcast tier on Day 14 (hypothesis — awaiting Kimal confirmation); M4 wires Friday Read; M5 launches the weekly Podcast on Day 30 (hypothesis — awaiting Kimal); M6 readies Conference Brief; M7 is the protocol gate for any future auto-publish graduation.
+Ship ROMAS Wire — the public media surface of ROMAS Intelligence — as a daily weekday brief with a 4-tier audio architecture, primary-source discipline, and a non-negotiable editorial QA gate, within a 60-day cut-line from `Day -7` (repo scaffold) through `Day 60` (Conference Brief readiness + auto-publish graduation review). M0 burns down the 19 findings from /team-review (7 Critical + 4 High + 8 Medium/Low) before any code lands; M1 lays foundation; M2 brings the Audio Brief tier live with the QA gate enforced; M3 launches the public reader, Daily Brief tier, and Podcast tier on Day 14 (hypothesis — awaiting Kimal confirmation); M4 wires Friday Read; M5 launches the weekly Podcast on Day 30 (hypothesis — awaiting Kimal); M6 readies Conference Brief; M7 is the protocol gate for any future auto-publish graduation.
 
 ---
 
@@ -215,7 +215,7 @@ Recommended sequencing: dispatch `/team-design` at the same time as `/team-build
 
 ```mermaid
 gantt
-    title ROMAS Brief critical path
+    title ROMAS Wire critical path
     dateFormat  YYYY-MM-DD
     axisFormat  %m-%d
 

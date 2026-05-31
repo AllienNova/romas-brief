@@ -1,4 +1,4 @@
-# ROMAS Brief — Changelog
+# ROMAS Wire — Changelog
 
 All notable changes to this project are documented here.
 
@@ -80,7 +80,7 @@ All notable changes to this project are documented here.
 ## [0.5.0] — 2026-05-28
 
 ### Changed
-- **Editorial independence statement** updated — ROMAS Brief now accepts sponsorships with full transparency; sponsored content is clearly labelled and never influences signal scoring
+- **Editorial independence statement** updated — ROMAS Wire now accepts sponsorships with full transparency; sponsored content is clearly labelled and never influences signal scoring
 
 ### Fixed
 - **ROMAS acronym** corrected to "Radiation Oncology Multi-Agentic System" throughout the site
@@ -154,4 +154,4 @@ All notable changes to this project are documented here.
 ## [0.0.1] — 2026-05-27
 
 ### Added
-- Initial deployment — ROMAS Brief reader site
+- Initial deployment — ROMAS Wire reader site

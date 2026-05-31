@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Build Log (M0 cycle-1)
+title: ROMAS Wire — Build Log (M0 cycle-1)
 version: 1.0.1
 date: 2026-05-14
 reconstructed: 2026-05-15 (originals lost to gitignore `build/` swallow; content recovered from conversation history)
@@ -8,9 +8,9 @@ cycle: 1 of M0 (3-day window 2026-05-14 → 2026-05-17)
 team-build-critic verdict: APPROVE WITH CONDITIONS (see critic-review.md)
 ---
 
-# ROMAS Brief Build Log — M0 cycle-1
+# ROMAS Wire Build Log — M0 cycle-1
 
-> **Reconstruction note**: The original `build-log.md` was authored 2026-05-14 during /team-build M0 cycle-1 in the parent ROMAS monorepo nested path `D:\dev\projects\ROMAS\ROMAS BRIEF\docs\build\build-log.md`. Repo separation on 2026-05-14 (ADR-0014) cloned the working tree to the standalone `D:\dev\projects\romas-brief\`, but the `.gitignore` introduced at separation contained a bare `build/` pattern that silently excluded `docs/build/` from baseline commit `dcc8389`. Old path was emptied between sessions; reconstruction sources content from the active conversation transcript on 2026-05-15. Gitignore fixed in commit `52a162e` with root-anchored `/build/` + `!docs/build/` carve-out.
+> **Reconstruction note**: The original `build-log.md` was authored 2026-05-14 during /team-build M0 cycle-1 in the parent ROMAS monorepo nested path `D:\dev\projects\ROMAS\ROMAS WIRE\docs\build\build-log.md`. Repo separation on 2026-05-14 (ADR-0014) cloned the working tree to the standalone `D:\dev\projects\romas-brief\`, but the `.gitignore` introduced at separation contained a bare `build/` pattern that silently excluded `docs/build/` from baseline commit `dcc8389`. Old path was emptied between sessions; reconstruction sources content from the active conversation transcript on 2026-05-15. Gitignore fixed in commit `52a162e` with root-anchored `/build/` + `!docs/build/` carve-out.
 
 ## Plan — M0 doc reconciliation (build-2026-05-14)
 
@@ -80,7 +80,7 @@ Kimal approved `/team-build` invocation: "to start M0 (delivery-plan §3.1 doc r
 | `.claude/skills/regulatory-analyst.md` LATAM dispatch + EU fallback | LATAM editorial gates on this; pre-M1 deliverable. | regulatory-analyst | M0 cycle-2 |
 | `.claude/skills/editorial-style-guide.md` footer attribution rule | Reader-visible artifact; pre-M3. | editorial-director | M0 cycle-2 |
 | Risk register dedup re-tally (C-010 — 88 → ~55) | Cosmetic; current count is over-inclusive of cross-references. | QA Lead | M0 cycle-2 |
-| C-007 llm-orchestrator cross-monorepo import verification | Obsoleted by repo separation (ADR-0014); package now lives in ROMAS Brief monorepo. | (closed) | (closed at separation) |
+| C-007 llm-orchestrator cross-monorepo import verification | Obsoleted by repo separation (ADR-0014); package now lives in ROMAS Wire monorepo. | (closed) | (closed at separation) |
 
 ## Self-verification (B10)
 
@@ -116,7 +116,7 @@ Doc-level self-verification:
 
 ---
 
-# ROMAS Brief Build Log — cycle build-2026-05-21 (review-remediation)
+# ROMAS Wire Build Log — cycle build-2026-05-21 (review-remediation)
 
 ## Plan — build-2026-05-21
 
@@ -254,7 +254,7 @@ Self-verification PASS. Awaiting B11 critic gate.
 
 ---
 
-# ROMAS Brief Build Log — cycle build-2026-05-21-m1c (M1-completion)
+# ROMAS Wire Build Log — cycle build-2026-05-21-m1c (M1-completion)
 
 ## Plan — build-2026-05-21-m1c
 
@@ -405,7 +405,7 @@ P2 deferred: ci.yml turbo test coverage gating (lands when M2 adds Vitest), clou
 
 ---
 
-# ROMAS Brief Build Log — cycle build-2026-05-22-m1c-closeout
+# ROMAS Wire Build Log — cycle build-2026-05-22-m1c-closeout
 
 ## Plan — build-2026-05-22-m1c-closeout
 
@@ -448,7 +448,7 @@ Used `mcp__context7__resolve-library-id` to locate `/supabase/ssr` (High reputat
 - **Package name**: `@supabase/ssr`
 - **Peer dependency**: `@supabase/supabase-js@^2.105.4`
 - **Env vars convention** (docs): `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` (browser-readable; needed if client-side hydration in use)
-- **Our convention** (D-028 below): `SUPABASE_URL` + `SUPABASE_ANON_KEY` without `NEXT_PUBLIC_` prefix because ROMAS Brief Auth flows are fully server-rendered per ADR-0015 v2 (no Pages Router, no middleware) — the anon key never reaches the browser bundle
+- **Our convention** (D-028 below): `SUPABASE_URL` + `SUPABASE_ANON_KEY` without `NEXT_PUBLIC_` prefix because ROMAS Wire Auth flows are fully server-rendered per ADR-0015 v2 (no Pages Router, no middleware) — the anon key never reaches the browser bundle
 - **Server Component pattern**: `cookies()` from `next/headers` (Next 14 sync; Next 15+ async), `getAll`-only adapter (cookies cannot be set from Server Components in Next 14)
 - **Route Handler pattern**: `getAll` + `setAll` both required (route handlers can write cookies)
 - **Auth flow** (forced by `createServerClient`): PKCE, `autoRefreshToken: false`, `persistSession: true`, `detectSessionInUrl: false`

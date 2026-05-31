@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Audience detail page (FR-027)
+ * ROMAS Wire — Audience detail page (FR-027)
  * /for/[audience] — 5 audiences: physicians · physicists · dosimetrists · therapists · residents
  */
 import Link from "next/link";
@@ -24,7 +24,7 @@ export async function generateMetadata(props: { params: Promise<{ audience: stri
   const meta = AUDIENCE_META[params.audience as Audience];
   if (!meta) return {};
   return {
-    title: `For ${meta.label} — ROMAS Brief`,
+    title: `For ${meta.label} — ROMAS Wire`,
     description: meta.description,
   };
 }

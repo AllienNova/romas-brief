@@ -3,7 +3,7 @@ name: audio-qa-checklist
 description: The editorial QA gate checklist that every audio file must pass before flipping audio_status from in_review to published. Owned by audio-qa-reviewer subagent. Load before any QA review session.
 ---
 
-# ROMAS Brief — Audio QA Checklist
+# ROMAS Wire — Audio QA Checklist
 
 > **Non-negotiable rule (from Kimal):** *"Every article gets audio only after editorial QA passes. No auto-generated clinical audio should go live without review at launch. You are entering a trust market. One sloppy AI audio summary can damage the brand."*
 

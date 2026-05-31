@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ROMAS Wire — Homepage Prototype with Rotating Bands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Brand & ink */
+    --rb-ink: #0B1220;
+    --rb-ink-muted: #475569;
+    --rb-paper: #FFFFFF;
+    --rb-paper-dim: #F8FAFC;
+    --rb-brand: #0E7C8F;
+    --rb-brand-soft: #E0F7FA;
+    --rb-border: #E2E8F0;
+
+    /* Audio status (CLAUDE.md §7 locked) */
+    --rb-audio-published: #00B4C6;
+    --rb-audio-pending: #F59E0B;
+    --rb-audio-skipped: #94A3B8;
+
+    /* Semantic editorial */
+    --rb-source-verified: #16A34A;
+    --rb-insight: #7C3AED;
+    --rb-take: #DB2777;
+
+    /* Sponsor band */
+    --rb-sponsor-bg: #F1F5F9;
+    --rb-sponsor-ink: #475569;
+
+    /* Type */
+    --font-display: "Source Serif Pro", Georgia, serif;
+    --font-ui: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --rb-ink: #E2E8F0;
+      --rb-ink-muted: #94A3B8;
+      --rb-paper: #0F172A;
+      --rb-paper-dim: #1E293B;
+      --rb-border: #1E293B;
+      --rb-brand-soft: #083344;
+      --rb-sponsor-bg: #1E293B;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--rb-paper);
+    color: var(--rb-ink);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ─── Chrome ─── */
+  .chrome {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--rb-paper);
+    border-bottom: 1px solid var(--rb-border);
+    backdrop-filter: blur(8px);
+    background: color-mix(in srgb, var(--rb-paper) 92%, transparent);
+  }
+  .chrome-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    color: var(--rb-ink);
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+  .wordmark .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--rb-brand);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 2px;
+  }
+  .wordmark .brief {
+    color: var(--rb-brand);
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .nav a {
+    color: var(--rb-ink-muted);
+    transition: color 120ms;
+  }
+  .nav a:hover { color: var(--rb-ink); }
+  .nav .search-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--rb-border);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .cta-button {
+    background: var(--rb-brand);
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .cta-button:hover { background: #095866; }
+
+  /* Date strip */
+  .date-strip {
+    border-bottom: 1px solid var(--rb-border);
+    background: var(--rb-paper-dim);
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--rb-ink-muted);
+  }
+  .date-strip .container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .edition-badge {
+    background: var(--rb-brand-soft);
+    color: var(--rb-brand);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .switch-link { color: var(--rb-brand); font-weight: 500; }
+
+  /* ─── HERO CAROUSEL (rotates 7s, horizontal) ─── */
+  .hero-carousel {
+    margin: 24px 0;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--rb-border);
+    background: var(--rb-paper);
+    min-height: 280px;
+  }
+  .hero-track {
+    display: flex;
+    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hero-slide {
+    min-width: 100%;
+    padding: 40px 64px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: center;
+  }
+  .hero-slide.sponsor-slide {
+    background: var(--rb-sponsor-bg);
+    color: var(--rb-sponsor-ink);
+  }
+  .hero-slide .slide-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .slide-tag.editorial { background: var(--rb-brand-soft); color: var(--rb-brand); }
+  .slide-tag.friday { background: #FCE7F3; color: var(--rb-take); }
+  .slide-tag.audio { background: #CFFAFE; color: var(--rb-audio-published); }
+  .slide-tag.conference { background: #FEF3C7; color: #B45309; }
+  .slide-tag.sponsor { background: #E2E8F0; color: #334155; border: 1px solid #94A3B8; }
+  .hero-slide h2 {
+    font-family: var(--font-display);
+    font-size: 32px;
+    line-height: 1.2;
+    margin: 0 0 12px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .hero-slide .dek {
+    font-size: 16px;
+    color: var(--rb-ink-muted);
+    margin: 0 0 16px;
+    max-width: 600px;
+  }
+  .hero-slide .slide-meta {
+    display: flex;
+    gap: 14px;
+    font-size: 13px;
+    color: var(--rb-ink-muted);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .hero-slide .micro-pill {
+    background: var(--rb-paper-dim);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 11px;
+  }
+  .hero-slide .visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    opacity: 0.4;
+  }
+  .hero-controls {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+  }
+  .hero-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--rb-border);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all 200ms;
+  }
+  .hero-dot.active {
+    background: var(--rb-brand);
+    width: 24px;
+    border-radius: 4px;
+  }
+  .hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--rb-paper);
+    border: 1px solid var(--rb-border);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    color: var(--rb-ink);
+    font-size: 18px;
+    transition: all 120ms;
+  }
+  .hero-arrow:hover { background: var(--rb-paper-dim); }
+  .hero-arrow.prev { left: 16px; }
+  .hero-arrow.next { right: 16px; }
+  .hero-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: var(--rb-brand);
+    width: 0%;
+    transition: width 100ms linear;
+  }
+
+  /* Section header */
+  .section-head {
+    margin: 48px 0 16px;
+  }
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--rb-brand);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    line-height: 1.2;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .section-subtitle {
+    color: var(--rb-ink-muted);
+    margin-top: 6px;
+  }
+
+  /* ─── TOP MOVE + SIDE STACK ─── */
+  .top-region {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .top-move {
+    background: var(--rb-paper);
+    border: 1px solid var(--rb-border);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+  }
+  .top-move .micro-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .score-badge {
+    background: var(--rb-audio-published);
+    color: white;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .category-pill {
+    background: var(--rb-paper-dim);
+    color: var(--rb-ink-muted);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .audio-icon { color: var(--rb-audio-published); font-size: 14px; }
+  .source-check { color: var(--rb-source-verified); font-size: 12px; font-weight: 600; }
+  .insight-mark { color: var(--rb-insight); font-weight: 700; }
+  .top-move h2 {
+    font-family: var(--font-display);
+    font-size: 36px;
+    line-height: 1.15;
+    font-weight: 700;
+    margin: 0 0 16px;
+    letter-spacing: -0.015em;
+  }
+  .top-move .dek {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--rb-ink-muted);
+    margin-bottom: 20px;
+  }
+  .romas-insight {
+    border-left: 3px solid var(--rb-insight);
+    background: color-mix(in srgb, var(--rb-insight) 6%, transparent);
+    padding: 12px 16px;
+    margin: 20px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .romas-insight .label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--rb-insight);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .romas-insight p { margin: 0; font-size: 15px; line-height: 1.55; }
+  .top-move-footer {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rb-border);
+    flex-wrap: wrap;
+  }
+  .audience-pill {
+    background: var(--rb-brand-soft);
+    color: var(--rb-brand);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+  .meta-text { font-size: 13px; color: var(--rb-ink-muted); }
+  .action-buttons {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+  }
+  .action-button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--rb-border);
+    background: var(--rb-paper);
+    color: var(--rb-ink);
+  }
+  .action-button.primary { background: var(--rb-brand); color: white; border-color: var(--rb-brand); }
+  .action-button.primary:hover { background: #095866; }
+
+  /* SIDE STACK — vertical flipping slots */
+  .side-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .side-stack-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--rb-ink-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: -4px;
+  }
+  .flip-slot {
+    perspective: 1200px;
+    height: 145px;
+  }
+  .flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+  .flip-slot.flipping .flip-inner {
+    transform: rotateX(180deg);
+  }
+  .flip-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border: 1px solid var(--rb-border);
+    border-radius: 10px;
+    background: var(--rb-paper);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: border-color 120ms, transform 120ms;
+  }
+  .flip-face:hover { border-color: var(--rb-brand); transform: translateY(-1px); }
+  .flip-face.back { transform: rotateX(180deg); }
+  .flip-card-top {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .flip-card-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: var(--rb-ink);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .flip-card-foot {
+    font-size: 11px;
+    color: var(--rb-ink-muted);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* ─── QUICK HITS (rotates 8s) ─── */
+  .quick-hits {
+    background: var(--rb-paper);
+    border: 1px solid var(--rb-border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .qh-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .qh-item {
+    display: grid;
+    grid-template-columns: 36px 56px 110px 1fr 80px 24px;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 6px;
+    border-bottom: 1px solid var(--rb-border);
+    cursor: pointer;
+    transition: background 120ms;
+  }
+  .qh-item:last-child { border-bottom: none; }
+  .qh-item:hover { background: var(--rb-paper-dim); }
+  .qh-num {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--rb-ink-muted);
+  }
+  .qh-score {
+    background: var(--rb-paper-dim);
+    color: var(--rb-ink);
+    font-weight: 700;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  .qh-cat {
+    font-size: 10px;
+    color: var(--rb-ink-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .qh-title {
+    font-weight: 500;
+    color: var(--rb-ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .qh-date { font-size: 12px; color: var(--rb-ink-muted); }
+  .qh-icon { font-size: 12px; color: var(--rb-audio-published); }
+  .qh-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--rb-brand);
+    width: 0%;
+    transition: width 100ms linear;
+  }
+  .qh-leaving {
+    animation: leaveUp 600ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  .qh-entering {
+    animation: enterFromBelow 600ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  @keyframes leaveUp {
+    to { opacity: 0; transform: translateY(-100%); }
+  }
+  @keyframes enterFromBelow {
+    from { opacity: 0; transform: translateY(100%); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── AUDIO TODAY ─── */
+  .audio-today {
+    background: linear-gradient(135deg, var(--rb-paper-dim) 0%, var(--rb-brand-soft) 100%);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .audio-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--rb-border);
+    flex-wrap: wrap;
+  }
+  .audio-tab {
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--rb-ink-muted);
+    font-size: 14px;
+    transition: all 120ms;
+  }
+  .audio-tab.active {
+    color: var(--rb-brand);
+    border-bottom-color: var(--rb-brand);
+    font-weight: 600;
+  }
+  .audio-player {
+    background: var(--rb-paper);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .audio-now-playing {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .audio-meta {
+    font-size: 12px;
+    color: var(--rb-ink-muted);
+    margin-bottom: 14px;
+  }
+  .audio-bar {
+    height: 4px;
+    background: var(--rb-border);
+    border-radius: 2px;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .audio-fill {
+    height: 100%;
+    width: 35%;
+    background: var(--rb-audio-published);
+    border-radius: 2px;
+  }
+  .audio-time {
+    font-size: 11px;
+    color: var(--rb-ink-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .audio-platforms {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rb-border);
+    font-size: 13px;
+  }
+  .audio-platforms a {
+    color: var(--rb-ink-muted);
+    transition: color 120ms;
+  }
+  .audio-platforms a:hover { color: var(--rb-brand); }
+
+  /* Footer */
+  .footer {
+    margin-top: 64px;
+    padding: 48px 0 24px;
+    border-top: 1px solid var(--rb-border);
+    background: var(--rb-paper-dim);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 24px;
+  }
+  .footer h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--rb-ink-muted);
+    margin: 0 0 12px;
+  }
+  .footer ul { list-style: none; padding: 0; margin: 0; }
+  .footer ul li { margin-bottom: 6px; font-size: 13px; }
+  .footer ul a { color: var(--rb-ink-muted); }
+  .footer ul a:hover { color: var(--rb-brand); }
+  .footer-copy {
+    border-top: 1px solid var(--rb-border);
+    padding-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--rb-ink-muted);
+  }
+
+  /* Demo controls bar (NOT part of design — for testing rotations) */
+  .demo-bar {
+    background: #1E293B;
+    color: #94A3B8;
+    padding: 12px 24px;
+    font-size: 12px;
+    font-family: ui-monospace, monospace;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .demo-bar strong { color: white; }
+  .demo-bar .legend {
+    display: flex;
+    gap: 16px;
+  }
+  .demo-bar .legend span::before {
+    content: "●";
+    margin-right: 6px;
+  }
+  .demo-bar .legend .l1::before { color: var(--rb-audio-published); }
+  .demo-bar .legend .l2::before { color: var(--rb-insight); }
+  .demo-bar .legend .l3::before { color: var(--rb-take); }
+
+  /* Mobile */
+  @media (max-width: 880px) {
+    .top-region { grid-template-columns: 1fr; }
+    .hero-slide { padding: 28px; grid-template-columns: 1fr; }
+    .hero-slide .visual { display: none; }
+    .hero-slide h2 { font-size: 24px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .qh-item { grid-template-columns: 28px 48px 1fr 60px; gap: 8px; }
+    .qh-cat, .qh-icon { display: none; }
+    .nav { display: none; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-track { transition: opacity 200ms !important; }
+    .flip-inner { transition: opacity 200ms !important; }
+    .qh-leaving, .qh-entering { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Demo bar (not part of design) -->
+<div class="demo-bar">
+  <strong>ROMAS Wire — Homepage Prototype</strong>
+  <div class="legend">
+    <span class="l1">Hero Carousel rotates 7s</span>
+    <span class="l2">Side Stack flips 12s (staggered)</span>
+    <span class="l3">Quick Hits rotates 8s</span>
+  </div>
+  <span style="margin-left:auto;">Hover any rotating component to pause it</span>
+</div>
+
+<!-- Chrome -->
+<header class="chrome">
+  <div class="container">
+    <div class="chrome-row">
+      <a href="/" class="wordmark">
+        ROMAS<span style="margin: 0 4px;">·</span><span class="brief"><span class="dot"></span>BRIEF</span>
+      </a>
+      <nav class="nav">
+        <a href="/categories">Topics</a>
+        <a href="/regions">Regions</a>
+        <a href="/listen">Listen</a>
+        <a href="/issues">Archive</a>
+        <a href="/about/how-it-works">How it works</a>
+        <span class="search-icon" title="Search (Cmd+K)">⌕</span>
+        <a href="/subscribe" class="cta-button">Subscribe free</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- Date strip -->
+<div class="date-strip">
+  <div class="container">
+    <span class="edition-badge">Americas Edition</span>
+    <span>Thursday, May 28, 2026</span>
+    <span>·</span>
+    <span>Issue #34</span>
+    <span>·</span>
+    <a href="/regions/europe" class="switch-link">Switch to EU edition →</a>
+    <span style="margin-left:auto; font-style: italic;">Clinical intelligence from PubMed, arXiv, ClinicalTrials and FDA — curated, scored, and audio-ready.</span>
+  </div>
+</div>
+
+<main class="container">
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- HERO CAROUSEL — horizontal rotation, 7s -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="hero-carousel" id="heroCarousel" aria-roledescription="carousel" aria-label="Featured stories">
+    <div class="hero-track" id="heroTrack">
+      <!-- Slide 1: Top Move -->
+      <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="Slide 1 of 5">
+        <div>
+          <span class="slide-tag editorial">Editorial · Top Move</span>
+          <h2>Phase III SABR-COMET-3 Trial: SBRT Improves Overall Survival in Oligometastatic Liver Disease</h2>
+          <p class="dek">Median OS of 41 months vs 28 months with systemic therapy alone (HR 0.62, p&lt;0.001) — definitive Phase III evidence published in NEJM.</p>
+          <div class="slide-meta">
+            <span class="micro-pill">S95</span>
+            <span style="color: var(--rb-audio-published);">🎧 Audio</span>
+            <span style="color: var(--rb-source-verified);">✓ NEJM</span>
+            <span>10 min read</span>
+            <span>May 11</span>
+          </div>
+        </div>
+        <div class="visual">🔬</div>
+      </div>
+
+      <!-- Slide 2: Friday Read -->
+      <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="Slide 2 of 5">
+        <div>
+          <span class="slide-tag friday">The ROMAS Read · Fridays</span>
+          <h2>Week in Receipts — What the Evidence Settled and What It Opened</h2>
+          <p class="dek">Five most consequential findings from the past seven days: SABR-COMET-3, FLASH Phase II, ASTRO MR-Linac guideline, AAPM TG-302, and Brainlab Elements 4.0.</p>
+          <div class="slide-meta">
+            <span class="micro-pill">S88</span>
+            <span style="color: var(--rb-audio-published);">🎧 8 min audio</span>
+            <span>— Kimal</span>
+            <span>May 28</span>
+          </div>
+        </div>
+        <div class="visual">📰</div>
+      </div>
+
+      <!-- Slide 3: Audio Today -->
+      <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="Slide 3 of 5">
+        <div>
+          <span class="slide-tag audio">Audio Today · The ROMAS Podcast</span>
+          <h2>FLASH at the Bedside: Where Phase II Evidence Lands the Field</h2>
+          <p class="dek">Episode 001 of the full ROMAS Podcast — a 42-minute deep dive on the new Phase II FLASH proton data and what physics teams should be doing this quarter.</p>
+          <div class="slide-meta">
+            <span class="micro-pill">Podcast</span>
+            <span>42 min</span>
+            <span>RSS · Apple · Spotify · Overcast</span>
+          </div>
+        </div>
+        <div class="visual">🎙</div>
+      </div>
+
+      <!-- Slide 4: Conference Brief -->
+      <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="Slide 4 of 5">
+        <div>
+          <span class="slide-tag conference">Conference Brief · ESTRO 2026</span>
+          <h2>Top Trends from ESTRO 2026: Adaptive RT, AI Contouring, FLASH Dominate</h2>
+          <p class="dek">Recap of the European Society for Radiotherapy and Oncology meeting in Vienna — clinical and business stories that mattered most.</p>
+          <div class="slide-meta">
+            <span class="micro-pill">S84</span>
+            <span style="color: var(--rb-audio-published);">🎧 22 min audio</span>
+            <span>May 15</span>
+          </div>
+        </div>
+        <div class="visual">🎤</div>
+      </div>
+
+      <!-- Slide 5: Sponsor (visually quarantined) -->
+      <div class="hero-slide sponsor-slide" role="group" aria-roledescription="slide" aria-label="Slide 5 of 5">
+        <div>
+          <span class="slide-tag sponsor">— Partner message from Aliennova ROMAS COS —</span>
+          <h2>The AI-Native Clinical Operating System for Radiation Oncology</h2>
+          <p class="dek">ROMAS COS unifies treatment planning, dosimetry review, and clinical decision support. Built for physicists, dosimetrists, and radiation oncologists working at the edge of adaptive RT.</p>
+          <div class="slide-meta">
+            <span style="font-style: italic;">Sponsored · ROMAS COS</span>
+            <a href="#" rel="sponsored noopener" style="color: var(--rb-brand); font-weight: 600;">Learn more ↗</a>
+          </div>
+        </div>
+        <div class="visual" style="opacity: 0.3;">⚕</div>
+      </div>
+    </div>
+
+    <button class="hero-arrow prev" id="heroPrev" aria-label="Previous slide">◀</button>
+    <button class="hero-arrow next" id="heroNext" aria-label="Next slide">▶</button>
+
+    <div class="hero-controls" id="heroDots" role="tablist"></div>
+    <div class="hero-progress" id="heroProgress"></div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- TOP MOVE + SIDE STACK (flipping) -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section-head">
+    <div class="section-eyebrow">Today's Briefing</div>
+    <h2 class="section-title">Top Stories</h2>
+    <p class="section-subtitle">Signal-scored. Primary-source cited. Curated for radiation oncology professionals.</p>
+  </div>
+
+  <div class="top-region">
+
+    <!-- Top Move card (static) -->
+    <article class="top-move">
+      <div class="micro-row">
+        <span class="score-badge">S95</span>
+        <span class="category-pill">Clinical RT</span>
+        <span class="audio-icon">🎧</span>
+        <span class="source-check">✓ NEJM</span>
+        <span class="insight-mark">✦ ROMAS Insight</span>
+      </div>
+
+      <h2>Phase III SABR-COMET-3 Trial: SBRT Improves Overall Survival in Oligometastatic Liver Disease</h2>
+
+      <p class="dek">The Phase III SABR-COMET-3 trial reports that stereotactic ablative radiotherapy for oligometastatic liver disease significantly improves overall survival compared with systemic therapy alone, with a median OS of 41 months versus 28 months (HR 0.62, p&lt;0.001).</p>
+
+      <div class="romas-insight">
+        <div class="label">✦ ROMAS Insight (interpretation)</div>
+        <p>Definitive Phase III evidence — practices should ensure dosimetric expertise for liver SBRT before adopting.</p>
+      </div>
+
+      <div class="top-move-footer">
+        <span class="audience-pill">Physicians</span>
+        <span class="audience-pill">Physicists</span>
+        <span class="meta-text">10 min read · 10 min audio · May 11, 2026</span>
+        <div class="action-buttons">
+          <button class="action-button">▶ Listen</button>
+          <button class="action-button primary">Read brief →</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- Side Stack — three vertical flipping slots -->
+    <div class="side-stack">
+      <div class="side-stack-label">Today's Three · rotating</div>
+
+      <div class="flip-slot" data-slot="0">
+        <div class="flip-inner">
+          <div class="flip-face front">
+            <div>
+              <div class="flip-card-top">
+                <span class="score-badge" style="background: var(--rb-audio-published);">S94</span>
+                <span class="category-pill">Clinical</span>
+                <span class="audio-icon">🎧</span>
+              </div>
+              <h3 class="flip-card-title">FLASH Proton Therapy Achieves 40% Reduction in Normal-Tissue Toxicity in Phase II Trial</h3>
+            </div>
+            <div class="flip-card-foot">
+              <span>7 min</span><span>·</span><span>May 28</span>
+            </div>
+          </div>
+          <div class="flip-face back">
+            <div>
+              <div class="flip-card-top">
+                <span class="score-badge" style="background: var(--rb-audio-published);">S88</span>
+                <span class="category-pill">AI</span>
+                <span class="audio-icon">🎧</span>
+              </div>
+              <h3 class="flip-card-title">FDA Clears AI Auto-Contouring System for Head and Neck OAR Delineation</h3>
+            </div>
+            <div class="flip-card-foot">
+              <span>5 min</span><span>·</span><span>May 27</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-slot" data-slot="1">
+        <div class="flip-inner">
+          <div class="flip-face front">
+            <div>
+              <div class="flip-card-top">
+                <span class="score-badge" style="background: #6366F1;">S91</span>
+                <span class="category-pill">Guidelines</span>
+                <span class="audio-icon">🎧</span>
+              </div>
+              <h3 class="flip-card-title">ASTRO Releases First Guideline on MR-Linac Adaptive RT for Prostate Cancer</h3>
+            </div>
+            <div class="flip-card-foot">
+              <span>7 min audio</span><span>·</span><span>May 26</span>
+            </div>
+          </div>
+          <div class="flip-face back">
+            <div>
+              <div class="flip-card-top">
+                <span class="score-badge" style="background: #6366F1;">S82</span>
+                <span class="category-pill">Reimbursement</span>
+              </div>
+              <h3 class="flip-card-title">CMS Finalises 2026 SBRT Lung Reimbursement: 8% Increase for Stereotactic Ablative Radiotherapy</h3>
+            </div>
+            <div class="flip-card-foot">
+              <span>3 min</span><span>·</span><span>May 25</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-slot" data-slot="2">
+        <div class="flip-inner">
+          <div class="flip-face front">
+            <div>
+              <div class="flip-card-top">
+                <span class="score-badge" style="background: #F59E0B;">S88</span>
+                <span class="category-pill">Physics</span>
+                <span class="source-check">✓ HC</span>
+              </div>
+              <h3 class="flip-card-title">Health Canada Issues Safety Alert for Linac Collimator Leaf Positioning Errors</h3>
+            </div>
+            <div class="flip-card-foot">
+              <span>4 min</span><span>·</span><span>May 12</span>
+            </div>
+          </div>
+          <div class="flip-face back">
+            <div>
+              <div class="flip-card-top">
+                <span class="score-badge" style="background: #F59E0B;">S90</span>
+                <span class="category-pill">Paediatric</span>
+                <span class="audio-icon">🎧</span>
+              </div>
+              <h3 class="flip-card-title">15-Year Follow-Up Confirms Proton Therapy Superiority for Paediatric CNS Tumours</h3>
+            </div>
+            <div class="flip-card-foot">
+              <span>10 min</span><span>·</span><span>May 19</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- QUICK HITS — vertical rotation, 8s -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section-head">
+    <div class="section-eyebrow">Fast Intelligence</div>
+    <h2 class="section-title">Quick Hits</h2>
+    <p class="section-subtitle">Signal-dense items rotating through today's curated pool.</p>
+  </div>
+
+  <div class="quick-hits" id="quickHits">
+    <ul class="qh-list" id="qhList">
+      <!-- Populated by JS -->
+    </ul>
+    <div class="qh-progress" id="qhProgress"></div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- AUDIO TODAY -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section-head">
+    <div class="section-eyebrow">Audio Intelligence · 4 Tiers Day-1</div>
+    <h2 class="section-title">Audio Today</h2>
+    <p class="section-subtitle">Per-article briefs, daily roundup, weekly deep-dive, and conference coverage.</p>
+  </div>
+
+  <div class="audio-today">
+    <div class="audio-tabs">
+      <button class="audio-tab active">🎧 Audio Brief</button>
+      <button class="audio-tab">📰 Daily Brief</button>
+      <button class="audio-tab">🎙 The ROMAS Podcast</button>
+      <button class="audio-tab">🎤 Conference Brief</button>
+      <button class="audio-tab" style="opacity: 0.5;">📺 Video Podcast · D60</button>
+    </div>
+
+    <div class="audio-player">
+      <div class="audio-now-playing">FLASH Proton Therapy Achieves 40% Reduction in Normal-Tissue Toxicity</div>
+      <div class="audio-meta">S94 · 7 min · ROMAS Wire voice · Audio Brief tier</div>
+      <div class="audio-bar"><div class="audio-fill"></div></div>
+      <div style="display: flex; justify-content: space-between;">
+        <span class="audio-time">2:34</span>
+        <span class="audio-time">7:12</span>
+      </div>
+
+      <div class="audio-platforms">
+        <a href="#">RSS · audio-brief.xml</a>
+        <a href="#">Apple Podcasts ↗</a>
+        <a href="#">Spotify ↗</a>
+        <a href="#">Overcast ↗</a>
+        <a href="#">Pocket Casts ↗</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="wordmark" style="font-size: 18px;">
+          ROMAS<span style="margin: 0 4px;">·</span><span class="brief"><span class="dot"></span>BRIEF</span>
+        </a>
+        <p style="font-size: 13px; color: var(--rb-ink-muted); margin: 12px 0;">Signal-scored clinical intelligence for radiation oncology professionals. Primary-source cited. Available in audio.</p>
+        <div style="display: flex; gap: 14px; margin-top: 16px; font-size: 13px;">
+          <a href="/feeds/audio-brief.xml" style="color: var(--rb-ink-muted);">🎙 Audio RSS</a>
+          <a href="/feeds/daily-brief.xml" style="color: var(--rb-ink-muted);">📰 Daily RSS</a>
+          <a href="/feeds/podcast.xml" style="color: var(--rb-ink-muted);">🎧 Podcast</a>
+        </div>
+      </div>
+      <div>
+        <h4>Topics</h4>
+        <ul>
+          <li><a href="/categories/ai">AI &amp; ML</a></li>
+          <li><a href="/categories/clinical-rt">Clinical RT</a></li>
+          <li><a href="/categories/physics">Physics</a></li>
+          <li><a href="/categories/regulatory">Regulatory</a></li>
+          <li><a href="/categories/guidelines">Guidelines</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>For You</h4>
+        <ul>
+          <li><a href="/for/physicians">Radiation Oncologists</a></li>
+          <li><a href="/for/physicists">Medical Physicists</a></li>
+          <li><a href="/for/dosimetrists">Dosimetrists</a></li>
+          <li><a href="/for/therapists">Therapists</a></li>
+          <li><a href="/for/residents">Residents</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Regions</h4>
+        <ul>
+          <li><a href="/regions/us">United States</a></li>
+          <li><a href="/regions/europe">Europe</a></li>
+          <li><a href="/regions/uk">United Kingdom</a></li>
+          <li><a href="/regions/apac">Asia-Pacific</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-copy">
+      <span>© 2026 ROMAS Wire · AlienNova Inc. · Not medical advice. For educational purposes only.</span>
+      <span><a href="/about/how-it-works">How it works</a> · <a href="mailto:president@aliennova.com">Contact</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   HERO CAROUSEL — horizontal rotation, 7s, pause on hover/blur
+   ════════════════════════════════════════════════════════════════════ */
+(() => {
+  const carousel = document.getElementById('heroCarousel');
+  const track = document.getElementById('heroTrack');
+  const dotsContainer = document.getElementById('heroDots');
+  const progress = document.getElementById('heroProgress');
+  const prev = document.getElementById('heroPrev');
+  const next = document.getElementById('heroNext');
+  const slides = track.children;
+  const count = slides.length;
+  const INTERVAL = 7000;
+  let current = 0;
+  let paused = false;
+  let timer = null;
+  let progressTimer = null;
+  let progressStart = Date.now();
+
+  // Build dots
+  for (let i = 0; i < count; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+    dot.addEventListener('click', () => goTo(i));
+    dotsContainer.appendChild(dot);
+  }
+  const dots = dotsContainer.children;
+
+  function goTo(index) {
+    current = (index + count) % count;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    for (let i = 0; i < dots.length; i++) {
+      dots[i].classList.toggle('active', i === current);
+    }
+    resetProgress();
+  }
+
+  function nextSlide() { goTo(current + 1); }
+  function prevSlide() { goTo(current - 1); }
+
+  function resetProgress() {
+    progressStart = Date.now();
+    progress.style.width = '0%';
+  }
+  function tickProgress() {
+    if (paused) return;
+    const elapsed = Date.now() - progressStart;
+    const pct = Math.min(100, (elapsed / INTERVAL) * 100);
+    progress.style.width = pct + '%';
+  }
+
+  function startTimer() {
+    if (timer) clearInterval(timer);
+    if (progressTimer) clearInterval(progressTimer);
+    resetProgress();
+    timer = setInterval(() => { if (!paused) nextSlide(); }, INTERVAL);
+    progressTimer = setInterval(tickProgress, 100);
+  }
+
+  carousel.addEventListener('mouseenter', () => { paused = true; });
+  carousel.addEventListener('mouseleave', () => { paused = false; resetProgress(); });
+  next.addEventListener('click', () => { nextSlide(); });
+  prev.addEventListener('click', () => { prevSlide(); });
+
+  // Pause on tab inactive
+  document.addEventListener('visibilitychange', () => {
+    paused = document.hidden;
+    if (!paused) resetProgress();
+  });
+
+  // Respect reduced motion
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    startTimer();
+  }
+})();
+
+
+/* ════════════════════════════════════════════════════════════════════
+   SIDE STACK — three vertical flipping slots, 12s, staggered 4s
+   ════════════════════════════════════════════════════════════════════ */
+(() => {
+  const slots = document.querySelectorAll('.flip-slot');
+  if (!slots.length) return;
+
+  // Each slot has front + back faces; we swap which is "current"
+  // by toggling the .flipping class on the parent.
+  const slotState = Array.from(slots).map(() => ({ flipped: false, paused: false }));
+
+  slots.forEach((slot, i) => {
+    slot.addEventListener('mouseenter', () => { slotState[i].paused = true; });
+    slot.addEventListener('mouseleave', () => { slotState[i].paused = false; });
+  });
+
+  function flipSlot(i) {
+    if (slotState[i].paused) return;
+    slots[i].classList.toggle('flipping');
+    slotState[i].flipped = !slotState[i].flipped;
+  }
+
+  // Staggered start: slot 0 flips at t=12s, slot 1 at t=16s, slot 2 at t=20s
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    slots.forEach((_, i) => {
+      setTimeout(() => {
+        flipSlot(i);
+        setInterval(() => flipSlot(i), 12000);
+      }, 12000 + i * 4000);
+    });
+  }
+})();
+
+
+/* ════════════════════════════════════════════════════════════════════
+   QUICK HITS — vertical rotation, 8s, one row exits/enters
+   ════════════════════════════════════════════════════════════════════ */
+(() => {
+  // Pool of 12 candidates
+  const pool = [
+    { score: 88, cat: 'Physics',     title: 'Health Canada Linac Collimator Leaf Positioning Alert', date: 'May 12', audio: false },
+    { score: 84, cat: 'Conference',  title: 'ESTRO 2026 Highlights: Adaptive RT, AI Contouring, FLASH', date: 'May 15', audio: true },
+    { score: 82, cat: 'Policy',      title: 'CMS Finalises 2026 SBRT Lung Reimbursement', date: 'May 25', audio: false },
+    { score: 79, cat: 'Regulatory',  title: 'EUDAMED Mandatory Registration Begins for EU RT Devices', date: 'May 22', audio: false },
+    { score: 77, cat: 'Regulatory',  title: 'MHRA New Guidance on SaMD for RT Treatment Planning', date: 'May 20', audio: false },
+    { score: 74, cat: 'Regulatory',  title: 'PMDA Draft Framework for AI-Based RT Software in Japan', date: 'May 13', audio: false },
+    { score: 88, cat: 'AI',          title: 'FDA Clears AI Auto-Contouring for Head and Neck OAR', date: 'May 27', audio: true },
+    { score: 87, cat: 'Research',    title: 'DeepSeek-R2 Near-Expert Performance on RT Plan Optimisation', date: 'May 23', audio: true },
+    { score: 82, cat: 'Vendor',      title: 'Varian Ethos Adaptive RT FDA Cleared for Contour Propagation', date: 'May 6',  audio: false },
+    { score: 81, cat: 'Vendor',      title: 'Elekta Unity MR-Linac CE Mark for Monaco 5.51 Adaptive', date: 'May 24', audio: false },
+    { score: 76, cat: 'Vendor',      title: 'Brainlab Elements 4.0 AI Multi-Isocenter SRS Planning', date: 'May 16', audio: false },
+    { score: 90, cat: 'Paediatric',  title: '15-Year Follow-Up: Proton Superiority for Paediatric CNS Tumours', date: 'May 19', audio: true },
+  ];
+
+  const VISIBLE = 5;
+  const INTERVAL = 8000;
+  const list = document.getElementById('qhList');
+  const progress = document.getElementById('qhProgress');
+  const container = document.getElementById('quickHits');
+  let paused = false;
+  let cursor = 0;
+  let progressStart = Date.now();
+
+  function rowHTML(item) {
+    return `
+      <span class="qh-num">${String(paused).slice(0,0)}</span>
+      <span class="qh-score">S${item.score}</span>
+      <span class="qh-cat">${item.cat}</span>
+      <span class="qh-title">${item.title}</span>
+      <span class="qh-date">${item.date}</span>
+      <span class="qh-icon">${item.audio ? '🎧' : ''}</span>
+    `;
+  }
+
+  function renderRowNumbers() {
+    const items = list.querySelectorAll('.qh-item');
+    items.forEach((row, i) => {
+      const num = row.querySelector('.qh-num');
+      if (num) num.textContent = String(i + 1).padStart(2, '0');
+    });
+  }
+
+  function initial() {
+    for (let i = 0; i < VISIBLE; i++) {
+      const item = pool[i % pool.length];
+      const li = document.createElement('li');
+      li.className = 'qh-item';
+      li.innerHTML = rowHTML(item);
+      list.appendChild(li);
+    }
+    cursor = VISIBLE;
+    renderRowNumbers();
+  }
+  initial();
+
+  function rotate() {
+    if (paused) return;
+    const item = pool[cursor % pool.length];
+    cursor++;
+
+    // Remove first child with leaving animation
+    const first = list.firstElementChild;
+    if (first) {
+      first.classList.add('qh-leaving');
+      setTimeout(() => first.remove(), 600);
+    }
+
+    // Append new at bottom with entering animation
+    setTimeout(() => {
+      const li = document.createElement('li');
+      li.className = 'qh-item qh-entering';
+      li.innerHTML = rowHTML(item);
+      list.appendChild(li);
+      renderRowNumbers();
+      setTimeout(() => li.classList.remove('qh-entering'), 600);
+    }, 100);
+
+    resetProgress();
+  }
+
+  function resetProgress() {
+    progressStart = Date.now();
+    progress.style.width = '0%';
+  }
+  function tickProgress() {
+    if (paused) return;
+    const elapsed = Date.now() - progressStart;
+    const pct = Math.min(100, (elapsed / INTERVAL) * 100);
+    progress.style.width = pct + '%';
+  }
+
+  container.addEventListener('mouseenter', () => { paused = true; });
+  container.addEventListener('mouseleave', () => { paused = false; resetProgress(); });
+  document.addEventListener('visibilitychange', () => {
+    paused = document.hidden;
+    if (!paused) resetProgress();
+  });
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setInterval(rotate, INTERVAL);
+    setInterval(tickProgress, 100);
+  }
+})();
+</script>
+
+</body>
+</html>

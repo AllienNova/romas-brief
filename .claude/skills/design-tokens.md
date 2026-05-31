@@ -1,9 +1,9 @@
 ---
 name: design-tokens
-description: ROMAS Brief design tokens v1.1 — color, type, spacing, radius, motion, shadow, audio state colors. Load before any UI / component / Tailwind config work.
+description: ROMAS Wire design tokens v1.1 — color, type, spacing, radius, motion, shadow, audio state colors. Load before any UI / component / Tailwind config work.
 ---
 
-# ROMAS Brief — Design Tokens v1.1
+# ROMAS Wire — Design Tokens v1.1
 
 All tokens live in `src/styles/tokens.css` as CSS custom properties on `:root`. Tailwind config consumes via `tailwind.config.ts` theme extension.
 
@@ -120,7 +120,7 @@ Article max measure: **66ch**. Never wider on prose blocks.
 
 ### Sponsor firewall (locked)
 
-**No sponsor logo or sponsor text may render within 32px of the ROMAS Brief wordmark.** Enforce in component via `min-margin` token:
+**No sponsor logo or sponsor text may render within 32px of the ROMAS Wire wordmark.** Enforce in component via `min-margin` token:
 
 ```css
 --rb-sponsor-firewall: 2rem;   /* 32px */
@@ -204,7 +204,7 @@ Focus ring (every interactive element) — **v1.2: now `--rb-accent-strong`**:
 ## Logo wordmark (recommended variant c)
 
 ```
-ROMAS BRIEF
+ROMAS WIRE
 ```
 
 - Family: `Inter`, weight 700, letter-spacing -0.02em.

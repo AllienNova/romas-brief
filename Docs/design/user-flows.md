@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — User Flows
+title: ROMAS Wire — User Flows
 version: 1.0.0
 date: 2026-05-15
 authority: product-spec FR-001..FR-038 use cases · web-engineer.md surfaces
@@ -11,7 +11,7 @@ Each flow names the trigger, walks the happy path, then enumerates at least 2 ed
 
 ---
 
-## UF-001 — Subscribe to ROMAS Brief (serves FR-014, FR-014A, FR-023, FR-027)
+## UF-001 — Subscribe to ROMAS Wire (serves FR-014, FR-014A, FR-023, FR-027)
 
 **Trigger**: Anonymous reader on `/` or `/about` or `/articles/{slug}` clicks "Subscribe" CTA in nav, footer, or inline block.
 
@@ -133,7 +133,7 @@ Reader on /articles/{slug}
 - **LATAM article (source_language != 'en')**: Source attribution shows original-language URL + label "Source in {Portuguese|Spanish}; verbatim quotes shown in italic parentheses inline." Footer attribution rule renders the non-removable line.
 
 **Error path**:
-- **Primary source URL 404 at click time** (source taken down): Outbound click counted; on user-visible side, target page is whatever the source returns. ROMAS Brief does NOT proxy or cache primary sources. Source-health log captures the 404 next ingestion run.
+- **Primary source URL 404 at click time** (source taken down): Outbound click counted; on user-visible side, target page is whatever the source returns. ROMAS Wire does NOT proxy or cache primary sources. Source-health log captures the 404 next ingestion run.
 
 ---
 

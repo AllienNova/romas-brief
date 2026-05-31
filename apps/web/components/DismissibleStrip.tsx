@@ -3,7 +3,7 @@
 /**
  * DismissibleStrip — One-time dismissible sub-explanation strip
  * Shown once per browser session, dismissed via localStorage
- * Explains what ROMAS Brief is and how it works
+ * Explains what ROMAS Wire is and how it works
  */
 
 import { useState, useEffect } from "react";
@@ -43,7 +43,7 @@ export default function DismissibleStrip() {
         borderColor: "var(--rb-border-subtle)",
       }}
       role="complementary"
-      aria-label="How ROMAS Brief works"
+      aria-label="How ROMAS Wire works"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-start sm:items-center justify-between gap-4">
         <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">

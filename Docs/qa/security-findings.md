@@ -1,5 +1,5 @@
 ---
-title: Security Findings — ROMAS Brief (Cycle-6 Contract Audit + build-2026-05-21 qa-pass dependency audit)
+title: Security Findings — ROMAS Wire (Cycle-6 Contract Audit + build-2026-05-21 qa-pass dependency audit)
 version: 2.1.0
 date: 2026-05-14 (v2.0) · 2026-05-21 (v2.1 build-2026-05-21 qa-pass section appended)
 scope: all 16 derived contracts in docs/specs/contracts/ + cycle-1 baseline (docs/specs/security-findings.md) + post-build-2026-05-21 dependency audit
@@ -7,7 +7,7 @@ methodology: contract-level threat modeling + fresh pnpm audit on the M1 scaffol
 baseline: docs/specs/security-findings.md v1.0.0 (10 findings F-S-001 through F-S-010)
 ---
 
-# Security Findings — ROMAS Brief (Cycle-6 Contract Audit + build-2026-05-21 qa-pass)
+# Security Findings — ROMAS Wire (Cycle-6 Contract Audit + build-2026-05-21 qa-pass)
 
 ## build-2026-05-21 qa-pass dependency audit (added 2026-05-21)
 
@@ -30,7 +30,7 @@ Fresh `pnpm audit --audit-level=low` run against the post-/team-build state:
 - **14 vulnerabilities total**: 0 critical, 5 high, 7 moderate, 2 low
 - All 14 are `next` advisories patched only in Next 15.x.y
 - Documented and accepted under **ADR-0015 v2** with per-advisory applicability assessment + control mapping
-- 5 of 14 documented NOT applicable to ROMAS Brief's architecture (App Router only, no i18n, no Pages Router, no `Script strategy="beforeInteractive"`)
+- 5 of 14 documented NOT applicable to ROMAS Wire's architecture (App Router only, no i18n, no Pages Router, no `Script strategy="beforeInteractive"`)
 
 ### Residual CVE summary table
 
@@ -66,7 +66,7 @@ Verdict: **CLEAN** — no committed secret values. `.env.example` (not yet autho
 
 ---
 
-# Security Findings — ROMAS Brief (Cycle-6 Contract Audit) — preserved baseline below
+# Security Findings — ROMAS Wire (Cycle-6 Contract Audit) — preserved baseline below
 
 ## Scope and methodology
 
@@ -247,7 +247,7 @@ For NMPA specifically the risk is low (public regulatory records; no authenticat
 **File**: `docs/specs/contracts/whisper.yaml`
 **Lines**: 100–103
 
-The contract documents `data_retention: 30 days at OpenAI (no training)` and flags `dpa_required: true`. What the contract does not resolve: ROMAS Brief audio scripts (`audio_jobs.script_md`) are pre-publish editorial content. When sent to Whisper for transcription, the full article script is transmitted to OpenAI and retained for 30 days under OpenAI's standard retention terms. For most articles this is low-risk (public-domain clinical news), but for any embargoed article whose audio is generated before the embargo lifts, the audio script sits in OpenAI's infrastructure for up to 30 days with no guarantee of early deletion.
+The contract documents `data_retention: 30 days at OpenAI (no training)` and flags `dpa_required: true`. What the contract does not resolve: ROMAS Wire audio scripts (`audio_jobs.script_md`) are pre-publish editorial content. When sent to Whisper for transcription, the full article script is transmitted to OpenAI and retained for 30 days under OpenAI's standard retention terms. For most articles this is low-risk (public-domain clinical news), but for any embargoed article whose audio is generated before the embargo lifts, the audio script sits in OpenAI's infrastructure for up to 30 days with no guarantee of early deletion.
 
 **Fix**:
 1. Hard rule: embargoed articles (`articles.embargoed = true`) do not have audio generated until `embargo_until < now()`. This should be a schema-enforced gate (add to audio pipeline pre-check, not schema CHECK because the pipeline runs post-embargo).
@@ -261,7 +261,7 @@ The contract documents `data_retention: 30 days at OpenAI (no training)` and fla
 **File**: `docs/specs/contracts/playht-tts.yaml`
 **Lines**: 84–87
 
-The contract references `voice_consent_registry: Docs/voice-consent-registry.md` (mirroring ElevenLabs contract) but the consent registry deliverable (F-S-003, R-110) was scoped primarily around ElevenLabs. PlayHT clone voices have separate consent mechanics (PlayHT Voice Cloning Terms require the voice donor to consent via PlayHT's own flow, not just a ROMAS internal document). If ROMAS Brief relies on a custom PlayHT clone, the consent path may be different and must be separately documented.
+The contract references `voice_consent_registry: Docs/voice-consent-registry.md` (mirroring ElevenLabs contract) but the consent registry deliverable (F-S-003, R-110) was scoped primarily around ElevenLabs. PlayHT clone voices have separate consent mechanics (PlayHT Voice Cloning Terms require the voice donor to consent via PlayHT's own flow, not just a ROMAS internal document). If ROMAS Wire relies on a custom PlayHT clone, the consent path may be different and must be separately documented.
 
 **Fix**: Ensure `Docs/voice-consent-registry.md` covers both vendors with their vendor-specific consent evidence (ElevenLabs: Voice Lab consent confirmation link + date; PlayHT: cloning consent confirmation + PlayHT account ID).
 
@@ -272,7 +272,7 @@ The contract references `voice_consent_registry: Docs/voice-consent-registry.md`
 **File**: `docs/specs/contracts/supabase-schema.sql`
 **Lines**: 262–272 (revocations table)
 
-ROMAS Brief publishes three geographically timed editions (implied by APAC/EU/Americas cadence). An article can be published to APAC at 22:00 UTC, then revoked at 02:00 UTC before EU (06:00 UTC) or Americas (11:00 UTC) editions send. The `revocations` table records `audio_job_id`, `article_id`, and `cdn_purge_at`, but the schema does not track which Beehiiv post sends correspond to which edition. When Beehiiv's `external_id` idempotency key is `issue_{YYYY-MM-DD}_{tier}`, a revocation issued after APAC send but before EU send would need to:
+ROMAS Wire publishes three geographically timed editions (implied by APAC/EU/Americas cadence). An article can be published to APAC at 22:00 UTC, then revoked at 02:00 UTC before EU (06:00 UTC) or Americas (11:00 UTC) editions send. The `revocations` table records `audio_job_id`, `article_id`, and `cdn_purge_at`, but the schema does not track which Beehiiv post sends correspond to which edition. When Beehiiv's `external_id` idempotency key is `issue_{YYYY-MM-DD}_{tier}`, a revocation issued after APAC send but before EU send would need to:
 
 1. Prevent the EU and Americas Beehiiv sends from dispatching.
 2. Optionally send a revocation/correction notice to APAC subscribers who already received the issue.

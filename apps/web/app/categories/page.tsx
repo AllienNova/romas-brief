@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Categories index page
+ * ROMAS Wire — Categories index page
  */
 import Link from "next/link";
 import { CATEGORY_META, type Category } from "@/lib/mock-data";
@@ -24,7 +24,7 @@ export default async function CategoriesIndexPage() {
         <p className="text-xs uppercase tracking-widest font-semibold text-teal-600 mb-2">Browse</p>
         <h1 className="text-3xl font-black text-[var(--rb-text-primary)] tracking-tight">By Category</h1>
         <p className="mt-2 text-[var(--rb-text-tertiary)] text-sm max-w-xl">
-          Every ROMAS Brief article is classified into one of 11 clinical categories.
+          Every ROMAS Wire article is classified into one of 11 clinical categories.
         </p>
       </div>
 

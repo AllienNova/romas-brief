@@ -11,7 +11,7 @@ supersedes: none
 
 ## Context
 
-ROMAS Brief runs 4 Workers + 2 Pages + Supabase + R2 + external TTS/email APIs. Operational signals needed:
+ROMAS Wire runs 4 Workers + 2 Pages + Supabase + R2 + external TTS/email APIs. Operational signals needed:
 
 1. Cron success rate (Mon-Fri 10:30 UTC ingest)
 2. Audio failure counts (ElevenLabs failover, PlayHT skips, loudness rejects)
@@ -25,7 +25,7 @@ Kimal is the sole on-call at launch. The stack must be cheap and low-effort.
 ## Decision
 
 Three layers:
-1. **Cloudflare Workers Analytics Engine** — custom metrics from Workers (cron success, latency histograms, source-health counters). Free tier covers ROMAS Brief launch volume.
+1. **Cloudflare Workers Analytics Engine** — custom metrics from Workers (cron success, latency histograms, source-health counters). Free tier covers ROMAS Wire launch volume.
 2. **Sentry** — error tracking + performance traces on Workers + Next.js apps. Free tier (5k errors/mo); revisit pricing at 10k MAU.
 3. **Plausible** — reader analytics, cookieless, EU-hostable. $9/mo at 10k MAU.
 

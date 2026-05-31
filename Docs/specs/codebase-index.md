@@ -1,11 +1,11 @@
 ---
-title: Codebase Index — ROMAS Brief
+title: Codebase Index — ROMAS Wire
 version: 1.0.0
 date: 2026-05-14
 note: Repo is CODE-EMPTY at index time. This document indexes the planning kit (agents/skills/commands/docs) that exists today.
 ---
 
-# Codebase Index — ROMAS Brief
+# Codebase Index — ROMAS Wire
 
 ## Stack (target)
 
@@ -27,7 +27,7 @@ note: Repo is CODE-EMPTY at index time. This document indexes the planning kit (
 
 ### Project root (`D:/dev/projects/romas-brief/`)
 
-> **Note**: This repo was separated from the parent ROMAS COS monorepo on 2026-05-14 per ADR-0014 + SSOT §3 row 19. Prior path was `D:/dev/projects/ROMAS/ROMAS BRIEF/`; references to that path elsewhere in `docs/` predate the separation and should be read as historical.
+> **Note**: This repo was separated from the parent ROMAS COS monorepo on 2026-05-14 per ADR-0014 + SSOT §3 row 19. Prior path was `D:/dev/projects/ROMAS/ROMAS WIRE/`; references to that path elsewhere in `docs/` predate the separation and should be read as historical.
 
 | Path | Purpose |
 |---|---|

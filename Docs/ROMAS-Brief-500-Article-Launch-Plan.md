@@ -1,15 +1,15 @@
-# ROMAS Brief — 500-Article Launch Distribution Plan
+# ROMAS Wire — 500-Article Launch Distribution Plan
 
 **Version 1.1 · 2026-05-14 (M0 doc reconciliation: header bump per cycle-1 R-003; §6 Sample 5 re-sourced per R-014; §7 source health row aligned to SSOT §6 banned-source policy; §2.2 region distribution superseded by SSOT §12.2 cycle-5 rebalance)**
 **Owner: Kimal Honour Djam**
-**Mission: Launch ROMAS Brief with 500 articles distributed tactfully across categories, regions, audiences, and content types — so the app looks comprehensive, professional, and authoritative from day one.**
-**Method: Engineered from a live ROMAS Brief production sweep performed May 12, 2026, across all 7 agents (Literature, Regulatory, Guidelines, Reimbursement, Vendor, Conference, AI Startup) — 70 net-new global RT items retrieved and triaged.**
+**Mission: Launch ROMAS Wire with 500 articles distributed tactfully across categories, regions, audiences, and content types — so the app looks comprehensive, professional, and authoritative from day one.**
+**Method: Engineered from a live ROMAS Wire production sweep performed May 12, 2026, across all 7 agents (Literature, Regulatory, Guidelines, Reimbursement, Vendor, Conference, AI Startup) — 70 net-new global RT items retrieved and triaged.**
 
 ---
 
 ## 0. The Strategic Premise
 
-The 500 articles are not filler. They are a **credibility scaffold**. When a radiation oncologist or medical physicist lands on ROMAS Brief on launch day, every category they care about must look populated, recent, sourced, and authoritative. The distribution below is engineered so that:
+The 500 articles are not filler. They are a **credibility scaffold**. When a radiation oncologist or medical physicist lands on ROMAS Wire on launch day, every category they care about must look populated, recent, sourced, and authoritative. The distribution below is engineered so that:
 
 - **No category looks empty.** Every audience segment (physicist, physician, dosimetrist, therapist, resident, industry) finds ≥30 relevant articles.
 - **No region looks ignored.** US, EU, UK, APAC, and Global all carry meaningful share.
@@ -92,7 +92,7 @@ Multi-tagging is allowed; counts are *primary* audience.
 
 | Type | Articles | % | Format |
 |---|---|---|---|
-| **News brief** (the standard ROMAS Brief card) | 250 | 50% | 80–250 words, primary source, ROMAS Insight |
+| **News brief** (the standard ROMAS Wire card) | 250 | 50% | 80–250 words, primary source, ROMAS Insight |
 | **Paper critique** (Paper of the Day card) | 100 | 20% | 200 words, design/findings/limits/clinical meaning |
 | **Practice Delta** (guideline change explainer) | 40 | 8% | What changed · who's affected · clinic Monday impact |
 | **FDA/CE-mark brief** (regulatory) | 35 | 7% | Vendor · pathway · indication · modality impact |
@@ -140,7 +140,7 @@ Working backward from ROMAS COS launch (5 weeks from May 12 + 3 weeks of pre-pop
 | **W-3** | 75 | 350 | Reimbursement deep-dives + Resident education content |
 | **W-2** | 80 | 430 | International coverage push (APAC + Europe + LATAM/MENA) |
 | **W-1** | 70 | 500 | Long Takes, hero stories, polish, signal-score recalibration |
-| **Launch** | Daily flow | 500 + 5/day | ROMAS Brief goes live with the daily runbook |
+| **Launch** | Daily flow | 500 + 5/day | ROMAS Wire goes live with the daily runbook |
 
 **Daily volume during ramp:** 6–14 articles/day. This is achievable because:
 - The cron + 7 agents do discovery autonomously
@@ -207,7 +207,7 @@ Even during the launch ramp, the five rules from the runbook hold:
 
 ## 6. Five Real Sample Article Drafts (from today's live sweep)
 
-These are not mockups. They are **production-grade ROMAS Brief drafts** built from this morning's sweep, sourced to primary records. They demonstrate the house style, the 4-question frame, the ROMAS Insight, and the citation discipline.
+These are not mockups. They are **production-grade ROMAS Wire drafts** built from this morning's sweep, sourced to primary records. They demonstrate the house style, the 4-question frame, the ROMAS Insight, and the citation discipline.
 
 ---
 
@@ -317,7 +317,7 @@ These are not mockups. They are **production-grade ROMAS Brief drafts** built fr
 
 ## 8. Launch-Week Checklist
 
-- [ ] 500 articles approved and queued in Beehiiv + ROMAS Brief web archive
+- [ ] 500 articles approved and queued in Beehiiv + ROMAS Wire web archive
 - [ ] All 11 categories show ≥minimum allocation populated
 - [ ] All 8 regions show non-zero counts
 - [ ] All 6 audience filters resolve to ≥30 articles each
@@ -329,13 +329,13 @@ These are not mockups. They are **production-grade ROMAS Brief drafts** built fr
 - [ ] Zero embargoed-2026-conference items in publish queue
 - [ ] Editorial correction rate from launch-week pilot reads <1%
 - [ ] Top 10 hero stories have podcast audio attached
-- [ ] First 5 issues of ROMAS Brief drafted and queued for the live cron handoff
+- [ ] First 5 issues of ROMAS Wire drafted and queued for the live cron handoff
 
 ---
 
 ## 9. The One-Line Promise
 
-> On launch day, a clinician opening ROMAS Brief sees 500 sourced, scored, region-tagged, audience-tagged articles spanning every major radiation oncology topic worldwide — and a daily intelligence brief landing in their inbox the next morning, every weekday, on schedule.
+> On launch day, a clinician opening ROMAS Wire sees 500 sourced, scored, region-tagged, audience-tagged articles spanning every major radiation oncology topic worldwide — and a daily intelligence brief landing in their inbox the next morning, every weekday, on schedule.
 
 ---
 

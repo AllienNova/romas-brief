@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0004_create_claim_trace.sql
--- T-106 (MIP §B.1) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-16
+-- T-106 (MIP §B.1) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-16
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql lines 116-128
 -- Anchors: SSOT v1.2.0 §2 inviolable rule 1 (every clinical claim traces
 --          to a primary source) — article-level satisfied in 0001;

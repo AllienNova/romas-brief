@@ -1,5 +1,5 @@
 /**
- * source-health · ROMAS Brief
+ * source-health · ROMAS Wire
  * RESERVED placeholder — source-health logic currently lives inside cron-ingest.
  *
  * Scope when extracted (T-120):

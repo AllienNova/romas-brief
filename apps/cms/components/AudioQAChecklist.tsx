@@ -1,5 +1,5 @@
 // =====================================================================
-// apps/cms/components/AudioQAChecklist.tsx · ROMAS Brief · SHIP-10
+// apps/cms/components/AudioQAChecklist.tsx · ROMAS Wire · SHIP-10
 // Renders the 5-condition publish gate as accessible pass/fail rows with
 // the actual measured value. allPass drives whether the operator may
 // publish. Gate logic is imported from lib/audio-qa-gate.ts (shared with

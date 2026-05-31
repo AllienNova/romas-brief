@@ -1,5 +1,5 @@
 -- =====================================================================
--- supabase/tests/bucket_a_constraints.sql · ROMAS Brief
+-- supabase/tests/bucket_a_constraints.sql · ROMAS Wire
 -- R-105 extension · pgTAP coverage for the 8 new CHECK constraints
 -- introduced by /team-build cycle build-2026-05-21 (Bucket A items
 -- A2 / A3 / A4 / A6 / A9 / A10 plus URL regex variants).

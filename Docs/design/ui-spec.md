@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — UI Specification
+title: ROMAS Wire — UI Specification
 version: 1.0.0
 date: 2026-05-15
 authority: .claude/skills/design-tokens.md v1.1 (executable token set)

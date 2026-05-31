@@ -1,5 +1,5 @@
 // =====================================================================
-// workers/email-canary/src/subscribers.ts · ROMAS Brief · SHIP-12
+// workers/email-canary/src/subscribers.ts · ROMAS Wire · SHIP-12
 // Pure mapping from a Resend delivery event to a Supabase subscriber
 // update (or no-op).
 //

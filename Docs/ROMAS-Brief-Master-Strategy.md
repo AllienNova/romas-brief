@@ -1,4 +1,4 @@
-# ROMAS Brief — Master Marketing & Intelligence Strategy
+# ROMAS Wire — Master Marketing & Intelligence Strategy
 
 **Version 2.1 · 2026-05-14 (M0 doc reconciliation)**
 **Prepared for: Kimal Honour Djam, Founder/CTO, ROMAS**
@@ -11,7 +11,7 @@
 
 ## 0. Executive Summary
 
-ROMAS Brief is the **media + intelligence + audience operating system** for the ROMAS ecosystem, and the front door through which radiation oncology professionals worldwide will enter ROMAS COS at launch in five weeks.
+ROMAS Wire is the **media + intelligence + audience operating system** for the ROMAS ecosystem, and the front door through which radiation oncology professionals worldwide will enter ROMAS COS at launch in five weeks.
 
 **The thesis in one sentence:**
 Own the trusted, global intelligence layer of radiation oncology *before* selling software into it — because in a clinically conservative, AI-disrupted, tightly-networked specialty, **attention is the moat, and trust compounds faster than features**.
@@ -24,7 +24,7 @@ Own the trusted, global intelligence layer of radiation oncology *before* sellin
 - ROMAS already has the four assets that kill 90% of media startups in their crib: **distribution (email lists), domain expertise, AI capability, and a software product to monetize the audience into**.
 
 **The play:**
-Launch a free, daily, AI-assisted but human-approved global intelligence brief in 5 weeks as **ROMAS Brief**. Use it as the warm-up campaign for ROMAS COS launch, then evolve it into a Bloomberg-Terminal-class structured intelligence graph for radiation oncology.
+Launch a free, daily, AI-assisted but human-approved global intelligence brief in 5 weeks as **ROMAS Wire**. Use it as the warm-up campaign for ROMAS COS launch, then evolve it into a Bloomberg-Terminal-class structured intelligence graph for radiation oncology.
 
 ---
 
@@ -37,7 +37,7 @@ This is the binding hierarchy across all strategy, marketing, product, legal, an
 | Ecosystem | **ROMAS** *(Radiation Oncology Multi-Agent System)* | Parent brand |
 | Core Platform | **ROMAS COS** *(Clinical Operating System)* | "The AI-Native Clinical Operating System for Radiation Oncology" |
 | Intelligence Division | **ROMAS Intelligence** | Umbrella for media, research, and the AI backend |
-| Media Product | **ROMAS Brief** | Daily intelligence brief + weekly digest + podcast network |
+| Media Product | **ROMAS Wire** | Daily intelligence brief + weekly digest + podcast network |
 | AI Backend | **ROMAS Intelligence Engine** | Agents, scoring, normalization, content graph |
 | Research Arm | **ROMAS Research** | Whitepapers, annual State-of reports, vendor benchmarks |
 | Personalized Feed | **ROMAS Terminal** | In-app personalized intelligence (inside ROMAS COS) |
@@ -53,7 +53,7 @@ This is the binding hierarchy across all strategy, marketing, product, legal, an
 
 ### 2.1 The category we are creating
 
-| | Imaging Wire | ASTRO / AAPM / ESTRO | Generic AI summarizers | **ROMAS Brief** |
+| | Imaging Wire | ASTRO / AAPM / ESTRO | Generic AI summarizers | **ROMAS Wire** |
 |---|---|---|---|---|
 | Posture | Journalism / curation | Authoritative but slow | Aggregation | **Clinical interpretation** |
 | Scope | US radiology | Member-region focused | Open web | **Worldwide RT** |
@@ -76,14 +76,14 @@ Every published item must answer, in this order:
 
 ## 3. The Daily Editorial Mandate
 
-> **My standing weekday job is to produce approval-ready article drafts for ROMAS Brief — every Monday through Friday, without exception, on the publication schedule below.**
+> **My standing weekday job is to produce approval-ready article drafts for ROMAS Wire — every Monday through Friday, without exception, on the publication schedule below.**
 
 ### 3.1 What I deliver each weekday
 
 | Time (ET) | Deliverable | Owner action |
 |---|---|---|
 | **06:30** | **Morning Brief draft** lands in your inbox: 5 top items + 10 quick-hits backlog + embargo hold list + source health report. Each top item carries the full 10-field card (headline, source, region, audience, modality, what happened, why it matters, ROMAS Insight, signal scores, embargo status). | Review by 07:30. Reply APPROVE / EDIT / REJECT. |
-| **07:30–09:00** | **Final article drafts** for each approved item — publication-ready in the ROMAS Brief house style (200–300w hero, 80–120w supporting, 200w paper card, 30–50w quick hits, 80–120w ROMAS Insight). All citations inline with primary-source URLs. Podcast script (5–10 min) generated from same Content Objects. Social cards (LinkedIn carousel + 2 X/Twitter posts) per top item. | Spot-check, approve, queue in Beehiiv. |
+| **07:30–09:00** | **Final article drafts** for each approved item — publication-ready in the ROMAS Wire house style (200–300w hero, 80–120w supporting, 200w paper card, 30–50w quick hits, 80–120w ROMAS Insight). All citations inline with primary-source URLs. Podcast script (5–10 min) generated from same Content Objects. Social cards (LinkedIn carousel + 2 X/Twitter posts) per top item. | Spot-check, approve, queue in Beehiiv. |
 | **10:00** | **Issue queued for 06:30 next-day delivery** with podcast attached and social posts scheduled. | None — automated. |
 | **17:00** | **End-of-day intelligence sweep** for late-breaking items (FDA late releases, US-evening vendor PRs, Asia-morning announcements). Items above signal threshold trigger a same-day push notification or roll into tomorrow's hero queue. | Glance, decide push vs. queue. |
 | **Friday 18:00** | **ROMAS Weekly draft** for Sunday 7 PM ET delivery: Top 5 Papers (structured critique), Practice Delta (guideline/reimbursement changes), Long Take essay outline, conference watch if active. | Review over weekend. |
@@ -99,7 +99,7 @@ Every published item must answer, in this order:
 
 ### 3.3 Recurring schedule already in place
 
-- **`ROMAS Brief — Global Morning Brief`** — runs Mon–Fri at 6:30 AM ET (10:30 UTC), background, exact-time. Scheduled task ID: `10688a27` (session `559a263d`).
+- **`ROMAS Wire — Global Morning Brief`** — runs Mon–Fri at 6:30 AM ET (10:30 UTC), background, exact-time. Scheduled task ID: `10688a27` (session `559a263d`).
 
 Additional crons to add over the first 30 days:
 - **End-of-day intelligence sweep** — Mon–Fri 17:00 ET
@@ -110,7 +110,7 @@ Additional crons to add over the first 30 days:
 
 ## 4. Product Architecture
 
-### 4.1 The daily ROMAS Brief
+### 4.1 The daily ROMAS Wire
 
 **Target length:** 5-minute read. **Cadence:** Weekday mornings, 6:30 AM ET delivery.
 
@@ -226,7 +226,7 @@ Track correction rate per agent. After 60 days at <1% on low-risk categories, th
 
 ### 6.3 Conflict-of-interest disclosure
 
-Standing footer: *"ROMAS Brief is published by ROMAS, which builds ROMAS COS, an AI-native clinical operating system for radiation oncology. Sponsored items are clearly labeled. Editorial coverage is independent."*
+Standing footer: *"ROMAS Wire is published by ROMAS, which builds ROMAS COS, an AI-native clinical operating system for radiation oncology. Sponsored items are clearly labeled. Editorial coverage is independent."*
 
 ---
 
@@ -272,7 +272,7 @@ Same as v1.0 §6.2.
 
 ## 9. The 5-Week Launch Plan
 
-*(unchanged from v1.0 except for naming — see v1.0 §8; substitute "ROMAS Brief" wherever "ROMAS Wire" appeared)*
+*(unchanged from v1.0 except for naming — see v1.0 §8; substitute "ROMAS Wire" wherever "ROMAS Wire" appeared)*
 
 Week 1 Foundation · Week 2 Soft Launch · Week 3 Engagement Layer · Week 4 Personalization · Week 5 ROMAS COS Tie-In.
 
@@ -303,7 +303,7 @@ Week 1 Foundation · Week 2 Soft Launch · Week 3 Engagement Layer · Week 4 Per
 ### 10.3 Funnel into ROMAS COS
 
 ```
-ROMAS Brief subscriber (10,000)
+ROMAS Wire subscriber (10,000)
   → WAIU (4,000)
     → Identified specialty + interests + region (2,800)
       → ROMAS COS beta invite (800)
@@ -334,7 +334,7 @@ Mitigations are baked into the editorial mandate (§3), trust architecture (§6)
 
 ## 13. Long-Term Vision
 
-By Month 18, ROMAS Brief is no longer the product. The product is the **structured intelligence graph** of radiation oncology that the Brief builds as a byproduct:
+By Month 18, ROMAS Wire is no longer the product. The product is the **structured intelligence graph** of radiation oncology that the Brief builds as a byproduct:
 
 - Every meaningful global RT paper from the last 24 months, structured.
 - Every multi-jurisdiction AI device clearance with regulatory pathway, vendor, indication, modality.
@@ -345,7 +345,7 @@ By Month 18, ROMAS Brief is no longer the product. The product is the **structur
 
 **No one currently owns this.** Not ASTRO. Not ESTRO. Not AAPM. Not Varian. Not journals. Not Imaging Wire.
 
-ROMAS Intelligence owns it. ROMAS Brief earns the right to. ROMAS COS monetizes it.
+ROMAS Intelligence owns it. ROMAS Wire earns the right to. ROMAS COS monetizes it.
 
 ---
 
@@ -353,17 +353,17 @@ ROMAS Intelligence owns it. ROMAS Brief earns the right to. ROMAS COS monetizes 
 
 - [ ] Acquire `romasbrief.com` and configure Cloudflare DNS
 - [ ] Provision Beehiiv Max, set up SPF/DKIM/DMARC on `mail.romasbrief.com`
-- [ ] Brief designer: ROMAS Brief logo + 5-mark visual system + email template + 3 social templates (5-day turnaround)
+- [ ] Brief designer: ROMAS Wire logo + 5-mark visual system + email template + 3 social templates (5-day turnaround)
 - [ ] Audit existing email lists by jurisdiction (US / EU / UK / CA / JP / AU) and consent status
 - [ ] Stand up Supabase project; deploy Content Object schema and LangGraph skeleton
 - [ ] Identify the clinician co-signer for editorial standards (single most important trust hire)
-- [ ] Confirm the `ROMAS Brief — Global Morning Brief` cron output meets the SLA on first three runs; tune scoring weights from approve/reject data
+- [ ] Confirm the `ROMAS Wire — Global Morning Brief` cron output meets the SLA on first three runs; tune scoring weights from approve/reject data
 
 ---
 
 ## 15. The One-Line Summary
 
-> ROMAS Brief is the audience-acquisition, trust-building, and category-creation layer that turns the ROMAS COS launch from a cold start into a warm landing — and over 18 months becomes the Bloomberg Terminal of radiation oncology.
+> ROMAS Wire is the audience-acquisition, trust-building, and category-creation layer that turns the ROMAS COS launch from a cold start into a warm landing — and over 18 months becomes the Bloomberg Terminal of radiation oncology.
 
 ---
 

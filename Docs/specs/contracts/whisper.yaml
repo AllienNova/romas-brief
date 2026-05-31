@@ -35,7 +35,7 @@ paths:
                   default: whisper-1
                 language:
                   type: string
-                  description: ISO-639-1; "en" for ROMAS Brief
+                  description: ISO-639-1; "en" for ROMAS Wire
                   default: en
                 response_format:
                   type: string

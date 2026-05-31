@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Mock data layer
+ * ROMAS Wire — Mock data layer
  * Used for preview/development when Supabase is not yet provisioned.
  * Replace all imports of this file with real Supabase queries once
  * `supabase gen types typescript --linked` has run.

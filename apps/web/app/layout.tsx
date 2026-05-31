@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Root Layout
+ * ROMAS Wire — Root Layout
  * Professional, Apple-level header with sticky nav, dark mode, and comprehensive footer.
  */
 import "./globals.css";
@@ -13,8 +13,8 @@ import { WebVitals } from "@/components/WebVitals";
 
 export const metadata: Metadata = {
   title: {
-    default: "ROMAS Brief — Radiation Oncology Intelligence, Decoded Daily",
-    template: "%s · ROMAS Brief",
+    default: "ROMAS Wire — Radiation Oncology Intelligence, Decoded Daily",
+    template: "%s · ROMAS Wire",
   },
   description:
     "Signal-scored clinical intelligence for radiation oncology professionals. Daily briefings from PubMed, arXiv, ClinicalTrials, and FDA — with audio.",
@@ -22,10 +22,10 @@ export const metadata: Metadata = {
   keywords: [
     "radiation oncology", "medical physics", "clinical intelligence",
     "radiation therapy", "oncology news", "PubMed", "arXiv",
-    "ClinicalTrials", "FDA", "ROMAS Brief", "FLASH radiotherapy",
+    "ClinicalTrials", "FDA", "ROMAS Wire", "FLASH radiotherapy",
     "MR-Linac", "SBRT", "adaptive radiotherapy",
   ],
-  authors: [{ name: "ROMAS Brief Editorial Team", url: "https://romasbrief.vercel.app" }],
+  authors: [{ name: "ROMAS Wire Editorial Team", url: "https://romasbrief.vercel.app" }],
   creator: "AlienNova Inc.",
   publisher: "AlienNova Inc.",
   robots: {
@@ -33,19 +33,19 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
   openGraph: {
-    siteName: "ROMAS Brief",
+    siteName: "ROMAS Wire",
     type: "website",
     locale: "en_US",
     url: "https://romasbrief.vercel.app",
-    title: "ROMAS Brief — Radiation Oncology Intelligence, Decoded Daily",
+    title: "ROMAS Wire — Radiation Oncology Intelligence, Decoded Daily",
     description: "Signal-scored clinical intelligence for radiation oncology professionals. Daily briefings from PubMed, arXiv, ClinicalTrials, and FDA — with audio.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "ROMAS Brief — Radiation Oncology Intelligence" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "ROMAS Wire — Radiation Oncology Intelligence" }],
   },
   twitter: {
     card: "summary_large_image",
     site: "@romasbrief",
     creator: "@romasbrief",
-    title: "ROMAS Brief — Radiation Oncology Intelligence, Decoded Daily",
+    title: "ROMAS Wire — Radiation Oncology Intelligence, Decoded Daily",
     description: "Signal-scored clinical intelligence for radiation oncology professionals.",
     images: ["/og-image.png"],
   },
@@ -53,8 +53,8 @@ export const metadata: Metadata = {
     canonical: "https://romasbrief.vercel.app",
     types: {
       "application/rss+xml": [
-        { url: "/feeds/daily-brief.xml", title: "ROMAS Brief Daily RSS" },
-        { url: "/feeds/podcast.xml", title: "ROMAS Brief Podcast RSS" },
+        { url: "/feeds/daily-brief.xml", title: "ROMAS Wire Daily RSS" },
+        { url: "/feeds/podcast.xml", title: "ROMAS Wire Podcast RSS" },
       ],
     },
   },
@@ -113,7 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   "@type": "WebSite",
                   "@id": "https://romasbrief.vercel.app/#website",
                   url: "https://romasbrief.vercel.app",
-                  name: "ROMAS Brief",
+                  name: "ROMAS Wire",
                   description: "Signal-scored clinical intelligence for radiation oncology professionals.",
                   publisher: { "@id": "https://romasbrief.vercel.app/#organization" },
                   potentialAction: [{
@@ -125,7 +125,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {
                   "@type": "Organization",
                   "@id": "https://romasbrief.vercel.app/#organization",
-                  name: "ROMAS Brief",
+                  name: "ROMAS Wire",
                   url: "https://romasbrief.vercel.app",
                   logo: { "@type": "ImageObject", url: "https://romasbrief.vercel.app/logo.png", width: 512, height: 512 },
                   sameAs: ["https://twitter.com/romasbrief", "https://linkedin.com/company/romasbrief"],
@@ -188,7 +188,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link
                 href="/"
                 className="flex items-center gap-2.5 flex-shrink-0 group"
-                aria-label="ROMAS Brief — Home"
+                aria-label="ROMAS Wire — Home"
               >
                 {/* Icon mark */}
                 <div
@@ -217,7 +217,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     className="font-black text-[17px] tracking-tight"
                     style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.035em", lineHeight: "1" }}
                   >
-                    ROMAS<span style={{ color: "var(--rb-accent)" }}>Brief</span>
+                    ROMAS<span style={{ color: "var(--rb-accent)" }}>Wire</span>
                   </span>
                   <span
                     className="text-[9px] font-semibold tracking-widest uppercase mt-0.5 hidden sm:block"
@@ -348,7 +348,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </div>
                   <div className="flex flex-col leading-none">
                     <span className="font-black text-base tracking-tight" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.03em" }}>
-                      ROMAS<span style={{ color: "var(--rb-accent)" }}>Brief</span>
+                      ROMAS<span style={{ color: "var(--rb-accent)" }}>Wire</span>
                     </span>
                     <span className="text-[9px] font-semibold tracking-widest uppercase mt-0.5" style={{ color: "var(--rb-text-tertiary)", letterSpacing: "0.12em" }}>
                       Radiation Oncology Multi-Agentic System
@@ -495,7 +495,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             >
               <div className="flex flex-wrap items-center gap-4">
                 <p className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
-                  © {new Date().getFullYear()} ROMAS Brief · AlienNova Inc.
+                  © {new Date().getFullYear()} ROMAS Wire · AlienNova Inc.
                 </p>
                 <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
                   Not medical advice. For educational purposes only.

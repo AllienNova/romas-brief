@@ -1,5 +1,5 @@
 /**
- * cdn-purge-watchdog · ROMAS Brief
+ * cdn-purge-watchdog · ROMAS Wire
  * T-211 / R-211 full implementation
  *
  * Runs every minute via Cloudflare Cron Triggers.
@@ -343,7 +343,7 @@ async function runWatchdog(env: Env): Promise<void> {
         await sendEmailAlert(
           env.RESEND_API_KEY,
           env.ALERT_EMAIL,
-          `[ROMAS Brief] CDN Purge SLA Breach — Revocation ${revocation.id}`,
+          `[ROMAS Wire] CDN Purge SLA Breach — Revocation ${revocation.id}`,
           alertMsg,
         );
       }

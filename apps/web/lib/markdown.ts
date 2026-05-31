@@ -1,5 +1,5 @@
 // =====================================================================
-// apps/web/lib/markdown.ts · ROMAS Brief reader
+// apps/web/lib/markdown.ts · ROMAS Wire reader
 // SHIP-07 (ship-execution-plan §Wave 3 → pulled to Wave 2 with reader wiring).
 // Minimal, security-first markdown → HTML for article `body_md`.
 //

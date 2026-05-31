@@ -1,12 +1,12 @@
-# AGENT.md — ROMAS Brief Agent Operating Manual
+# AGENT.md — ROMAS Wire Agent Operating Manual
 
-> This is the **operating manual** for any AI agent working on ROMAS Brief. Read `CLAUDE.md` first for project context. Read this for **how to operate**: orchestration, invariants, escalation paths, and the daily production loop.
+> This is the **operating manual** for any AI agent working on ROMAS Wire. Read `CLAUDE.md` first for project context. Read this for **how to operate**: orchestration, invariants, escalation paths, and the daily production loop.
 
 ---
 
 ## 1. Operating principles
 
-1. **Trust market posture.** ROMAS Brief sells clinical intelligence to clinicians. One sloppy claim, one mispronounced drug, one un-cited number can erode trust irreversibly. Every output is treated as if it ships under Kimal's name.
+1. **Trust market posture.** ROMAS Wire sells clinical intelligence to clinicians. One sloppy claim, one mispronounced drug, one un-cited number can erode trust irreversibly. Every output is treated as if it ships under Kimal's name.
 2. **Primary source or no ship.** If you cannot link the primary source, the item does not enter the queue.
 3. **Interpretation is labeled.** ROMAS Insight and ROMAS Take are always labeled as interpretation, never as fact.
 4. **Embargoes are sacred.** An embargoed item never enters the publish queue. It lives in the embargo hold list with a hard date.
@@ -211,7 +211,7 @@ Append every locked decision here. Do not edit prior entries.
 | 2026-05-11 | Podcast launches Day 14 alongside web | Kimal | Launch Plan v1.1 |
 | 2026-05-11 | 4-tier audio architecture locked | Kimal | Audio Architecture v1.0 |
 | 2026-05-11 | Audio QA gate is non-negotiable | Kimal | Audio Architecture v1.0 |
-| 2026-05-12 | ROMAS Brief agent kit (CLAUDE.md + AGENT.md + skills + agents) created | Kimal + Computer | This file |
+| 2026-05-12 | ROMAS Wire agent kit (CLAUDE.md + AGENT.md + skills + agents) created | Kimal + Computer | This file |
 | 2026-05-14 | Cycle-3 Q2: All 4 audio tiers launch Day 1 (supersedes "Day 14 podcast" from 2026-05-11) | Kimal verbal | SSOT §3 row 14 |
 | 2026-05-14 | Cycle-3 Q2-A: Day 1 ships full Audio Podcast episode 001 (30–60 min) | Kimal verbal | SSOT §3 row 14 |
 | 2026-05-14 | Cycle-3 Q3: Email split — Beehiiv (newsletter, canonical subscriber list) + Resend (transactional only) | Kimal verbal | ADR-0007 cycle-3; SSOT §3 row 15 |

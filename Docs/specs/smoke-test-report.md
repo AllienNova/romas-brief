@@ -1,11 +1,11 @@
 ---
-title: Smoke Test Report — ROMAS Brief
+title: Smoke Test Report — ROMAS Wire
 version: 1.0.0
 date: 2026-05-14
 status: SKIPPED — no code to smoke test
 ---
 
-# Smoke Test Report — ROMAS Brief
+# Smoke Test Report — ROMAS Wire
 
 ## Verdict
 

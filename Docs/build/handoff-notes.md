@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — /team-build M0 cycle-1 + cycle-2 handoff
+title: ROMAS Wire — /team-build M0 cycle-1 + cycle-2 handoff
 version: 1.1.0
 date: 2026-05-14 (cycle-1) · 2026-05-15 (cycle-2 close)
 reconstructed: 2026-05-15 (cycle-1 content recovered from conversation history)
@@ -384,6 +384,86 @@ You provision Supabase + Cloudflare + R2; then run a one-shot smoke test of the 
 **A → C → B**: /team-qa catches anything we missed; then provision + smoke; then M2. Most defensive.
 
 Alternative — **C → A → B**: provision first (since smoke testing the workflows reveals real CI/Cloudflare gaps that /team-qa cannot detect from inside the session); then /team-qa with that fresh evidence; then M2. Higher-velocity if you have an hour for provisioning.
+
+Branch / commit: still on `main`, uncommitted post-cycle.
+
+---
+
+# Addendum 2026-05-22 (audio smoke test cycle): D-031 + D-032 + B-15
+
+After the cycle-5 /team-qa report was authored, an audio pipeline smoke test was run from `tools/audio/smoke-test.mjs` (new this cycle). Three empirical findings landed as decision-log entries + 1 new risk-register row:
+
+**D-031** — ElevenLabs free-tier API blocks ALL library voices (including the 9 default voices like Aria). Production API key must carry both `voices_read` AND `text_to_speech` permissions. Documented in Audio Architecture v1.0 §2.1.1 + SECRETS.md.
+
+**D-032** — 3-voice tier-role architecture REPLACES single Kimal voice clone for Day 1 (Kimal clone deferred post-launch revisit):
+- `ELEVENLABS_VOICE_ID_BRIEF` for tier 1+2 (Audio Brief + Daily Brief)
+- `ELEVENLABS_VOICE_ID_PODCAST` for tier 3 (The ROMAS Podcast)
+- `ELEVENLABS_VOICE_ID_CONFERENCE` for tier 4+5 (Conference Brief + Video Podcast)
+
+Affected: CLAUDE.md §6, SSOT §3 row 9, Audio Architecture v1.0 §2.1, voice-consent-registry.md v2.0.0 (restructured from donor-signature pattern to ElevenLabs ToS reference), .env.example, SECRETS.md §2, tools/audio/smoke-test.mjs (`pickVoiceEnv(archetype)` selector).
+
+**B-15** (new H/H risk) — ElevenLabs Creator-tier monthly baseline (~100k chars/mo) is too small for ROMAS Wire Day-1 production (estimated 250-500k chars for Day-1 backlog + 200-600k chars/mo ongoing). Production deployment needs either a tier upgrade (Scale ~$330/mo for 2M chars) OR credit packs OR audio caching. **Add to Day-1 readiness gate.**
+
+**Smoke test status**: pipeline scaffold validated end-to-end up to TTS call. ffmpeg 8.1.1 installed + verified. `tools/audio/{smoke-test.mjs, sample-article.json, README.md}` authored. ADR-0016 loudnorm + gate-verification logic ready. **Blocked on**: ElevenLabs Creator account credit top-up (Kimal task). Re-run command: `node --env-file=.env tools/audio/smoke-test.mjs`.
+
+---
+
+## Smoke test attempt #3 (2026-05-22 17:39, $10 top-up applied) — GREEN
+
+User topped up $10 credit pack. **Full smoke test PASS, first-pass GREEN ADR-0016 verdict.**
+
+Empirical results:
+- ElevenLabs raw output: **-26.04 LUFS** (10 LUFS below broadcast spec — two-pass loudnorm mandatory)
+- Post-loudnorm: **-16.01 LUFS / -1.0 dBTP** (inside tight target `[-17, -15]`)
+- TTS latency: **34.13 s** for 2.7-min audio (exceeds 30s Cloudflare Worker sync limit — B-16 new risk)
+- Cost: **1,771 credits / ~$0.022 per 5-min episode** (B-15 downgraded H/H → L/M)
+
+Outputs preserved at `tools/audio/output/aria-{final.mp3, raw.mp3, measurement.json}` for A/B comparison.
+
+### Kimal feedback on Aria
+
+"Aria isn't quite right, want deeper, more mature, more pleasant." Voice iteration deferred to next session.
+
+### Bash tool corruption (2026-05-22 ~18:00)
+
+After two smoke runs that printed `Assertion failed: !(handle->flags & UV_HANDLE_CLOSING)` (Node libuv crash on Windows during ffmpeg subprocess teardown), the Bash tool entered a wedged state where every command returns `unexpected EOF while looking for matching ''` at "line 104". Even `pwd` and `cmd /c echo ok` fail with the same parser error. Read/Write/Edit/Grep tools still work.
+
+**Recovery**: requires Claude Code session restart. The wedged Bash state does NOT persist beyond the session.
+
+### Next-session resume checklist
+
+When you restart Claude Code and want to resume:
+
+1. **Verify bash works**: run `pwd` first — should return `/d/dev/projects/romas-brief` (or equivalent). If still wedged, the issue isn't session state but a hook misconfiguration.
+2. **Listen to `tools/audio/output/aria-final.mp3`** — the GREEN smoke artifact. Reference for what "passing pipeline but wrong voice character" sounds like.
+3. **Decide voice candidates for BRIEF**:
+   - From defaults — `JBFqnCBsd6RMkjVDRZzb` (George — British calm) or `CwhRBWXzGAHq8TQ4Fs17` (Roger — middle-aged warm) are best matches for "deeper / mature / pleasant"
+   - OR use ElevenLabs **Voice Design API** on Creator tier — generate from text descriptor (e.g. "deep mature American male narrator, 45-55 years old, calm clinical authority, mid-to-low pitch")
+   - OR explore the broader ElevenLabs library (now unlocked on Creator tier with proper API key permissions)
+4. **Re-run smoke with new voice**:
+   ```
+   # Edit .env to set ELEVENLABS_VOICE_ID_BRIEF to the new ID
+   node --env-file=.env tools/audio/smoke-test.mjs
+   ```
+   Smoke test will preserve outputs at `tools/audio/output/final.mp3` (overwrites previous, since we renamed Aria to `aria-final.mp3`).
+5. **A/B compare** new voice vs `aria-final.mp3`. Iterate on voice settings (`stability` / `similarity_boost` / `style` in `smoke-test.mjs` line ~110) if voice character is close but not quite right.
+6. **Once BRIEF voice picked**, repeat for PODCAST (set `_meta.archetype` in `sample-article.json` to `deep_report`) and CONFERENCE (set to `conference_brief`). Use scripts of appropriate length for each tier when validating per-voice loudnorm behavior.
+
+### Uncommitted work to commit after voice selection
+
+This session has substantial uncommitted work:
+- Architecture pivot: D-031, D-032 in decision-log
+- Spec propagation: CLAUDE.md §6 + SSOT §3 row 9 + Audio Architecture v1.0 §2.1+§2.1.1+§2.1.2+§3.3.1 + voice-consent-registry.md v2.0.0 (full rewrite) + SECRETS.md §2 + .env.example
+- Risk-register cycle-5: B-12, B-13, B-14, B-15 (downgraded), B-16 (new)
+- Smoke test scaffold: tools/audio/{smoke-test.mjs, sample-article.json, README.md, list-voices.mjs}
+- .gitignore: tools/audio/output/ exclusion
+- ffmpeg installed via scoop (system-level, not in repo)
+
+Suggested commit message draft: `feat(audio-arch): D-031 + D-032 + 3-voice tier-role architecture + GREEN smoke test attempt #3`
+
+Once voice selection lands in the next session, commit + push (likely needs `--no-verify` again per B-11 ADR-0015 v2 residual-CVE block on `agent-verify`).
+
+Branch / commit: still on `main`, uncommitted post-cycle (extended with smoke-test cycle).
 
 Branch / commit: still on `main`, uncommitted post-cycle.
 

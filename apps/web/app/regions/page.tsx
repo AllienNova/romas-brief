@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Regions index page
+ * ROMAS Wire — Regions index page
  * Lists all 8 regions with article counts and links.
  */
 import Link from "next/link";

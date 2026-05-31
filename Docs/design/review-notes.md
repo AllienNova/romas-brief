@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Design Self-Review
+title: ROMAS Wire — Design Self-Review
 version: 1.0.0
 date: 2026-05-15
 phase: D15 (self-review before Design Savage gate)

@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Consolidated Ship-to-Deployment Execution Plan
+title: ROMAS Wire — Consolidated Ship-to-Deployment Execution Plan
 version: 1.2.0
 date: 2026-05-31
 status: ACTIVE — supersedes scattered task tracking for launch sequencing
@@ -16,7 +16,7 @@ sources_consolidated:
 owner: Kimal Honour Djam
 ---
 
-# ROMAS Brief — Consolidated Ship-to-Deployment Execution Plan
+# ROMAS Wire — Consolidated Ship-to-Deployment Execution Plan
 
 > **One authoritative ordered backlog.** Every prior task ID (T-NNN, B-XX, RC-NN) maps to a `SHIP-NN` line below or to the deferred list (§6). When `tasks.md`, `MASTER_IMPLEMENTATION_PLAN.md`, or `delivery-plan.md` disagree with this file on launch sequencing, **this file wins**. Status is reconciled against the working tree at `HEAD=95f6111` (refreshed 2026-05-31).
 
@@ -49,9 +49,11 @@ owner: Kimal Honour Djam
 | Ops (SLO/alerting/runbook) | none (Sentry in `.env`, unwired) | ❌ SHIP-26 open (AUTO; live alert needs P-08) |
 | CI on `main` (GitHub Actions) | **never executed** — `startup_failure` every run since 2026-05-22 (Free-org + private-repo billing, P-00/R-C7-8). lint+typecheck+build+audit all **green LOCALLY** via `agent-verify`. | ❌ **#1 launch gate** — no GitHub-side verification or deploy until P-00 |
 
-## 1b. Launch-date reality (added 2026-05-31) — DECISION REQUIRED (Q-A)
+## 1b. Launch-date reality — Q-A DECIDED 2026-05-31: full launch, target ~2026-07-14
 
-A **full Day-1-spec launch on 2026-06-07 (the stated "1 week away") is not achievable.** Two independent non-code constraints each exceed one week by 5–7×:
+> **DECISION (Kimal, 2026-05-31): Option A — hold the FULL launch.** Original "1 week" (June 7) is dropped; pushed ~1 week beyond the ~July-7 floor → **target ~2026-07-14** (full 500-article scaffold + all editions + 4 audio tiers + SSOT §12.8 gate). The **8-week content ramp is the binding pole** and may extend the date to ~07-21. Product also **renamed from `ROMAS Brief` → ROMAS Wire** (brand/display now; `@romas-brief` package identifiers + `romasbrief.com` domain + repo = gated phase 2). Engineering drains the AUTO queue (SHIP-05/18/19/26/28/29) in parallel; everything else is provisioning/content-gated (§4c).
+
+**Why June 7 was impossible** (retained for the record) — two independent non-code constraints each exceeded one week by 5–7×:
 
 1. **Content scaffold.** SSOT §12 / `500-Article-Launch-Plan.md:42-148` require **500 articles** Day-1; editorial approval throughput is **~10/day (6–14)** and is explicitly "the bottleneck." 500 ÷ 10 ≈ **8 weeks** (mid-July); even at 14/day ≈ 7 weeks. A 5-working-day window yields **~50–70 articles (~10–14%)**. The no-padding rule (`500-plan:204`) forbids faking the count. `ship-execution-plan:§4b` already computed Day-1 ≈ **2026-07-07**; ROMAS Wire ran a **5-week** runway minimum.
 2. **Provisioning + dead CI.** Zero production credentials are set; **GitHub Actions has never run** (P-00); the **audio pipeline has never been runtime-verified** (SHIP-27). See §4c critical path.

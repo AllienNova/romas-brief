@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Accessibility Audit
+title: ROMAS Wire — Accessibility Audit
 version: 1.0.0
 date: 2026-05-15
 target: WCAG 2.2 AA on every reader route · AAA on long-form body text · Lighthouse a11y ≥ 95
@@ -69,7 +69,7 @@ The v1.1 of this table claimed estimated values that were proven wrong by fresh 
 | 2.1.2 No keyboard trap | ✓ | All overlays Esc-close; modal focus trap returns to trigger |
 | 2.1.4 Character key shortcuts | ✓ | None used at launch (Audio keyboard shortcuts on Space/Arrow/Home only when AudioPlayer has focus) |
 | 2.4.1 Bypass blocks | ✓ | Skip link first focusable; visible on focus |
-| 2.4.2 Page titled | ✓ | `<title>ROMAS Brief — {date}` per route |
+| 2.4.2 Page titled | ✓ | `<title>ROMAS Wire — {date}` per route |
 | 2.4.3 Focus order | ✓ | Reading order: skip → nav → region → main → module 1 → 2 → … → footer |
 | 2.4.4 Link purpose | ✓ | All links carry descriptive text or aria-label; no "Click here" |
 | 2.4.6 Headings & labels | ✓ | H1 = today's lead headline; H2 per module |
@@ -89,7 +89,7 @@ The v1.1 of this table claimed estimated values that were proven wrong by fresh 
 ### Route 2 — Issue page `/issues/{date}`
 
 Same baseline as Route 1. Differences:
-- H1 = "ROMAS Brief — Issue #{N} — {long date}" (issue identification).
+- H1 = "ROMAS Wire — Issue #{N} — {long date}" (issue identification).
 - Lead article ArticleHeader nested as h2 within issue context.
 - Quick Hits backlog is `<ul>` with `<li>` items, each link descriptive.
 
@@ -129,7 +129,7 @@ Same baseline. Differences:
 ### Route 8 — Search `/search`
 
 Same baseline. Differences:
-- Search input has `aria-label="Search ROMAS Brief articles and audio episodes"`.
+- Search input has `aria-label="Search ROMAS Wire articles and audio episodes"`.
 - Results region has `aria-live="polite"`; announces "{N} results for {query}".
 - Tab switch is a `role="tablist"` with `aria-controls` linkage to the panels.
 

@@ -1,5 +1,5 @@
 -- =====================================================================
--- supabase/tests/enums_and_lengths.sql · ROMAS Brief
+-- supabase/tests/enums_and_lengths.sql · ROMAS Wire
 -- R-105 extension · cycle-1 P2-05 carry — enum + length CHECK coverage
 -- per /team-build cycle-1 critic F-P2-05 (articles.title<=90,
 -- claims.confidence, archetype/tier/status/category/content_type/

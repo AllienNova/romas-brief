@@ -1,4 +1,4 @@
-# ROMAS Brief — System Architecture
+# ROMAS Wire — System Architecture
 
 > Version: 2.0.0 · Date: 2026-05-28 · Owner: Kimal Honour Djam
 > ADRs for each tech-stack choice live in `docs/specs/adr/`.
@@ -267,7 +267,7 @@ Target: WCAG 2.2 AA across `apps/web` and `apps/cms`.
 - AudioPlayer: keyboard-navigable play/pause/seek, ARIA live regions for status changes.
 - Audio status colors (`--rb-audio-published`, `--rb-audio-pending`, `--rb-audio-skipped`) must meet 4.5:1 contrast ratio against background.
 - `design-system-keeper` subagent owns accessibility compliance gate.
-- Sponsor firewall: no sponsor element within 32px of ROMAS Brief wordmark (visual + DOM distance check).
+- Sponsor firewall: no sponsor element within 32px of ROMAS Wire wordmark (visual + DOM distance check).
 
 ### Performance
 

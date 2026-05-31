@@ -1,5 +1,5 @@
 // =====================================================================
-// workers/email-canary/src/templates.test.ts · ROMAS Brief · SHIP-12
+// workers/email-canary/src/templates.test.ts · ROMAS Wire · SHIP-12
 // node:test suite for the 4 transactional templates. Run with:
 //   node --experimental-strip-types --test src/templates.test.ts
 // =====================================================================
@@ -24,7 +24,7 @@ test("signup_confirm: renders subject/html/text with confirmUrl", () => {
   assert.ok(r.subject.length > 0 && r.subject.length <= 78);
   assert.ok(r.html.includes(url));
   assert.ok(r.text.includes(url));
-  assert.ok(r.html.includes("ROMAS Brief"));
+  assert.ok(r.html.includes("ROMAS Wire"));
   assert.ok(r.text.includes("— Kimal"));
   assertNoEmoji(r.subject, "signup_confirm subject");
   assertNoEmoji(r.html, "signup_confirm html");

@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Information Architecture
+title: ROMAS Wire — Information Architecture
 version: 1.0.0
 date: 2026-05-15
 authority: product-spec FR-013, FR-025..FR-029 (8 region surfaces · 11 category surfaces · 5 audience surfaces · 8 content-type filters · 8 homepage modules) · web-engineer agent §Key surfaces
@@ -85,7 +85,7 @@ Sponsor firewall: 32px below this nav bar before any sponsor block can render.
 ### Footer (persistent)
 
 ```
-ROMAS Brief — Radiation oncology, decoded daily.
+ROMAS Wire — Radiation oncology, decoded daily.
 
 Listen  ·  Subscribe  ·  About  ·  Sponsor program  ·  RSS feeds
 Audio Brief  ·  Daily Brief  ·  Podcast  ·  Conference Brief

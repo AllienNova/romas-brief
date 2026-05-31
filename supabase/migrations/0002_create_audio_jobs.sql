@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0002_create_audio_jobs.sql
--- T-104 (MIP §B.1) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-16
+-- T-104 (MIP §B.1) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-16
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql lines 130-178
 -- Anchors: SSOT v1.2.0 §4 (4-tier audio + Tier 5 video), §7 (state
 --          machines, 5-condition publish gate), §2 rule 6 (inviolable

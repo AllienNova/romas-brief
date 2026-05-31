@@ -3,7 +3,7 @@ name: friday-read-format
 description: The Friday ROMAS Read deeper-voice issue — sub-rubric rotation, structure, length, voice calibration, sign-off, audio handoff. Load every Thursday / Friday when producing the Friday issue.
 ---
 
-# ROMAS Brief — The Friday ROMAS Read
+# ROMAS Wire — The Friday ROMAS Read
 
 ## Purpose
 

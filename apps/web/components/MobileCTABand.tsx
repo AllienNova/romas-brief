@@ -48,14 +48,14 @@ export default function MobileCTABand() {
         boxShadow: "0 -2px 16px rgba(0,0,0,0.18)",
       }}
       role="complementary"
-      aria-label="Subscribe to ROMAS Brief"
+      aria-label="Subscribe to ROMAS Wire"
     >
       <a
         href="https://romasbrief.beehiiv.com/subscribe"
         target="_blank"
         rel="noopener noreferrer"
         className="flex-1 text-center text-sm font-semibold text-white truncate"
-        aria-label="Subscribe to ROMAS Brief — free for qualified clinicians"
+        aria-label="Subscribe to ROMAS Wire — free for qualified clinicians"
       >
         Subscribe free — clinical intelligence daily
       </a>

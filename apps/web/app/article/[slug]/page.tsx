@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Article Detail Page (FR-031)
+ * ROMAS Wire — Article Detail Page (FR-031)
  * Server component. ISR-friendly (revalidate 120s).
  * Uses mock data when Supabase is not provisioned.
  */

@@ -12,7 +12,7 @@
 
 ## Context
 
-ROMAS Brief produces audio content across four distinct formats with different cadences, audiences, and distribution needs:
+ROMAS Wire produces audio content across four distinct formats with different cadences, audiences, and distribution needs:
 
 | Tier | Format | Cadence | Launch (cycle-3 lock 2026-05-14) |
 |---|---|---|---|
@@ -66,7 +66,7 @@ Rejected. Per-article feeds cannot be listed in podcast directories (Apple Podca
 
 ### Single feed split by subscription tier (paid/free)
 
-Not applicable at launch. ROMAS Brief has no paid-gated content at launch. If a paid tier is introduced, a subscriber-authenticated feed variant may be warranted — that would be a new ADR, not a change to this one.
+Not applicable at launch. ROMAS Wire has no paid-gated content at launch. If a paid tier is introduced, a subscriber-authenticated feed variant may be warranted — that would be a new ADR, not a change to this one.
 
 ---
 
@@ -81,7 +81,7 @@ Not applicable at launch. ROMAS Brief has no paid-gated content at launch. If a 
 
 **Negative**
 - Four feed files to validate and maintain. A `workers/rss-publisher` bug affects all four unless per-tier tests cover each.
-- Listeners who want all content must subscribe to multiple feeds. No aggregated "everything ROMAS Brief" feed exists — intentional but worth documenting.
+- Listeners who want all content must subscribe to multiple feeds. No aggregated "everything ROMAS Wire" feed exists — intentional but worth documenting.
 - Conference Brief feed is inactive between conferences; podcast apps may flag it as stale if no episodes publish for extended periods. Mitigation: publish a "season pause" episode or update `<lastBuildDate>` periodically.
 
 **Neutral**

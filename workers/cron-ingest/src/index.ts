@@ -1,5 +1,5 @@
 /**
- * cron-ingest · ROMAS Brief
+ * cron-ingest · ROMAS Wire
  * T-115 full implementation
  *
  * Runs on three-edition schedule per SSOT §3 row 16:

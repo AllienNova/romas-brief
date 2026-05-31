@@ -1,9 +1,9 @@
 ---
 name: embargo-handling
-description: Embargo discipline for ROMAS Brief — detection, hold list management, release workflow, conference-mode posture. Load any time an item carries an embargo or might.
+description: Embargo discipline for ROMAS Wire — detection, hold list management, release workflow, conference-mode posture. Load any time an item carries an embargo or might.
 ---
 
-# ROMAS Brief — Embargo Handling
+# ROMAS Wire — Embargo Handling
 
 ## Posture
 

@@ -3,7 +3,7 @@ info:
   title: Resend Email (derived contract)
   version: 1.0.0
   description: |
-    Issue email + transactional email delivery for ROMAS Brief.
+    Issue email + transactional email delivery for ROMAS Wire.
     Used by publish-time email worker (or apps/cms server action in M3).
 servers:
   - url: https://api.resend.com
@@ -22,7 +22,7 @@ paths:
               type: object
               required: [from, to, subject]
               properties:
-                from: { type: string, description: "ROMAS Brief <brief@romas.health>" }
+                from: { type: string, description: "ROMAS Wire <brief@romas.health>" }
                 to:
                   oneOf:
                     - type: string

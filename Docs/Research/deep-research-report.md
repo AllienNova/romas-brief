@@ -1,10 +1,10 @@
 # Executive Summary  
 
-Radiation Oncology Multi-Agent System (ROMAS) can become the premier **clinical intelligence platform for radiation oncology** by building “ROMAS Brief” – a daily digest and AI-driven knowledge engine – as the media and trust layer for ROMAS. This approach mirrors successful models like *The Imaging Wire*, which delivers radiology news in concise briefs (e.g. “Healthcare can be complicated. Your radiology news shouldn’t be.”【2†L8-L11】). However, ROMAS can go much further: leveraging AI summarization, a vector memory of oncology knowledge, and multi-agent orchestration, it can *proactively filter, interpret, and distribute* radiation oncology intelligence across email, web, podcasts, and chat.
+Radiation Oncology Multi-Agent System (ROMAS) can become the premier **clinical intelligence platform for radiation oncology** by building “ROMAS Wire” – a daily digest and AI-driven knowledge engine – as the media and trust layer for ROMAS. This approach mirrors successful models like *The Imaging Wire*, which delivers radiology news in concise briefs (e.g. “Healthcare can be complicated. Your radiology news shouldn’t be.”【2†L8-L11】). However, ROMAS can go much further: leveraging AI summarization, a vector memory of oncology knowledge, and multi-agent orchestration, it can *proactively filter, interpret, and distribute* radiation oncology intelligence across email, web, podcasts, and chat.
 
-Key insights from industry review include: professional organizations like ASTRO, AAPM and ESTRO produce authoritative guidelines and press releases【8†L253-L262】【6†L84-L92】 but lack the agility and digestibility of a modern media platform. Vendor sites (e.g. Varian, Elekta, RaySearch, Radformation, MIM/GE, Siemens) publish press releases and blogs on new products and partnerships【18†L173-L181】【35†L87-L94】, but these are infrequent and technical. Clinicians have no single source that curates AI, physics, reimbursement, and clinical trials news in one place. ROMAS Brief fills that gap by aggregating data from PubMed, arXiv, FDA/OpenFDA, vendor feeds, conference abstracts, and more, then using AI agents to rank, summarize, and contextualize it. This builds a powerful funnel: a free, high-value newsletter and chatbot drive audience and trust, which later converts clinicians into ROMAS platform users.
+Key insights from industry review include: professional organizations like ASTRO, AAPM and ESTRO produce authoritative guidelines and press releases【8†L253-L262】【6†L84-L92】 but lack the agility and digestibility of a modern media platform. Vendor sites (e.g. Varian, Elekta, RaySearch, Radformation, MIM/GE, Siemens) publish press releases and blogs on new products and partnerships【18†L173-L181】【35†L87-L94】, but these are infrequent and technical. Clinicians have no single source that curates AI, physics, reimbursement, and clinical trials news in one place. ROMAS Wire fills that gap by aggregating data from PubMed, arXiv, FDA/OpenFDA, vendor feeds, conference abstracts, and more, then using AI agents to rank, summarize, and contextualize it. This builds a powerful funnel: a free, high-value newsletter and chatbot drive audience and trust, which later converts clinicians into ROMAS platform users.
 
-**Key components and plan:** We propose a two-part system: (1) **ROMAS Brief (the public media layer)** – a mobile-friendly news portal, daily/weekly emails, AI-generated podcasts, and social media – delivering “7-minute briefs” of top radiation oncology developments; and (2) **ROMAS Intelligence Engine** – a modular AI backend that scrapes sources, normalizes content into structured data, and runs specialized agents (literature, conference, FDA, AI startup, reimbursement, guidelines, vendor). LangGraph (from LangChain) is recommended for the agent orchestration framework due to its durable, stateful workflows and human-in-the-loop capabilities【26†L100-L107】. OpenAI’s Codex can assist with writing and maintaining the codebase【34†L657-L664】, while Anthropic’s Claude models (e.g. *claude-opus-4.7* for deep reasoning) will be the primary LLMs for summarization and analysis【32†L213-L221】. Output formats (newsletter, web articles, podcast scripts, chatbot replies) are templated for consistency. A human QA/editor team supervises all content initially to prevent hallucinations or errors.
+**Key components and plan:** We propose a two-part system: (1) **ROMAS Wire (the public media layer)** – a mobile-friendly news portal, daily/weekly emails, AI-generated podcasts, and social media – delivering “7-minute briefs” of top radiation oncology developments; and (2) **ROMAS Intelligence Engine** – a modular AI backend that scrapes sources, normalizes content into structured data, and runs specialized agents (literature, conference, FDA, AI startup, reimbursement, guidelines, vendor). LangGraph (from LangChain) is recommended for the agent orchestration framework due to its durable, stateful workflows and human-in-the-loop capabilities【26†L100-L107】. OpenAI’s Codex can assist with writing and maintaining the codebase【34†L657-L664】, while Anthropic’s Claude models (e.g. *claude-opus-4.7* for deep reasoning) will be the primary LLMs for summarization and analysis【32†L213-L221】. Output formats (newsletter, web articles, podcast scripts, chatbot replies) are templated for consistency. A human QA/editor team supervises all content initially to prevent hallucinations or errors.
 
 **Implementation:** We will iteratively build this in a 5-week launch sprint. Week 1 focuses on brand (e.g. “ROMAS Wire” or “RadOnc Wire”) and the newsletter MVP (landing page, signup via Beehiiv, first email). Weeks 2–3 add automated ingestion (PubMed API, arXiv RSS, FDA 510k feeds, CMS/NCCI bulletins, ASTRO/AAPM updates, vendor RSS) and basic agents for research and FDA news. Weeks 4–5 deploy the LangGraph workflows, vector database (pgvector/Postgres or Pinecone) for memory, and connectivity (SMS/WhatsApp via Twilio, podcast via ElevenLabs, web chat). By launch, we will have a steady stream of content and early subscribers (drawn from existing email lists) as a ready user base. A detailed roadmap with milestones, staffing (AI engineer, web developer, editor, compliance manager), and human-in-loop checkpoints is provided below.
 
@@ -60,9 +60,9 @@ In summary, our review shows:
 - **Societies** publish in-depth but infrequently【6†L84-L92】【8†L253-L262】.  
 - **Vendors** and **literature repositories** are rich in content but not tailored or summarized.  
 
-**Opportunity:** ROMAS Brief will bridge the gap by aggregating and interpreting the noise. As one analysis said: *“If you become the trusted source of industry intelligence first, software adoption becomes dramatically easier later.”* (Imaging Wire’s strategy). ROMAS is well-positioned to own “radiation oncology intelligence.”  
+**Opportunity:** ROMAS Wire will bridge the gap by aggregating and interpreting the noise. As one analysis said: *“If you become the trusted source of industry intelligence first, software adoption becomes dramatically easier later.”* (Imaging Wire’s strategy). ROMAS is well-positioned to own “radiation oncology intelligence.”  
 
-# Architecture Overview: ROMAS Brief & Intelligence Engine  
+# Architecture Overview: ROMAS Wire & Intelligence Engine  
 
 ```mermaid
 flowchart LR
@@ -229,7 +229,7 @@ Below are recommended technologies, and brief pros/cons. We favor open-source, P
 
 ```mermaid
 gantt
-    title ROMAS Brief Launch Roadmap (Weeks 1–5)
+    title ROMAS Wire Launch Roadmap (Weeks 1–5)
     dateFormat  YYYY-MM-DD
     section Week 1 (Basics)
     Brand & Domain Setup       :a1, 2026-05-10, 1d
@@ -267,7 +267,7 @@ Throughout, **human-in-loop** processes include daily editorial review and weekl
 # Content Pipeline and Editorial Plan  
 
 ## Daily/Weekly Structure  
-- **Daily Newsletter (“ROMAS Brief”):** ~5-minute read. Sections:  
+- **Daily Newsletter (“ROMAS Wire”):** ~5-minute read. Sections:  
   - *Lead Story:* Major breaking news (e.g. “ASTRO issues new guideline” or “FDA clears AI workflow”) – ~150 words with “why it matters.”  
   - *AI in RadOnc:* 1–2 updates on AI tools/automation (one-liners).  
   - *Paper of the Day:* Summary of one important recent paper (with source).  
@@ -445,7 +445,7 @@ Each prompt is precisely formulated and tested for clarity. We will store prompt
 
 # Legal & Compliance  
 
-- **CAN-SPAM (Email):** Use double opt-in or at least an easy unsubscribe link in every email【6†L84-L92】. Ensure the “from” address is clear (e.g. “ROMAS Brief <newsletter@romas.com>”). Marketing content should be identified as such.  
+- **CAN-SPAM (Email):** Use double opt-in or at least an easy unsubscribe link in every email【6†L84-L92】. Ensure the “from” address is clear (e.g. “ROMAS Wire <newsletter@romas.com>”). Marketing content should be identified as such.  
 - **Privacy/PHI:** Do not include any patient-identifiable information. All data sources are public (published papers, FDA, etc.), so HIPAA risk is low. However, if repurposing anonymized case data (rare), ensure de-identification.  
 - **Copyright:** Do **not** reproduce article text. Agents must paraphrase summaries (use quotes only for very short phrases if needed). Always link to original source.  
 - **Model Hallucination:** Critical in healthcare. Mitigation: every fact from agents must either cite a reliable source or be flagged for review. We enforce a **“source-first”** rule in prompts (see OpenClaw example: “Always cite sources”【39†L79-L83】).  
@@ -514,7 +514,7 @@ In summary, **Anthropic Claude** (Opus 4.7/Sonnet) will handle most summarizatio
 
 # Conclusion  
 
-Building ROMAS Brief as an agentic news intelligence platform is both a **tactical marketing strategy and a product innovation**. By providing free, high-quality intelligence, ROMAS will amass a captive audience of radiation oncology professionals, making later clinical AI tool adoption vastly easier. The plan above, grounded in modern AI/agent frameworks and lean startup principles, sets a clear path to launch in one month. By prioritizing trust, quality, and consistency, ROMAS can become the go-to source of radiation oncology knowledge, effectively owning that media niche.
+Building ROMAS Wire as an agentic news intelligence platform is both a **tactical marketing strategy and a product innovation**. By providing free, high-quality intelligence, ROMAS will amass a captive audience of radiation oncology professionals, making later clinical AI tool adoption vastly easier. The plan above, grounded in modern AI/agent frameworks and lean startup principles, sets a clear path to launch in one month. By prioritizing trust, quality, and consistency, ROMAS can become the go-to source of radiation oncology knowledge, effectively owning that media niche.
 
 **Sources:** Insights are drawn from reviewing *The Imaging Wire* newsletter【2†L8-L11】, ASTRO/AAPM publications【8†L253-L262】【6†L84-L92】, and various industry press (RaySearch【18†L173-L181】, Radformation【35†L87-L94】, MIM/GE【37†L229-L237】) as well as documentation for agent frameworks and AI tools【26†L100-L107】【32†L213-L219】【34†L657-L664】【39†L60-L63】. 
 

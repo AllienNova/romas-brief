@@ -1,5 +1,5 @@
 # =====================================================================
-# deploy-migrations.yml · ROMAS Brief Supabase migration deploys + pgTAP
+# deploy-migrations.yml · ROMAS Wire Supabase migration deploys + pgTAP
 # R-106 (remediation-plan M1) · /team-build M1-completion cycle
 # Anchors: ADR-0002 (Supabase + RLS) · R-104 + R-105 (migrations +
 #   pgTAP) · supabase/migrations/0001..0011 · supabase/tests/*.sql ·

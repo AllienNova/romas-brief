@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Single Source of Truth
+title: ROMAS Wire — Single Source of Truth
 version: 1.2.0
 date: 2026-05-14
 owner: Kimal Honour Djam (president@aliennova.com)
@@ -8,7 +8,7 @@ audience: every Claude session, every team-build / team-qa run, every human cont
 cycles: 1 (initial) → 2 (critic fixes) → 3 (Kimal Q1/Q2/Q3 + email split + Tier 5 video) → 4 (launch posture §12) → 5 (worldwide rebalance + 3-edition + China) → 6 (LATAM LLM-translate)
 ---
 
-# ROMAS Brief — Single Source of Truth
+# ROMAS Wire — Single Source of Truth
 
 > When two documents disagree, **this file wins**. Update this file before resolving the conflict in any other doc. All decisions in this SSOT are either *Locked* (Kimal-approved) or *Hypothesis* (proposed default awaiting Kimal confirmation — flagged inline).
 
@@ -18,7 +18,7 @@ cycles: 1 (initial) → 2 (critic fixes) → 3 (Kimal Q1/Q2/Q3 + email split + T
 
 | Field | Value |
 |---|---|
-| Product name | **ROMAS Brief** (Now The RADONC WIRE) |
+| Product name | **ROMAS Wire** *(renamed from `ROMAS Brief` on 2026-05-31 — reverting to the original Wire name; brand/display done, code identifiers + `romasbrief.com` domain + repo = gated phase-2. A "RADONC WIRE" variant was floated earlier — NOT adopted; confirm with Kimal before any further name change.)* |
 | Position in ecosystem | Public media surface of **ROMAS Intelligence**, sitting under **ROMAS** (the parent ecosystem whose clinical OS is **ROMAS COS**) |
 | Primary tagline | **"Radiation oncology, decoded daily."** *(locked — CLAUDE.md §2, AGENT.md §13 line 205)* |
 | Secondary tagline | "Clinical intelligence for modern radiation oncology." *(use in pre-roll + about pages only — never as homepage)* |
@@ -27,7 +27,7 @@ cycles: 1 (initial) → 2 (critic fixes) → 3 (Kimal Q1/Q2/Q3 + email split + T
 | Sign-off | `— Kimal` (em-dash + first name, no surname) |
 | Audience | Radiation oncologists, medical physicists, dosimetrists, RT therapists, residents, oncology operators, RT industry |
 | Cadence | Mon–Fri daily (Friday = ROMAS Read) |
-| Retired brand | "ROMAS Wire" — **do not use in any new asset**. Three duplicate strategy files exist on disk and are scheduled for archive in M0-T-005 |
+| Retired brand | **"ROMAS Brief"** — reverted to ROMAS Wire 2026-05-31; **do not use "ROMAS Brief" in any new asset**. (The original `ROMAS-Wire-*` strategy files in `Docs/ARCHIVE/` are the predecessor — ROMAS Wire is now the canonical name again.) |
 
 ---
 
@@ -55,8 +55,8 @@ These six are inviolable. CLAUDE.md §4, AGENT.md §5, this file, and every oper
 | 5 | Subscriber count | **Hidden until 2,500.** Milestones: 2.5k / 5k / 10k / 25k. | Master Strategy v2.1 |
 | 6 | Audio tiers + Video tier | **LOCKED 2026-05-14 by Kimal.** **All four audio tiers (Audio Brief / Daily Brief / Audio Podcast / Conference Brief — all via ElevenLabs primary + PlayHT failover) launch Day 1.** First Audio Podcast episode cadence: **TBD pending Kimal Q2-A**. **New Tier 5 — Video Podcast with invited human guest — launches Day 60 (~2 months post-launch).** SUPERSEDES the prior Day-14 / Day-30-45 staggered hypothesis and CLAUDE.md §3 row 6 conflated wording. MASTER_IMPLEMENTATION_PLAN restructures M3/M4/M5/M6 accordingly: M2 expands to cover all 4 audio tiers from Day 1; new M6.5 covers Video Podcast scaffolding (video studio, guest booking, recording, editing, hosting, `video-podcast.xml`); product-spec FR-W-002 "video / livestream out of scope" is reversed for Tier 5 only. | Kimal verbal lock 2026-05-14 |
 | 7 | Email platform | **Resend + Beehiiv (split by function), LOCKED 2026-05-14 by Kimal**. Beehiiv = daily issue + Friday Read + podcast notifications (newsletter surface, free tier ≤2,500 subscribers matches SSOT row 5 threshold). Resend = transactional (signup confirmation, unsubscribe receipt, audio-revocation notices, password reset). Supabase `subscribers` table syncs with Beehiiv via webhooks. ADR-0007 restructured cycle-2. | Kimal verbal lock 2026-05-14 |
-| 8 | Sponsor firewall | **No sponsor logo within 32px of the ROMAS Brief wordmark.** | Master Strategy v2.1 |
-| 9 | Voice | ROMAS Clinical Narrator. ElevenLabs primary (`ELEVENLABS_ROMAS_VOICE_ID`), PlayHT failover (`PLAYHT_ROMAS_VOICE_ID`). | Audio Architecture v1.0 |
+| 8 | Sponsor firewall | **No sponsor logo within 32px of the ROMAS Wire wordmark.** | Master Strategy v2.1 |
+| 9 | Voice | **D-032 (2026-05-22)**: 3 ElevenLabs Creator-tier voices by tier role — `ELEVENLABS_VOICE_ID_BRIEF` (tier 1+2), `ELEVENLABS_VOICE_ID_PODCAST` (tier 3), `ELEVENLABS_VOICE_ID_CONFERENCE` (tier 4+5). PlayHT failover (`PLAYHT_ROMAS_VOICE_ID`). Kimal voice clone deferred post-launch. | Audio Architecture v1.0 §2.1 + D-032 |
 | 10 | Audio architecture | 4-tier lock (Audio Brief 5/7/10 min · Daily Brief 10-15 min · Podcast 30-60 min · Conference Brief 15-30 min) | Audio Architecture v1.0 |
 | 11 | Audio QA gate | Non-negotiable. Schema-enforced via `audio_publish_requires_qa` CHECK constraint (`.claude/skills/cms-schema.md:96-103`) | Audio Architecture v1.0 |
 | 12 | Loudness target | -16 LUFS integrated, -1 dBTP true peak. DB publish gate widened to -18 to -14 LUFS per ADR-0016; -16 ±1 LUFS production target enforced by audio-qa-reviewer agent (not at the DB). | Audio Architecture v1.0 + ADR-0016 |
@@ -66,7 +66,7 @@ These six are inviolable. CLAUDE.md §4, AGENT.md §5, this file, and every oper
 | 16 | **Three-edition publish strategy (locked 2026-05-14 by Kimal)** | Three publish times serving region morning windows: **APAC edition 22:00 UTC (prior-day)** for JST/AEDT/IST/CST · **EU/UK edition 06:00 UTC** for BST/CET/EEST · **Americas edition 11:00 UTC** for ET/CT/PT/BRT. Same canonical article inventory; per-edition homepage re-ranks by region tag. Beehiiv subscriber segmentation by `region` custom field drives delivery time. Audio reuse: same Audio Brief / Daily Brief / Podcast assets across editions (no triple production). | Kimal verbal 2026-05-14 |
 | 17 | **China posture (locked 2026-05-14 by Kimal)** | **Read-only NMPA + CSCO-RO ingest only.** No Chinese subscriber acquisition, no Beehiiv list serving China at launch (PIPL data-localization makes it expensive to serve correctly). Revisit at 10k global subscribers. Source citations to NMPA records honored per Rule 4. | Kimal verbal 2026-05-14 |
 | 18 | **LATAM editorial workflow (locked 2026-05-14 by Kimal)** | **LLM-translate via DeepL Pro primary + Claude verification on Hero/Strong bands.** Original-language (PT/ES) source URL preserved as `primary_source_url`. Article body in English. Mandatory non-removable footer: "Source originally in {Portuguese\|Spanish}; translated with editorial review." Verbatim quotes show original-language text in italic parens. ADR-0013 + `contracts/deepl.yaml`. | Kimal verbal 2026-05-14 |
-| 19 | **Repository separation (locked 2026-05-14 by Kimal)** | ROMAS Brief is its **own standalone git repository** at **`D:\dev\projects\romas-brief\`** (lowercase, hyphen, no spaces — matches `romasbrief.com` canonical). GitHub identity: **`AllienNova/romas-brief` (private)** — note `AllienNova` uses double-L spelling per the actual GitHub org (description "Building Things People Want — AI, Healthcare, Fintech, Education"). Separate from parent ROMAS COS monorepo at `D:\dev\projects\ROMAS\`. No cross-monorepo imports. `llm-orchestrator` lives at **`packages/llm-orchestrator/` inside ROMAS Brief monorepo** (authored fresh, not imported from parent ROMAS) — closes cycle-6 REL-010. ADR-0014. | Kimal verbal 2026-05-14 (`yes all`); casing patched 2026-05-15 M0c2 |
+| 19 | **Repository separation (locked 2026-05-14 by Kimal)** | ROMAS Wire is its **own standalone git repository** at **`D:\dev\projects\romas-brief\`** (lowercase, hyphen, no spaces — matches `romasbrief.com` canonical). GitHub identity: **`AllienNova/romas-brief` (private)** — note `AllienNova` uses double-L spelling per the actual GitHub org (description "Building Things People Want — AI, Healthcare, Fintech, Education"). Separate from parent ROMAS COS monorepo at `D:\dev\projects\ROMAS\`. No cross-monorepo imports. `llm-orchestrator` lives at **`packages/llm-orchestrator/` inside ROMAS Wire monorepo** (authored fresh, not imported from parent ROMAS) — closes cycle-6 REL-010. ADR-0014. | Kimal verbal 2026-05-14 (`yes all`); casing patched 2026-05-15 M0c2 |
 
 ---
 
@@ -244,6 +244,16 @@ published → revoked   (60s CDN withdrawal, post-publish kill switch only)
 
 If two documents disagree and neither cites the other, **assume the SSOT is right and fix the divergent doc**. Do not propagate the divergence.
 
+**Consolidation (2026-05-31): this SSOT is THE single planning source of truth.** The planning docs below are **subordinate** — each carries a banner pointing here. Read them for detail, but status/decisions/dates here win:
+
+| Subordinate doc | Owns (detail only) |
+|---|---|
+| `specs/ship-execution-plan.md` | SHIP-NN backlog + per-task status + critical path |
+| `ROMAS-Brief-500-Article-Launch-Plan.md` | content-ramp schedule + 500-article distribution detail |
+| `FOUNDERS-BOARD.md` | Kimal provisioning items (P-NN) with steps/links |
+| `specs/deployment-plan.md` | deploy/runbook detail |
+| `MASTER_IMPLEMENTATION_PLAN.md` · `specs/delivery-plan.md` · `specs/remediation-plan.md` · `specs/test-qa-plan.md` · `tasks.md` | historical/working detail — defer to SSOT + ship-plan |
+
 ---
 
 ## 10. Open questions awaiting Kimal sign-off (hypothesis resolutions)
@@ -283,7 +293,11 @@ A daily issue is "done" when:
 
 ## 12. Launch posture — Day 1 (canonical, per Launch Plan v1.1 §2–§4)
 
-ROMAS Brief launches with **500 pre-produced, pre-published articles** + **~50 pre-mastered audio episodes** as a credibility scaffold. Pre-launch production ramp: **8 weeks ending Day 1** (Launch Plan §3). Calendar: started 2026-05-12 (W-8); Day 1 ≈ **2026-07-07** *(hypothesis — confirm with Kimal; derived from Launch Plan §3 weekly schedule)*.
+ROMAS Wire launches with **500 pre-produced, pre-published articles** + **~50 pre-mastered audio episodes** as a credibility scaffold. Pre-launch production ramp: **8 weeks ending Day 1** (Launch Plan §3). Calendar: started 2026-05-12 (W-8); **Day 1 ≈ 2026-07-14** *(Q-A DECIDED 2026-05-31 — Kimal chose the FULL launch and pushed ~1 week from the ~07-07 floor; the 8-week content ramp is the binding pole and may extend to ~07-21)*.
+
+> **Product renamed from `ROMAS Brief` → ROMAS Wire** (2026-05-31) — brand/display done; `@romas-brief` package identifiers + `romasbrief.com` domain + GitHub repo = gated phase-2 (rename at deploy/SHIP-31 with the `romaswire.com` domain decision).
+>
+> **Engineering status (HEAD 95f6111): Waves 1–4 complete** — reader live on Supabase, six-axis scorer, CMS audio-QA gate, Beehiiv+Resend workers, full WCAG-AA a11y, AudioPlayer, perf/Plausible (see `ship-execution-plan.md §1`). Remaining = Wave-5 **provisioning + the 8-week content ramp** (non-code). CI on `main` has never run (P-00 billing). **The date is gated by content + provisioning, NOT engineering.**
 
 ### 12.1 Day-1 content scale
 
@@ -358,7 +372,7 @@ If Kimal intends a different breakdown (e.g., more Tier 3 Podcasts, fewer Tier 1
 | W-3 | 2026-06-16 → 2026-06-22 | 75 | 350 | Reimbursement deep-dives + Resident education |
 | W-2 | 2026-06-23 → 2026-06-29 | 80 | 430 | International coverage push (APAC + Europe + LATAM/MENA) |
 | W-1 | 2026-06-30 → 2026-07-06 | 70 | 500 | Long Takes, hero stories, polish, signal-score recalibration |
-| **Day 1** | **2026-07-07** *(hypothesis)* | Daily flow begins | 500 + 5/day | ROMAS Brief goes live with the runbook |
+| **Day 1** | **2026-07-07** *(hypothesis)* | Daily flow begins | 500 + 5/day | ROMAS Wire goes live with the runbook |
 
 Daily editorial production rate during ramp: **6–14 articles/day** (Launch Plan §3 closing). Achievable because cron + 7 agents do discovery; drafts LLM-generated to 80% complete; human-finished. Editorial approval is the bottleneck.
 
@@ -375,7 +389,7 @@ Day 0 (24h before launch) verifies all 13 original Launch-Plan checklist items +
 
 | # | Check | Owner |
 |---|---|---|
-| 1 | 500 articles approved and queued in Beehiiv + ROMAS Brief web archive | editorial-director |
+| 1 | 500 articles approved and queued in Beehiiv + ROMAS Wire web archive | editorial-director |
 | 2 | All 11 categories show ≥minimum allocation populated | editorial-director |
 | 3 | All 8 regions show non-zero counts | editorial-director |
 | 4 | All 5+ audience filters resolve to ≥30 articles each | editorial-director |
@@ -392,7 +406,7 @@ Day 0 (24h before launch) verifies all 13 original Launch-Plan checklist items +
 | 15 | **All 4 audio RSS feeds valid + Tier 5 `video-podcast.xml` skeleton present** | rss-publisher |
 | 16 | **Beehiiv subscriber-list synced + reconciliation job green** (cycle-3 Q3) | web-engineer |
 | 17 | **`.env.example` + `SECRETS.md` complete + all Beehiiv/Resend keys provisioned** | DevOps |
-| 18 | First 5 issues of ROMAS Brief drafted and queued for live cron handoff | editorial-director |
+| 18 | First 5 issues of ROMAS Wire drafted and queued for live cron handoff | editorial-director |
 
 ---
 
@@ -403,6 +417,7 @@ Day 0 (24h before launch) verifies all 13 original Launch-Plan checklist items +
 | 2026-05-14 | 1.0.0 | Initial SSOT. Reconciles 19 audit findings; Q1/Q2/Q3 with hypothesis defaults. | team-planning |
 | 2026-05-14 | 1.1.0 | **Cycle-3** Q1/Q2/Q3 locked by Kimal. Email split. Tier 5 Video Podcast added. Q2-A locked. | team-planning + Kimal |
 | 2026-05-14 | 1.2.0 | **Cycle-4** §12 Launch Posture added — canonical 500-article + ~50-audio scale, 11×8×8×8 distribution matrix, 8-week pre-launch calendar (W-8 = now), Day-1 readiness gate (18 items). Reflects Kimal's 2026-05-14 correction that the launch posture was under-scoped. | team-planning + Kimal |
+| 2026-05-31 | 1.3.0 | **Cycle-7** (a) **Product renamed from `ROMAS Brief` → ROMAS Wire** (brand/display; identifiers + `romasbrief.com` + repo = gated phase-2). (b) **Q-A DECIDED: full launch, Day-1 ≈ 2026-07-14** (June-7 dropped as infeasible; content ramp is binding pole). (c) **Engineering Waves 1–4 complete** (HEAD 95f6111) — reader↔Supabase, scorer, CMS QA gate, workers, a11y/perf/audio. (d) **Consolidation: this SSOT is THE single planning source of truth** — all other planning docs are subordinate (§9) and carry a supersession banner pointing here. | Kimal + Claude |
 
 ---
 

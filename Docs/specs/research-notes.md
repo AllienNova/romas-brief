@@ -1,11 +1,11 @@
 ---
-title: Research Notes — ROMAS Brief
+title: Research Notes — ROMAS Wire
 version: 1.0.0
 date: 2026-05-14
 scope: decision-driving research only
 ---
 
-# Research Notes — ROMAS Brief
+# Research Notes — ROMAS Wire
 
 > Each note answers: *what decision does this inform?*
 
@@ -147,7 +147,7 @@ scope: decision-driving research only
 
 **Decision informed**: Master Strategy §7.1 + NFR-015
 
-**Finding**: ROMAS Brief publishes editorial content based on public primary sources. No PHI is ingested. Therefore not a HIPAA-covered entity nor a business associate. ToS must carry an explicit "No PHI" clause to prevent inadvertent submission via comments/feedback (out of scope at launch — no public submission surface).
+**Finding**: ROMAS Wire publishes editorial content based on public primary sources. No PHI is ingested. Therefore not a HIPAA-covered entity nor a business associate. ToS must carry an explicit "No PHI" clause to prevent inadvertent submission via comments/feedback (out of scope at launch — no public submission surface).
 
 **Confidence**: high.
 

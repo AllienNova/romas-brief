@@ -12,7 +12,7 @@
 
 ## Context
 
-ROMAS Brief has two frontend apps (`apps/cms`, `apps/reader`), multiple Cloudflare Workers (`workers/cron-ingest`, `workers/audio-producer`, `workers/rss-publisher`, `workers/cdn-purge-watchdog`), shared packages (`packages/db`, `packages/shared`), and tooling scripts (`tools/audio/`). Without a coordinated build tool:
+ROMAS Wire has two frontend apps (`apps/cms`, `apps/reader`), multiple Cloudflare Workers (`workers/cron-ingest`, `workers/audio-producer`, `workers/rss-publisher`, `workers/cdn-purge-watchdog`), shared packages (`packages/db`, `packages/shared`), and tooling scripts (`tools/audio/`). Without a coordinated build tool:
 
 - Shared TypeScript types drift independently across apps and workers.
 - Each module runs its own `tsc`, `eslint`, and test suite with no cache sharing.
@@ -58,7 +58,7 @@ Rejected. npm workspaces lack the disk-space and install-time efficiency of pnpm
 
 ### Nx
 
-Rejected. Nx is the more capable tool for large-scale monorepos but carries significant configuration overhead and generator friction. ROMAS Brief has 10 modules — Turborepo's simpler `turbo.json` pipeline covers the need without the learning surface or binary dependency. If the repo grows to 20+ packages or requires micro-frontend orchestration, reconsider Nx.
+Rejected. Nx is the more capable tool for large-scale monorepos but carries significant configuration overhead and generator friction. ROMAS Wire has 10 modules — Turborepo's simpler `turbo.json` pipeline covers the need without the learning surface or binary dependency. If the repo grows to 20+ packages or requires micro-frontend orchestration, reconsider Nx.
 
 ### Single package (no monorepo)
 
@@ -98,7 +98,7 @@ Viable but not chosen. Yarn Berry's PnP mode has known friction with Cloudflare 
 
 ## Historical Context
 
-The pnpm + Turborepo choice was de-facto present in the CLAUDE.md §7 tech-stack table from the planning kit's inception (2026-05-12 per AGENT.md §13 line 213). It was not the result of a structured comparison at that moment — CLAUDE.md just listed it. Cycle-1 critic flagged the contradiction of marking ADR-0001 "Proposed" while every CI gate (`pnpm lint`, `pnpm turbo build`) hardcoded the tool choice. Cycle-2 promotes Status to Accepted to remove the contradiction: the tooling IS locked; the ADR now reflects that, with confidence High because the rejected alternatives (npm, Nx, single-package, Yarn) have all been considered above and none threaten ROMAS Brief's deployment shape (Cloudflare Workers + pnpm symlink handling) within the next 12 months. Revisit triggers below remain the only conditions under which this lock would reopen.
+The pnpm + Turborepo choice was de-facto present in the CLAUDE.md §7 tech-stack table from the planning kit's inception (2026-05-12 per AGENT.md §13 line 213). It was not the result of a structured comparison at that moment — CLAUDE.md just listed it. Cycle-1 critic flagged the contradiction of marking ADR-0001 "Proposed" while every CI gate (`pnpm lint`, `pnpm turbo build`) hardcoded the tool choice. Cycle-2 promotes Status to Accepted to remove the contradiction: the tooling IS locked; the ADR now reflects that, with confidence High because the rejected alternatives (npm, Nx, single-package, Yarn) have all been considered above and none threaten ROMAS Wire's deployment shape (Cloudflare Workers + pnpm symlink handling) within the next 12 months. Revisit triggers below remain the only conditions under which this lock would reopen.
 
 ---
 

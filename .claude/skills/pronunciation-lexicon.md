@@ -1,9 +1,9 @@
 ---
 name: pronunciation-lexicon
-description: Pronunciation lexicon for ROMAS Brief audio production — drug names, device / vendor names, modality acronyms, anatomical sites, trial identifiers. 30-entry seed plus expansion rules. Load before every audio script preparation.
+description: Pronunciation lexicon for ROMAS Wire audio production — drug names, device / vendor names, modality acronyms, anatomical sites, trial identifiers. 30-entry seed plus expansion rules. Load before every audio script preparation.
 ---
 
-# ROMAS Brief — Pronunciation Lexicon
+# ROMAS Wire — Pronunciation Lexicon
 
 ## Format
 

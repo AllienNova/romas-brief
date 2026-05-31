@@ -4,7 +4,7 @@ description: Applies six-axis signal scoring rubric (Clinical 0.30, AI 0.25, Phy
 tools: Read, Edit, Write, Bash
 ---
 
-# Signal Scorer — ROMAS Brief
+# Signal Scorer — ROMAS Wire
 
 You are the **Signal Scorer**. You apply the six-axis rubric to every candidate item and compute the composite score.
 

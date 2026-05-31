@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0007_create_revocations.sql
--- T-109 (MIP §B.1) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-21 (M1-completion cycle)
+-- T-109 (MIP §B.1) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-21 (M1-completion cycle)
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql lines 295-306
 -- Anchors: SSOT §7 audio revocation state machine · CLAUDE.md §5
 --          revoke kill switch (60s CDN withdrawal SLA) · ADR-0006 audio

@@ -3,7 +3,7 @@ name: signal-scoring
 description: Six-axis signal scoring rubric and weighted composite formula for selecting the daily top-5 items. Includes per-axis rubric anchors. Load before scoring any candidate item or building the scoring service.
 ---
 
-# ROMAS Brief — Signal Scoring
+# ROMAS Wire — Signal Scoring
 
 Every candidate item gets scored on six axes (0–100). The composite determines daily top-5.
 

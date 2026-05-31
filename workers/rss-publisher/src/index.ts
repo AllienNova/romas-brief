@@ -1,5 +1,5 @@
 /**
- * rss-publisher · ROMAS Brief
+ * rss-publisher · ROMAS Wire
  * T-212 / R-212 full implementation
  *
  * Responsibilities:
@@ -427,7 +427,7 @@ ${transcriptTags}
     <itunes:type>${config.itunesType}</itunes:type>
     <itunes:summary>${escapeXml(config.description.slice(0, 240))}</itunes:summary>
     <atom:link href="${escapeXml(config.feedUrl)}" rel="self" type="application/rss+xml"/>
-    <podcast:funding url="${escapeXml(env.SITE_BASE_URL)}/support">Support ROMAS Brief</podcast:funding>
+    <podcast:funding url="${escapeXml(env.SITE_BASE_URL)}/support">Support ROMAS Wire</podcast:funding>
     <podcast:locked owner="president@aliennova.com">yes</podcast:locked>
     <podcast:guid>${config.podcastGuid}</podcast:guid>
 ${itemsXml}

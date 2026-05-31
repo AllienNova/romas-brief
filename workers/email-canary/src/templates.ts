@@ -1,5 +1,5 @@
 // =====================================================================
-// workers/email-canary/src/templates.ts · ROMAS Brief · SHIP-12
+// workers/email-canary/src/templates.ts · ROMAS Wire · SHIP-12
 // Pure HTML/text templates for the 4 transactional email types.
 //
 // Brand rules (CLAUDE.md §2, §8): no emojis anywhere; subject lines
@@ -32,10 +32,10 @@ export interface RenderedTemplate {
   text: string;
 }
 
-const BRAND = "ROMAS Brief";
+const BRAND = "ROMAS Wire";
 const SIGNOFF = "— Kimal";
 const FOOTER_NOTE =
-  "ROMAS Brief · Radiation oncology, decoded daily · ROMAS Intelligence";
+  "ROMAS Wire · Radiation oncology, decoded daily · ROMAS Intelligence";
 
 /** HTML-escape interpolated values to keep the templates injection-safe. */
 function esc(value: string): string {
@@ -89,7 +89,7 @@ export function renderTemplate<T extends TemplateType>(
   switch (type) {
     case "signup_confirm": {
       const { confirmUrl } = params as TemplateParamsMap["signup_confirm"];
-      const subject = "Confirm your ROMAS Brief subscription";
+      const subject = "Confirm your ROMAS Wire subscription";
       const html = layout(
         `<p style="margin:0 0 16px;">Welcome to ${BRAND}. Confirm your email to start receiving clinical intelligence for modern radiation oncology, decoded daily.</p>
 <p style="margin:0 0 24px;"><a href="${esc(confirmUrl)}" style="display:inline-block;background:#00B4C6;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:6px;font-weight:600;">Confirm subscription</a></p>
@@ -111,7 +111,7 @@ ${FOOTER_NOTE}`;
     case "unsubscribe_receipt": {
       const { resubscribeUrl } =
         params as TemplateParamsMap["unsubscribe_receipt"];
-      const subject = "You have been unsubscribed from ROMAS Brief";
+      const subject = "You have been unsubscribed from ROMAS Wire";
       const unsubLine = `Changed your mind? <a href="${esc(resubscribeUrl)}" style="color:#00B4C6;">Resubscribe</a>.`;
       const html = layout(
         `<p style="margin:0 0 16px;">You have been unsubscribed from ${BRAND}. You will no longer receive the daily issue, the Friday Read, or podcast notifications.</p>
@@ -156,7 +156,7 @@ ${FOOTER_NOTE}`;
 
     case "password_reset": {
       const { resetUrl } = params as TemplateParamsMap["password_reset"];
-      const subject = "Reset your ROMAS Brief password";
+      const subject = "Reset your ROMAS Wire password";
       const html = layout(
         `<p style="margin:0 0 16px;">We received a request to reset your ${BRAND} password. This link expires shortly. If you did not request this, you can ignore this email.</p>
 <p style="margin:0 0 24px;"><a href="${esc(resetUrl)}" style="display:inline-block;background:#00B4C6;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:6px;font-weight:600;">Reset password</a></p>

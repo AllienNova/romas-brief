@@ -1,5 +1,5 @@
 // =====================================================================
-// apps/web/lib/articles.ts · ROMAS Brief reader — data-access layer (SHIP-08)
+// apps/web/lib/articles.ts · ROMAS Wire reader — data-access layer (SHIP-08)
 //
 // DB-backed equivalents of the mock-data article functions. Each returns the
 // SAME MockArticle shape so components/routes are unchanged apart from `await`.

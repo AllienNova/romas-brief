@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — QA Report (Plan-Level)
+title: ROMAS Wire — QA Report (Plan-Level)
 version: 1.0.0
 date: 2026-05-14
 commit: pre-/team-build dispatch
@@ -7,7 +7,7 @@ qa_lead: team-qa skill (Kimal-invoked)
 scope: plan-level QA on code-empty repo; release-readiness gate for /team-build dispatch
 ---
 
-# ROMAS Brief — QA Report
+# ROMAS Wire — QA Report
 
 ## M0c2 design-review verdict (2026-05-15)
 
@@ -44,7 +44,7 @@ The fix is **doc-only work** (no code), Test Engineer estimates **~3–5 person-
 
 ## Executive summary (3 sentences)
 
-ROMAS Brief's cycle-1→cycle-6 planning produced a coherent, locked, audit-friendly product spec, but the plan's traceability fabric — task IDs, acceptance tests, schema columns, decision-log references — has 40 dangling references and 88 missing tests that block /team-build from running deterministically. Five live regressions remain: a `meddeviceguide.com` primary-source citation in the 500-article backlog (Rule 4 violation), on-disk doc-version drift unchecked since cycle-1, inviolable-rule count drift in Master-Strategy/Runbook, ADR-0005 stale wording from cycle-1, and missing `subscribers.region` + `subscribers.beehiiv_subscription_id` schema columns required by FR-033 + FR-023. Of these, items 4–5 above are doc-fixes (M0 work) and items 1–3 are doc fixes already promised in cycle-4/5/6 follow-on but never executed; once these close plus DeepL Pro + Beehiiv SCC + voice-consent registry land, the plan is /team-build-ready.
+ROMAS Wire's cycle-1→cycle-6 planning produced a coherent, locked, audit-friendly product spec, but the plan's traceability fabric — task IDs, acceptance tests, schema columns, decision-log references — has 40 dangling references and 88 missing tests that block /team-build from running deterministically. Five live regressions remain: a `meddeviceguide.com` primary-source citation in the 500-article backlog (Rule 4 violation), on-disk doc-version drift unchecked since cycle-1, inviolable-rule count drift in Master-Strategy/Runbook, ADR-0005 stale wording from cycle-1, and missing `subscribers.region` + `subscribers.beehiiv_subscription_id` schema columns required by FR-033 + FR-023. Of these, items 4–5 above are doc-fixes (M0 work) and items 1–3 are doc fixes already promised in cycle-4/5/6 follow-on but never executed; once these close plus DeepL Pro + Beehiiv SCC + voice-consent registry land, the plan is /team-build-ready.
 
 ## Pass / fail per major requirement bucket
 
@@ -459,7 +459,7 @@ The reader source code does **not live in this monorepo** (`D:\dev\projects\roma
 
 | ID | Finding | Severity | Why it matters |
 |---|---|---|---|
-| **B-20** | **Split-repo architecture undocumented.** ROMAS Brief production surface is deployed across at least 2 GitHub repos (`romas-brief` monorepo holds schema + workers + design specs; `kimhons/romas-brief-web` holds reader code per CLAUDE.md §12). No integration contract exists in `docs/specs/architecture.md` describing how schema changes propagate, how types are shared, how the workers (cron-ingest, audio-producer, rss-publisher) coordinate with the reader on cache invalidation / revalidation / region-toggle / EU-edition behavior. Risk surfaces: schema migration in this repo breaks reader queries; environment-variable mismatch; deploy-coordination failures; audit-blind-spot (no /team-qa cycle has audited the reader source). | **Blocker** for any cycle that needs to verdict the reader surface. **High** for ongoing maintenance. | Until the split-repo handoff is documented + both repos are in scope for /team-qa, the verdict "GO / NO-GO for Day-1 launch" is structurally impossible. Cycle-6's NO-GO reflected only one half of the system. |
+| **B-20** | **Split-repo architecture undocumented.** ROMAS Wire production surface is deployed across at least 2 GitHub repos (`romas-brief` monorepo holds schema + workers + design specs; `kimhons/romas-brief-web` holds reader code per CLAUDE.md §12). No integration contract exists in `docs/specs/architecture.md` describing how schema changes propagate, how types are shared, how the workers (cron-ingest, audio-producer, rss-publisher) coordinate with the reader on cache invalidation / revalidation / region-toggle / EU-edition behavior. Risk surfaces: schema migration in this repo breaks reader queries; environment-variable mismatch; deploy-coordination failures; audit-blind-spot (no /team-qa cycle has audited the reader source). | **Blocker** for any cycle that needs to verdict the reader surface. **High** for ongoing maintenance. | Until the split-repo handoff is documented + both repos are in scope for /team-qa, the verdict "GO / NO-GO for Day-1 launch" is structurally impossible. Cycle-6's NO-GO reflected only one half of the system. |
 
 ### Cycle-6 verdict — addendum re-statement
 
@@ -488,7 +488,7 @@ Original conditions 1-5 still apply. Add:
 
 The cycle-6 NO-GO verdict above was issued against a split-repo baseline (`9c4284d`) that **no longer exists**. Superseding facts:
 
-- **Single repo, consolidated** — reader moved into `apps/web` (Phase 8: `acf5855`/`bb5f004`/`dd7f0e0`). `INTEGRATION-CONTRACT.md` = EXECUTED. The "Q0 external-repo pre-flight" learning is now moot for ROMAS Brief (one tree).
+- **Single repo, consolidated** — reader moved into `apps/web` (Phase 8: `acf5855`/`bb5f004`/`dd7f0e0`). `INTEGRATION-CONTRACT.md` = EXECUTED. The "Q0 external-repo pre-flight" learning is now moot for ROMAS Wire (one tree).
 - **Cycle-6 blockers B-17 / B-18 / B-20 CLOSED**, **B-19 SPLIT** — see `Docs/qa/risk-register.md` cycle-7 reconciliation.
 - **CI red → green** — Next 14→15.5.18 + React 19 (SHIP-01) closed the 5 high CVEs; `<img>`→`next/image` (SHIP-02) closed the lint failure. `pnpm audit --audit-level=high` = 0 vulns; lint/typecheck/build all exit 0.
 

@@ -12,7 +12,7 @@
 
 ## Context
 
-ROMAS Brief requires a persistent store for:
+ROMAS Wire requires a persistent store for:
 
 - Articles with multi-status lifecycle (`draft → published → revoked`).
 - Audio jobs with a publish-gated state machine (`queued → in_review → published | skipped`).
@@ -56,7 +56,7 @@ Rejected. Firestore's document model does not map cleanly to the relational cons
 
 ### Raw Postgres (self-managed, e.g., on Fly.io)
 
-Rejected. Supabase provides Auth, RLS tooling, the Supabase client SDK, and the migration CLI at no configuration overhead compared to a self-managed Postgres. Self-managing Postgres adds operational burden (backups, HA, connection pooling via pgBouncer) that is not justified at ROMAS Brief's current scale. Supabase already handles pgBouncer in session mode for Workers.
+Rejected. Supabase provides Auth, RLS tooling, the Supabase client SDK, and the migration CLI at no configuration overhead compared to a self-managed Postgres. Self-managing Postgres adds operational burden (backups, HA, connection pooling via pgBouncer) that is not justified at ROMAS Wire's current scale. Supabase already handles pgBouncer in session mode for Workers.
 
 ### PlanetScale (MySQL)
 
@@ -93,6 +93,6 @@ Rejected. MySQL does not support CHECK constraints with subqueries, does not hav
 
 ## Historical Context
 
-The Supabase + Postgres + RLS choice was de-facto present in the ROMAS Brief planning kit from inception (CLAUDE.md §7 + the full `cms-schema.md` skill specifying 10 migrations + RLS policies + schema CHECK constraints, all dated 2026-05-12 per AGENT.md §13 line 213). No structured alternative comparison was documented at the time — the choice was made implicitly because Supabase bundles the four things ROMAS Brief needs (managed Postgres + RLS + Auth + pgvector) at the lowest operational overhead for a 1-person ops org. The retroactive ratification here is honest: had the comparison happened up-front against Neon/Firebase/raw-Postgres/PlanetScale, this ADR believes Supabase still wins for the specific reason that schema-layer CHECK constraints carry inviolable rules, and only managed Postgres makes that cheap. The alternatives section above documents the comparison post-hoc, not the original decision flow.
+The Supabase + Postgres + RLS choice was de-facto present in the ROMAS Wire planning kit from inception (CLAUDE.md §7 + the full `cms-schema.md` skill specifying 10 migrations + RLS policies + schema CHECK constraints, all dated 2026-05-12 per AGENT.md §13 line 213). No structured alternative comparison was documented at the time — the choice was made implicitly because Supabase bundles the four things ROMAS Wire needs (managed Postgres + RLS + Auth + pgvector) at the lowest operational overhead for a 1-person ops org. The retroactive ratification here is honest: had the comparison happened up-front against Neon/Firebase/raw-Postgres/PlanetScale, this ADR believes Supabase still wins for the specific reason that schema-layer CHECK constraints carry inviolable rules, and only managed Postgres makes that cheap. The alternatives section above documents the comparison post-hoc, not the original decision flow.
 
 *Accepted retroactively 2026-05-14 per CLAUDE.md §7 and cms-schema.md full schema spec; Historical Context added cycle-2 per critic F-P1-05.*

@@ -1,5 +1,5 @@
 -- =====================================================================
--- supabase/seed.sql · ROMAS Brief
+-- supabase/seed.sql · ROMAS Wire
 -- Applied after `supabase db push` (migrations 0001..0010 land in M1;
 -- 0001..0005 are present today per T-103..T-107).
 -- Canonical seed inventory per SSOT §8 + MIP §B.1 / §C.1.

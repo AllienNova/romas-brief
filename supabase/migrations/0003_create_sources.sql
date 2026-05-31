@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0003_create_sources.sql
--- T-105 (MIP §B.1) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-16
+-- T-105 (MIP §B.1) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-16
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql lines 183-197
 -- Anchors: SSOT v1.2.0 §6 (source domains canonical inventory),
 --          inviolable rule 5 (source fetch failure surfaces in source health)

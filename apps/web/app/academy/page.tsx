@@ -17,7 +17,7 @@ import type { IconProps } from "@/components/icons";
 export const metadata: Metadata = {
   title: "Academy",
   description:
-    "ROMAS Brief Academy — structured learning resources for radiation oncology professionals. Primers, deep dives, physics explainers, and clinical methodology guides.",
+    "ROMAS Wire Academy — structured learning resources for radiation oncology professionals. Primers, deep dives, physics explainers, and clinical methodology guides.",
 };
 
 const FEATURED_COURSES = [
@@ -111,7 +111,7 @@ export default function AcademyPage() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-xs font-bold uppercase tracking-widest"
             style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.15)" }}
           >
-            <PrimerIcon size={14} /> ROMAS Brief Academy
+            <PrimerIcon size={14} /> ROMAS Wire Academy
           </div>
           <h1
             className="text-4xl sm:text-5xl font-black text-white mb-6"
@@ -299,7 +299,7 @@ export default function AcademyPage() {
               Full Academy access is free
             </h2>
             <p className="text-white/70 mb-8 max-w-lg mx-auto">
-              Subscribe to ROMAS Brief and unlock all Academy content — primers, deep dives, and explainers — delivered alongside your daily brief.
+              Subscribe to ROMAS Wire and unlock all Academy content — primers, deep dives, and explainers — delivered alongside your daily brief.
             </p>
             <a
               href="https://romasbrief.beehiiv.com/subscribe"

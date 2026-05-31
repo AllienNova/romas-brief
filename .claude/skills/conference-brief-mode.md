@@ -3,7 +3,7 @@ name: conference-brief-mode
 description: ROMAS Conference Brief tier — activation, embargo-aware live-mode operation during ASTRO, ESTRO, AAPM, JASTRO, RANZCR, ESMO, ASCO. Episode cadence, embargo posture, RSS handling. Load whenever a covered conference is active or imminent.
 ---
 
-# ROMAS Brief — Conference Brief Mode
+# ROMAS Wire — Conference Brief Mode
 
 ## Conferences in scope
 
@@ -142,4 +142,4 @@ Between covered conferences:
 
 ---
 
-*Conference mode is when ROMAS Brief is most exposed. Discipline > speed.*
+*Conference mode is when ROMAS Wire is most exposed. Discipline > speed.*

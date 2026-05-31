@@ -1,4 +1,4 @@
-# Project Analysis Report: ROMAS Brief
+# Project Analysis Report: ROMAS Wire
 
 **Date**: 2026-05-28
 **Analyst**: RALP Loop Engine (Review → Analyze → Learn → Plan)
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-ROMAS Brief has a substantial, well-engineered **backend** (3,083 LOC of real worker code: ingestion, audio pipeline, RSS, CDN watchdog) on a clean Supabase schema (11 migrations, deny-by-default RLS, 84 pgTAP assertions). But the system **cannot serve real editorial content end-to-end today**: the reader renders 100% mock data (no route calls Supabase), the CMS audio-QA UI that enforces inviolable Rule 6 does not exist, three workers (Beehiiv/Resend/source-health) are 501 stubs, and there are **zero real automated tests** in the JS/TS workspace. Most urgent: **CI on `main` is currently RED** — `turbo run lint` (exit 1) and `pnpm audit --audit-level=high` (exit 1) both fail under `continue-on-error: false`, meaning the Phase 8 consolidation merged lint-failing, high-CVE code through hard gates. Recommended action: a STABILIZE wave (fix CI red, doc reconciliation) before any further feature work, then wire the reader to Supabase and build the CMS QA gate.
+ROMAS Wire has a substantial, well-engineered **backend** (3,083 LOC of real worker code: ingestion, audio pipeline, RSS, CDN watchdog) on a clean Supabase schema (11 migrations, deny-by-default RLS, 84 pgTAP assertions). But the system **cannot serve real editorial content end-to-end today**: the reader renders 100% mock data (no route calls Supabase), the CMS audio-QA UI that enforces inviolable Rule 6 does not exist, three workers (Beehiiv/Resend/source-health) are 501 stubs, and there are **zero real automated tests** in the JS/TS workspace. Most urgent: **CI on `main` is currently RED** — `turbo run lint` (exit 1) and `pnpm audit --audit-level=high` (exit 1) both fail under `continue-on-error: false`, meaning the Phase 8 consolidation merged lint-failing, high-CVE code through hard gates. Recommended action: a STABILIZE wave (fix CI red, doc reconciliation) before any further feature work, then wire the reader to Supabase and build the CMS QA gate.
 
 ---
 

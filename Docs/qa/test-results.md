@@ -1,12 +1,12 @@
 ---
-title: Test Results — ROMAS Brief
+title: Test Results — ROMAS Wire
 version: 2.0.0
 date: 2026-05-31 (cycle-7, code-bearing)
 commit: 741c993 (main)
 note: Supersedes the 2026-05-14 v1.0.0 plan-level mechanical checks (code-empty repo). This cycle runs real gates + unit suites.
 ---
 
-# Test Results — ROMAS Brief (team-qa cycle-7)
+# Test Results — ROMAS Wire (team-qa cycle-7)
 
 **Date:** 2026-05-31 · **Commit:** `741c993` (main) · **Runner:** pnpm + Turborepo + Node `node:test`
 

@@ -1,12 +1,12 @@
 ---
-title: Security Findings — ROMAS Brief
+title: Security Findings — ROMAS Wire
 version: 1.0.0
 date: 2026-05-14
 scope: planning kit + target architecture (repo is code-empty)
 methodology: documentation review + threat model on the documented contracts
 ---
 
-# Security Findings — ROMAS Brief
+# Security Findings — ROMAS Wire
 
 ## Scope
 

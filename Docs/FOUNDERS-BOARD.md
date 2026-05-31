@@ -1,4 +1,4 @@
-# ROMAS Brief — Founder's Provisioning Board
+# ROMAS Wire — Founder's Provisioning Board
 
 **For:** Kimal Honour Djam
 **Companion:** `Docs/specs/provisioning-checklist.md` (the index) · `tasks.md` (the eng queue) · `Docs/specs/ship-execution-plan.md` v1.1.1 (the spec)

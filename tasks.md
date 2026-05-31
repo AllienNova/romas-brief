@@ -1,4 +1,4 @@
-# ROMAS Brief — Autonomous Execution Queue
+# ROMAS Wire — Autonomous Execution Queue
 
 **Owner:** Kimal Honour Djam
 **Driven by:** `/autonomous-coding` skill (autonomous-drive mode)

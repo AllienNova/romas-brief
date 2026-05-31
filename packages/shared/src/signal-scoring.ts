@@ -1,5 +1,5 @@
 // =====================================================================
-// packages/shared/src/signal-scoring.ts · ROMAS Brief (SHIP-09 / B-03)
+// packages/shared/src/signal-scoring.ts · ROMAS Wire (SHIP-09 / B-03)
 //
 // Deterministic six-axis composite signal-scoring engine. Closes the gap
 // where nothing computed articles.composite_score — the six axes are

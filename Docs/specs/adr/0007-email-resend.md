@@ -12,7 +12,7 @@ superseded_by: none
 
 ## Context
 
-ROMAS Brief needs two distinct email surfaces:
+ROMAS Wire needs two distinct email surfaces:
 
 1. **Newsletter surface** — daily issue (Mon–Thu Brief, Friday ROMAS Read), Audio Podcast episode notifications, Conference Brief alerts. High-volume, sent to the active subscriber list, requires growth/distribution tooling, public archive at a hosted URL, EU subscriber-list management.
 2. **Transactional surface** — signup confirmation, unsubscribe receipt, audio-revocation public notice email (when an audio episode is revoked post-publish), password reset for CMS access, account-related notifications. Low-volume, per-recipient, time-sensitive, integrated with web app server actions.

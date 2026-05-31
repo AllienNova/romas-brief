@@ -1,11 +1,11 @@
 ---
-title: Integration Review — ROMAS Brief
+title: Integration Review — ROMAS Wire
 version: 1.0.0
 date: 2026-05-14
 scope: every external system referenced in the planning kit
 ---
 
-# Integration Review — ROMAS Brief
+# Integration Review — ROMAS Wire
 
 ## Inventory
 
@@ -129,7 +129,7 @@ Documented external surfaces, ordered by criticality:
 ### I-15 Beehiiv (newsletter delivery + canonical subscriber list, per ADR-0007 cycle-2)
 
 - **Endpoints**: `POST /v2/publications/{pid}/subscriptions` (create) · `PATCH /v2/publications/{pid}/subscriptions/{sid}` (unsubscribe/update) · `POST /v2/publications/{pid}/posts` (issue create)
-- **Webhooks** (Beehiiv → ROMAS Brief): `subscription.created`, `subscription.confirmed`, `subscription.unsubscribed`, `subscription.bounced`, `subscription.complained`
+- **Webhooks** (Beehiiv → ROMAS Wire): `subscription.created`, `subscription.confirmed`, `subscription.unsubscribed`, `subscription.bounced`, `subscription.complained`
 - **Auth**: `Authorization: Bearer {BEEHIIV_API_KEY}` (outbound); HMAC-SHA256 signature verification on webhooks with `BEEHIIV_WEBHOOK_SECRET`
 - **Used by**: `apps/cms` server actions + `workers/issue-publisher` (queued fan-out) + `workers/beehiiv-webhook` (inbound)
 - **Scope**: Newsletter ONLY — daily issue Mon–Thu, Friday Read, Audio Podcast notification (Tier 3), Conference Brief notification (Tier 4)

@@ -1,7 +1,7 @@
 "use client";
 
 // =====================================================================
-// apps/cms/components/AudioQAActions.tsx · ROMAS Brief · SHIP-10
+// apps/cms/components/AudioQAActions.tsx · ROMAS Wire · SHIP-10
 // Client action bar for the audio QA detail page. POSTs to
 // /api/audio-qa/[id]; the route handler re-validates the gate server-side
 // (defense-in-depth). Publish is enabled only when the gate passes;

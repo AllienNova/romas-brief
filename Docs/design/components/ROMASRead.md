@@ -56,7 +56,7 @@ Different rubrics expect different body shapes (editorial discipline):
 
 - **Week in Receipts**: bullet list of "received" claims (vendor PR / society statement / regulatory clearance) with editor verdict per claim.
 - **Five Things That Shifted**: numbered 1–5 with a one-line delta per item.
-- **What I Got Wrong**: list of corrections to prior ROMAS Brief items with source link to the original.
+- **What I Got Wrong**: list of corrections to prior ROMAS Wire items with source link to the original.
 - **Watch Next Week**: 3 forward indicators (regulatory deadline, vendor briefing, conference agenda item).
 
 ROMAS Read body must NOT mix structures across rubrics — editorial-style-guide blocks.

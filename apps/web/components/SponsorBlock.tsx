@@ -4,11 +4,11 @@
  *
  * Only two labels are permitted at launch: "Sponsored by [X]" and "Partner
  * message from [X]" — co-branded mastheads are killed for launch. The
- * 32px firewall (no sponsor logo within 32px of the ROMAS Brief wordmark) is
+ * 32px firewall (no sponsor logo within 32px of the ROMAS Wire wordmark) is
  * enforced via vertical clearance + a machine-checkable `data-firewall="32"`.
  */
 
-/** Locked firewall distance from the ROMAS Brief wordmark, in px. */
+/** Locked firewall distance from the ROMAS Wire wordmark, in px. */
 export const SPONSOR_FIREWALL_PX = 32;
 
 export type SponsorVariant = "sponsored_by" | "partner_message";

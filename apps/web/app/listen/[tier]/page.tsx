@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Listen Tier Page
+ * ROMAS Wire — Listen Tier Page
  * T-302 Reader app
  *
  * Server component. Shows all published audio jobs for a single tier.
@@ -64,7 +64,7 @@ export async function generateMetadata(
   if (!VALID_TIERS.includes(tier)) return { title: "Not found" };
   const meta = TIER_META[tier];
   return {
-    title: `${meta.label} — ROMAS Brief`,
+    title: `${meta.label} — ROMAS Wire`,
     description: meta.description,
   };
 }
@@ -98,7 +98,7 @@ export default async function ListenTierPage(
       {/* Breadcrumb */}
       <nav className="mb-8 text-sm text-[var(--rb-text-tertiary)]">
         <Link href="/" className="hover:text-[var(--rb-text-secondary)] transition-colors">
-          ROMAS Brief
+          ROMAS Wire
         </Link>
         <span className="mx-2">/</span>
         <Link href="/listen" className="hover:text-[var(--rb-text-secondary)] transition-colors">

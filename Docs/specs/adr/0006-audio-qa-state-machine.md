@@ -16,7 +16,7 @@ Inviolable Rule 6 (CLAUDE.md §4): **No audio goes live without editorial QA pas
 
 This rule exists because:
 
-1. ROMAS Brief operates in a clinical domain where a mispronounced drug, an incorrect dose in the audio script, or an unchecked claim causes compounding trust damage that text corrections alone cannot repair — the audio episode may already be in subscriber libraries.
+1. ROMAS Wire operates in a clinical domain where a mispronounced drug, an incorrect dose in the audio script, or an unchecked claim causes compounding trust damage that text corrections alone cannot repair — the audio episode may already be in subscriber libraries.
 2. Audio is harder to correct post-publish than text: existing downloads are unaffected by server-side changes; RSS feed updates require listeners to re-sync.
 3. The revoke path exists (60s CDN purge) but is a break-glass mechanism, not a routine correction tool.
 

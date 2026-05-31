@@ -12,7 +12,7 @@
 
 ## Context
 
-Every published article generates an audio version under the ROMAS Clinical Narrator voice before it can reach `audio_status = published`. The voice must convey clinical authority — mispronounced drug names, acronyms, or dose values (e.g., "Gy", "SBRT", "BED/EQD2") erode the trust that ROMAS Brief is built on. This is not a generic podcast use case.
+Every published article generates an audio version under the ROMAS Clinical Narrator voice before it can reach `audio_status = published`. The voice must convey clinical authority — mispronounced drug names, acronyms, or dose values (e.g., "Gy", "SBRT", "BED/EQD2") erode the trust that ROMAS Wire is built on. This is not a generic podcast use case.
 
 Requirements:
 

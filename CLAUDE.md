@@ -46,7 +46,7 @@ If unsure whether an action is reversible and contained within the working tree 
 
 ---
 
-# CLAUDE.md — ROMAS Brief
+# CLAUDE.md — ROMAS Wire
 
 > This file is loaded into Claude Code's context for every session in this repo. It is the **single source of truth** for project intent, invariants, and decision lineage. Keep it lean. Detailed playbooks live in `AGENT.md`, `.claude/skills/`, and `.claude/agents/`.
 >
@@ -54,9 +54,9 @@ If unsure whether an action is reversible and contained within the working tree 
 
 ---
 
-## 1. What ROMAS Brief is
+## 1. What ROMAS Wire is
 
-ROMAS Brief is the **public media surface of ROMAS Intelligence**, sitting under the ROMAS ecosystem whose core platform is ROMAS COS — the AI-Native Clinical Operating System for Radiation Oncology.
+ROMAS Wire is the **public media surface of ROMAS Intelligence**, sitting under the ROMAS ecosystem whose core platform is ROMAS COS — the AI-Native Clinical Operating System for Radiation Oncology.
 
 - **Audience**: radiation oncologists, medical physicists, dosimetrists, RT therapists, residents, oncology operators, industry.
 - **Cadence**: Mon–Fri daily issue. Friday issue is **The ROMAS Read** (deeper voice-of-authority).
@@ -95,7 +95,7 @@ These decisions are **locked**. Do not propose reversing them without an explici
 | 11 | LATAM editorial (cycle-6 Q11) | **LLM-translate** via DeepL Pro + Claude verification on Hero/Strong bands; original-language source URL preserved; mandatory footer attribution. |
 | 19 | Repository separation (M0c2) | Standalone repo at `D:\dev\projects\romas-brief\` · GitHub `AllienNova/romas-brief` (private) · separate from parent ROMAS COS · `packages/llm-orchestrator/` lives in this repo (no cross-monorepo import). |
 
-Sponsor firewall: **no sponsor logo within 32px of the ROMAS Brief wordmark**.
+Sponsor firewall: **no sponsor logo within 32px of the ROMAS Wire wordmark**.
 
 ---
 
@@ -195,7 +195,7 @@ Color tokens (added v1.1):
 
 ## 9. Source domains (canonical scope)
 
-Use the global ROMAS Brief cron source list (Mon–Fri 10:30 UTC). Categories: Literature & Evidence · Regulatory (multi-jurisdiction) · Societies & Guidelines · Reimbursement & Policy · Vendors · Conferences & Embargoes. Full list lives in the active cron task spec — refer to it before adding ingestion endpoints.
+Use the global ROMAS Wire cron source list (Mon–Fri 10:30 UTC). Categories: Literature & Evidence · Regulatory (multi-jurisdiction) · Societies & Guidelines · Reimbursement & Policy · Vendors · Conferences & Embargoes. Full list lives in the active cron task spec — refer to it before adding ingestion endpoints.
 
 ---
 
@@ -286,7 +286,7 @@ Plan + critic record: `Docs/specs/ship-execution-plan.md` + `Docs/specs/ship-pla
 - **Owner**: Kimal Honour Djam · president@aliennova.com · Bear, DE · America/New_York
 - **Daily content window**: 06:30–07:00 ET (review brief draft)
 - **Publish window**: target 07:00 ET on weekdays
-- **Cron**: `ROMAS Brief — Global Morning Brief` runs Mon–Fri 10:30 UTC
+- **Cron**: `ROMAS Wire — Global Morning Brief` runs Mon–Fri 10:30 UTC
 - **Sign-off**: `— Kimal`
 
 ---

@@ -1,4 +1,4 @@
-# ROMAS Brief — Requirements Traceability Matrix
+# ROMAS Wire — Requirements Traceability Matrix
 
 **Version:** 1.0.0
 **Date:** 2026-05-14
@@ -525,7 +525,7 @@ The team-build-critic dispatch on the M1c-closeout cycle failed with API 529 Ove
 | FR-025 | 8 region surfaces `/regions/{slug}` | **Missing — Not Started** | apps/web has 1 page total; no routes. |
 | FR-026 | 11 category surfaces `/categories/{slug}` | **Missing — Not Started** | Same as FR-025. |
 | FR-027 | 5+ audience-filter surfaces `/for/{audience}` | **Missing — Not Started** | Same. |
-| FR-028 | Homepage = 8 modules | **Missing — Not Started** | `apps/web/app/page.tsx` is centered ROMAS Brief stub. |
+| FR-028 | Homepage = 8 modules | **Missing — Not Started** | `apps/web/app/page.tsx` is centered ROMAS Wire stub. |
 | FR-029 | 8 content-type filters | **Missing — Not Started** | Same. |
 | FR-030 | Day-1 audio inventory (~50 episodes) | **Missing — Not Started** | No bulk audio-job seeding. No `audio_jobs` rows. Audio pipeline (FR-007) UNTRACKED and lockfile-broken — cannot produce. |
 | FR-031 | `/issues/{YYYY-MM-DD}` archive | **Missing — Not Started** | No issue routes. |

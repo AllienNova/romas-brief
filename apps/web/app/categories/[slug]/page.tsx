@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Category detail page (FR-026)
+ * ROMAS Wire — Category detail page (FR-026)
  * /categories/[slug] — 11 categories
  */
 import Link from "next/link";
@@ -23,7 +23,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   const meta = CATEGORY_META[params.slug as Category];
   if (!meta) return {};
   return {
-    title: `${meta.label} — ROMAS Brief`,
+    title: `${meta.label} — ROMAS Wire`,
     description: meta.description,
   };
 }

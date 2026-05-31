@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0006_create_lexicon.sql
--- T-108 (MIP §B.1) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-21 (M1-completion cycle)
+-- T-108 (MIP §B.1) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-21 (M1-completion cycle)
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql lines 263-289
 -- Anchors: SSOT §10 (audio architecture lexicon discipline) · ADR-0004
 --          (TTS engines) · pronunciation-lexicon skill (30-entry seed)

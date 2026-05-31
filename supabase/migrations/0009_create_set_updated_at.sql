@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0009_create_set_updated_at.sql
--- T-111 (MIP §B.1) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-21 (M1-completion cycle)
+-- T-111 (MIP §B.1) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-21 (M1-completion cycle)
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql lines 335-352
 -- Anchors: M0c2 P0 fix — function hoisted from 0010_rls_policies to
 --          land BEFORE the first trigger that references it (subscribers

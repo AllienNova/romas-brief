@@ -1,5 +1,5 @@
 -- =====================================================================
--- supabase/tests/rls_and_triggers.sql · ROMAS Brief
+-- supabase/tests/rls_and_triggers.sql · ROMAS Wire
 -- R-105 extension · RLS enabled on all 11 tables + 5 named policies +
 -- set_updated_at function + 3 trigger attachments per 0011_rls_policies.
 -- =====================================================================

@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Brand Application
+title: ROMAS Wire — Brand Application
 version: 1.0.0
 date: 2026-05-15
 authority: Master-Strategy v2.1 §1..§3 · CLAUDE.md §1..§2 · design-tokens.md v1.1
@@ -7,7 +7,7 @@ authority: Master-Strategy v2.1 §1..§3 · CLAUDE.md §1..§2 · design-tokens.
 
 # Brand Application
 
-> How ROMAS Brief's brand voice + visual identity translates to the reader surface, audio, and operational touchpoints.
+> How ROMAS Wire's brand voice + visual identity translates to the reader surface, audio, and operational touchpoints.
 
 ## 1. Voice traits (applied)
 

@@ -1,5 +1,5 @@
 // =====================================================================
-// apps/cms/lib/supabase/route.ts · ROMAS Brief
+// apps/cms/lib/supabase/route.ts · ROMAS Wire
 // R-114 (remediation-plan M1) · D-026 close · /team-build M1-closeout cycle
 // Anchors: @supabase/ssr@0.10.3 createServerClient with full getAll/setAll
 //   cookie adapter (per official docs fetched 2026-05-22 via context7).

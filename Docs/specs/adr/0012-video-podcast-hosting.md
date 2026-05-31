@@ -24,7 +24,7 @@ Tier 5 ROMAS Video Podcast invites human guests for 30–60 min weekly or bi-wee
 - Optional cross-post to Apple Podcasts (video podcast namespace) + Spotify Video
 
 Constraints:
-- Editorial control: ROMAS Brief brand identity preserved (no third-party branding on hosted player)
+- Editorial control: ROMAS Wire brand identity preserved (no third-party branding on hosted player)
 - Voice + face consent: guest signs a consent form pre-recording (separate consent registry from ElevenLabs/PlayHT TTS consent)
 - Sponsor firewall: 32px isolation rule (SSOT §3 row 8) applies to video frames too
 - Accessibility: closed captions mandatory; Whisper-generated CC acceptable per ADR-0011 patterns

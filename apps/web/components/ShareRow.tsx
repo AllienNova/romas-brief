@@ -34,7 +34,7 @@ export default function ShareRow({
   async function handleShare() {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
-        await navigator.share({ title, url, text: `${title} — ROMAS Brief` });
+        await navigator.share({ title, url, text: `${title} — ROMAS Wire` });
       } catch {
         // User cancelled or error — fall through silently
       }

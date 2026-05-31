@@ -1,5 +1,5 @@
 // =====================================================================
-// workers/email-canary/src/svix.ts · ROMAS Brief · SHIP-12
+// workers/email-canary/src/svix.ts · ROMAS Wire · SHIP-12
 // Pure, unit-testable Svix webhook signature verification.
 //
 // Resend signs its webhooks via Svix. Verification scheme (official Svix

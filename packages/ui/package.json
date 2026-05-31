@@ -2,7 +2,7 @@
   "name": "@romas-brief/ui",
   "private": true,
   "version": "0.0.0",
-  "description": "Shared UI primitives + design tokens for ROMAS Brief surfaces. T-122 populates audio.css tokens.",
+  "description": "Shared UI primitives + design tokens for ROMAS Wire surfaces. T-122 populates audio.css tokens.",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

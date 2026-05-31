@@ -1,6 +1,6 @@
 ---
 name: cms-schema
-description: Supabase / Postgres schema for ROMAS Brief — articles, audio_jobs, claims, sources, qa_reviewers, embargo_holds, lexicon, revocations, RLS policies. Load before writing any migration or query touching CMS data.
+description: Supabase / Postgres schema for ROMAS Wire — articles, audio_jobs, claims, sources, qa_reviewers, embargo_holds, lexicon, revocations, RLS policies. Load before writing any migration or query touching CMS data.
 canonical_source: Docs/specs/contracts/supabase-schema.sql
 last_sync: 2026-05-15 (M0c2 — partial — see "Known drift from canonical" below)
 ---
@@ -30,7 +30,7 @@ Full skill-side sync to enumerate every column inline is tracked as a P2 M0c2-or
 
 ---
 
-# ROMAS Brief — CMS Schema (Supabase / Postgres)
+# ROMAS Wire — CMS Schema (Supabase / Postgres)
 
 Migrations live in `supabase/migrations/`. Naming: `YYYYMMDDHHMMSS_descriptive_name.sql`. **RLS is on by default** for every table.
 

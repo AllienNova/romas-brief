@@ -1,5 +1,5 @@
 ---
-title: Reliability Report — ROMAS Brief (Cycle-6 Contract Audit)
+title: Reliability Report — ROMAS Wire (Cycle-6 Contract Audit)
 version: 1.0.0
 date: 2026-05-14
 scope: all 16 derived contracts in docs/specs/contracts/
@@ -7,7 +7,7 @@ methodology: contract-level reliability audit; retry/timeout/idempotency/observa
 verdict_scale: GREEN = all 8 columns strong; YELLOW = 1–2 columns weak; RED = 3+ columns weak or missing
 ---
 
-# Reliability Report — ROMAS Brief (Cycle-6 Contract Audit)
+# Reliability Report — ROMAS Wire (Cycle-6 Contract Audit)
 
 ## Reliability audit table
 
@@ -230,7 +230,7 @@ This is an architectural note, not just a timeout setting, and needs to be refle
 **File**: `docs/specs/contracts/deepl.yaml`
 **Lines**: 136–138
 
-The DeepL contract specifies Claude 3.5 Sonnet via `llm-orchestrator` as fallback on 456 (quota) or 503. The `llm-orchestrator` package is part of the ROMAS main platform (not ROMAS Brief), and its availability for Brief's Cloudflare Worker context is not documented. If the orchestrator is unavailable or the Claude API key is not configured in the Brief Workers environment, the fallback silently fails, and the LATAM article translation is blocked without a clear failure mode.
+The DeepL contract specifies Claude 3.5 Sonnet via `llm-orchestrator` as fallback on 456 (quota) or 503. The `llm-orchestrator` package is part of the ROMAS main platform (not ROMAS Wire), and its availability for Brief's Cloudflare Worker context is not documented. If the orchestrator is unavailable or the Claude API key is not configured in the Brief Workers environment, the fallback silently fails, and the LATAM article translation is blocked without a clear failure mode.
 
 **Fix**: Add to `deepl.yaml x-romas-policy`:
 ```yaml

@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — team-design-critic Review
+title: ROMAS Wire — team-design-critic Review
 version: 0.1.0 (placeholder)
 date: 2026-05-15
 status: DEFERRED to W-6 prototype session

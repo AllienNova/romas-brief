@@ -1,9 +1,9 @@
 ---
 name: editorial-style-guide
-description: ROMAS Brief editorial voice, headline rules, ROMAS Insight format, sign-off, banned vocabulary, archetype length specs. Load before drafting any article, headline, insight line, or editorial copy.
+description: ROMAS Wire editorial voice, headline rules, ROMAS Insight format, sign-off, banned vocabulary, archetype length specs. Load before drafting any article, headline, insight line, or editorial copy.
 ---
 
-# ROMAS Brief — Editorial Style Guide
+# ROMAS Wire — Editorial Style Guide
 
 ## Voice
 
@@ -102,7 +102,7 @@ Allowed at launch (first 60–90 days):
 Forbidden until Day 90 re-evaluation:
 
 - Co-branded masthead.
-- Sponsor logo within 32px of ROMAS Brief wordmark.
+- Sponsor logo within 32px of ROMAS Wire wordmark.
 - "Together with [Sponsor]" — explicitly removed in v1.1.
 
 ## Tone calibration examples

@@ -1,9 +1,9 @@
 ---
 name: rss-feed-spec
-description: Per-tier RSS feed structure for ROMAS Brief — audio-brief.xml, daily-brief.xml, podcast.xml, conference-brief.xml. Apple Podcasts + Spotify compliant. Includes iTunes namespace, podcast:transcript, podcast:funding. Load before generating or modifying any RSS feed.
+description: Per-tier RSS feed structure for ROMAS Wire — audio-brief.xml, daily-brief.xml, podcast.xml, conference-brief.xml. Apple Podcasts + Spotify compliant. Includes iTunes namespace, podcast:transcript, podcast:funding. Load before generating or modifying any RSS feed.
 ---
 
-# ROMAS Brief — RSS Feed Spec
+# ROMAS Wire — RSS Feed Spec
 
 ## Four feeds, one publisher
 
@@ -54,7 +54,7 @@ Always include all four. Spotify and Apple consume different subsets.
   <itunes:type>episodic</itunes:type>
   <itunes:summary>Radiation oncology, decoded daily.</itunes:summary>
   <atom:link href="https://romas.brief/feeds/audio-brief.xml" rel="self" type="application/rss+xml"/>
-  <podcast:funding url="https://romas.brief/support">Support ROMAS Brief</podcast:funding>
+  <podcast:funding url="https://romas.brief/support">Support ROMAS Wire</podcast:funding>
   <podcast:locked owner="president@aliennova.com">yes</podcast:locked>
   <podcast:guid>...</podcast:guid>
 

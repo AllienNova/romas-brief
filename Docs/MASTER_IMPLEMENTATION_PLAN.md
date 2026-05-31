@@ -1,4 +1,4 @@
-# ROMAS Brief — Master Implementation Plan
+# ROMAS Wire — Master Implementation Plan
 
 **Version:** 1.1.0 (cycle-2 scope lock)
 **Date:** 2026-05-14
@@ -65,7 +65,7 @@ The Table of contents below reflects the cycle-1 section letters (preserved) plu
    - Owner: design-system-keeper. Accept: **A-004**.
 5. **T-005 — Sponsor firewall measurement.**
    - Doc edits: `Docs/ROMAS-Brief-Design-Specification.md` §sponsor-block.
-   - Exact change: add "32px minimum clearance from ROMAS Brief wordmark — measured at smallest masthead instance" with figure callout.
+   - Exact change: add "32px minimum clearance from ROMAS Wire wordmark — measured at smallest masthead instance" with figure callout.
    - Owner: design-system-keeper. Accept: **A-005**.
 
 ### A.2 Done definition
@@ -74,7 +74,7 @@ A-001..A-011 in `test-qa-plan.md` pass. No internal contradiction across CLAUDE.
 
 ---
 
-## B. Phase 1 — Foundation (M1)
+## B. Phase 1 — Foundation (M1) [COMPLETED 2026-05-28]
 
 **Window:** Day -7 → Day 0
 **Goal:** Production-grade monorepo, full Supabase schema, first ingestion Worker green, Resend canary delivered, CI green.
@@ -325,7 +325,7 @@ Graduation criteria documented and tracked. No code path can flip auto-publish w
 
 ### I.5 Compliance
 
-- **HIPAA non-applicability:** ROMAS Brief does not handle PHI. Articles cover regulatory + research + vendor news. No patient data flows.
+- **HIPAA non-applicability:** ROMAS Wire does not handle PHI. Articles cover regulatory + research + vendor news. No patient data flows.
 - **Voice consent:** ElevenLabs and PlayHT cloned-voice consent recorded in `voice_consent_registry` (T-110, T-213). Vendor licence terms attached.
 - **EU subscriber GDPR:** subscriber emails + listening telemetry are personal data under GDPR. Supabase project provisioned in EU region (Q6 hypothesis: `eu-west-1`). Plausible analytics is cookie-less. DPA documented.
 - **Embargo discipline:** schema-enforced via `embargo_hold` (T-107) + Worker reject path (T-121) + leak detector (T-605). Zero-tolerance.
@@ -353,7 +353,7 @@ Graduation criteria documented and tracked. No code path can flip auto-publish w
 | Primary source | The authoritative origin record (FDA 510(k), journal DOI, society guideline, vendor PR). openFDA is discovery, not primary |
 | Embargo hold | An item known but locked until release date; never enters publish queue |
 | ROMAS Insight | One-line interpretation labeled `(interpretation)` |
-| Sponsor firewall | 32px minimum clearance between sponsor block and ROMAS Brief wordmark |
+| Sponsor firewall | 32px minimum clearance between sponsor block and ROMAS Wire wordmark |
 
 ---
 

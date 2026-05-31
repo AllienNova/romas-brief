@@ -160,7 +160,7 @@ export default function AboutPage() {
               Over 4,000 oncology papers are published every month. FDA clearances happen weekly. Guidelines shift quietly. You cannot read it all, but missing a critical practice delta is not an option.
             </p>
             <p className="text-lg leading-relaxed font-medium" style={{ color: "var(--rb-text-primary)" }}>
-              ROMAS Brief acts as your personal intelligence agency. We ingest the noise, apply our rigorous scoring algorithm, and deliver only the pure, practice-changing signal.
+              ROMAS Wire acts as your personal intelligence agency. We ingest the noise, apply our rigorous scoring algorithm, and deliver only the pure, practice-changing signal.
             </p>
           </div>
           <div className="rounded-3xl p-8 relative overflow-hidden" style={{ background: "var(--rb-bg-raised)", border: "1px solid var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-lg)" }}>

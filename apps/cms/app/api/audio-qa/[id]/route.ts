@@ -1,5 +1,5 @@
 // =====================================================================
-// apps/cms/app/api/audio-qa/[id]/route.ts · ROMAS Brief · SHIP-10
+// apps/cms/app/api/audio-qa/[id]/route.ts · ROMAS Wire · SHIP-10
 // QA state-transition endpoint (FR-009, inviolable rule 6). Three layers
 // of defense gate WHETHER an audio job may publish:
 //   1. RLS policy audio_qa_flip — gates WHO (role audio_qa).

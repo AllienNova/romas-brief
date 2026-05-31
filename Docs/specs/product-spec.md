@@ -1,18 +1,18 @@
 ---
-title: ROMAS Brief — Product Spec
+title: ROMAS Wire — Product Spec
 version: 1.0.0
 date: 2026-05-14
 mode: greenfield (planning-rich, code-empty)
 owner: Kimal Honour Djam
 ---
 
-# ROMAS Brief — Product Spec
+# ROMAS Wire — Product Spec
 
 ## 1. Problem
 
 Radiation oncology operates at the intersection of clinical evidence, physics, regulatory clearance, and dense technical workflow. Practitioners need a single daily signal — clinical-grade, fully cited, audio-first — that filters the global noise into 5 items they can act on before their first patient of the day. Current alternatives are general oncology newsletters (too broad), trade press (low rigor), society email lists (lagging, society-bounded), and Twitter/LinkedIn (unreliable). None deliver primary-source-cited intelligence with operational depth (physics, AI, dosimetry, workflow).
 
-ROMAS Brief closes that gap as the public media surface of ROMAS Intelligence, sitting under the ROMAS ecosystem (whose core platform is ROMAS COS — the clinical operating system for the same audience).
+ROMAS Wire closes that gap as the public media surface of ROMAS Intelligence, sitting under the ROMAS ecosystem (whose core platform is ROMAS COS — the clinical operating system for the same audience).
 
 ## 2. Users
 
@@ -110,7 +110,7 @@ IDs are `FR-NNN`. Every MUST traces to ≥1 task in `MASTER_IMPLEMENTATION_PLAN.
 |---|---|
 | FR-W-001 | Patient-facing content. Out of scope. |
 | FR-W-002 | Treatment plan / dose recommendation generation. Inviolable boundary. |
-| FR-W-003 | EHR integration. Belongs to ROMAS COS, not ROMAS Brief. |
+| FR-W-003 | EHR integration. Belongs to ROMAS COS, not ROMAS Wire. |
 | FR-W-004 | ~~Video studio. Audio-first only at launch.~~ **REVERSED 2026-05-14 by Kimal for Tier 5 only.** See FR-022 — Video Podcast with invited guest at Day 60. Tier 5 is the only video surface; reader site remains text + audio. |
 
 ## 5. Non-functional requirements

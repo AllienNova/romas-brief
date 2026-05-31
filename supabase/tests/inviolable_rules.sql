@@ -1,5 +1,5 @@
 -- =====================================================================
--- supabase/tests/inviolable_rules.sql · ROMAS Brief
+-- supabase/tests/inviolable_rules.sql · ROMAS Wire
 -- R-105 (remediation-plan M1) · pgTAP coverage for the 6 inviolable rules
 -- per SSOT §2 + audio QA gate per ADR-0006 (with ADR-0016 widen).
 -- =====================================================================

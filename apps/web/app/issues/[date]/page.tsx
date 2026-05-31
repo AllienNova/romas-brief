@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Issue detail page (FR-030)
+ * ROMAS Wire — Issue detail page (FR-030)
  * /issues/[date] — shows all articles for a given issue date (YYYY-MM-DD)
  */
 import Link from "next/link";
@@ -24,8 +24,8 @@ export async function generateMetadata(props: { params: Promise<{ date: string }
   if (isNaN(d.getTime())) return {};
   const label = d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
   return {
-    title: `${label} — ROMAS Brief`,
-    description: `All ROMAS Brief radiation oncology briefings for ${label}.`,
+    title: `${label} — ROMAS Wire`,
+    description: `All ROMAS Wire radiation oncology briefings for ${label}.`,
   };
 }
 

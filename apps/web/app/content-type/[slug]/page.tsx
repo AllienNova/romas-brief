@@ -1,5 +1,5 @@
 /**
- * ROMAS Brief — Content-type archive page (FR-029)
+ * ROMAS Wire — Content-type archive page (FR-029)
  * /content-type/[slug] — 8 content types
  */
 import Link from "next/link";
@@ -23,7 +23,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   const meta = CONTENT_TYPE_META[params.slug as ContentType];
   if (!meta) return {};
   return {
-    title: `${meta.label} — ROMAS Brief`,
+    title: `${meta.label} — ROMAS Wire`,
     description: meta.description,
   };
 }

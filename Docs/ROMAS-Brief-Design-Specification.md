@@ -1,5 +1,5 @@
 ---
-title: ROMAS Brief — Design Specification
+title: ROMAS Wire — Design Specification
 version: 1.1.0
 date: 2026-05-22
 status: Canonical sibling to Master-Strategy v2.1 + Daily-Production-Runbook v1.1 + Launch-Plan v1.1 + Audio-Architecture v1.0
@@ -9,11 +9,11 @@ supersedes: implicit reference target in CLAUDE.md §6 + AGENT.md prior to this 
 sibling_docs: Docs/ROMAS-Brief-Master-Strategy.md, Docs/ROMAS-Brief-Daily-Production-Runbook.md, Docs/ROMAS-Brief-500-Article-Launch-Plan.md, Docs/ROMAS-Brief-Audio-Architecture.md
 ---
 
-# ROMAS Brief — Design Specification v1.1
+# ROMAS Wire — Design Specification v1.1
 
 ## 0. Purpose
 
-This document is the canonical reference for **how ROMAS Brief looks, reads, and behaves on the reader surface and the internal CMS**. It synthesises the design decisions from `Docs/design/*` (12 wireframes + 8 components + tokens + a11y + brand + copy + interaction patterns + IA + UX principles + user flows + ui-spec) into a single sibling-doc to the Master-Strategy + Runbook + Launch-Plan + Audio-Architecture.
+This document is the canonical reference for **how ROMAS Wire looks, reads, and behaves on the reader surface and the internal CMS**. It synthesises the design decisions from `Docs/design/*` (12 wireframes + 8 components + tokens + a11y + brand + copy + interaction patterns + IA + UX principles + user flows + ui-spec) into a single sibling-doc to the Master-Strategy + Runbook + Launch-Plan + Audio-Architecture.
 
 This file does NOT introduce new decisions. Every token, every spacing value, every typography choice is sourced from `.claude/skills/design-tokens.md` v1.2 (the executable design system), `Docs/design/tokens.json` (the JSON mirror for cross-platform consumption), or the per-component spec files. When this doc and a per-component file disagree, the per-component file wins (deeper specificity).
 
@@ -42,7 +42,7 @@ Editorial discipline lives in `.claude/skills/editorial-style-guide.md` (canonic
 
 ### 1.3 Sponsor firewall (inviolable)
 
-**No sponsor logo within 32px of the ROMAS Brief wordmark.** (SSOT §3 row 8, locked 2026-05-14 by Kimal.) Enforced by `design-system-keeper` agent via an ESLint rule on the `<SponsorBlock>` component (R-303 / M3). The 32px clearance applies at the **smallest masthead instance** — verified at every breakpoint.
+**No sponsor logo within 32px of the ROMAS Wire wordmark.** (SSOT §3 row 8, locked 2026-05-14 by Kimal.) Enforced by `design-system-keeper` agent via an ESLint rule on the `<SponsorBlock>` component (R-303 / M3). The 32px clearance applies at the **smallest masthead instance** — verified at every breakpoint.
 
 Co-branded mastheads are **killed for launch** (SSOT §3 row 3). For the first 60-90 days only "Sponsored by [X]" or "Partner message from [X]" copy patterns are permitted. Re-evaluate Day 90.
 

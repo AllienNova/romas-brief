@@ -1,7 +1,7 @@
 -- =====================================================================
 -- 0008_create_subscribers.sql
--- T-110 (MIP §B.1) · ROMAS Brief
--- Author: ROMAS Brief engineering, 2026-05-21 (M1-completion cycle)
+-- T-110 (MIP §B.1) · ROMAS Wire
+-- Author: ROMAS Wire engineering, 2026-05-21 (M1-completion cycle)
 -- Canonical source: Docs/specs/contracts/supabase-schema.sql lines 311-333
 -- Anchors: SSOT §3 row 5 (subscriber count hidden until 2,500) · SSOT
 --          §3 row 16 (three-edition publish requires region tag) · ADR-0007

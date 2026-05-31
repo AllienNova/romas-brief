@@ -1,5 +1,5 @@
 -- =====================================================================
--- supabase/tests/indexes.sql · ROMAS Brief
+-- supabase/tests/indexes.sql · ROMAS Wire
 -- R-105 extension · verify named indexes exist per Bucket A + canonical
 -- contract. Tests existence, not query-plan optimality (that lives in
 -- /team-qa performance reports).
