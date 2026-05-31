@@ -32,7 +32,7 @@ ROMAS Brief is a specialist intelligence platform for radiation oncology profess
 ### Standard deploy command (run from `/tmp/romas-repo`):
 
 ```bash
-TOKEN="***REMOVED-VERCEL-TOKEN***"
+TOKEN="$VERCEL_TOKEN"   # set in your shell/CI; NEVER commit. The previously-committed vcp_… token was leaked and MUST be rotated (team-qa P0).
 TEAM="team_rt0SMeqUHlkA9Z7kJPmlcpfl"
 
 RESP=$(curl -s -X POST "https://api.vercel.com/v13/deployments?teamId=$TEAM" \

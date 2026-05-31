@@ -310,8 +310,8 @@ Full rationale in each ADR. Summary:
 
 **Deploy command (manual — GitHub auto-deploys blocked due to billing):**
 ```bash
-TOKEN="***REMOVED-VERCEL-TOKEN***"
-TEAM="team_rt0SMeqUHlkA9Z7kJPmlcpfl"
+TOKEN="$VERCEL_TOKEN"   # set in your shell/CI; NEVER commit. The previously-committed vcp_… token was leaked and MUST be rotated (team-qa P0).
+TEAM="$VERCEL_TEAM_ID"
 curl -s -X POST "https://api.vercel.com/v13/deployments?teamId=$TEAM" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
