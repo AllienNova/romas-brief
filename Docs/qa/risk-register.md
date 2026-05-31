@@ -245,3 +245,13 @@ The cycle-6 BLOCKERS above are **superseded** by the Phase 8 consolidation + Wav
 | R-C7-7 | Reader audio modules / `has_audio` not wired to `audio_jobs` | Low | High | Listen page empty against real DB | Deferred to SHIP-23 (audio surface) | ENG |
 
 **Top 3 gating release:** R-C7-1 (rotate the Vercel token — only true P0 that's actionable now), R-C7-2 (content + deploy), R-C7-3 (integration tests). All Blocker-severity rows must be resolved or formally accepted before any GO.
+
+### Addendum 2026-05-31 (commit cb5b406) — GitHub Actions has never run
+
+| ID | Risk | Severity | Likelihood | Trigger | Mitigation status | Owner |
+|---|---|---|---|---|---|---|
+| **R-C7-8** | **GitHub Actions fails at startup on every push/PR since inception (2026-05-22)** — `startup_failure` / `path: BuildFailed`, unattributed, zero jobs, zero check runs | **Blocker** | Certain (100% of runs) | Any push or PR — CI provides **no** verification gate | **Diagnosed (engineering): account-level, not code.** Proven by isolation test on `feat/ship-17-wire-ci-tests`: a trivial 9-line `echo` workflow (all 4 real workflows disabled) also `startup_failure`d. `plan: free` org + **private** repo → Actions blocked by exhausted free minutes / no payment method / spending limit. Workflow content is valid (PyYAML + actionlint 1.7.12 + GitHub registration all pass). | **Kimal (billing)** |
+
+**Unblocker for R-C7-8 (Kimal):** at github.com/organizations/AllienNova/settings/billing — add a payment method and set an Actions spending limit > $0, **OR** make `romas-brief` public (Actions are free + unlimited for public repos), **OR** register a self-hosted runner. Until then, **CI is non-functional and every "green" claim in this repo rests on the local `agent-verify` pre-commit/pre-push gates only** (lint/typecheck/build/test/audit run locally and pass). The RALP audit's "CI red on main" P0 was understated: CI is not red, it has **never executed**.
+
+**Correction to the QA report:** statements like "typecheck and build pass" / "CI green throughout the SHIP campaign" reflect **local** turbo runs, not GitHub Actions. No GitHub-side verification exists yet for any merged commit. This does not change the local evidence (all SHIP tasks verified locally) but removes the second, independent CI check the report implied.
