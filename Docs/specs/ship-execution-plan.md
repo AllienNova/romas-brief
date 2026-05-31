@@ -1,9 +1,9 @@
 ---
 title: ROMAS Brief — Consolidated Ship-to-Deployment Execution Plan
-version: 1.1.0
-date: 2026-05-29
+version: 1.2.0
+date: 2026-05-31
 status: ACTIVE — supersedes scattered task tracking for launch sequencing
-baseline: HEAD=dd7f0e0
+baseline: HEAD=95f6111 (Wave 1–4 built out; remaining = Wave-5 provisioning/content gated)
 critic: team-plan-critic cycle 1 = REVISE REQUIRED (2 P0 / 6 P1) → addressed in v1.1.0; cycle 2 pending
 sources_consolidated:
   - ANALYSIS_REPORT.md (RALP audit, 24 tasks / 5 waves)
@@ -18,7 +18,7 @@ owner: Kimal Honour Djam
 
 # ROMAS Brief — Consolidated Ship-to-Deployment Execution Plan
 
-> **One authoritative ordered backlog.** Every prior task ID (T-NNN, B-XX, RC-NN) maps to a `SHIP-NN` line below or to the deferred list (§6). When `tasks.md`, `MASTER_IMPLEMENTATION_PLAN.md`, or `delivery-plan.md` disagree with this file on launch sequencing, **this file wins**. Status is reconciled against the working tree at `HEAD=dd7f0e0`.
+> **One authoritative ordered backlog.** Every prior task ID (T-NNN, B-XX, RC-NN) maps to a `SHIP-NN` line below or to the deferred list (§6). When `tasks.md`, `MASTER_IMPLEMENTATION_PLAN.md`, or `delivery-plan.md` disagree with this file on launch sequencing, **this file wins**. Status is reconciled against the working tree at `HEAD=95f6111` (refreshed 2026-05-31).
 
 ## 0. How to read this
 
@@ -28,23 +28,41 @@ owner: Kimal Honour Djam
 - **Acceptance** = command output or observable state. No "should work."
 - **Definition of public deployment** = SSOT §12.8 18-item gate + ops gate (§5) all green + `team-qa` cycle-7 GO.
 
-## 1. Ground-truth baseline (HEAD=dd7f0e0)
+## 1. Ground-truth baseline (HEAD=95f6111 · refreshed 2026-05-31)
 
-| Surface | State | Implication |
+> **Refreshed after the Wave 1–4 build-out.** The prior baseline (HEAD=dd7f0e0) is obsolete — do not trust earlier "mock only / scorer does not exist / CI RED" claims. Engineering is ~90% done; the launch date is now gated by **non-code** reality (content ramp + provisioning + CI billing), see §4b/§4c.
+
+| Surface | State (HEAD 95f6111) | Implication |
 |---|---|---|
-| Supabase schema | 11 migrations, RLS deny-by-default, 79 pgTAP assertions | ✅ real |
-| `workers/cron-ingest` | 766 LOC; ingest + dedupe + embargo + health | ✅ real, **sets no `signal_score`** (F-001), untested |
-| `workers/audio-producer` | 1,214 LOC pipeline | ✅ code-complete, runtime-unverified, untested |
-| `workers/rss-publisher` | 688 LOC, 4 feeds | ✅ code-complete, untested |
-| `workers/cdn-purge-watchdog` | 415 LOC, 60s SLA | ✅ code-complete, untested |
-| `workers/beehiiv-webhook` · `email-canary` · `source-health` | 35 / 37 / 35 LOC, HTTP 501 stubs | ❌ unbuilt |
-| `apps/web` reader | 18 routes + 16 components, **MOCK DATA ONLY** (12 mock importers; `createPublicSupabaseClient` 0 callers) | ⚠️ shell only |
-| `apps/cms` | 3 stub files, **no audio-QA UI** | ❌ Rule-6 surface absent |
-| Signal-scoring engine | **does not exist** (schema column only) | ❌ ranking primitive unbuilt |
-| `packages/ui` | 1-constant stub | ❌ no shared components |
-| Tests (JS/TS) | **zero** | ❌ |
-| Ops (SLO/alerting/runbook) | **none** (Sentry in `.env`, unwired) | ❌ |
-| CI on `main` | **RED** — lint exit 1 + `pnpm audit --audit-level=high` exit 1 (next@14.2.35, 5 high CVEs) | ❌ blocking |
+| Supabase schema | 11 migrations, RLS deny-by-default, 79 pgTAP; migration 0012 (RLS WITH CHECK) validated via rollback-txn, **apply gated** | ✅ real |
+| Signal-scoring engine | **BUILT** — six-axis + composite in `packages/shared/signal-scoring.ts`, 8 unit tests (SHIP-09) | ✅ real |
+| `workers/cron-ingest` | 766 LOC; ingest + dedupe + embargo + health | ✅ real; scorer wiring per SHIP-09; runtime-unverified |
+| `workers/audio-producer` | 1,214 LOC pipeline; correctness pass (SHIP-14) | ✅ code-complete, **runtime-unverified** (SHIP-27 blocked on P-01/02/10/11) |
+| `workers/rss-publisher` · `cdn-purge-watchdog` | 688 / 415 LOC, 4 feeds, 60s SLA | ✅ code-complete |
+| `workers/beehiiv-webhook` | **BUILT** (SHIP-11) | ✅ code-complete; live-verify needs P-05 |
+| `workers/email-canary` (Resend) | **BUILT** (SHIP-12) | ✅ code-complete; live-verify needs P-06/P-14 |
+| `workers/source-health` | decision pending | ❌ SHIP-19 open (Q-D: fold into cron-ingest vs build) |
+| `apps/web` reader | 18 routes + components **WIRED TO SUPABASE** (SHIP-08, real data-layer + mock fallback); full WCAG-AA a11y (SHIP-22/22c), `--rb-*` tokens, SVG icon system (SHIP-21), AudioPlayer + AudioStatusBadge (SHIP-23), AVIF/perf/Plausible (SHIP-24) | ✅ launch-grade shell; renders live data when content+env exist |
+| `apps/cms` | **audio-QA UI BUILT** (SHIP-10, Rule-6 gate operator) | ✅ Rule-6 surface present |
+| `packages/ui` | still a stub (reader components live in `apps/web/components`) | ⚠️ cosmetic — not launch-blocking |
+| Tests (JS/TS) | **21+ unit cases** wired to CI `test` (SHIP-17a): markdown-XSS, audio-QA gate, signal-scoring, audio-status + worker suites | ⚠️ unit ✅; integration (17b) blocked on test-DB |
+| Ops (SLO/alerting/runbook) | none (Sentry in `.env`, unwired) | ❌ SHIP-26 open (AUTO; live alert needs P-08) |
+| CI on `main` (GitHub Actions) | **never executed** — `startup_failure` every run since 2026-05-22 (Free-org + private-repo billing, P-00/R-C7-8). lint+typecheck+build+audit all **green LOCALLY** via `agent-verify`. | ❌ **#1 launch gate** — no GitHub-side verification or deploy until P-00 |
+
+## 1b. Launch-date reality (added 2026-05-31) — DECISION REQUIRED (Q-A)
+
+A **full Day-1-spec launch on 2026-06-07 (the stated "1 week away") is not achievable.** Two independent non-code constraints each exceed one week by 5–7×:
+
+1. **Content scaffold.** SSOT §12 / `500-Article-Launch-Plan.md:42-148` require **500 articles** Day-1; editorial approval throughput is **~10/day (6–14)** and is explicitly "the bottleneck." 500 ÷ 10 ≈ **8 weeks** (mid-July); even at 14/day ≈ 7 weeks. A 5-working-day window yields **~50–70 articles (~10–14%)**. The no-padding rule (`500-plan:204`) forbids faking the count. `ship-execution-plan:§4b` already computed Day-1 ≈ **2026-07-07**; ROMAS Wire ran a **5-week** runway minimum.
+2. **Provisioning + dead CI.** Zero production credentials are set; **GitHub Actions has never run** (P-00); the **audio pipeline has never been runtime-verified** (SHIP-27). See §4c critical path.
+
+**Engineering is ~90% done** (Waves 1–4 landed this session). The date is gated by content + provisioning, not code.
+
+**Q-A — Kimal decides (material product fork; do NOT pick autonomously):**
+- **Option A — Hold full launch to ~2026-07-07/07-21.** Matches this plan's own arithmetic + FOUNDERS-BOARD Q-A. Full 500-scaffold, all editions, audio. *Recommended.*
+- **Option B — Redefine 2026-06-07 as a soft / private, NA-only, descoped launch.** Curated ~50–70 articles (thin category pages accepted), audio best-effort, **EU + LATAM + the 500-scaffold as fast-follows.** Drops Beehiiv DPA (P-17, via Q-C=NA-only) and DeepL (P-07) from the path. This descopes the "comprehensive from Day 1" promise — explicit sign-off required.
+
+Until Q-A is answered, the engineering team drains the **AUTO** queue (§4a): SHIP-05, 18, 19, 26, 28, 29. Everything else is provisioning/content-gated (§4c).
 
 ## 2. Engineering backlog (sequential, atomic)
 
