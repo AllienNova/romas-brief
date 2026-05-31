@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { HeadphonesIcon, ContentTypeIcon, StarMark } from "./icons";
 
 export type ArticleCardVariant = "feature" | "standard" | "compact" | "quick-hit";
 
@@ -33,17 +34,6 @@ const CONTENT_TYPE_LABELS: Record<string, string> = {
   conference_brief: "Conference Brief",
 };
 
-const CONTENT_TYPE_ICONS: Record<string, string> = {
-  news_brief: "📰",
-  paper_critique: "🔬",
-  practice_delta: "⚡",
-  fda_brief: "🏛",
-  reimbursement_explainer: "💰",
-  vendor_intel: "🏢",
-  long_take: "📖",
-  primer: "🎓",
-  conference_brief: "🎤",
-};
 
 const CATEGORY_COLORS: Record<string, string> = {
   "AI": "#5E5CE6", "AI & ML": "#5E5CE6", "ai": "#5E5CE6",
@@ -81,10 +71,10 @@ function FeatureCard({ article }: { article: ArticleCardProps }) {
               sizes="(max-width:768px) 100vw, 55vw" priority />
             <div className="absolute inset-0" style={{ background: "linear-gradient(to top,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.15) 50%,transparent 100%)" }} />
             <div className="absolute bottom-4 left-4 flex items-center gap-2">
-              {article.isRomasInsight && <span className="badge-insight">✦ ROMAS Insight</span>}
+              {article.isRomasInsight && <span className="badge-insight"><StarMark className="inline-block mr-0.5" /> ROMAS Insight</span>}
               {article.hasAudio && (
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold text-white"
-                  style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)" }}>🎧 Audio</span>
+                  style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)" }}><HeadphonesIcon size={12} /> Audio</span>
               )}
             </div>
           </div>
@@ -134,7 +124,7 @@ function StandardCard({ article }: { article: ArticleCardProps }) {
           <div className="flex items-center gap-2 mb-2.5">
             <span className="kicker font-bold" style={{ color }}>{article.category}</span>
             {article.signalScore !== undefined && <SignalBadge score={article.signalScore} />}
-            {article.isRomasInsight && <span className="badge-insight">✦ RI</span>}
+            {article.isRomasInsight && <span className="badge-insight"><StarMark className="inline-block mr-0.5" /> RI</span>}
           </div>
           <h3 className="text-[15px] font-semibold leading-snug line-clamp-3 mb-2 flex-1 transition-colors duration-200 group-hover:text-[var(--rb-accent)]"
             style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.015em" }}>{article.title}</h3>
@@ -144,7 +134,7 @@ function StandardCard({ article }: { article: ArticleCardProps }) {
           <div className="flex items-center justify-between mt-auto pt-3" style={{ borderTop: "1px solid var(--rb-border-subtle)" }}>
             <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--rb-text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
             <div className="flex items-center gap-2">
-              {article.hasAudio && <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>🎧</span>}
+              {article.hasAudio && <span className="flex items-center" style={{ color: "var(--rb-text-tertiary)" }}><HeadphonesIcon size={12} /></span>}
               {article.region && <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>{article.region}</span>}
             </div>
           </div>
@@ -175,8 +165,8 @@ function CompactCard({ article }: { article: ArticleCardProps }) {
           </div>
         </div>
         {article.hasAudio && (
-          <span className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs"
-            style={{ background: "var(--rb-accent-subtle)", color: "var(--rb-accent)" }}>🎧</span>
+          <span className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
+            style={{ background: "var(--rb-accent-subtle)", color: "var(--rb-accent)" }}><HeadphonesIcon size={14} /></span>
         )}
       </article>
     </Link>
@@ -196,7 +186,7 @@ function QuickHitCard({ article }: { article: ArticleCardProps }) {
             <div className="flex items-center gap-1.5 mb-1.5">
               <span className="kicker font-bold" style={{ color }}>{article.category}</span>
               {article.signalScore !== undefined && <SignalBadge score={article.signalScore} />}
-              {article.isRomasInsight && <span className="badge-insight">✦ RI</span>}
+              {article.isRomasInsight && <span className="badge-insight"><StarMark className="inline-block mr-0.5" /> RI</span>}
               {article.region && <span className="kicker ml-auto" style={{ color: "var(--rb-text-tertiary)" }}>{article.region}</span>}
             </div>
             <h4 className="text-[13.5px] font-semibold line-clamp-2 transition-colors duration-150 group-hover:text-[var(--rb-accent)]"
@@ -206,7 +196,7 @@ function QuickHitCard({ article }: { article: ArticleCardProps }) {
             )}
             <div className="flex items-center gap-2 mt-2">
               <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--rb-text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
-              {article.hasAudio && <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>🎧 Audio</span>}
+              {article.hasAudio && <span className="kicker flex items-center gap-1" style={{ color: "var(--rb-text-tertiary)" }}><HeadphonesIcon size={12} /> Audio</span>}
             </div>
           </div>
         </div>

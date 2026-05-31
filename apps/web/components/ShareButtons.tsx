@@ -1,5 +1,7 @@
 "use client";
 
+import { LinkIcon } from "./icons";
+
 interface ShareButtonsProps {
   title: string;
   slug: string;
@@ -37,7 +39,7 @@ export default function ShareButtons({ title, slug }: ShareButtonsProps) {
         onClick={handleCopy}
         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-200 text-xs text-neutral-600 hover:bg-neutral-50 transition-colors"
       >
-        🔗 Copy link
+        <LinkIcon size={14} /> Copy link
       </button>
     </div>
   );

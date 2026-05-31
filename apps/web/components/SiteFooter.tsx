@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MusicNoteIcon, HeadphonesIcon } from "./icons";
 
 export default function SiteFooter() {
   return (
@@ -23,10 +24,10 @@ export default function SiteFooter() {
             {/* Podcast badges */}
             <div className="flex flex-wrap gap-2">
               <a href="#" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--rb-bg-surface)] border border-[var(--rb-border-subtle)] text-xs font-medium text-[var(--rb-text-secondary)] hover:border-[var(--rb-border-default)] transition-colors">
-                🎵 Apple Podcasts
+                <MusicNoteIcon size={12} /> Apple Podcasts
               </a>
               <a href="#" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--rb-bg-surface)] border border-[var(--rb-border-subtle)] text-xs font-medium text-[var(--rb-text-secondary)] hover:border-[var(--rb-border-default)] transition-colors">
-                🎧 Spotify
+                <HeadphonesIcon size={12} /> Spotify
               </a>
             </div>
           </div>

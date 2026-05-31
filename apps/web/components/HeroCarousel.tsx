@@ -9,6 +9,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import { HeadphonesIcon } from "./icons";
 
 export type SlideType = "top_move" | "friday_read" | "audio_today" | "conference_brief" | "sponsor";
 
@@ -190,7 +191,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
             </span>
           )}
           {slide.hasAudio && (
-            <span className="text-white/80 text-xs">🎧</span>
+            <span className="text-white/80"><HeadphonesIcon size={14} /></span>
           )}
         </div>
 

@@ -11,6 +11,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { StarMark, HeadphonesIcon } from "./icons";
 
 export interface SideStackItem {
   slug: string;
@@ -66,7 +67,7 @@ function SlotCard({ item }: { item: SideStackItem }) {
             {item.category.replace(/-/g, " ").toUpperCase()}
           </span>
           {item.isRomasInsight && (
-            <span className="badge-insight text-xs">✦ RI</span>
+            <span className="badge-insight text-xs"><StarMark size={9} /> RI</span>
           )}
           <span
             className="ml-auto text-xs font-bold px-1.5 py-0.5 rounded"
@@ -86,7 +87,7 @@ function SlotCard({ item }: { item: SideStackItem }) {
         </h4>
       </div>
       <div className="flex items-center gap-2 mt-2">
-        {item.hasAudio && <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>🎧</span>}
+        {item.hasAudio && <span style={{ color: "var(--rb-text-tertiary)" }}><HeadphonesIcon size={12} /></span>}
         <time className="kicker text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
           {formatDate(item.publishedAt)}
         </time>

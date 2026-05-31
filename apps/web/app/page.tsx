@@ -7,6 +7,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import ArticleCard from "@/components/ArticleCard";
+import {
+  TherapistIcon,
+  PaperCritiqueIcon,
+  StarMark,
+  HeadphonesIcon,
+  MicrophoneIcon,
+  AiIcon,
+  ClinicalRtIcon,
+  PhysicsIcon,
+  RegulatoryIcon,
+  GuidelinesIcon,
+  ReimbursementIcon,
+  GlobeIcon,
+  PhysicianIcon,
+} from "@/components/icons";
 import ConversionWidget from "@/components/ConversionWidget";
 import HeroCarousel, { type HeroSlide } from "@/components/HeroCarousel";
 import SideStack from "@/components/SideStack";
@@ -272,7 +287,7 @@ export default async function HomePage() {
                 <Link key={article.slug} href={`/article/${article.slug}`} className="block group" aria-label={`Industry move: ${article.title}`}>
                   <div className={`p-5 transition-colors hover:bg-[var(--rb-bg-raised)] ${i < industryMoves.length - 1 ? "border-b" : ""}`} style={{ borderColor: "var(--rb-border-subtle)" }}>
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ background: "var(--rb-bg-raised)" }}>🏥</div>
+                      <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "var(--rb-bg-raised)", color: "var(--rb-text-secondary)" }}><TherapistIcon size={20} /></div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="kicker" style={{ color: "#30D158" }}>{article.category}</span>
@@ -298,9 +313,9 @@ export default async function HomePage() {
                   <div className="p-8">
                     <div className="flex items-center gap-3 mb-5">
                       <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{ background: "var(--rb-accent-subtle)", color: "var(--rb-accent)" }}>
-                        🔬 {paperOfDay.primary_source_type}
+                        <PaperCritiqueIcon size={12} /> {paperOfDay.primary_source_type}
                       </div>
-                      {paperOfDay.romas_insight && <span className="badge-insight">✦ ROMAS Insight</span>}
+                      {paperOfDay.romas_insight && <span className="badge-insight"><StarMark className="inline-block mr-0.5" /> ROMAS Insight</span>}
                       {paperOfDay.composite_score >= 80 ? <span className="badge-signal-green">S{paperOfDay.composite_score}</span> : <span className="badge-signal-amber">S{paperOfDay.composite_score}</span>}
                     </div>
                     <h2 className="text-xl sm:text-2xl font-bold mb-4 text-balance group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em", lineHeight: "1.25" }}>
@@ -328,7 +343,7 @@ export default async function HomePage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         {paperOfDay.has_audio && (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: "var(--rb-bg-raised)", color: "var(--rb-text-secondary)" }}>🎧 Audio available</span>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: "var(--rb-bg-raised)", color: "var(--rb-text-secondary)" }}><HeadphonesIcon size={12} /> Audio available</span>
                         )}
                         <a href={paperOfDay.primary_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors hover:bg-[var(--rb-bg-sunken)]" style={{ background: "var(--rb-bg-raised)", color: "var(--rb-text-secondary)" }} aria-label="Open primary source in new tab">Primary source ↗</a>
                       </div>
@@ -365,7 +380,7 @@ export default async function HomePage() {
               <div className="rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, #001D3D 0%, #001A18 100%)", boxShadow: "var(--rb-shadow-lg)" }}>
                 <div className="p-8">
                   <div className="flex items-center gap-3 mb-5">
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style={{ background: "rgba(255,255,255,0.10)" }}>🎙</div>
+                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.8)" }}><MicrophoneIcon size={28} /></div>
                     <div>
                       <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">ROMAS Brief Podcast</p>
                       <p className="text-sm font-medium text-white/80">
@@ -418,7 +433,7 @@ export default async function HomePage() {
                 <Link key={article.slug} href={`/article/${article.slug}`} className="block group" aria-label={`Audio brief: ${article.title}`}>
                   <article className="card p-5 h-full">
                     <div className="flex items-start gap-3 mb-3">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "var(--rb-accent-subtle)" }}><span className="text-base">🎧</span></div>
+                      <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "var(--rb-accent-subtle)", color: "var(--rb-accent)" }}><HeadphonesIcon size={20} /></div>
                       <div className="flex-1 min-w-0">
                         <span className="kicker block mb-1" style={{ color: "var(--rb-accent)" }}>{article.category}</span>
                         <h4 className="text-sm font-semibold line-clamp-2 group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{article.title}</h4>
@@ -453,14 +468,14 @@ export default async function HomePage() {
                         <div className="flex items-center gap-2 mb-1.5">
                           <span className="kicker" style={{ color: "var(--rb-accent)" }}>{article.category}</span>
                           {article.composite_score >= 80 ? <span className="badge-signal-green">S{article.composite_score}</span> : <span className="badge-signal-amber">S{article.composite_score}</span>}
-                          {article.romas_insight && <span className="badge-insight">✦ RI</span>}
+                          {article.romas_insight && <span className="badge-insight"><StarMark className="inline-block mr-0.5" /> RI</span>}
                         </div>
                         <h3 className="text-base font-semibold line-clamp-2 group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{article.title}</h3>
                         <div className="flex items-center gap-3 mt-2">
                           <time className="kicker" dateTime={article.published_at} style={{ color: "var(--rb-text-tertiary)" }}>
                             {new Date(article.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                           </time>
-                          {article.has_audio && <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>🎧 Audio</span>}
+                          {article.has_audio && <span className="kicker flex items-center gap-1" style={{ color: "var(--rb-text-tertiary)" }}><HeadphonesIcon size={12} /> Audio</span>}
                           <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>{article.region}</span>
                         </div>
                       </div>
@@ -472,20 +487,20 @@ export default async function HomePage() {
             <div className="lg:col-span-4">
               <SectionHeader label="Explore" title="Browse Topics" />
               <div className="grid grid-cols-2 gap-2">
-                {[
-                  { href: "/categories/ai", label: "AI & ML", icon: "🤖" },
-                  { href: "/categories/clinical-rt", label: "Clinical RT", icon: "⚕️" },
-                  { href: "/categories/physics", label: "Physics", icon: "⚛️" },
-                  { href: "/categories/regulatory", label: "Regulatory", icon: "🏛" },
-                  { href: "/categories/guidelines", label: "Guidelines", icon: "📋" },
-                  { href: "/categories/reimbursement", label: "Reimbursement", icon: "💰" },
-                  { href: "/regions/us", label: "US", icon: "🇺🇸" },
-                  { href: "/regions/europe", label: "Europe", icon: "🇪🇺" },
-                  { href: "/for/physicists", label: "Physicists", icon: "🔬" },
-                  { href: "/for/physicians", label: "Physicians", icon: "👨‍⚕️" },
-                ].map(({ href, label, icon }) => (
+                {([
+                  { href: "/categories/ai", label: "AI & ML", Icon: AiIcon },
+                  { href: "/categories/clinical-rt", label: "Clinical RT", Icon: ClinicalRtIcon },
+                  { href: "/categories/physics", label: "Physics", Icon: PhysicsIcon },
+                  { href: "/categories/regulatory", label: "Regulatory", Icon: RegulatoryIcon },
+                  { href: "/categories/guidelines", label: "Guidelines", Icon: GuidelinesIcon },
+                  { href: "/categories/reimbursement", label: "Reimbursement", Icon: ReimbursementIcon },
+                  { href: "/regions/us", label: "US", Icon: GlobeIcon },
+                  { href: "/regions/europe", label: "Europe", Icon: GlobeIcon },
+                  { href: "/for/physicists", label: "Physicists", Icon: PhysicsIcon },
+                  { href: "/for/physicians", label: "Physicians", Icon: PhysicianIcon },
+                ] as const).map(({ href, label, Icon }) => (
                   <Link key={href} href={href} className="flex items-center gap-2.5 p-3 rounded-xl border transition-all hover:shadow-sm hover:border-[var(--rb-border-default)] group" style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)" }} aria-label={`Browse ${label} articles`}>
-                    <span className="text-lg">{icon}</span>
+                    <span style={{ color: "var(--rb-text-secondary)" }}><Icon size={16} /></span>
                     <span className="text-xs font-semibold group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
                   </Link>
                 ))}
@@ -503,7 +518,7 @@ export default async function HomePage() {
             <Link key={article.slug} href={`/article/${article.slug}`} className="block group" aria-label={`Research paper: ${article.title}`}>
               <article className="card h-full p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: "var(--rb-accent-subtle)", color: "var(--rb-accent)" }}>🔬 {article.primary_source_type}</span>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: "var(--rb-accent-subtle)", color: "var(--rb-accent)" }}><PaperCritiqueIcon size={12} /> {article.primary_source_type}</span>
                   {article.composite_score >= 80 ? <span className="badge-signal-green">S{article.composite_score}</span> : <span className="badge-signal-amber">S{article.composite_score}</span>}
                 </div>
                 <h3 className="text-sm font-semibold line-clamp-3 group-hover:text-[var(--rb-accent)] transition-colors mb-3" style={{ color: "var(--rb-text-primary)" }}>{article.title}</h3>
@@ -512,7 +527,7 @@ export default async function HomePage() {
                   <time className="kicker" dateTime={article.published_at} style={{ color: "var(--rb-text-tertiary)" }}>
                     {new Date(article.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </time>
-                  {article.has_audio && <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>🎧</span>}
+                  {article.has_audio && <span className="flex items-center" style={{ color: "var(--rb-text-tertiary)" }}><HeadphonesIcon size={12} /></span>}
                 </div>
               </article>
             </Link>
@@ -532,7 +547,7 @@ export default async function HomePage() {
             <p className="text-sm text-white/65 mb-8 max-w-xl mx-auto">Join 4,200+ radiation oncology professionals who start their day with ROMAS Brief.</p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a href="https://romasbrief.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white font-semibold text-sm transition-all hover:bg-white/90 hover:scale-105 active:scale-95" style={{ color: "#0066CC" }} aria-label="Subscribe to ROMAS Brief">Subscribe free — takes 30 seconds</a>
-              <Link href="/listen" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 text-white font-medium text-sm transition-all hover:bg-white/10" aria-label="Browse audio library">🎧 Browse audio library</Link>
+              <Link href="/listen" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 text-white font-medium text-sm transition-all hover:bg-white/10" aria-label="Browse audio library"><HeadphonesIcon size={16} /> Browse audio library</Link>
             </div>
             <p className="text-xs text-white/50 mt-5">No spam. Unsubscribe anytime. GDPR compliant.</p>
           </div>

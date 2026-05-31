@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { StarMark, HeadphonesIcon } from "./icons";
 
 export interface TopStoryItem {
   slug: string;
@@ -225,13 +226,13 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
                   style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 50%, transparent 100%)" }}
                 />
                 <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                  {heroArticle.romas_insight && <span className="badge-insight">✦ ROMAS Insight</span>}
+                  {heroArticle.romas_insight && <span className="badge-insight"><StarMark size={10} /> ROMAS Insight</span>}
                   {heroArticle.has_audio && (
                     <span
                       className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold text-white"
                       style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)" }}
                     >
-                      🎧 Audio
+                      <HeadphonesIcon size={13} /> Audio
                     </span>
                   )}
                 </div>
@@ -314,7 +315,7 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
                     <div className="flex items-center gap-2 mb-2.5">
                       <span className="kicker font-bold" style={{ color }}>{article.category}</span>
                       <SignalBadge score={article.composite_score} />
-                      {article.romas_insight && <span className="badge-insight">✦ RI</span>}
+                      {article.romas_insight && <span className="badge-insight"><StarMark size={10} /> RI</span>}
                     </div>
                     <h3
                       className="text-[15px] font-semibold leading-snug line-clamp-3 mb-2 transition-colors duration-200 group-hover:text-[var(--rb-accent)]"
@@ -340,7 +341,7 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
                         {new Date(article.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </time>
                       <div className="flex items-center gap-2">
-                        {article.has_audio && <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>🎧</span>}
+                        {article.has_audio && <span style={{ color: "var(--rb-text-tertiary)" }}><HeadphonesIcon size={12} /></span>}
                         {article.region && <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>{article.region}</span>}
                       </div>
                     </div>

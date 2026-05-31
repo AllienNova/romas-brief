@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { StarMark } from "./icons";
 
 interface ConversionWidgetProps {
   variant?: "hero" | "inline" | "sticky-bottom";
@@ -72,7 +73,7 @@ export default function ConversionWidget({
     return (
       <div className={`conversion-widget ${className}`}>
         <div className="max-w-xl">
-          <div className="badge-insight mb-4">✦ Free Intelligence</div>
+          <div className="badge-insight mb-4"><StarMark size={10} /> Free Intelligence</div>
           <h2 className="text-3xl sm:text-4xl font-bold text-[var(--rb-text-primary)] mb-3 text-balance" style={{ letterSpacing: "-0.02em" }}>
             {headline}
           </h2>
@@ -105,7 +106,7 @@ export default function ConversionWidget({
     <div className={`conversion-widget ${className}`}>
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex-1">
-          <div className="badge-insight mb-2">✦ Free Daily Brief</div>
+          <div className="badge-insight mb-2"><StarMark size={10} /> Free Daily Brief</div>
           <p className="text-sm font-semibold text-[var(--rb-text-primary)]">{headline}</p>
           <p className="text-xs text-[var(--rb-text-secondary)] mt-0.5">{subline ?? subtext}</p>
         </div>

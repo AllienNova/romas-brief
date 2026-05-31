@@ -7,6 +7,9 @@
  */
 
 import { useState } from "react";
+import { ThumbsUpIcon, ThumbsDownIcon, HeadphonesIcon, MusicNoteIcon, RssIcon, CloudIcon } from "./icons";
+import type { FC } from "react";
+import type { IconProps } from "./icons";
 
 interface ShareRowProps {
   title: string;
@@ -133,8 +136,8 @@ export default function ShareRow({
             Was this useful?
           </span>
           {feedbackGiven ? (
-            <span className="text-xs font-medium" style={{ color: "var(--rb-accent)" }}>
-              {feedbackGiven === "useful" ? "👍 Thanks for the feedback!" : "👎 Noted — we'll improve."}
+            <span className="inline-flex items-center gap-1 text-xs font-medium" style={{ color: "var(--rb-accent)" }}>
+              {feedbackGiven === "useful" ? <><ThumbsUpIcon size={13} /> Thanks for the feedback!</> : <><ThumbsDownIcon size={13} /> Noted — we&apos;ll improve.</>}
             </span>
           ) : (
             <div className="flex items-center gap-2">
@@ -144,7 +147,7 @@ export default function ShareRow({
                 style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}
                 aria-label="Mark as useful"
               >
-                👍 Useful
+                <ThumbsUpIcon size={13} /> Useful
               </button>
               <button
                 onClick={() => handleFeedback("not_useful")}
@@ -152,7 +155,7 @@ export default function ShareRow({
                 style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}
                 aria-label="Mark as not useful"
               >
-                👎 Not useful
+                <ThumbsDownIcon size={13} /> Not useful
               </button>
             </div>
           )}
@@ -165,15 +168,15 @@ export default function ShareRow({
           className="flex flex-wrap items-center gap-2 pt-3 border-t"
           style={{ borderColor: "var(--rb-border-subtle)" }}
         >
-          <span className="text-xs font-semibold uppercase tracking-wider mr-1" style={{ color: "var(--rb-text-tertiary)" }}>
-            🎧 Subscribe on
+          <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider mr-1" style={{ color: "var(--rb-text-tertiary)" }}>
+            <HeadphonesIcon size={13} /> Subscribe on
           </span>
-          {[
-            { label: "Apple Podcasts", href: "https://podcasts.apple.com/podcast/romas-brief", icon: "🎵" },
-            { label: "Spotify", href: "https://open.spotify.com/show/romasbrief", icon: "🎧" },
-            { label: "RSS Feed", href: "/feeds/podcast.xml", icon: "📡" },
-            { label: "Overcast", href: "https://overcast.fm/itunes/romasbrief", icon: "☁️" },
-          ].map(({ label, href, icon }) => (
+          {([
+            { label: "Apple Podcasts", href: "https://podcasts.apple.com/podcast/romas-brief", Icon: MusicNoteIcon },
+            { label: "Spotify", href: "https://open.spotify.com/show/romasbrief", Icon: HeadphonesIcon },
+            { label: "RSS Feed", href: "/feeds/podcast.xml", Icon: RssIcon },
+            { label: "Overcast", href: "https://overcast.fm/itunes/romasbrief", Icon: CloudIcon },
+          ] as { label: string; href: string; Icon: FC<IconProps> }[]).map(({ label, href, Icon }) => (
             <a
               key={label}
               href={href}
@@ -183,7 +186,7 @@ export default function ShareRow({
               style={{ borderColor: "var(--rb-border-default)", color: "var(--rb-text-secondary)" }}
               aria-label={`Subscribe on ${label}`}
             >
-              {icon} {label}
+              <Icon size={14} /> {label}
             </a>
           ))}
         </div>

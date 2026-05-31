@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import DarkModeToggle from "@/components/DarkModeToggle";
 import MobileCTABand from "@/components/MobileCTABand";
+import { MicrophoneIcon, NewsBriefIcon, HeadphonesIcon, GlobeIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: {
@@ -349,16 +350,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
                 {/* RSS feeds */}
                 <div className="flex flex-wrap gap-2 mb-5">
-                  {[
-                    { href: "/feeds/audio-brief.xml", label: "🎙 Audio RSS" },
-                    { href: "/feeds/daily-brief.xml", label: "📰 Daily RSS" },
-                    { href: "/feeds/podcast.xml", label: "🎧 Podcast" },
-                  ].map(({ href, label }) => (
+                  {([
+                    { href: "/feeds/audio-brief.xml", label: "Audio RSS", Icon: MicrophoneIcon },
+                    { href: "/feeds/daily-brief.xml", label: "Daily RSS", Icon: NewsBriefIcon },
+                    { href: "/feeds/podcast.xml", label: "Podcast", Icon: HeadphonesIcon },
+                  ] as const).map(({ href, label, Icon }) => (
                     <a
                       key={href}
                       href={href}
-                      className="pill-tag"
+                      className="pill-tag inline-flex items-center gap-1"
                     >
+                      <Icon size={12} />
                       {label}
                     </a>
                   ))}
@@ -447,17 +449,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <p className="section-label">Regions</p>
                 <ul className="space-y-2">
                   {[
-                    { href: "/regions/us", label: "🇺🇸 United States" },
-                    { href: "/regions/europe", label: "🇪🇺 Europe" },
-                    { href: "/regions/uk", label: "🇬🇧 United Kingdom" },
-                    { href: "/regions/apac", label: "🌏 Asia-Pacific" },
+                    { href: "/regions/us", label: "United States" },
+                    { href: "/regions/europe", label: "Europe" },
+                    { href: "/regions/uk", label: "United Kingdom" },
+                    { href: "/regions/apac", label: "Asia-Pacific" },
                   ].map(({ href, label }) => (
                     <li key={href}>
                       <Link
                         href={href}
-                        className="text-sm transition-colors hover:text-[var(--rb-accent)]"
+                        className="text-sm transition-colors hover:text-[var(--rb-accent)] inline-flex items-center gap-1.5"
                         style={{ color: "var(--rb-text-secondary)" }}
                       >
+                        <GlobeIcon size={12} />
                         {label}
                       </Link>
                     </li>

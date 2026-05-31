@@ -15,37 +15,58 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import DarkModeToggle from "./DarkModeToggle";
+import {
+  AiIcon,
+  ClinicalRtIcon,
+  PhysicsIcon,
+  RegulatoryIcon,
+  GuidelinesIcon,
+  ReimbursementIcon,
+  VendorIcon,
+  ConferencesIcon,
+  OperationsIcon,
+  GlobeIcon,
+  PhysicianIcon,
+  DosimetristIcon,
+  TherapistIcon,
+  PrimerIcon,
+  AdministratorIcon,
+} from "./icons";
 
 // ── Data ──────────────────────────────────────────────────────────────────
 
-const TOPICS = [
-  { href: "/categories/ai", label: "AI & Machine Learning", icon: "🤖", desc: "LLM, auto-contouring, adaptive planning" },
-  { href: "/categories/clinical-rt", label: "Clinical RT", icon: "⚕️", desc: "Trials, outcomes, technique updates" },
-  { href: "/categories/physics", label: "Medical Physics", icon: "⚛️", desc: "QA, dosimetry, beam modelling" },
-  { href: "/categories/regulatory", label: "Regulatory", icon: "🏛", desc: "FDA clearances, CE marks, recalls" },
-  { href: "/categories/guidelines", label: "Guidelines", icon: "📋", desc: "ASTRO, ESTRO, NCCN updates" },
-  { href: "/categories/reimbursement", label: "Reimbursement", icon: "💰", desc: "CMS, CPT codes, payer policy" },
-  { href: "/categories/vendor", label: "Vendor News", icon: "🏭", desc: "Product launches, acquisitions" },
-  { href: "/categories/conferences", label: "Conferences", icon: "🎤", desc: "ASTRO, ESTRO, AAPM highlights" },
-  { href: "/categories/operations", label: "Operations", icon: "⚙️", desc: "Workflow, staffing, industry moves" },
+type TopicItem = { href: string; label: string; Icon: React.FC<{ size?: number; className?: string }>; desc: string };
+type RegionItem = { href: string; label: string };
+type AudienceItem = { href: string; label: string; Icon: React.FC<{ size?: number; className?: string }> };
+
+const TOPICS: TopicItem[] = [
+  { href: "/categories/ai", label: "AI & Machine Learning", Icon: AiIcon, desc: "LLM, auto-contouring, adaptive planning" },
+  { href: "/categories/clinical-rt", label: "Clinical RT", Icon: ClinicalRtIcon, desc: "Trials, outcomes, technique updates" },
+  { href: "/categories/physics", label: "Medical Physics", Icon: PhysicsIcon, desc: "QA, dosimetry, beam modelling" },
+  { href: "/categories/regulatory", label: "Regulatory", Icon: RegulatoryIcon, desc: "FDA clearances, CE marks, recalls" },
+  { href: "/categories/guidelines", label: "Guidelines", Icon: GuidelinesIcon, desc: "ASTRO, ESTRO, NCCN updates" },
+  { href: "/categories/reimbursement", label: "Reimbursement", Icon: ReimbursementIcon, desc: "CMS, CPT codes, payer policy" },
+  { href: "/categories/vendor", label: "Vendor News", Icon: VendorIcon, desc: "Product launches, acquisitions" },
+  { href: "/categories/conferences", label: "Conferences", Icon: ConferencesIcon, desc: "ASTRO, ESTRO, AAPM highlights" },
+  { href: "/categories/operations", label: "Operations", Icon: OperationsIcon, desc: "Workflow, staffing, industry moves" },
 ];
 
-const REGIONS = [
-  { href: "/regions/us", label: "United States", flag: "🇺🇸" },
-  { href: "/regions/europe", label: "Europe", flag: "🇪🇺" },
-  { href: "/regions/uk", label: "United Kingdom", flag: "🇬🇧" },
-  { href: "/regions/apac", label: "Asia-Pacific", flag: "🌏" },
-  { href: "/regions/canada", label: "Canada", flag: "🇨🇦" },
-  { href: "/regions/latam", label: "Latin America", flag: "🌎" },
+const REGIONS: RegionItem[] = [
+  { href: "/regions/us", label: "United States" },
+  { href: "/regions/europe", label: "Europe" },
+  { href: "/regions/uk", label: "United Kingdom" },
+  { href: "/regions/apac", label: "Asia-Pacific" },
+  { href: "/regions/canada", label: "Canada" },
+  { href: "/regions/latam", label: "Latin America" },
 ];
 
-const AUDIENCE = [
-  { href: "/for/physicians", label: "Radiation Oncologists", icon: "👨‍⚕️" },
-  { href: "/for/physicists", label: "Medical Physicists", icon: "🔬" },
-  { href: "/for/dosimetrists", label: "Dosimetrists", icon: "📐" },
-  { href: "/for/therapists", label: "Radiation Therapists", icon: "🏥" },
-  { href: "/for/residents", label: "Residents & Fellows", icon: "🎓" },
-  { href: "/for/administrators", label: "Administrators", icon: "📊" },
+const AUDIENCE: AudienceItem[] = [
+  { href: "/for/physicians", label: "Radiation Oncologists", Icon: PhysicianIcon },
+  { href: "/for/physicists", label: "Medical Physicists", Icon: PhysicsIcon },
+  { href: "/for/dosimetrists", label: "Dosimetrists", Icon: DosimetristIcon },
+  { href: "/for/therapists", label: "Radiation Therapists", Icon: TherapistIcon },
+  { href: "/for/residents", label: "Residents & Fellows", Icon: PrimerIcon },
+  { href: "/for/administrators", label: "Administrators", Icon: AdministratorIcon },
 ];
 
 const MOCK_SEARCH_RESULTS = [
@@ -182,9 +203,9 @@ export default function SiteHeader() {
                     onMouseLeave={closeDropdown}
                   >
                     <div className="p-3 grid grid-cols-3 gap-1">
-                      {TOPICS.map(({ href, label, icon, desc }) => (
+                      {TOPICS.map(({ href, label, Icon, desc }) => (
                         <Link key={href} href={href} className="flex flex-col gap-0.5 p-3 rounded-xl transition-colors hover:bg-[var(--rb-bg-raised)] group">
-                          <span className="text-lg mb-0.5">{icon}</span>
+                          <span className="mb-0.5" style={{ color: "var(--rb-text-secondary)" }}><Icon size={18} /></span>
                           <span className="text-xs font-semibold group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
                           <span className="text-xs leading-snug" style={{ color: "var(--rb-text-tertiary)" }}>{desc}</span>
                         </Link>
@@ -220,9 +241,9 @@ export default function SiteHeader() {
                     onMouseLeave={closeDropdown}
                   >
                     <div className="p-2">
-                      {REGIONS.map(({ href, label, flag }) => (
+                      {REGIONS.map(({ href, label }) => (
                         <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-[var(--rb-bg-raised)] group">
-                          <span className="text-base">{flag}</span>
+                          <span style={{ color: "var(--rb-text-secondary)" }}><GlobeIcon size={16} /></span>
                           <span className="text-sm font-medium group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
                         </Link>
                       ))}
@@ -253,9 +274,9 @@ export default function SiteHeader() {
                     onMouseLeave={closeDropdown}
                   >
                     <div className="p-2">
-                      {AUDIENCE.map(({ href, label, icon }) => (
+                      {AUDIENCE.map(({ href, label, Icon }) => (
                         <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-[var(--rb-bg-raised)] group">
-                          <span className="text-base">{icon}</span>
+                          <span style={{ color: "var(--rb-text-secondary)" }}><Icon size={16} /></span>
                           <span className="text-sm font-medium group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
                         </Link>
                       ))}
@@ -357,9 +378,9 @@ export default function SiteHeader() {
               <div>
                 <p className="kicker mb-3" style={{ color: "var(--rb-text-tertiary)" }}>Topics</p>
                 <div className="grid grid-cols-2 gap-2">
-                  {TOPICS.slice(0, 6).map(({ href, label, icon }) => (
+                  {TOPICS.slice(0, 6).map(({ href, label, Icon }) => (
                     <Link key={href} href={href} className="flex items-center gap-2 p-3 rounded-xl border transition-colors hover:bg-[var(--rb-bg-raised)]" style={{ borderColor: "var(--rb-border-subtle)", background: "var(--rb-bg-surface)" }}>
-                      <span>{icon}</span>
+                      <span style={{ color: "var(--rb-text-secondary)" }}><Icon size={16} /></span>
                       <span className="text-sm font-medium" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
                     </Link>
                   ))}
@@ -368,9 +389,9 @@ export default function SiteHeader() {
               <div>
                 <p className="kicker mb-3" style={{ color: "var(--rb-text-tertiary)" }}>For You</p>
                 <div className="grid grid-cols-2 gap-2">
-                  {AUDIENCE.map(({ href, label, icon }) => (
+                  {AUDIENCE.map(({ href, label, Icon }) => (
                     <Link key={href} href={href} className="flex items-center gap-2 p-3 rounded-xl border transition-colors hover:bg-[var(--rb-bg-raised)]" style={{ borderColor: "var(--rb-border-subtle)", background: "var(--rb-bg-surface)" }}>
-                      <span>{icon}</span>
+                      <span style={{ color: "var(--rb-text-secondary)" }}><Icon size={16} /></span>
                       <span className="text-sm font-medium" style={{ color: "var(--rb-text-primary)" }}>{label}</span>
                     </Link>
                   ))}

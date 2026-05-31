@@ -9,6 +9,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { HeadphonesIcon } from "./icons";
 
 export interface QuickHitItem {
   slug: string;
@@ -146,7 +147,7 @@ function HitRow({
               </span>
             )}
             {item.hasAudio && (
-              <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>· 🎧</span>
+              <span className="inline-flex items-center gap-1 text-xs" style={{ color: "var(--rb-text-tertiary)" }}>· <HeadphonesIcon size={12} /></span>
             )}
           </div>
 

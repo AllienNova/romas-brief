@@ -8,6 +8,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { InfoMark } from "./icons";
 
 const STORAGE_KEY = "romas-strip-dismissed";
 
@@ -46,7 +47,7 @@ export default function DismissibleStrip() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-start sm:items-center justify-between gap-4">
         <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
-          <span className="flex-shrink-0 text-base" aria-hidden="true">ℹ️</span>
+          <InfoMark size={18} className="flex-shrink-0" />
           <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>
             <strong style={{ color: "var(--rb-text-primary)" }}>How this works:</strong>{" "}
             Every briefing is ingested from PubMed, arXiv, ClinicalTrials, and FDA, then scored by clinical relevance,

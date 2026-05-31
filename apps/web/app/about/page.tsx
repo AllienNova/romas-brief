@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { FC } from "react";
+import {
+  GuidelinesIcon,
+  PaperCritiqueIcon,
+  HeadphonesIcon,
+  RegulatoryIcon,
+} from "@/components/icons";
+import type { IconProps } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "About ROMAS",
@@ -40,27 +48,27 @@ const ROMAS_ACRONYM = [
   },
 ];
 
-const VALUES = [
+const VALUES: { Icon: FC<IconProps>; title: string; description: string }[] = [
   {
-    icon: "🎯",
+    Icon: GuidelinesIcon,
     title: "Signal Over Noise",
     description:
       "Your time is your most finite resource. We score every piece of evidence across three dimensions—clinical relevance, physics impact, and novelty—and only publish what clears S70. We protect your time by eliminating the noise.",
   },
   {
-    icon: "🔬",
+    Icon: PaperCritiqueIcon,
     title: "Primary-Source Integrity",
     description:
       "Trust requires transparency. Every brief links directly to the primary source—the PubMed abstract, the FDA 510(k) summary, the arXiv preprint. We never summarise a summary. You always know exactly where the evidence came from.",
   },
   {
-    icon: "🎧",
+    Icon: HeadphonesIcon,
     title: "Audio-First Accessibility",
     description:
       "You spend hours in the clinic, in the vault, and in transit. Every high-signal brief is available as a spoken audio summary, so you can stay current without being desk-bound. Intelligence that fits your workflow.",
   },
   {
-    icon: "⚖️",
+    Icon: RegulatoryIcon,
     title: "Transparent by Design",
     description:
       "Editorial content and sponsored content are always clearly separated. Our signal scoring is never influenced by commercial relationships — a sponsored item is scored by the same rigorous methodology as any other. Sponsors support the platform; they do not shape the brief. You will always know which is which.",
@@ -187,10 +195,10 @@ export default function AboutPage() {
             <h2 className="text-3xl sm:text-4xl font-black" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.025em" }}>The Code We Operate By</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {VALUES.map(({ icon, title, description }) => (
+            {VALUES.map(({ Icon, title, description }) => (
               <div key={title} className="rounded-2xl p-8 group hover:shadow-xl transition-all duration-300"
                 style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)" }}>
-                <span className="text-4xl mb-6 block transform group-hover:scale-110 transition-transform origin-left">{icon}</span>
+                <span className="mb-6 block transform group-hover:scale-110 transition-transform origin-left" style={{ color: "var(--rb-accent)" }}><Icon size={36} /></span>
                 <h3 className="text-xl font-bold mb-3" style={{ color: "var(--rb-text-primary)" }}>{title}</h3>
                 <p className="text-base leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{description}</p>
               </div>

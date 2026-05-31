@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
+import { HeadphonesIcon } from "./icons";
 
 interface InlineAudioPlayerProps {
   src?: string;
@@ -120,7 +121,7 @@ export function InlineAudioPlayer({
       <div className="flex items-center justify-between w-full">
         {tier && (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--rb-accent-subtle)] text-[var(--rb-accent)] text-xs font-medium">
-            🎧 {TIER_LABELS[tier] ?? tier}
+            <HeadphonesIcon size={13} /> {TIER_LABELS[tier] ?? tier}
           </span>
         )}
         {title && <p className="text-xs font-medium text-[var(--rb-text-primary)] truncate flex-1 mx-3">{title}</p>}

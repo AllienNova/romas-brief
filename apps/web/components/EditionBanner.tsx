@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { GlobeIcon } from "./icons";
 
 export type Edition = "americas" | "europe" | "apac";
 
@@ -9,10 +10,10 @@ interface EditionBannerProps {
   onChange: (edition: Edition) => void;
 }
 
-const EDITIONS: { id: Edition; label: string; flag: string; tz: string }[] = [
-  { id: "americas", label: "Americas", flag: "🌎", tz: "ET" },
-  { id: "europe",   label: "Europe",   flag: "🌍", tz: "CET" },
-  { id: "apac",     label: "Asia-Pacific", flag: "🌏", tz: "SGT" },
+const EDITIONS: { id: Edition; label: string; tz: string }[] = [
+  { id: "americas", label: "Americas", tz: "ET" },
+  { id: "europe",   label: "Europe",   tz: "CET" },
+  { id: "apac",     label: "Asia-Pacific", tz: "SGT" },
 ];
 
 export default function EditionBanner({ current, onChange }: EditionBannerProps) {
@@ -33,7 +34,7 @@ export default function EditionBanner({ current, onChange }: EditionBannerProps)
                   }
                 `}
               >
-                <span>{ed.flag}</span>
+                <GlobeIcon size={12} />
                 <span>{ed.label}</span>
               </button>
             ))}

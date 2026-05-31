@@ -1,6 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import type { FC } from "react";
+import {
+  ClinicalRtIcon,
+  PhysicsIcon,
+  AiIcon,
+  RegulatoryIcon,
+  GuidelinesIcon,
+  ReimbursementIcon,
+  PrimerIcon,
+  LongTakeIcon,
+} from "@/components/icons";
+import type { IconProps } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Academy",
@@ -76,13 +88,13 @@ const QUICK_READS = [
   { title: "Paediatric Proton Therapy: 15-Year Evidence Summary", category: "Clinical RT", time: "9 min", href: "/academy/paediatric-proton-summary" },
 ];
 
-const CATEGORIES = [
-  { icon: "⚕️", label: "Clinical RT", count: 24, href: "/academy/clinical-rt", color: "#0066CC" },
-  { icon: "⚛️", label: "Medical Physics", count: 31, href: "/academy/physics", color: "#0F766E" },
-  { icon: "🤖", label: "AI & Technology", count: 18, href: "/academy/ai", color: "#7C3AED" },
-  { icon: "🏛", label: "Regulatory", count: 12, href: "/academy/regulatory", color: "#D97706" },
-  { icon: "📋", label: "Guidelines", count: 15, href: "/academy/guidelines", color: "#DC2626" },
-  { icon: "💰", label: "Reimbursement", count: 8, href: "/academy/reimbursement", color: "#059669" },
+const CATEGORIES: { Icon: FC<IconProps>; label: string; count: number; href: string; color: string }[] = [
+  { Icon: ClinicalRtIcon, label: "Clinical RT", count: 24, href: "/academy/clinical-rt", color: "#0066CC" },
+  { Icon: PhysicsIcon, label: "Medical Physics", count: 31, href: "/academy/physics", color: "#0F766E" },
+  { Icon: AiIcon, label: "AI & Technology", count: 18, href: "/academy/ai", color: "#7C3AED" },
+  { Icon: RegulatoryIcon, label: "Regulatory", count: 12, href: "/academy/regulatory", color: "#D97706" },
+  { Icon: GuidelinesIcon, label: "Guidelines", count: 15, href: "/academy/guidelines", color: "#DC2626" },
+  { Icon: ReimbursementIcon, label: "Reimbursement", count: 8, href: "/academy/reimbursement", color: "#059669" },
 ];
 
 export default function AcademyPage() {
@@ -99,7 +111,7 @@ export default function AcademyPage() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-xs font-bold uppercase tracking-widest"
             style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.15)" }}
           >
-            🎓 ROMAS Brief Academy
+            <PrimerIcon size={14} /> ROMAS Brief Academy
           </div>
           <h1
             className="text-4xl sm:text-5xl font-black text-white mb-6"
@@ -147,7 +159,7 @@ export default function AcademyPage() {
             </h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {CATEGORIES.map(({ icon, label, count, href, color }) => (
+            {CATEGORIES.map(({ Icon, label, count, href, color }) => (
               <Link
                 key={href}
                 href={href}
@@ -155,10 +167,10 @@ export default function AcademyPage() {
                 style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-card)" }}
               >
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-xl mx-auto mb-3"
-                  style={{ background: `${color}18`, border: `1px solid ${color}30` }}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3"
+                  style={{ background: `${color}18`, border: `1px solid ${color}30`, color }}
                 >
-                  {icon}
+                  <Icon size={20} />
                 </div>
                 <p className="text-xs font-bold mb-1 group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>
                   {label}
@@ -227,8 +239,8 @@ export default function AcademyPage() {
                     {course.description}
                   </p>
                   <div className="flex items-center gap-4 text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
-                    <span>📖 {course.duration}</span>
-                    <span>📚 {course.modules} modules</span>
+                    <span className="inline-flex items-center gap-1"><LongTakeIcon size={12} /> {course.duration}</span>
+                    <span className="inline-flex items-center gap-1"><GuidelinesIcon size={12} /> {course.modules} modules</span>
                   </div>
                 </div>
               </Link>
@@ -282,7 +294,7 @@ export default function AcademyPage() {
             className="rounded-2xl p-10 text-center"
             style={{ background: "linear-gradient(135deg, #1E1B4B 0%, #312E81 100%)", boxShadow: "var(--rb-shadow-xl)" }}
           >
-            <div className="text-4xl mb-4">🎓</div>
+            <div className="mb-4 flex justify-center text-white/80"><PrimerIcon size={40} /></div>
             <h2 className="text-2xl font-black text-white mb-3" style={{ letterSpacing: "-0.025em" }}>
               Full Academy access is free
             </h2>

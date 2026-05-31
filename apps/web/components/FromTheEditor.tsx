@@ -7,6 +7,7 @@
  */
 
 import Link from "next/link";
+import { BoltMark } from "./icons";
 
 interface PracticeDelta {
   category: string;
@@ -137,7 +138,7 @@ export default function FromTheEditor() {
                 letterSpacing: "0.1em",
               }}
             >
-              ⚡ Practice Deltas This Week
+              <BoltMark size={12} className="mr-1" /> Practice Deltas This Week
             </span>
           </div>
           <ul className="space-y-3">

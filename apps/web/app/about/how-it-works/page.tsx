@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
+import type { FC } from "react";
 import Link from "next/link";
+import {
+  PrimerIcon, PaperCritiqueIcon, TherapistIcon, RegulatoryIcon, GuidelinesIcon,
+  VendorIcon, NewsBriefIcon, PracticeDeltaIcon, LongTakeIcon, ConferencesIcon,
+} from "@/components/icons";
+import type { IconProps } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "How It Works — ROMAS Brief",
@@ -7,13 +13,13 @@ export const metadata: Metadata = {
     "Learn how ROMAS Brief ingests, scores, and curates clinical intelligence from PubMed, arXiv, ClinicalTrials, and FDA for radiation oncology professionals.",
 };
 
-const SOURCES = [
-  { name: "PubMed / MEDLINE", icon: "📚", desc: "Peer-reviewed clinical and physics literature, filtered to radiation oncology MeSH terms." },
-  { name: "arXiv (cs.AI, physics.med-ph)", icon: "🔬", desc: "Pre-print physics and AI papers, often 6–12 months ahead of journal publication." },
-  { name: "ClinicalTrials.gov", icon: "🏥", desc: "New trial registrations, status updates, and results postings for RT-related trials." },
-  { name: "FDA MAUDE / 510(k) / PMA", icon: "🏛", desc: "Device clearances, adverse event reports, and recall notices for RT equipment." },
-  { name: "ASTRO / ESTRO / AAPM", icon: "📋", desc: "Society guideline updates, meeting abstracts, and press releases." },
-  { name: "Vendor press releases", icon: "🏭", desc: "Product launches, acquisitions, and regulatory filings from major RT vendors." },
+const SOURCES: { name: string; Icon: FC<IconProps>; desc: string }[] = [
+  { name: "PubMed / MEDLINE", Icon: PrimerIcon, desc: "Peer-reviewed clinical and physics literature, filtered to radiation oncology MeSH terms." },
+  { name: "arXiv (cs.AI, physics.med-ph)", Icon: PaperCritiqueIcon, desc: "Pre-print physics and AI papers, often 6–12 months ahead of journal publication." },
+  { name: "ClinicalTrials.gov", Icon: TherapistIcon, desc: "New trial registrations, status updates, and results postings for RT-related trials." },
+  { name: "FDA MAUDE / 510(k) / PMA", Icon: RegulatoryIcon, desc: "Device clearances, adverse event reports, and recall notices for RT equipment." },
+  { name: "ASTRO / ESTRO / AAPM", Icon: GuidelinesIcon, desc: "Society guideline updates, meeting abstracts, and press releases." },
+  { name: "Vendor press releases", Icon: VendorIcon, desc: "Product launches, acquisitions, and regulatory filings from major RT vendors." },
 ];
 
 const SCORE_DIMS = [
@@ -40,14 +46,14 @@ const SCORE_DIMS = [
   },
 ];
 
-const CONTENT_TYPES = [
-  { label: "News Brief", icon: "📰", desc: "2–4 sentence summary of a single development. Signal-scored." },
-  { label: "Paper Critique", icon: "🔬", desc: "Structured critique: background, methods, findings, limitations, ROMAS Insight." },
-  { label: "Practice Delta", icon: "⚡", desc: "Explicit before/after: what changes in clinical or physics practice." },
-  { label: "FDA Brief", icon: "🏛", desc: "Regulatory action with clearance class, indication, and clinical implications." },
-  { label: "Primer", icon: "📖", desc: "Background explainer for an emerging topic (e.g., MR-Linac physics, FLASH RT)." },
-  { label: "Long Take", icon: "📝", desc: "1,000–2,000 word deep-dive with full methodology and editorial commentary." },
-  { label: "Conference Brief", icon: "🎤", desc: "Key abstracts and highlights from ASTRO, ESTRO, AAPM, and RSNA." },
+const CONTENT_TYPES: { label: string; Icon: FC<IconProps>; desc: string }[] = [
+  { label: "News Brief", Icon: NewsBriefIcon, desc: "2–4 sentence summary of a single development. Signal-scored." },
+  { label: "Paper Critique", Icon: PaperCritiqueIcon, desc: "Structured critique: background, methods, findings, limitations, ROMAS Insight." },
+  { label: "Practice Delta", Icon: PracticeDeltaIcon, desc: "Explicit before/after: what changes in clinical or physics practice." },
+  { label: "FDA Brief", Icon: RegulatoryIcon, desc: "Regulatory action with clearance class, indication, and clinical implications." },
+  { label: "Primer", Icon: PrimerIcon, desc: "Background explainer for an emerging topic (e.g., MR-Linac physics, FLASH RT)." },
+  { label: "Long Take", Icon: LongTakeIcon, desc: "1,000–2,000 word deep-dive with full methodology and editorial commentary." },
+  { label: "Conference Brief", Icon: ConferencesIcon, desc: "Key abstracts and highlights from ASTRO, ESTRO, AAPM, and RSNA." },
 ];
 
 export default function HowItWorksPage() {
@@ -88,13 +94,13 @@ export default function HowItWorksPage() {
             independently summarised and fact-checked against the primary source.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {SOURCES.map(({ name, icon, desc }) => (
+            {SOURCES.map(({ name, Icon, desc }) => (
               <div
                 key={name}
                 className="flex items-start gap-4 p-5 rounded-2xl border"
                 style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)" }}
               >
-                <span className="text-2xl flex-shrink-0">{icon}</span>
+                <span className="flex-shrink-0 mt-0.5" style={{ color: "var(--rb-accent)" }}><Icon size={24} /></span>
                 <div>
                   <p className="text-sm font-semibold mb-1" style={{ color: "var(--rb-text-primary)" }}>{name}</p>
                   <p className="text-xs leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{desc}</p>
@@ -173,13 +179,13 @@ export default function HowItWorksPage() {
             This helps you quickly calibrate how much time to invest in reading.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {CONTENT_TYPES.map(({ label, icon, desc }) => (
+            {CONTENT_TYPES.map(({ label, Icon, desc }) => (
               <div
                 key={label}
                 className="flex items-start gap-4 p-5 rounded-2xl border"
                 style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)" }}
               >
-                <span className="text-2xl flex-shrink-0">{icon}</span>
+                <span className="flex-shrink-0 mt-0.5" style={{ color: "var(--rb-accent)" }}><Icon size={24} /></span>
                 <div>
                   <p className="text-sm font-semibold mb-1" style={{ color: "var(--rb-text-primary)" }}>{label}</p>
                   <p className="text-xs leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{desc}</p>
