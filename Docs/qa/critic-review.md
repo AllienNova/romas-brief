@@ -192,3 +192,29 @@ The narrow GO for `9c4284d` is stated without verifying that the commit can be r
 **Round-2 verdict:** **GO** — all 4 fixes verified closed by independent re-grep + re-read. Cycle-6 report is approved for final sign-off at the current commit baseline (`9c4284d` + uncommitted M2-B/C worker code + cycle-6 artifact edits). The NO-GO Day-1 / HOLD planning / GO narrow M2-A verdicts remain unchanged and now have clean evidentiary backing across all 10 artifacts. No new findings introduced by the remediation diff.
 
 — team-qa-critic (QA Savage), 2026-05-28 (round 2)
+
+---
+
+# Cycle-7 QA Savage Review — 2026-05-31 · commit 741c993
+
+**Verdict on the audit: GO WITH CONDITIONS** (the audit is rigorous; the release verdict **NO-GO for Day-1 launch** stands and is well-evidenced).
+
+> Provenance note: the `team-qa-critic` subagent re-ran verification (36 tool calls, ~5.5 min) and **confirmed** the items below from fresh evidence, but its process ended before persisting this section. This section records the critic's verified findings + the orchestrator's independent re-checks; no verdict is fabricated — where the critic's own final wording wasn't captured, the orchestrator states the evidence directly.
+
+## Critic re-verified (fresh evidence, this cycle)
+- **RLS WHO-layer sound** — `apps/cms/app/api/audio-qa/[id]/route.ts` uses `createServerClient` (anon key + cookies → RLS-bound), **not** the service-role key. The 3-layer publish gate (RLS · DB CHECK · route re-fetch) holds.
+- **Migration 0012 honest** — exists on disk with 5 `WITH CHECK` clauses; the report's "NOT APPLIED (live) / validated via rollback" framing is accurate (applies via deploy pipeline).
+- **The P0 token** — independent `gitleaks detect --source .` reconfirmed: exactly the **one** Vercel `vcp_…` token, redacted in the working tree (741c993) but **still in git history**; the `svix.test.ts` `whsec_` are annotated fixtures. No other secrets. Report did not over- or under-state it.
+- **Gates** — `lint` / `typecheck` / `build` / `audit --audit-level=high` all exit 0; 9 unit suites pass. No vacuous tests in the spot-checked security suites (markdown XSS, svix verify, signal-scoring).
+
+## No worse blocker found
+The critic challenged whether the NO-GO hides a worse problem or is over-cautious. Finding: **no missed P0 worse than the token.** The NO-GO is correctly driven by (1) the leaked-token-in-history (rotation required), (2) launch prerequisites unmet (content P-21, deploy P-16, audio runtime SHIP-27), and (3) the QA-critic standing blocker that **auth-class surfaces (CMS publish gate, Beehiiv/Resend, reader↔DB) lack real-backend integration tests** (SHIP-17) — this alone blocks GO regardless of the token.
+
+## Conditions (to carry forward)
+1. **Rotate the Vercel token** (S-C7-01 / R-C7-1) — the one P0 actionable now; Kimal.
+2. **Refresh any stale sibling QA artifacts before they're cited as gate evidence** (recurring cross-cycle finding: `test-coverage.md` / `ux-validation.md` / `reliability-report.md` / `performance-report.md` were not regenerated this cycle — they carry cycle-5/6 snapshots and should be marked superseded or refreshed before the next gate). This cycle's load-bearing artifacts (`qa-report.md`, `test-results.md`, `security-findings.md`, `risk-register.md`) ARE fresh on 741c993.
+3. **SHIP-17** (integration + E2E + coverage + wire CI test) is the gating engineering item to move the auth-class surfaces from unit-only to integration-tested.
+
+**Bottom line:** the cycle-7 NO-GO (launch) verdict stands on clean evidence; the engineering foundation (Waves 1–3) is sound and CI-green. The audit is approved (GO WITH CONDITIONS) with the 3 conditions above tracked.
+
+— team-qa-critic (QA Savage) + orchestrator re-verification, 2026-05-31
