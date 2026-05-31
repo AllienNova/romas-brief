@@ -26,14 +26,14 @@ interface Props {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "AI": "#5E5CE6", "AI & ML": "#5E5CE6", "ai": "#5E5CE6",
-  "Clinical RT": "#30D158", "Clinical-RT": "#30D158", "CLINICAL-RT": "#30D158", "clinical-rt": "#30D158",
-  "Regulatory": "#FF9F0A", "REGULATORY": "#FF9F0A", "regulatory": "#FF9F0A",
-  "Physics": "#0A84FF", "PHYSICS": "#0A84FF", "physics": "#0A84FF",
-  "Guidelines": "#32ADE6", "GUIDELINES": "#32ADE6", "guidelines": "#32ADE6",
-  "Reimbursement": "#AC8E68", "reimbursement": "#AC8E68",
-  "Vendor Intel": "#FF6961", "vendor-intel": "#FF6961",
-  "Research": "#BF5AF2", "research": "#BF5AF2",
+  "AI": "#4F46E5", "AI & ML": "#4F46E5", "ai": "#4F46E5",
+  "Clinical RT": "#15803D", "Clinical-RT": "#15803D", "CLINICAL-RT": "#15803D", "clinical-rt": "#15803D",
+  "Regulatory": "#B45309", "REGULATORY": "#B45309", "regulatory": "#B45309",
+  "Physics": "#0066CC", "PHYSICS": "#0066CC", "physics": "#0066CC",
+  "Guidelines": "#0E7490", "GUIDELINES": "#0E7490", "guidelines": "#0E7490",
+  "Reimbursement": "#8A6D45", "reimbursement": "#8A6D45",
+  "Vendor Intel": "#C1121C", "vendor-intel": "#C1121C",
+  "Research": "#9333EA", "research": "#9333EA",
   default: "#0055CC",
 };
 

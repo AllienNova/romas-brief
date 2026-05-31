@@ -39,14 +39,14 @@ interface SideStackProps {
 function getCategoryColor(category: string): string {
   const map: Record<string, string> = {
     "clinical-rt": "#0066CC",
-    "ai": "#5E5CE6",
-    "physics": "#0A84FF",
-    "regulatory": "#FF9F0A",
-    "guidelines": "#32ADE6",
-    "reimbursement": "#AC8E68",
-    "vendor": "#30D158",
-    "conferences": "#FF6961",
-    "operations": "#30D158",
+    "ai": "#4F46E5",
+    "physics": "#0066CC",
+    "regulatory": "#B45309",
+    "guidelines": "#0E7490",
+    "reimbursement": "#8A6D45",
+    "vendor": "#15803D",
+    "conferences": "#C1121C",
+    "operations": "#15803D",
   };
   return map[category] ?? "var(--rb-accent)";
 }

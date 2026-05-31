@@ -30,14 +30,14 @@ const ROTATE_INTERVAL = 8000;
 
 const CATEGORY_CONFIG: Record<string, { color: string; bg: string; label: string }> = {
   "clinical-rt":    { color: "#0066CC", bg: "#EBF3FF", label: "Clinical RT" },
-  "ai":             { color: "#5E5CE6", bg: "#F0EFFF", label: "AI" },
-  "physics":        { color: "#0A84FF", bg: "#E5F3FF", label: "Physics" },
-  "regulatory":     { color: "#D97706", bg: "#FEF3C7", label: "Regulatory" },
-  "guidelines":     { color: "#0891B2", bg: "#E0F7FA", label: "Guidelines" },
+  "ai":             { color: "#4F46E5", bg: "#F0EFFF", label: "AI" },
+  "physics":        { color: "#0066CC", bg: "#E5F3FF", label: "Physics" },
+  "regulatory":     { color: "#B45309", bg: "#FEF3C7", label: "Regulatory" },
+  "guidelines":     { color: "#0E7490", bg: "#E0F7FA", label: "Guidelines" },
   "reimbursement":  { color: "#7C3AED", bg: "#F3E8FF", label: "Reimbursement" },
-  "vendor":         { color: "#059669", bg: "#D1FAE5", label: "Vendor" },
-  "conferences":    { color: "#DC2626", bg: "#FEE2E2", label: "Conferences" },
-  "operations":     { color: "#16A34A", bg: "#DCFCE7", label: "Operations" },
+  "vendor":         { color: "#047857", bg: "#D1FAE5", label: "Vendor" },
+  "conferences":    { color: "#B91C1C", bg: "#FEE2E2", label: "Conferences" },
+  "operations":     { color: "#15803D", bg: "#DCFCE7", label: "Operations" },
 };
 
 function getCategoryConfig(cat: string) {
@@ -45,9 +45,9 @@ function getCategoryConfig(cat: string) {
 }
 
 function getScoreStyle(score: number): { bg: string; ring: string; text: string } {
-  if (score >= 85) return { bg: "#DCFCE7", ring: "#16A34A", text: "#15803D" };
+  if (score >= 85) return { bg: "#DCFCE7", ring: "#15803D", text: "#15803D" };
   if (score >= 70) return { bg: "#FEF9C3", ring: "#CA8A04", text: "#A16207" };
-  return { bg: "#FEE2E2", ring: "#DC2626", text: "#B91C1C" };
+  return { bg: "#FEE2E2", ring: "#B91C1C", text: "#B91C1C" };
 }
 
 function formatDate(iso: string): string {
@@ -107,7 +107,7 @@ function HitRow({
         {/* Rank number */}
         <span
           className="flex-shrink-0 w-8 text-center text-xl font-black tabular-nums select-none"
-          style={{ color: "var(--rb-border-strong)", lineHeight: "1" }}
+          style={{ color: "var(--rb-text-tertiary)", lineHeight: "1" }}
         >
           {String(rank).padStart(2, "0")}
         </span>

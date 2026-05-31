@@ -143,7 +143,7 @@ function buildCarouselSlides(
       summary: audioToday.standfirst,
       href: `/article/${audioToday.slug}`,
       cta: "Listen now",
-      gradient: "linear-gradient(135deg, #1A0030 0%, #5E5CE6 100%)",
+      gradient: "linear-gradient(135deg, #1A0030 0%, #4F46E5 100%)",
       score: audioToday.composite_score,
       hasAudio: true,
     });
@@ -160,7 +160,7 @@ function buildCarouselSlides(
       summary: confBrief.standfirst,
       href: `/article/${confBrief.slug}`,
       cta: "See highlights",
-      gradient: "linear-gradient(135deg, #1A0A00 0%, #FF9F0A 60%, #FF6961 100%)",
+      gradient: "linear-gradient(135deg, #1A0A00 0%, #B45309 60%, #C1121C 100%)",
       score: confBrief.composite_score,
       hasAudio: confBrief.has_audio,
     });
@@ -292,7 +292,7 @@ export default async function HomePage() {
                       <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "var(--rb-bg-raised)", color: "var(--rb-text-secondary)" }}><TherapistIcon size={20} /></div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="kicker" style={{ color: "#30D158" }}>{article.category}</span>
+                          <span className="kicker" style={{ color: "#15803D" }}>{article.category}</span>
                           {article.composite_score >= 80 && <span className="badge-signal-green">S{article.composite_score}</span>}
                         </div>
                         <h3 className="text-sm font-semibold line-clamp-2 group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{article.title}</h3>
