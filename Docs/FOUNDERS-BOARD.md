@@ -212,12 +212,23 @@ Pick **one**:
 
 | # | Question | My recommendation | How to record |
 |---|---|---|---|
-| **Q-A** | Confirm or move the Day-1 date | The ~66-day single-thread eng path + 8-week content ramp make **2026-07-21** safer than 2026-07-07 unless 2–3 parallel eng streams are staffed. | Reply with the date; I update SSOT §12 + plan §4c |
+| **Q-A** | ~~Confirm or move the Day-1 date~~ | ✅ **DECIDED 2026-05-31 → full launch, Day-1 ≈ 2026-07-14** (Waves 1–4 done; 8-week content ramp is the binding pole, may slip ~07-21). | Recorded SSOT §12 + ship-plan §1b |
 | **Q-B** | LATAM in Day-1 scope? | **No** — launch without LATAM, add it as a fast-follow. Skips P-07. | Reply yes/no |
 | **Q-C** | NA-only launch if Beehiiv DPA (P-17) slips? | **Yes** — launch NA-only, gate EU acquisition on the DPA. De-risks the date. | Reply yes/no |
 | **Q-D** | source-health: fold into cron-ingest or build a separate worker? | **Fold in** (it already lives in cron-ingest); delete the 501 stub. | Reply; I close SHIP-19 |
 | **Q-E** | Friday ROMAS Read on Day-1? (first Friday = day 4 of launch) | First 3 Fridays run as **standard analysis**; full sub-rubric format by **2026-07-31**. Needs your sign-off as an accepted brand compromise. | Reply approve/adjust |
 | **Q-F** | TTS failover provider (PlayHT shut down — ADR-0018) | **Cartesia** (best quality/API for a clinical read) · Fish Audio (≈80% cheaper) · ElevenLabs-only for Day-1 (defer failover, accept single-vendor risk) | Reply with the provider; I rework SHIP-14 + flip ADR-0018 → Accepted |
+| **Q-G** | Agent framework for the 24/7 marketing / customer-ops layer | ✅ **DECIDED 2026-05-31 → OpenClaw** (security-hardened; 24/7 autonomous marketing+ops team with intelligent multi-LLM routing + cost-opt via Vercel AI Gateway→OpenRouter). Mastra rejected. | Recorded SSOT decision 23 |
+
+### Cycle-7 additions (2026-05-31 — The Imaging Wire template review; see SSOT §3 decisions 20–23)
+
+- **Cadence → twice weekly** (Tue brief + Fri ROMAS Read); launch still ships the 500-article scaffold. *(decision 20)*
+- **Audio → email + phone/SMS** for commute listening; SMS is owned by the **OpenClaw** agent layer (NOT a bespoke worker). *(decision 21)*
+- **Per-article thumbnail** for all 500 launch articles — content-ramp deliverable (reader + `next/image` ready; DB column added migration 0013). *(decision 22)*
+- **New provisioning P-items (Kimal):**
+  - **P-25 · Commission OpenClaw** — the security-hardened 24/7 marketing/customer-ops agent layer (LLM routing + cost-opt). Needs its own ADR + threat model before integration (rule 11). Owns SMS + email + marketing + lifecycle; wraps the Beehiiv/Resend transport workers.
+  - **P-26 · Google Publisher Center** — register `romaswire.com` (phase-2 domain) / current host; submit `news-sitemap.xml` (built) + `sitemap.xml`. Unblocks Google News indexing (gate §12.8 row 20).
+  - SMS provider creds (Twilio-class) flow through **P-25** (OpenClaw), not a standalone item.
 
 ---
 

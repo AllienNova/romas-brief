@@ -203,6 +203,8 @@ Even during the launch ramp, the five rules from the runbook hold:
 
 **Padding-prevention rule:** If a category's allocation cannot be filled with items at Signal Score ≥55 by launch, ship that category short rather than weaken it. Reader trust > category symmetry.
 
+**Thumbnail rule (SSOT decision 22, 2026-05-31 — The Imaging Wire parity):** every one of the 500 launch articles ships with a **thumbnail image** (`articles.thumbnail_url`). This is a content-ramp deliverable — the reader cards + `next/image` (AVIF/WebP) already consume it; the DB column lands in migration 0013. A text-only card is acceptable fallback but not the launch target.
+
 ---
 
 ## 6. Five Real Sample Article Drafts (from today's live sweep)

@@ -1,6 +1,8 @@
 # ROMAS Wire — Daily Production Runbook
 
-**My standing weekday mandate. Mon–Fri, no exceptions.**
+> **⚠️ Cadence updated 2026-05-31 (SSOT decision 20): publishing is now TWICE WEEKLY — Tuesday (operational brief) + Friday (The ROMAS Read).** Source *ingestion* may still run daily; the *publish* rhythm is 2×/week. This runbook's "weekday" framing below predates that change — production work concentrates on the two publish days. SSOT §3 d20 wins on any conflict.
+
+**My standing production mandate (twice weekly — see banner above).**
 **Owner of approvals: Kimal Honour Djam (president@aliennova.com)**
 **Companion document to:** `ROMAS-Brief-Master-Strategy.md`
 **Version 1.1 · 2026-05-14 (M0 doc reconciliation: header bump per cycle-1 R-002; Beehiiv references corrected to Resend/Beehiiv split per ADR-0007 cycle-3)**
