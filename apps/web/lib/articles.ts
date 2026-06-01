@@ -28,7 +28,7 @@ import type { MockArticle, Category, Region, Audience, ContentType } from "./moc
 const COLUMNS =
   "slug,title,standfirst,body_md,category,content_type,region,audience_tags," +
   "primary_source_url,primary_source_type,published_at,created_at," +
-  "composite_score,signal_scores,romas_insight,modality_tags,disease_site_tags";
+  "composite_score,signal_scores,romas_insight,modality_tags,disease_site_tags,thumbnail_url";
 
 interface DbArticleRow {
   slug: string;
@@ -48,6 +48,7 @@ interface DbArticleRow {
   romas_insight: string | null;
   modality_tags: string[] | null;
   disease_site_tags: string[] | null;
+  thumbnail_url: string | null;
 }
 
 function hasDbEnv(): boolean {
@@ -102,6 +103,7 @@ function rowToArticle(r: DbArticleRow): MockArticle {
     tags: [],
     modality_tags: r.modality_tags ?? [],
     disease_site_tags: r.disease_site_tags ?? [],
+    thumbnail_url: r.thumbnail_url ?? undefined,
   };
 }
 
@@ -168,6 +170,13 @@ export async function getArticlesByIssueDate(issueDate: string): Promise<MockArt
 export async function getTopStories(limit = 6): Promise<MockArticle[]> {
   if (!hasDbEnv()) return mock.getTopStories(limit);
   const { data } = await publishedQuery().order("composite_score", { ascending: false }).limit(limit);
+  return mapRows(data);
+}
+
+/** Recent published articles, newest first — for the Google News sitemap (news SEO). */
+export async function getRecentPublished(limit = 1000): Promise<MockArticle[]> {
+  if (!hasDbEnv()) return mock.getTopStories(limit);
+  const { data } = await publishedQuery().order("published_at", { ascending: false }).limit(limit);
   return mapRows(data);
 }
 
