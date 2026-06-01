@@ -218,7 +218,7 @@ Pick **one**:
 | **Q-D** | source-health: fold into cron-ingest or build a separate worker? | **Fold in** (it already lives in cron-ingest); delete the 501 stub. | Reply; I close SHIP-19 |
 | **Q-E** | Friday ROMAS Read on Day-1? (first Friday = day 4 of launch) | First 3 Fridays run as **standard analysis**; full sub-rubric format by **2026-07-31**. Needs your sign-off as an accepted brand compromise. | Reply approve/adjust |
 | **Q-F** | TTS failover provider (PlayHT shut down — ADR-0018) | **Cartesia** (best quality/API for a clinical read) · Fish Audio (≈80% cheaper) · ElevenLabs-only for Day-1 (defer failover, accept single-vendor risk) | Reply with the provider; I rework SHIP-14 + flip ADR-0018 → Accepted |
-| **Q-G** | Agent framework for the 24/7 marketing / customer-ops layer | ✅ **DECIDED 2026-05-31 → OpenClaw** (security-hardened; 24/7 autonomous marketing+ops team with intelligent multi-LLM routing + cost-opt via Vercel AI Gateway→OpenRouter). Mastra rejected. | Recorded SSOT decision 23 |
+| **Q-G** | Agent framework for the 24/7 marketing / customer-ops layer | ✅ **DECIDED 2026-05-31 → OpenClaw** (security-hardened; 24/7 autonomous marketing+ops team with intelligent multi-LLM routing + cost-opt via Vercel AI Gateway→OpenRouter). Mastra rejected. Architecture/security/routing in **ADR-0020** (Proposed — pending docs-read + threat model). | Recorded SSOT decision 23 + ADR-0020 |
 
 ### Cycle-7 additions (2026-05-31 — The Imaging Wire template review; see SSOT §3 decisions 20–23)
 
