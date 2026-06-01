@@ -1,7 +1,7 @@
 ---
 title: ROMAS Wire — Single Source of Truth
-version: 1.2.0
-date: 2026-05-14
+version: 1.4.0
+date: 2026-05-31
 owner: Kimal Honour Djam (president@aliennova.com)
 supersedes: v1.0.0 (initial); v1.1.0 (cycle-3 Q1/Q2/Q3 locks)
 audience: every Claude session, every team-build / team-qa run, every human contributor
@@ -26,7 +26,7 @@ cycles: 1 (initial) → 2 (critic fixes) → 3 (Kimal Q1/Q2/Q3 + email split + T
 | Owner | Kimal Honour Djam · president@aliennova.com · America/New_York |
 | Sign-off | `— Kimal` (em-dash + first name, no surname) |
 | Audience | Radiation oncologists, medical physicists, dosimetrists, RT therapists, residents, oncology operators, RT industry |
-| Cadence | Mon–Fri daily (Friday = ROMAS Read) |
+| Cadence | **Twice weekly** (decision 20, 2026-05-31) — Tue (brief) + Fri (The ROMAS Read). Launch ships the 500-article scaffold; 2×/week governs ongoing publishing. *(Supersedes "Mon–Fri daily.")* |
 | Retired brand | **"ROMAS Brief"** — reverted to ROMAS Wire 2026-05-31; **do not use "ROMAS Brief" in any new asset**. (The original `ROMAS-Wire-*` strategy files in `Docs/ARCHIVE/` are the predecessor — ROMAS Wire is now the canonical name again.) |
 
 ---
@@ -67,6 +67,9 @@ These six are inviolable. CLAUDE.md §4, AGENT.md §5, this file, and every oper
 | 17 | **China posture (locked 2026-05-14 by Kimal)** | **Read-only NMPA + CSCO-RO ingest only.** No Chinese subscriber acquisition, no Beehiiv list serving China at launch (PIPL data-localization makes it expensive to serve correctly). Revisit at 10k global subscribers. Source citations to NMPA records honored per Rule 4. | Kimal verbal 2026-05-14 |
 | 18 | **LATAM editorial workflow (locked 2026-05-14 by Kimal)** | **LLM-translate via DeepL Pro primary + Claude verification on Hero/Strong bands.** Original-language (PT/ES) source URL preserved as `primary_source_url`. Article body in English. Mandatory non-removable footer: "Source originally in {Portuguese\|Spanish}; translated with editorial review." Verbatim quotes show original-language text in italic parens. ADR-0013 + `contracts/deepl.yaml`. | Kimal verbal 2026-05-14 |
 | 19 | **Repository separation (locked 2026-05-14 by Kimal)** | ROMAS Wire is its **own standalone git repository** at **`D:\dev\projects\romas-brief\`** (lowercase, hyphen, no spaces — matches `romasbrief.com` canonical). GitHub identity: **`AllienNova/romas-brief` (private)** — note `AllienNova` uses double-L spelling per the actual GitHub org (description "Building Things People Want — AI, Healthcare, Fintech, Education"). Separate from parent ROMAS COS monorepo at `D:\dev\projects\ROMAS\`. No cross-monorepo imports. `llm-orchestrator` lives at **`packages/llm-orchestrator/` inside ROMAS Wire monorepo** (authored fresh, not imported from parent ROMAS) — closes cycle-6 REL-010. ADR-0014. | Kimal verbal 2026-05-14 (`yes all`); casing patched 2026-05-15 M0c2 |
+| 20 | **Publishing cadence — TWICE WEEKLY (locked 2026-05-31 by Kimal, cycle-7)** | **SUPERSEDES "Mon–Fri daily."** Two issues per week — the validated vertical-Wire cadence (The Imaging Wire ships Mon + Thu). Recommended days: **Tuesday = operational brief · Friday = The ROMAS Read** (deeper voice-of-authority); days adjustable. **Launch still ships the full 500-article scaffold** (§12) — the 2×/week cadence governs *ongoing* publishing post-launch and roughly halves the editorial treadmill vs daily. Three-edition publish (row 16) fires on the 2 publish days. Updates CLAUDE.md §1, Runbook, Launch Plan §3. | Kimal 2026-05-31 (Imaging Wire template review) |
+| 21 | **Audio distribution — EMAIL + PHONE/SMS (locked 2026-05-31 by Kimal, cycle-7)** | Audio is the differentiator (The Imaging Wire has none). Each issue's audio is pushed **to email** (inline/linked player in the Beehiiv issue) **AND to phone via SMS** with a one-tap listen link — the commute use case ("listen on the way to work"). Requires: an **SMS provider** (new — e.g. Twilio; needs ADR + a `P-NN` provisioning item) + an **opt-in `phone` + SMS-consent field on `subscribers`** (TCPA: explicit opt-in, STOP/HELP handling, quiet hours). RSS/podcast feeds (§4) remain. | Kimal 2026-05-31 |
+| 22 | **Per-article thumbnail required (locked 2026-05-31 by Kimal, cycle-7)** | Launch parity with The Imaging Wire's thumbnail-per-story scannability: every one of the 500 launch articles ships with a thumbnail. **Content-ramp deliverable** (Launch Plan / P-21) — reader cards + `next/image` (AVIF/WebP) already wired (SHIP-24a); needs the assets + `articles.thumbnail_url` populated. | Kimal 2026-05-31 |
 
 ---
 
@@ -92,6 +95,8 @@ Skipping a beat requires explicit `editorial-director` override + note in `audio
 
 **Pre-roll** (every Audio Brief): *"From ROMAS Intelligence — clinical intelligence for modern radiation oncology."*
 **Podcast post-roll** (Tier 3 only): *"Not headlines. Clinical intelligence."*
+
+**Distribution (cycle-7, decision 21 — audio is the moat):** beyond the RSS feeds above, each issue's audio is delivered **to email** (inline/linked player in the Beehiiv issue) **and to phone via SMS** (one-tap listen link) for the commute use case. Requires an SMS provider (e.g. Twilio; new ADR + `P-NN`) + `subscribers.phone` + SMS-consent (TCPA opt-in / STOP / quiet hours).
 
 ---
 
@@ -406,7 +411,11 @@ Day 0 (24h before launch) verifies all 13 original Launch-Plan checklist items +
 | 15 | **All 4 audio RSS feeds valid + Tier 5 `video-podcast.xml` skeleton present** | rss-publisher |
 | 16 | **Beehiiv subscriber-list synced + reconciliation job green** (cycle-3 Q3) | web-engineer |
 | 17 | **`.env.example` + `SECRETS.md` complete + all Beehiiv/Resend keys provisioned** | DevOps |
-| 18 | First 5 issues of ROMAS Wire drafted and queued for live cron handoff | editorial-director |
+| 18 | First issues of ROMAS Wire drafted and queued for live cron handoff (2×/week cadence — decision 20) | editorial-director |
+| 19 | **Every launch article has a thumbnail** (`articles.thumbnail_url` populated; decision 22 — Imaging-Wire parity) | editorial-director |
+| 20 | **Google News sitemap + Publisher Center submitted & verified**; `NewsArticle` JSON-LD present on article pages | web-engineer |
+| 21 | **Audio email-embed + SMS one-tap-listen delivery verified** (decision 21); `subscribers.phone` opt-in + STOP handling live | web-engineer / DevOps |
+| 22 | Cadence configured to **twice weekly** (decision 20) across cron, Beehiiv segments, and the 3 regional editions | editorial-director / web-engineer |
 
 ---
 
@@ -418,6 +427,7 @@ Day 0 (24h before launch) verifies all 13 original Launch-Plan checklist items +
 | 2026-05-14 | 1.1.0 | **Cycle-3** Q1/Q2/Q3 locked by Kimal. Email split. Tier 5 Video Podcast added. Q2-A locked. | team-planning + Kimal |
 | 2026-05-14 | 1.2.0 | **Cycle-4** §12 Launch Posture added — canonical 500-article + ~50-audio scale, 11×8×8×8 distribution matrix, 8-week pre-launch calendar (W-8 = now), Day-1 readiness gate (18 items). Reflects Kimal's 2026-05-14 correction that the launch posture was under-scoped. | team-planning + Kimal |
 | 2026-05-31 | 1.3.0 | **Cycle-7** (a) **Product renamed from `ROMAS Brief` → ROMAS Wire** (brand/display; identifiers + `romasbrief.com` + repo = gated phase-2). (b) **Q-A DECIDED: full launch, Day-1 ≈ 2026-07-14** (June-7 dropped as infeasible; content ramp is binding pole). (c) **Engineering Waves 1–4 complete** (HEAD 95f6111) — reader↔Supabase, scorer, CMS QA gate, workers, a11y/perf/audio. (d) **Consolidation: this SSOT is THE single planning source of truth** — all other planning docs are subordinate (§9) and carry a supersession banner pointing here. | Kimal + Claude |
+| 2026-05-31 | 1.4.0 | **Cycle-7b — The Imaging Wire template review (Kimal).** Decisions 20–22 added: **(20)** publishing cadence → **twice weekly** (Tue brief + Fri ROMAS Read), supersedes Mon–Fri daily; launch still ships the 500-article scaffold. **(21)** audio distribution → **email + phone/SMS** (commute listening; new SMS provider + `subscribers.phone` opt-in). **(22)** every launch article ships a **thumbnail** (Imaging-Wire scannability parity). Launch gate (§12.8) extended to 22 rows incl. Google News sitemap + Publisher Center. | Kimal + Claude |
 
 ---
 

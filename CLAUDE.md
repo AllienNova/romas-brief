@@ -59,7 +59,7 @@ If unsure whether an action is reversible and contained within the working tree 
 ROMAS Wire is the **public media surface of ROMAS Intelligence**, sitting under the ROMAS ecosystem whose core platform is ROMAS COS — the AI-Native Clinical Operating System for Radiation Oncology.
 
 - **Audience**: radiation oncologists, medical physicists, dosimetrists, RT therapists, residents, oncology operators, industry.
-- **Cadence**: Mon–Fri daily issue. Friday issue is **The ROMAS Read** (deeper voice-of-authority).
+- **Cadence**: **Twice weekly** — **Tuesday** (operational brief) + **Friday** (**The ROMAS Read**, deeper voice-of-authority). *(SSOT decision 20, 2026-05-31 — supersedes the prior "Mon–Fri daily"; matches The Imaging Wire's validated 2×/week model. Launch still ships the 500-article scaffold per SSOT §12.)*
 - **Article archetypes**: Short brief 600–900 words · Standard analysis 1,000–1,500 · Deep report 2,000–3,500.
 - **Audio**: every article gets audio **only after editorial QA passes**. Four tiers (see §5).
 - **Owner**: Kimal Honour Djam (president@aliennova.com). Sign-off: `— Kimal`.
