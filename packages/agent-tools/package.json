@@ -1,0 +1,26 @@
+{
+  "name": "@romas-brief/agent-tools",
+  "private": true,
+  "version": "0.1.0",
+  "description": "ROMAS Wire MCP server — the four approval-gated tools the OpenClaw marketing/ops agent layer calls (email/sms/newsletter-subscriber/content). ADR-0020 + Docs/specs/openclaw-threat-model.md.",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "node --experimental-strip-types src/index.ts",
+    "approve": "node --experimental-strip-types src/approve-cli.ts",
+    "lint": "echo \"(no eslint in packages/* — typecheck is the gate)\" && exit 0",
+    "typecheck": "tsc --noEmit",
+    "build": "echo \"(runs via node --experimental-strip-types; typecheck is the build gate)\" && tsc --noEmit",
+    "test": "node --experimental-strip-types --test src/*.test.ts",
+    "clean": "rimraf dist .turbo"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3"
+  }
+}

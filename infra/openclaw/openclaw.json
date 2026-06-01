@@ -1,0 +1,103 @@
+// =====================================================================
+// infra/openclaw/openclaw.json · ROMAS Wire · ADR-0020 hardened baseline
+// The hardened OpenClaw gateway config for the 24/7 marketing/ops agent
+// layer. Every key verified against docs.openclaw.ai/gateway/security +
+// concepts/model-providers (2026-06-01). See Docs/specs/openclaw-threat-model.md.
+//
+// This is a TEMPLATE: ${...} placeholders are operator-set secrets/values.
+// NEVER commit real tokens here (S4). Copy to ~/.openclaw/openclaw.json on
+// the self-hosted gateway host, fill the placeholders from the operator's
+// secret manager, and `chmod 600`.
+// =====================================================================
+{
+  // ---- Gateway: loopback only, token auth, Tailscale for remote ------ (T-10)
+  "gateway": {
+    "mode": "local",
+    "bind": "loopback",
+    "auth": { "mode": "token", "token": "${ROMAS_OPENCLAW_GW_TOKEN}", "allowTailscale": true },
+    "nodes": { "pairing": { "autoApproveCidrs": [] } }
+  },
+
+  // ---- Sessions: per-peer isolation, allowlisted context ------------- (T-1)
+  "session": { "dmScope": "per-channel-peer", "contextVisibility": "allowlist" },
+
+  // ---- Agents: docker sandbox, no workspace access ------------------- (S2/T-7)
+  "agents": {
+    "defaults": {
+      "sandbox": { "mode": "docker", "scope": "agent", "workspaceAccess": "none" }
+    }
+  },
+
+  // ---- Tools: deny everything dangerous; the agent only gets the 4
+  //      ROMAS MCP tools below. No shell, no fs, no browser, no cron. -- (S2/T-7/T-8)
+  "tools": {
+    "profile": "messaging",
+    "deny": [
+      "group:automation",
+      "group:runtime",
+      "group:fs",
+      "sessions_spawn",
+      "sessions_send",
+      "gateway",
+      "cron"
+    ],
+    "fs": { "workspaceOnly": true },
+    "exec": { "security": "deny", "ask": "always" },
+    "browser": { "enabled": false },
+    "elevated": { "enabled": false }
+  },
+
+  // ---- Channels: TEAM-ONLY. Subscribers never DM the gateway --------- (T-1, threat-model §1)
+  //      Customer-ops is operator-mediated: inbound arrives via a support
+  //      queue, the agent drafts, a human approves the send.
+  "channels": {
+    "slack": {
+      "dmPolicy": "allowlist",
+      "allowFrom": ["${ROMAS_TEAM_SLACK_IDS}"]
+    },
+    "telegram": {
+      "dmPolicy": "pairing",
+      "groups": { "*": { "requireMention": true } }
+    }
+  },
+
+  // ---- Models: OpenClaw → Vercel AI Gateway (routing + cost-opt) ------ (ADR-0020 §2)
+  //      OpenClaw does not route/cost-optimize itself; it points at the
+  //      Gateway as one OpenAI-compatible provider. The Gateway owns the
+  //      5-tier model + spend caps. Keys live at the Gateway, not here.
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "romas-gateway": {
+        "baseUrl": "${VERCEL_AI_GATEWAY_URL}",
+        "apiKey": "${VERCEL_AI_GATEWAY_KEY}",
+        "api": "openai-completions",
+        "models": [{ "id": "romas-default", "name": "ROMAS routed (gateway-resolved)" }]
+      }
+    }
+  },
+
+  // ---- MCP: the four approval-gated ROMAS tools (this repo) ----------- (ADR-0020)
+  //      The MCP server gets ONLY the read-only Supabase key + state path +
+  //      quotas. Send secrets (Resend/Twilio/Beehiiv) are NOT here — they
+  //      live in the operator approval CLI's env (S4 / approve-cli.ts).
+  "mcp": {
+    "servers": {
+      "romas-agent-tools": {
+        "command": "node",
+        "args": ["--experimental-strip-types", "./packages/agent-tools/src/index.ts"],
+        "env": {
+          "SUPABASE_URL": "${SUPABASE_URL}",
+          "SUPABASE_ANON_KEY": "${SUPABASE_ANON_KEY_RO}",
+          "ROMAS_AGENT_STATE": "${ROMAS_AGENT_STATE}",
+          "ROMAS_QUOTA_EMAIL": "50",
+          "ROMAS_QUOTA_SMS": "50",
+          "ROMAS_QUOTA_BEEHIIV": "25"
+        }
+      }
+    }
+  },
+
+  // ---- Logging: redact tool args in logs ----------------------------- (S7/T-4)
+  "logging": { "redactSensitive": "tools" }
+}
