@@ -1,10 +1,10 @@
 # ADR-0020 — OpenClaw as the 24/7 marketing + customer-ops agent layer
 
-- **Status:** Proposed (pending the OpenClaw framework docs-read + a standalone threat model — closes Q-G)
+- **Status:** Proposed — **docs-read + threat model DONE 2026-06-01** (`Docs/specs/openclaw-threat-model.md`); pending only Kimal's Q-G authorization to build
 - **Date:** 2026-05-31
 - **Implements:** SSOT §3 decision 23 (OpenClaw, security-hardened) + decision 21 (audio → email + phone/SMS) + decision 20 (twice-weekly cadence demand profile)
 - **Relates to:** ADR-0007 (Beehiiv + Resend email split), ADR-0019 (Beehiiv webhook), `~/.claude/AI-PROVIDERS.md` (multi-LLM routing + 5-tier cost model)
-- **Confidence:** medium on the decision (framework verified to exist + core architecture grounded in `docs.openclaw.ai`); **low on integration specifics** (API/config surface NOT yet read — see "Verification debt")
+- **Confidence:** high — framework + full security model verified against `docs.openclaw.ai/gateway/security` + `concepts/model-providers` + the repo (2026-06-01). Integration surface confirmed; threat model maps all 10 controls (5 native, 5 ROMAS-build, 0 infeasible).
 - **Deciders:** Kimal Honour Djam
 
 ## Context
@@ -122,17 +122,25 @@ This layer is **marketing + public-content + ops only**. It never sees patient d
 - **Operational:** new self-hosted daemon to run, monitor, patch, and back up (its memory is markdown on disk). Needs the kill switch + quota guard before it sends anything real.
 - **Provisioning:** Kimal items **P-25** (commission + threat-model OpenClaw, SMS provider creds) and **P-26** (Google Publisher Center) in FOUNDERS-BOARD.
 
-## Verification debt (must clear before flipping to Accepted — rule 11)
+## Verification debt — CLEARED 2026-06-01
 
-Read and cite, from `github.com/openclaw/openclaw` + `docs.openclaw.ai`, before any integration code:
+The rule-11 docs-read is done. Full results + STRIDE threat model: **`Docs/specs/openclaw-threat-model.md`**. Closure summary:
 
-1. The actual agent-config surface — confirm `SOUL.md` / `AGENTS.md` / `TOOLS.md` / skills dir names + schema (secondary-sourced only so far).
-2. Whether the LLM client accepts a custom OpenAI-compatible `base_url` (required to front it with the Vercel AI Gateway). If not, the routing design changes.
-3. The `/gateway/security` page in full — map S1–S10 onto what OpenClaw natively supports vs. what we must add (container, egress firewall, approval gate).
-4. How tools/skills are declared + permission-scoped (for S2 allowlisting) and whether shell/browser tools can be hard-disabled.
-5. The heartbeat/event-trigger mechanism (webhook? cron? channel?) — to wire send windows to the Tue/Fri cadence (decision 20).
-6. Lobster workflow engine — whether deterministic YAML workflows can encode the S3 human-approval gate as a required step.
-7. License + supply-chain audit of OpenClaw + any managed layer (`stainlu/...`) per `tob-supply-chain-risk-auditor`.
+| # | Item | Result |
+|---|---|---|
+| 1 | Agent-config surface | ✅ **Corrected** — config is `~/.openclaw/openclaw.json` (JSON5), agents under `agents.list[]`; **not** SOUL.md/TOOLS.md markdown. Skills in `extensions/`. |
+| 2 | Custom OpenAI-compatible `base_url` | ✅ Confirmed — `models.providers.<id>.baseUrl` + `api:"openai-completions"`. Vercel AI Gateway fronting design (§2) is valid. |
+| 3 | `/gateway/security` full read → S1–S10 map | ✅ Done — 5 controls native, 5 ROMAS-build, 0 infeasible (threat model §6). |
+| 4 | Tool scoping / disable shell+browser | ✅ Confirmed — `exec.security:"deny"`, `fs.workspaceOnly`, `browser.enabled:false`, `tools.deny:["group:fs","group:runtime","group:automation",…]`, `sandbox.workspaceAccess:"none"`. |
+| 5 | Heartbeat / event-trigger for cadence | ⚠️ Partial — daemon confirmed; exact trigger (`group:automation` cron vs HEARTBEAT) to confirm at build. Not blocking. |
+| 6 | Lobster workflow engine for the approval gate | ✅ Negative — unconfirmed in official docs; **do not rely on it**. S3 approval is enforced at the ROMAS send-tool boundary instead. |
+| 7 | License + supply-chain | ✅ MIT; large+active repo; plugin supply-chain flagged → audit per `tob-supply-chain-risk-auditor` before loading any skill. |
+
+### Material refinement from the docs-read (propagate to SSOT decision 23)
+
+OpenClaw's security model assumes a **single-operator trust boundary per gateway** — *"not designed for hostile multi-tenant isolation."* So the **customer-ops** scope of decision 23 must be **operator-mediated**: subscribers never DM the gateway; customer inbound flows through a controlled support queue, the agent drafts a reply, a human approves the send. Not a public-facing autonomous bot. (Threat model §1, T-1.)
+
+Two build-time items remain (neither blocks the decision): the exact scheduling trigger (#5) and the per-tool human-approval implementation (S3 / threat-model T-2) — both ROMAS-side, well-scoped.
 
 ## Revisit triggers
 
