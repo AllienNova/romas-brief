@@ -29,6 +29,7 @@ import QuickHitsRotator from "@/components/QuickHitsRotator";
 import DismissibleStrip from "@/components/DismissibleStrip";
 import NoticeBoard from "@/components/NoticeBoard";
 import RotatingTopStories from "@/components/RotatingTopStories";
+import { Reveal } from "@/components/motion/primitives";
 import type { MockArticle } from "@/lib/mock-data";
 import {
   getTopStories,
@@ -280,6 +281,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── MODULE 3: Industry Moves + Paper of the Day ─────────────── */}
+      <Reveal>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-5">
@@ -360,6 +362,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ── MODULE 4: Quick Hits (rotating top row) ──────────────────── */}
       <section className="py-10" style={{ background: "var(--rb-bg-raised)", borderTop: "1px solid var(--rb-border-subtle)", borderBottom: "1px solid var(--rb-border-subtle)" }}>
@@ -376,6 +379,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── MODULE 5: Today's Podcast + Audio Intelligence ───────────── */}
+      <Reveal>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {podcast && (
@@ -456,8 +460,10 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ── MODULE 6: Trending Now ───────────────────────────────────── */}
+      <Reveal>
       <section className="py-10" style={{ background: "var(--rb-bg-raised)", borderTop: "1px solid var(--rb-border-subtle)", borderBottom: "1px solid var(--rb-border-subtle)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -513,8 +519,10 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ── MODULE 7: Top Papers This Week ──────────────────────────── */}
+      <Reveal>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <SectionHeader label="Research Intelligence" title="Top Papers This Week" description="Highest composite signal scores from peer-reviewed literature." href="/categories/research" hrefLabel="All research" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -538,6 +546,7 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+      </Reveal>
 
       {/* ── MODULE 8: Final CTA ──────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
