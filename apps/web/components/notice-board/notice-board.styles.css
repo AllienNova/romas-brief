@@ -1,0 +1,30 @@
+/* =====================================================================
+   notice-board.styles.css — NoticeBoard v2 motion + stretched-link.
+   Editorial cards get the accent rail / hover lift / NEW pulse here.
+   Sponsored + inventory cards must NOT use these classes (firewall §4):
+   their quarantine styling is inline in their own components.
+   ===================================================================== */
+
+/* Stretched-link (§16): one real anchor whose ::after covers the card. */
+.notice-card { position: relative; }
+.notice-cta--stretched::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.notice-card .notice-interactive { position: relative; z-index: 2; }
+
+/* Editorial hover lift (NEVER applied to sponsored/inventory). */
+.notice-card--editorial {
+  transition: transform 0.3s var(--rb-ease-apple), box-shadow 0.3s var(--rb-ease-apple), border-color 0.3s var(--rb-ease-apple);
+}
+.notice-card--editorial:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--rb-shadow-md);
+}
+
+/* NEW pulse — editorial only. */
+.notice-new-dot { animation: pulse-dot 2s ease-in-out infinite; }
+.notice-live-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* Reduced motion: disable all board animation + lift + pulse (§9/§18). */
+@media (prefers-reduced-motion: reduce) {
+  .notice-card, .notice-card * { animation: none !important; transition: none !important; }
+  .notice-card--editorial:hover { transform: none !important; }
+}

@@ -27,7 +27,7 @@ import HeroCarousel, { type HeroSlide } from "@/components/HeroCarousel";
 import SideStack from "@/components/SideStack";
 import QuickHitsRotator from "@/components/QuickHitsRotator";
 import DismissibleStrip from "@/components/DismissibleStrip";
-import NoticeBoard from "@/components/NoticeBoard";
+import NoticeBoard from "@/components/notice-board/NoticeBoard";
 import RotatingTopStories from "@/components/RotatingTopStories";
 import { Reveal } from "@/components/motion/primitives";
 import type { MockArticle } from "@/lib/mock-data";
