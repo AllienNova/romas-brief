@@ -5,7 +5,7 @@
 > **GitHub repo (standalone, ARCHIVED):** https://github.com/kimhons/romas-brief-web — archived 2026-05-28; source now in AllienNova/romas-brief apps/web/
 > **GitHub monorepo:** https://github.com/AllienNova/romas-brief
 > **Vercel project:** `romas-brief-web` (team: `alien-nova`, ID: `prj_U86mInvLI5mRyv6zjPIwh2Aryi`)
-> **Vercel token:** stored in env as `***REMOVED-VERCEL-TOKEN***`
+> **Vercel token:** in env as `$VERCEL_TOKEN` — NEVER commit. The previously-committed `vcp_…` token was LEAKED (git history + a public-repo window) and MUST be rotated at https://vercel.com/account/tokens (P0).
 > **Team ID:** `team_rt0SMeqUHlkA9Z7kJPmlcpfl`
 > **GitHub repo ID (Vercel source):** `1252164491` (kimhons/romas-brief-web — archived; Vercel still linked here)
 > **Phase 8 consolidation:** COMPLETE — T-801 through T-809 done
