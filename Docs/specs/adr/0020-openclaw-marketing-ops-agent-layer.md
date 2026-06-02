@@ -1,6 +1,6 @@
 # ADR-0020 — OpenClaw as the 24/7 marketing + customer-ops agent layer
 
-- **Status:** **Accepted** — Q-G authorized by Kimal 2026-06-01 ("we will host OpenClaw"); docs-read + threat model done (`Docs/specs/openclaw-threat-model.md`); the four approval-gated tools + hardened gateway config **built, tested (37/37), and shipped** as `@romas-brief/agent-tools` (commit `198c685`) + `infra/openclaw/`. Runtime is gated on P-25 provisioning only.
+- **Status:** **Accepted** — Q-G authorized by Kimal 2026-06-01 ("we will host OpenClaw"); docs-read + threat model done (`Docs/specs/openclaw-threat-model.md`); the four approval-gated tools + hardened gateway config **built, tested (37/37), and shipped** as `@romas-brief/agent-tools` (commit `198c685`) + `infra/openclaw/`. Runtime is gated on P-25 provisioning only. **Amended 2026-06-02 (Amendment A1):** deployment runtime is **NVIDIA NemoClaw / OpenShell** hosting the OpenClaw gateway — see Amendment A1 at the bottom.
 - **Date:** 2026-05-31
 - **Implements:** SSOT §3 decision 23 (OpenClaw, security-hardened) + decision 21 (audio → email + phone/SMS) + decision 20 (twice-weekly cadence demand profile)
 - **Relates to:** ADR-0007 (Beehiiv + Resend email split), ADR-0019 (Beehiiv webhook), `~/.claude/AI-PROVIDERS.md` (multi-LLM routing + 5-tier cost model)
@@ -111,7 +111,8 @@ This layer is **marketing + public-content + ops only**. It never sees patient d
 |---|---|---|---|
 | **OpenClaw (self-hosted, hardened)** | Multi-channel, multi-agent, MIT, local-first (data as markdown on our disk), large skill ecosystem, fits "own your stack" | Young project, large default attack surface, SMS/email not native, routing not built-in | **Chosen** (decision 23) — hardened + Gateway-fronted |
 | **Mastra** | TS-native agent framework, typed workflows, good DX | Rejected by Kimal (decision 23). More a library than a 24/7 channel-connected ops gateway | Rejected |
-| **`stainlu/openclaw-managed-agents`** (OpenClaw as npm dep + orchestrator/REST/quota/audit layer) | Adds the exact restart-safety + audit + quota + observability primitives S7/S9/S10 want | Third-party managed layer to vet; another supply-chain surface | **Evaluate during the docs-read** as a possible accelerator for the hardening layer |
+| **`stainlu/openclaw-managed-agents`** (OpenClaw as npm dep + orchestrator/REST/quota/audit layer) | Adds restart-safety + audit + quota + observability primitives | Third-party managed layer; another supply-chain surface | **Superseded by NemoClaw** (Amendment A1) — NVIDIA's first-party hardened runtime is the better managed layer |
+| **OpenClaw inside NVIDIA NemoClaw / OpenShell** | NVIDIA-maintained hardened runtime that *runs OpenClaw* (the default supported agent): Landlock + seccomp + netns isolation, egress control + operator-approval flow, sensitive-data masking, local-only inference; Apache 2.0; explicitly targets regulated/healthcare data; composes with our MCP server + approval gate + `openclaw.json` unchanged | Newer than OpenClaw (2026, no stability marker); adds NVIDIA OpenShell stack dep; Linux-centric | **CHOSEN deployment runtime — Amendment A1 (2026-06-02)** |
 | **Build bespoke on Vercel AI SDK + workers** | Total control, minimal attack surface | Rebuilds channels + scheduling + multi-agent routing OpenClaw already has; slower to the 24/7 goal | Rejected — reinvents the gateway |
 | **No agent layer (manual marketing)** | Zero new risk | Defeats decision 23; no 24/7; no moat leverage | Rejected |
 
@@ -151,4 +152,41 @@ Two build-time items remain (neither blocks the decision): the exact scheduling 
 
 ## Q-G — RESOLVED (2026-06-01)
 
-Kimal authorized: **"we will host OpenClaw"** + "start the build." Done: docs-read + threat model (`openclaw-threat-model.md`); the four approval-gated tools + hardened gateway config built, tested (37/37), shipped (`@romas-brief/agent-tools`, `infra/openclaw/`, commit `198c685`). Status → **Accepted**. Remaining work is **runtime provisioning only — FOUNDERS-BOARD P-25** (self-hosted OpenClaw host; `VERCEL_AI_GATEWAY_URL`/`_KEY`; `RESEND_API_KEY`; `TWILIO_ACCOUNT_SID`/`AUTH_TOKEN`/`FROM`; `BEEHIIV_API_KEY`/`PUBLICATION_ID`; read-only `SUPABASE_ANON_KEY`; `ROMAS_APPROVAL_TOKEN`) — see `infra/openclaw/README.md` §Secrets for the per-zone split.
+Kimal authorized: **"we will host OpenClaw"** + "start the build." Done: docs-read + threat model (`openclaw-threat-model.md`); the four approval-gated tools + hardened gateway config built, tested (37/37), shipped (`@romas-brief/agent-tools`, `infra/openclaw/`, commit `198c685`). Status → **Accepted**. Remaining work is **runtime provisioning only — FOUNDERS-BOARD P-25** (host; `VERCEL_AI_GATEWAY_URL`/`_KEY`; `RESEND_API_KEY`; `TWILIO_ACCOUNT_SID`/`AUTH_TOKEN`/`FROM`; `BEEHIIV_API_KEY`/`PUBLICATION_ID`; read-only `SUPABASE_ANON_KEY`; `ROMAS_APPROVAL_TOKEN`) — see `infra/openclaw/README.md` §Secrets for the per-zone split.
+
+---
+
+## Amendment A1 (2026-06-02) — Deploy runtime: OpenClaw **inside NVIDIA NemoClaw / OpenShell**
+
+- **Status:** Accepted. **Deciders:** Kimal ("yes amend"). **Confidence:** medium-high — NemoClaw verified to be a wrapper-runtime that *runs OpenClaw*, grounded against `github.com/NVIDIA/NemoClaw` + `nvidia.com/en-us/ai/nemoclaw/` (2026-06-02). Apache 2.0.
+
+**Decision.** Host the OpenClaw gateway **inside NVIDIA NemoClaw / OpenShell** rather than as a bare self-hardened daemon. Per the NemoClaw repo, it is *"an open source reference stack for running always-on AI agents more safely inside NVIDIA OpenShell sandboxes"* with **OpenClaw as the default supported agent** — i.e. NemoClaw is **not an alternative to OpenClaw; it is a hardened runtime that runs it.** It explicitly targets **regulated/healthcare data**, which fits ROMAS's HIPAA-adjacent posture.
+
+**Why this is a strict upgrade, not a pivot.** The biggest cost in this ADR was that **5 of 10 controls were "ROMAS-build"** (hand-rolled OS sandbox, egress firewall, containment). NemoClaw/OpenShell provides those as a maintained, security-reviewed layer:
+
+| Control | Before (bare OpenClaw) | After (NemoClaw/OpenShell) |
+|---|---|---|
+| S1 PHI isolation | infra discipline (ROMAS-build) | **+ Landlock + seccomp + network namespaces + local-only execution** (native) |
+| S2 no shell/broad tools | `openclaw.json` deny-lists (native) | unchanged + OS-level capability drops + process limits |
+| S5 egress allowlist | host firewall (ROMAS-build) | **native network policy + egress control + operator-approval flow** |
+| S8 prompt-injection blast-radius | tool-scoping posture | unchanged + sensitive-data masking |
+| S9 containment/kill switch | docker + manual stop (ROMAS-build) | **native OpenShell sandbox lifecycle** |
+
+Net: **~3 of the 5 ROMAS-build controls (S1/S5/S9) shift to NemoClaw-native**; S3 (human-approval), S7 (audit), S10 (quota) stay in our `@romas-brief/agent-tools` package as designed.
+
+**Zero rework to shipped code.** Because the tools are a portable **MCP server** and the approval gate lives in our package (not OpenClaw): `@romas-brief/agent-tools`, the operator approval CLI, and the hardened `openclaw.json` **all carry over unchanged** — NemoClaw runs that same OpenClaw, which loads our MCP server + config. The NeMo Agent Toolkit has full MCP client+server support.
+
+**NemoClaw verification debt (clear before prod — added to P-25, rule 11):**
+1. Confirm OpenShell runs an **arbitrary/custom OpenClaw config** (our hardened `openclaw.json` + the `mcp.servers` entry for `@romas-brief/agent-tools`).
+2. Confirm inference allows an **OpenAI-compatible `base_url`** so OpenClaw → **Vercel AI Gateway** routing (ADR §2) still holds (NemoClaw defaults to Nemotron/NIM but is documented to support local + other providers).
+3. **Linux host requirements** for Landlock/seccomp/netns; pin a NemoClaw commit (no stability marker yet).
+4. Supply-chain audit of NemoClaw + OpenShell (`tob-supply-chain-risk-auditor`).
+
+**Supersedes:** the §Consequences "self-hosted daemon I harden" framing and the §6 "5 ROMAS-build" count (now ~2). The `stainlu/openclaw-managed-agents` option is dropped in favor of NVIDIA's first-party runtime.
+
+**Revisit triggers (added):** NemoClaw stability/stewardship change or a discontinuation; if OpenShell cannot run our custom config or blocks the Gateway `base_url` → fall back to bare OpenClaw + the original ROMAS-build hardening (still fully specified above).
+
+## Revision History
+- 2026-05-31 — Proposed (OpenClaw, pending docs-read).
+- 2026-06-01 — Accepted (Q-G authorized; threat model done; tools + config shipped `198c685`).
+- 2026-06-02 — **Amendment A1**: deploy runtime = NVIDIA NemoClaw / OpenShell hosting OpenClaw.
