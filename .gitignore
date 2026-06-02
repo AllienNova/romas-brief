@@ -31,6 +31,9 @@ wrangler.toml.local
 .supabase/
 supabase/.temp/
 
+# Audio smoke-test generated artifacts (audio files + measurement JSON)
+tools/audio/output/
+
 # Env / secrets — NEVER commit
 .env
 .env.*
@@ -98,5 +101,12 @@ audio-masters/
 # Misc
 .history/
 *.bak
+*.bak.*
 *.tmp
 .DS_Store
+
+# Repo hygiene (SHIP-05) — local-only artifacts, never committed
+# Git bundles are local repo backups; delete manually if you don't want them.
+*.bundle
+# Legacy / archived code kept locally for reference, not part of the build.
+_legacy/
