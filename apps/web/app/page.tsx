@@ -27,7 +27,7 @@ import HeroCarousel, { type HeroSlide } from "@/components/HeroCarousel";
 import SideStack from "@/components/SideStack";
 import QuickHitsRotator from "@/components/QuickHitsRotator";
 import DismissibleStrip from "@/components/DismissibleStrip";
-import FromTheEditor from "@/components/FromTheEditor";
+import NoticeBoard from "@/components/NoticeBoard";
 import RotatingTopStories from "@/components/RotatingTopStories";
 import type { MockArticle } from "@/lib/mock-data";
 import {
@@ -264,9 +264,9 @@ export default async function HomePage() {
         {/* Rotating Top Stories — hero + 2 secondary auto-cycle every 7s */}
         <RotatingTopStories articles={topStories} interval={7} />
 
-        {/* From the Editor — below the rotating grid */}
+        {/* Notice Board — RadOnc billboard: announcements / news / events / partner messages */}
         <div className="mt-6">
-          <FromTheEditor />
+          <NoticeBoard />
         </div>
       </section>
 
