@@ -54,7 +54,9 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<"next" | "prev">("next");
   const [prefersReduced, setPrefersReduced] = useState(false);
+  const [inView, setInView] = useState(true);
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const rafRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
@@ -87,9 +89,21 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
     };
   }, []);
 
+  // Pause when the carousel scrolls out of viewport (spec 4.18.1 — battery/CPU)
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry?.isIntersecting ?? true),
+      { threshold: 0.2 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   // Progress bar animation using rAF
   const animateProgress = useCallback(() => {
-    if (paused || prefersReduced) return;
+    if (paused || !inView || prefersReduced) return;
     const now = performance.now();
     const elapsed = elapsedRef.current + (now - startTimeRef.current);
     const pct = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
@@ -97,7 +111,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
     if (pct < 100) {
       rafRef.current = requestAnimationFrame(animateProgress);
     }
-  }, [paused, prefersReduced]);
+  }, [paused, inView, prefersReduced]);
 
   const goTo = useCallback((index: number, dir: "next" | "prev" = "next") => {
     if (isAnimating) return;
@@ -120,7 +134,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
 
   // Auto-advance
   useEffect(() => {
-    if (paused || prefersReduced) {
+    if (paused || !inView || prefersReduced) {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       // Accumulate elapsed time when pausing
@@ -134,7 +148,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [paused, prefersReduced, current, goNext, animateProgress]);
+  }, [paused, inView, prefersReduced, current, goNext, animateProgress]);
 
   if (!slides.length) return null;
 
@@ -143,6 +157,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
 
   return (
     <div
+      ref={containerRef}
       className="relative overflow-hidden rounded-2xl"
       style={{
         background: slide.gradient,
@@ -158,7 +173,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
       <div
         className="relative z-10 px-6 py-7 sm:px-8 sm:py-8"
         style={{
-          transition: prefersReduced ? "none" : "opacity 0.4s ease",
+          transition: prefersReduced ? "none" : "opacity 0.4s var(--rb-ease-apple)",
           opacity: isAnimating ? 0.7 : 1,
         }}
         aria-live="polite"
@@ -293,7 +308,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
                   height: "6px",
                   borderRadius: "3px",
                   background: i === current ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.4)",
-                  transition: prefersReduced ? "none" : "width 0.3s ease, background 0.3s ease",
+                  transition: prefersReduced ? "none" : "width 0.3s var(--rb-ease-apple), background 0.3s var(--rb-ease-apple)",
                 }}
               />
             </button>
@@ -308,7 +323,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
           style={{ background: "rgba(0,0,0,0.35)", color: "rgba(255,255,255,0.7)" }}
           aria-live="polite"
         >
-          ⏸ Paused
+          Paused
         </div>
       )}
     </div>
