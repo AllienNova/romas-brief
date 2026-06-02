@@ -310,8 +310,7 @@ export default async function HomePage() {
           <div className="lg:col-span-7">
             <SectionHeader label="Featured Research" title="Paper of the Day" href="/categories/research" hrefLabel="More papers" />
             {paperOfDay && (
-              <Link href={`/article/${paperOfDay.slug}`} className="block group" aria-label={`Paper of the Day: ${paperOfDay.title}`}>
-                <article className="card-feature overflow-hidden" style={{ background: "linear-gradient(135deg, var(--rb-bg-surface) 0%, var(--rb-bg-raised) 100%)" }}>
+              <article className="card-feature overflow-hidden group relative" style={{ background: "linear-gradient(135deg, var(--rb-bg-surface) 0%, var(--rb-bg-raised) 100%)" }}>
                   <div className="p-8">
                     <div className="flex items-center gap-3 mb-5">
                       <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{ background: "var(--rb-accent-subtle)", color: "var(--rb-accent)" }}>
@@ -347,13 +346,16 @@ export default async function HomePage() {
                         {paperOfDay.has_audio && (
                           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: "var(--rb-bg-raised)", color: "var(--rb-text-secondary)" }}><HeadphonesIcon size={12} /> Audio available</span>
                         )}
-                        <a href={paperOfDay.primary_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors hover:bg-[var(--rb-bg-sunken)]" style={{ background: "var(--rb-bg-raised)", color: "var(--rb-text-secondary)" }} aria-label="Open primary source in new tab">Primary source ↗</a>
+                        <a href={paperOfDay.primary_source_url} target="_blank" rel="noopener noreferrer" className="relative z-10 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors hover:bg-[var(--rb-bg-sunken)]" style={{ background: "var(--rb-bg-raised)", color: "var(--rb-text-secondary)" }} aria-label="Open primary source in new tab">Primary source ↗</a>
                       </div>
                       <span className="text-sm font-semibold" style={{ color: "var(--rb-accent)" }}>Read critique →</span>
                     </div>
                   </div>
+                  {/* stretched-link overlay — whole card → article, without nesting anchors */}
+                  <Link href={`/article/${paperOfDay.slug}`} className="absolute inset-0" aria-label={`Paper of the Day: ${paperOfDay.title}`}>
+                    <span className="sr-only">Read critique</span>
+                  </Link>
                 </article>
-              </Link>
             )}
           </div>
         </div>
