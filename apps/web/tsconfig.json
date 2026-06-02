@@ -16,6 +16,7 @@
     "verbatimModuleSyntax": false,
     "exactOptionalPropertyTypes": false,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "forceConsistentCasingInFileNames": true,
     "plugins": [
       {
