@@ -176,11 +176,16 @@ Net: **~3 of the 5 ROMAS-build controls (S1/S5/S9) shift to NemoClaw-native**; S
 
 **Zero rework to shipped code.** Because the tools are a portable **MCP server** and the approval gate lives in our package (not OpenClaw): `@romas-brief/agent-tools`, the operator approval CLI, and the hardened `openclaw.json` **all carry over unchanged** — NemoClaw runs that same OpenClaw, which loads our MCP server + config. The NeMo Agent Toolkit has full MCP client+server support.
 
-**NemoClaw verification debt (clear before prod — added to P-25, rule 11):**
-1. Confirm OpenShell runs an **arbitrary/custom OpenClaw config** (our hardened `openclaw.json` + the `mcp.servers` entry for `@romas-brief/agent-tools`).
-2. Confirm inference allows an **OpenAI-compatible `base_url`** so OpenClaw → **Vercel AI Gateway** routing (ADR §2) still holds (NemoClaw defaults to Nemotron/NIM but is documented to support local + other providers).
-3. **Linux host requirements** for Landlock/seccomp/netns; pin a NemoClaw commit (no stability marker yet).
-4. Supply-chain audit of NemoClaw + OpenShell (`tob-supply-chain-risk-auditor`).
+**NemoClaw verification debt — VERIFIED 2026-06-02** (P-25-spike; against `github.com/NVIDIA/NemoClaw/docs/*`):
+
+| # | Item | Result |
+|---|---|---|
+| 1 | Runs our custom OpenClaw config + plugins | ✅ **Yes** — integration model is a **custom sandbox image**: bake plugins into the OpenClaw `extensions/` dir, then `nemoclaw onboard --from ./Dockerfile`; apply our `openclaw.json` (tool deny-lists, channels) **after** `openclaw doctor --fix`. → deliverable = a ROMAS sandbox `Dockerfile`. |
+| 2 | OpenAI-compatible `base_url` for the Vercel Gateway | ✅ **Yes** — NemoClaw has a **`compatible-endpoint`** provider (+ `compatible-anthropic-endpoint`): `nemoclaw inference set --provider compatible-endpoint --model <name>`. Onboard the Vercel AI Gateway as that endpoint. (Ollama-proxy e2e in their CI corroborates OpenAI-compat proxying.) |
+| 3 | Host requirements | ✅ **Linux+Docker / macOS Apple-Silicon+Colima / WSL2+Docker Desktop / DGX Spark**; **Node 22.16+**, npm 10+, Docker; **NO GPU required** (GPU only if self-hosting a local NIM — we use the Gateway); min 4 vCPU / 8 GB / 20 GB. **Landlock needs Linux kernel ≥5.13** (`CONFIG_SECURITY_LANDLOCK=y`; `best_effort` degrades gracefully). |
+| 4 | Isolation mechanisms | ✅ Landlock (RO system paths), capability drops (`CAP_SYS_ADMIN/PTRACE/NET_RAW/DAC_OVERRIDE/SYS_CHROOT`; `--cap-drop=ALL`), `ulimit -u 512` (fork-bomb), RO root-owned config. **Egress/network policy** lives in `docs/reference/network-policies.mdx` (baseline rules + egress control + operator-approval — confirms S5). |
+
+**Remaining (build-time, non-blocking):** (a) the exact NemoClaw **sandbox base-image name + `extensions/` path** for the ROMAS `Dockerfile` (read at provisioning); (b) confirm OpenClaw's `mcp.servers` (our `@romas-brief/agent-tools`, spawned as a `node` process — allowed under the cap set) loads inside the sandbox; (c) **supply-chain audit** of NemoClaw + OpenShell (`tob-supply-chain-risk-auditor`) + pin a commit (no stability marker yet).
 
 **Supersedes:** the §Consequences "self-hosted daemon I harden" framing and the §6 "5 ROMAS-build" count (now ~2). The `stainlu/openclaw-managed-agents` option is dropped in favor of NVIDIA's first-party runtime.
 

@@ -20,7 +20,22 @@ OpenClaw gateway (this config, loopback + Tailscale)
 The agent can only **stage** sends. A human approves them out-of-band with the operator
 approval CLI, which holds the only copy of `ROMAS_APPROVAL_TOKEN`. The LLM has no approval tool.
 
-## Install (operator)
+## Deploy runtime: NVIDIA NemoClaw / OpenShell (ADR-0020 Amendment A1)
+
+The chosen runtime hosts the OpenClaw gateway inside an NVIDIA OpenShell sandbox
+(Landlock + capability-drop + egress policy). Verified 2026-06-02 (P-25-spike) against
+`github.com/NVIDIA/NemoClaw/docs`. Integration recipe:
+
+1. **Host:** Linux+Docker (or macOS Apple-Silicon+Colima / WSL2+Docker Desktop). Node **22.16+**, npm 10+, Docker. **No GPU required** (we route inference to the Vercel AI Gateway, not a local NIM). Min 4 vCPU / 8 GB / 20 GB. Landlock isolation wants Linux kernel **≥5.13**.
+2. **Bake a ROMAS sandbox image** (`infra/openclaw/Dockerfile`, TODO at provisioning — needs the NemoClaw sandbox base-image name + `extensions/` path): copy `@romas-brief/agent-tools` + the hardened `openclaw.json` into the OpenClaw `extensions/` dir.
+3. **Onboard from it:** `nemoclaw onboard --from ./infra/openclaw/Dockerfile`. Apply `openclaw.json` **after** `openclaw doctor --fix` (base config must exist first).
+4. **Inference → Vercel AI Gateway:** onboard it as a compatible endpoint —
+   `nemoclaw inference set --provider compatible-endpoint --model <gateway-model>`.
+5. The four MCP tools load via OpenClaw's `mcp.servers` (spawns our `node` MCP server inside the sandbox — allowed under the cap set; confirm at first boot).
+
+> Bare-OpenClaw install below remains valid as the fallback if NemoClaw can't run our custom config (ADR-0020 A1 revisit trigger).
+
+## Install (operator) — bare OpenClaw (fallback)
 
 ```bash
 # 1. Node 22.19+ / 24 (for --experimental-strip-types) + OpenClaw
