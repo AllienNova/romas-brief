@@ -484,6 +484,15 @@
   50%       { opacity: 1;   transform: scale(1.2); }
 }
 
+/* QuickHits rotation progress (scaleX → no layout shift / CLS). */
+@keyframes qh-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qh-progress-bar { animation: none !important; transform: scaleX(1); }
+}
+
 .animate-fade-in    { animation: fadeIn 0.35s var(--rb-ease-out) forwards; }
 .animate-slide-up   { animation: slideUp 0.45s var(--rb-ease-out) forwards; }
 .animate-slide-down { animation: slideDown 0.35s var(--rb-ease-out) forwards; }

@@ -118,7 +118,7 @@ function HitRow({
           style={{
             transform,
             opacity,
-            transition: prefersReduced ? "none" : "transform 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.32s ease",
+            transition: prefersReduced ? "none" : "transform 0.32s var(--rb-ease-apple), opacity 0.32s ease",
           }}
         >
           {/* Category pill + meta row */}
@@ -136,6 +136,11 @@ function HitRow({
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse inline-block" />
                 Live
+              </span>
+            )}
+            {isRotating && (
+              <span className="inline-flex items-center" style={{ color: "var(--rb-text-tertiary)" }} aria-hidden title="Rotates next">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M6 15l6-6 6 6" /></svg>
               </span>
             )}
             <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
@@ -242,6 +247,21 @@ export default function QuickHitsRotator({ stableItems, rotatingPool }: QuickHit
           isRotating={false}
         />
       ))}
+
+      {/* Rotation progress — time-to-next-rotation affordance (spec 4.18.3) */}
+      {rotatingPool.length >= 2 && (
+        <div className="mt-1 h-0.5 overflow-hidden rounded-full" style={{ background: "var(--rb-border-subtle)" }} aria-hidden>
+          <div
+            key={rotatingIdx}
+            className="qh-progress-bar h-full"
+            style={{
+              background: "var(--rb-accent)",
+              transformOrigin: "left",
+              animation: tabHidden || prefersReduced ? "none" : `qh-progress ${ROTATE_INTERVAL}ms linear`,
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }
