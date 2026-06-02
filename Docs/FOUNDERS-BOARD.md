@@ -28,13 +28,21 @@ Which worker needs which secret is listed per item below. When in doubt, tell me
 # 🔴 CRITICAL PATH — do these first
 
 ## P-00 · Enable GitHub Actions billing for the AllienNova org — *CI is dead until you do*
-**Why:** GitHub Actions has **never run** on this repo. Every push/PR since 2026-05-22 fails at `startup_failure`. Diagnosed 2026-05-31 (commit cb5b406): not a code bug — a trivial `echo` workflow also failed. Cause: `AllienNova` is a **GitHub Free-plan org** and `romas-brief` is **private**, so Actions is blocked (exhausted free minutes / no payment method / spending limit at $0). Until fixed, there is **no CI verification** — every merge rests only on the local `agent-verify` gates. Blocks the deploy workflows (`deploy-pages`, `deploy-workers`, `deploy-migrations`) entirely → blocks SHIP-31/SHIP-32 launch.
+**Why:** GitHub Actions has **never run** on this repo. Every push/PR since 2026-05-22 fails at `startup_failure`. **Root cause CONFIRMED 2026-06-02:** Kimal flipped the repo **public** to test it — Actions *still* would not start, with the verbatim annotation **"the job was not started because your account is locked due to a billing issue."** So this is an **account-level billing LOCK on the `AllienNova` org**, NOT the private-repo-minutes / $0-spending-limit case. Public repos get free unlimited Actions, but a **locked account** can't run them either — so making the repo public does **NOT** fix it (proven, then reverted to private). Until the lock clears there is **no CI verification** — every merge rests only on local `agent-verify` gates. Blocks the deploy workflows (`deploy-pages`, `deploy-workers`, `deploy-migrations`) → blocks SHIP-31/32 launch.
 **Time:** ~5 min.
-Pick **one**:
-1. **Add billing (recommended):** https://github.com/organizations/AllienNova/settings/billing → add a payment method → set an **Actions spending limit > $0**. Private-repo Actions resume immediately.
-2. **Make the repo public:** repo → Settings → General → Danger Zone → *Change visibility → Public*. Actions are free + unlimited for public repos. (Only if the codebase is OK to open-source.)
-3. **Self-hosted runner:** repo → Settings → Actions → Runners → *New self-hosted runner*. Free minutes not consumed; you run the compute.
-**Done when:** a pushed commit produces a **non-`startup_failure`** run with attributed jobs. Verify: `gh run list --branch main --limit 1` shows a real workflow name + `success`/`failure` (not blank + `startup_failure`).
+**Fix — clear the org billing lock:**
+1. Go to https://github.com/organizations/AllienNova/settings/billing. There will be an **"account locked / billing issue"** banner.
+2. Resolve it: **pay the past-due balance** and/or **fix/replace the payment method** until the banner clears. (A $0 spending limit alone is not the issue here — the *account* is locked.)
+3. Set an **Actions spending/budget limit > $0** while you're there.
+- *Alternative:* a **self-hosted runner** (repo → Settings → Actions → Runners → New self-hosted runner) bypasses the lock — you run the compute. Going **public does not help** (already tested).
+**Done when:** a pushed commit produces a **non-`startup_failure`** run with attributed jobs that actually execute. Verify: `gh run list --branch main --limit 1` shows a real workflow name + `success`/`failure` (not blank + `startup_failure` 0s).
+
+## P-00b · ROTATE the leaked Vercel token — *P0 SECURITY, do this now*
+**Why:** the brief 2026-06-02 public window + a full git-history scan revealed a **live Vercel token** (`vcp_5DxK8…`, 60 chars) was committed 2026-05-28 in `Docs/specs/architecture.md` and `apps/web/AGENTS.md`. Both are redacted in HEAD now (commit `e586690` + a prior fix), **but the token remains in public git history** (commits `bb5f004`, `dd7f0e0`). Reverting to private does **not** undo the exposure — assume it was scraped (GitHub secret-scanning + bots index public pushes within seconds; Vercel is a GH scanning partner and may have already auto-revoked).
+**Time:** ~3 min.
+1. **Rotate now:** https://vercel.com/account/tokens → delete the leaked token → create a new one → store as `VERCEL_TOKEN` (deploy env / Worker secret), never in a file.
+2. *(Optional, needs your OK)* purge the token from git history — Claude can run `git filter-repo` + force-push `main`. This rewrites shared history, so it requires your explicit authorization.
+**Done when:** the old token is revoked at Vercel and the new one lives only in env/secrets.
 
 ## P-01 · ElevenLabs Creator API key
 **Why:** primary TTS for all audio tiers. Blocks SHIP-27 (audio runtime) + launch gates #13/#14.

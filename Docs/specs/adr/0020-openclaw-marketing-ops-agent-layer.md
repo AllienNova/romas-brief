@@ -1,6 +1,6 @@
 # ADR-0020 — OpenClaw as the 24/7 marketing + customer-ops agent layer
 
-- **Status:** Proposed — **docs-read + threat model DONE 2026-06-01** (`Docs/specs/openclaw-threat-model.md`); pending only Kimal's Q-G authorization to build
+- **Status:** **Accepted** — Q-G authorized by Kimal 2026-06-01 ("we will host OpenClaw"); docs-read + threat model done (`Docs/specs/openclaw-threat-model.md`); the four approval-gated tools + hardened gateway config **built, tested (37/37), and shipped** as `@romas-brief/agent-tools` (commit `198c685`) + `infra/openclaw/`. Runtime is gated on P-25 provisioning only.
 - **Date:** 2026-05-31
 - **Implements:** SSOT §3 decision 23 (OpenClaw, security-hardened) + decision 21 (audio → email + phone/SMS) + decision 20 (twice-weekly cadence demand profile)
 - **Relates to:** ADR-0007 (Beehiiv + Resend email split), ADR-0019 (Beehiiv webhook), `~/.claude/AI-PROVIDERS.md` (multi-LLM routing + 5-tier cost model)
@@ -149,6 +149,6 @@ Two build-time items remain (neither blocks the decision): the exact scheduling 
 - If the docs-read shows no OpenAI-compatible `base_url` → re-decide the routing approach (or wrap with a local proxy).
 - If hardening S1–S10 proves infeasible on OpenClaw → fall back to the bespoke-on-AI-SDK option.
 
-## Open question to close this ADR
+## Q-G — RESOLVED (2026-06-01)
 
-**Q-G:** Confirm OpenClaw (not a fork / not the managed layer) as the base, and authorize the docs-read + threat-model spike (P-25) that clears the verification debt above. On completion → flip Status to Accepted, attach the threat model, and update FOUNDERS-BOARD P-25 with the concrete credential + host list.
+Kimal authorized: **"we will host OpenClaw"** + "start the build." Done: docs-read + threat model (`openclaw-threat-model.md`); the four approval-gated tools + hardened gateway config built, tested (37/37), shipped (`@romas-brief/agent-tools`, `infra/openclaw/`, commit `198c685`). Status → **Accepted**. Remaining work is **runtime provisioning only — FOUNDERS-BOARD P-25** (self-hosted OpenClaw host; `VERCEL_AI_GATEWAY_URL`/`_KEY`; `RESEND_API_KEY`; `TWILIO_ACCOUNT_SID`/`AUTH_TOKEN`/`FROM`; `BEEHIIV_API_KEY`/`PUBLICATION_ID`; read-only `SUPABASE_ANON_KEY`; `ROMAS_APPROVAL_TOKEN`) — see `infra/openclaw/README.md` §Secrets for the per-zone split.

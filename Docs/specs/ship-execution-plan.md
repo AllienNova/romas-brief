@@ -47,7 +47,7 @@ owner: Kimal Honour Djam
 | `packages/ui` | still a stub (reader components live in `apps/web/components`) | ⚠️ cosmetic — not launch-blocking |
 | Tests (JS/TS) | **21+ unit cases** wired to CI `test` (SHIP-17a): markdown-XSS, audio-QA gate, signal-scoring, audio-status + worker suites | ⚠️ unit ✅; integration (17b) blocked on test-DB |
 | Ops (SLO/alerting/runbook) | none (Sentry in `.env`, unwired) | ❌ SHIP-26 open (AUTO; live alert needs P-08) |
-| CI on `main` (GitHub Actions) | **never executed** — `startup_failure` every run since 2026-05-22 (Free-org + private-repo billing, P-00/R-C7-8). lint+typecheck+build+audit all **green LOCALLY** via `agent-verify`. | ❌ **#1 launch gate** — no GitHub-side verification or deploy until P-00 |
+| CI on `main` (GitHub Actions) | **never executed** — `startup_failure` every run since 2026-05-22. **Confirmed 2026-06-02 (public test, then reverted):** account-level **billing LOCK** on the AllienNova org ("job not started — account locked due to billing"), NOT private-repo minutes; making the repo public does NOT fix it. lint+typecheck+build+audit all **green LOCALLY** via `agent-verify`. | ❌ **#1 launch gate** — clear the org billing lock (P-00) for any GitHub-side verification/deploy |
 
 ## 1b. Launch-date reality — Q-A DECIDED 2026-05-31: full launch, target ~2026-07-14
 
