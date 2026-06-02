@@ -10,6 +10,7 @@ import MobileCTABand from "@/components/MobileCTABand";
 import { MicrophoneIcon, NewsBriefIcon, HeadphonesIcon, GlobeIcon } from "@/components/icons";
 import { SubscriberCount } from "@/components/SubscriberCount";
 import { WebVitals } from "@/components/WebVitals";
+import MotionProvider from "@/components/motion/MotionProvider";
 
 export const metadata: Metadata = {
   title: {
@@ -318,7 +319,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </header>
 
         {/* ── Main content ──────────────────────────────────────────── */}
-        <main id="main-content">{children}</main>
+        <main id="main-content">
+          <MotionProvider>{children}</MotionProvider>
+        </main>
 
         {/* ── Mobile CTA Band ───────────────────────────────────────── */}
         <MobileCTABand />
