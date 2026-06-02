@@ -23,6 +23,7 @@
 import { createPublicSupabaseClient } from "./supabase/public";
 import * as mock from "./mock-data";
 import type { MockArticle, Category, Region, Audience, ContentType } from "./mock-data";
+import { buildEmbeddingRequest, parseEmbedding, rankMock, sanitizeQuery } from "./search-core";
 
 /** Columns the reader needs; maps to MockArticle in rowToArticle(). */
 const COLUMNS =
@@ -232,6 +233,55 @@ export async function getAudioArticles(limit = 20): Promise<MockArticle[]> {
 export async function getTodaysPodcast(): Promise<MockArticle | undefined> {
   if (!hasDbEnv()) return mock.getTodaysPodcast();
   return undefined;
+}
+
+// ── Search (SHIP-25 / T-307) ──────────────────────────────────────────
+// Hybrid FTS + pgvector via the `search_articles` RPC (migration 0014),
+// SECURITY INVOKER so RLS public_read_published applies. Falls back to a
+// weighted in-memory rank over mock data when SUPABASE_URL/ANON_KEY absent.
+// The semantic path is used only when OPENAI_API_KEY is set AND rows have
+// embeddings; otherwise search_articles ranks by FTS alone (q_embedding=null).
+
+/**
+ * Embed a query with OpenAI text-embedding-3-small. Returns null (→ FTS-only)
+ * when OPENAI_API_KEY is absent or the call fails — search never hard-errors
+ * on a missing/broken embedding provider.
+ */
+async function embedQuery(query: string): Promise<number[] | null> {
+  const apiKey = process.env["OPENAI_API_KEY"];
+  if (!apiKey) return null;
+  try {
+    const req = buildEmbeddingRequest(query, apiKey);
+    const res = await fetch(req.url, {
+      method: "POST",
+      headers: req.headers,
+      body: req.body,
+      signal: AbortSignal.timeout(QUERY_TIMEOUT_MS),
+    });
+    if (!res.ok) return null;
+    return parseEmbedding(await res.json());
+  } catch {
+    return null;
+  }
+}
+
+/** Full-text + semantic search over published articles, ranked by relevance. */
+export async function searchArticles(rawQuery: string, limit = 20): Promise<MockArticle[]> {
+  const query = sanitizeQuery(rawQuery);
+  if (query.length === 0) return [];
+  if (!hasDbEnv()) return rankMock(mock.MOCK_ARTICLES, query, limit);
+
+  const embedding = await embedQuery(query);
+  const { data } = await createPublicSupabaseClient()
+    .rpc("search_articles", {
+      q_text: query,
+      // pgvector text format ("[0.1,0.2,...]") — Postgres casts to vector(1536).
+      q_embedding: embedding ? JSON.stringify(embedding) : null,
+      match_count: limit,
+    })
+    .select(COLUMNS)
+    .abortSignal(AbortSignal.timeout(QUERY_TIMEOUT_MS));
+  return mapRows(data);
 }
 
 /** Published, non-revoked slugs for generateStaticParams (ISR). */

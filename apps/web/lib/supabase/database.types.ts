@@ -641,7 +641,16 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      // SHIP-25 / T-307 — hybrid FTS + pgvector search (migration 0014).
+      // q_embedding is pgvector text format ("[0.1,0.2,...]"); null → FTS-only.
+      search_articles: {
+        Args: {
+          q_text: string
+          q_embedding?: string | null
+          match_count?: number
+        }
+        Returns: Database["public"]["Tables"]["articles"]["Row"][]
+      }
     }
     Enums: {
       [_ in never]: never

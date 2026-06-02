@@ -110,3 +110,6 @@ audio-masters/
 *.bundle
 # Legacy / archived code kept locally for reference, not part of the build.
 _legacy/
+
+# Playwright MCP device-test artifacts
+.playwright-mcp/
