@@ -51,11 +51,14 @@ Three primary stores by audience + transport security:
 | `ROMAS_REVALIDATE_SECRET` | Bearer token | Cloudflare Pages env var (server-only) | apps/web `POST /api/internal/revalidate-board` (NoticeBoard cache tag invalidation) | 90 days | TBD |
 | `CLOUDFLARE_ZONE_ID` | Zone identifier (not secret) | Worker Secret | cdn-purge-watchdog (purge by tag scoped to zone) | On zone change | TBD |
 | `CLOUDFLARE_API_TOKEN` | API token (Zone:Cache Purge + Workers:Edit + Pages:Edit scopes) | Worker Secret + GitHub Actions Secret | cdn-purge-watchdog + deploy-pages + deploy-workers workflows | **30 days** (high-blast-radius) | TBD |
-| `CLOUDFLARE_ACCOUNT_ID` | Account identifier (not secret) | GitHub Actions Secret | deploy-pages + deploy-workers + deploy-migrations workflows | On account change | TBD |
+| `CLOUDFLARE_ACCOUNT_ID` | Account identifier (not secret) | GitHub Actions Secret + `.env` (local) | deploy-pages + deploy-workers + deploy-migrations workflows | On account change | set 2026-06-03 |
 | `PAGES_PROJECT_WEB` | Pages project name | GitHub Actions Secret | deploy-pages workflow | On project rename | TBD |
 | `PAGES_PROJECT_CMS` | Pages project name | GitHub Actions Secret | deploy-pages workflow | On project rename | TBD |
-| `R2_ACCESS_KEY_ID` | R2 access key | Worker Secret | audio-producer (WAV/MP3 upload) | 90 days | TBD |
-| `R2_SECRET_ACCESS_KEY` | R2 secret | Worker Secret | audio-producer | 90 days | TBD |
+| `R2_ACCOUNT_ID` | Account identifier (not secret) | Worker Secret + `.env` (local) | R2 S3 endpoint derivation | On account change | set 2026-06-03 |
+| `R2_S3_ENDPOINT` | S3 endpoint URL (not secret) | Worker Secret + `.env` (local) | audio-producer R2 SDK | On account change | set 2026-06-03 |
+| `R2_ACCESS_KEY_ID` | R2 access key | Worker Secret + `.env` (local) | audio-producer (WAV/MP3 upload) | 90 days | 2026-06-03 |
+| `R2_SECRET_ACCESS_KEY` | R2 secret | Worker Secret + `.env` (local) | audio-producer | 90 days | 2026-06-03 |
+| `R2_API_TOKEN` | R2-scoped Cloudflare API token (bucket mgmt; NOT zone scope) | Worker Secret + `.env` (local) | R2 bucket create/list/manage | 90 days | 2026-06-03 (token "meliora-empire-upload") |
 | `R2_ARCHIVE_BUCKET` | Bucket name (not secret) | Worker Secret | audio-producer | On bucket rename | romas-audio-archive |
 | `R2_CDN_BUCKET` | Bucket name (not secret) | Worker Secret | audio-producer + rss-publisher | On bucket rename | romas-audio-cdn |
 | `BEEHIIV_API_KEY` | API key (Beehiiv newsletter sends) | Worker Secret | rss-publisher OR new beehiiv worker (R-304) | 90 days | TBD |
@@ -205,3 +208,4 @@ The current `ci.yml` runs `pnpm audit --audit-level=high` as a continue-on-error
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-05-22 | Initial canonical secrets runbook (R-112 close, /team-build M1-closeout cycle). Covers 27 secrets across 4 stores, rotation cadences (90d standard / 30d high-blast-radius), 1Password vault procedure, breach response 1-2-3, never-commit list, CI gitleaks integration plan. |
+| 1.1.0 | 2026-06-03 | Added R2 account/endpoint/API-token rows (`R2_ACCOUNT_ID`, `R2_S3_ENDPOINT`, `R2_API_TOKEN`) for the romaswire R2 provisioning; values stored in local `.env` (gitignored) + `.env.example` manifest updated. R2 S3 access keys + account id marked rotated 2026-06-03. Production stores (Worker Secrets / Pages env) still pending `wrangler secret put`. |
