@@ -1,0 +1,17 @@
+name = "romas-brief-notice-scheduler"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# NB-5 (§10): every 5 minutes, flip due notice lifecycle states + revalidate the board.
+[[triggers.crons]]
+crons = ["*/5 * * * *"]
+
+[vars]
+SUPABASE_URL = "https://placeholder.supabase.co"
+# Full URL of the reader revalidate-board route (set per environment at deploy).
+REVALIDATE_BOARD_URL = "https://placeholder.romaswire.com/api/internal/revalidate-board"
+
+# Secrets (never in [vars] — use `wrangler secret put`):
+#   SUPABASE_SERVICE_ROLE_KEY   — service role; bypasses RLS, may execute notices_run_scheduler()
+#   ROMAS_REVALIDATE_SECRET     — bearer for the revalidate-board route (see SECRETS.md)
