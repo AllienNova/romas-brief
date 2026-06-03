@@ -1,19 +1,15 @@
 // =====================================================================
-// NoticeBoard — RSC shell for the v2 board (spec §4). Composes the header +
-// grid over a BoardPayload produced by the pure selectBoard() engine.
-//
-// Data: mock today (NB-3). NB-4 replaces the selectBoard(MOCK…) call with a
-// cached `GET /api/notices/board` fetch + error boundary + static fallback.
-// The render shape stays identical, so NB-4 is a one-line swap.
+// NoticeBoard — RSC shell for the v2 board (spec §4). Async: awaits the
+// cached getBoard() (Supabase published rows → selectBoard, with a static
+// fallback so it never renders empty/broken — NB-4). Composes header + grid.
 // =====================================================================
 import "./notice-board.styles.css";
-import { selectBoard } from "@/lib/notice-board/select-board";
-import { MOCK_NOTICES, MOCK_SLOTS } from "./mock-notices";
+import { getBoard } from "@/lib/notice-board/get-board";
 import { NoticeBoardHeader } from "./NoticeBoardHeader";
 import { NoticeGrid } from "./NoticeGrid";
 
-export default function NoticeBoard() {
-  const board = selectBoard(MOCK_NOTICES, MOCK_SLOTS, new Date());
+export default async function NoticeBoard() {
+  const board = await getBoard();
   return (
     <section
       aria-label="Notice board"
