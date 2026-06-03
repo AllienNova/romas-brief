@@ -16,6 +16,7 @@ import { getArticleBySlug, getArticlesByCategory, getPublishedSlugs } from "@/li
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { AudioStatusBadge } from "@/components/AudioStatusBadge";
 import ShareButtons from "@/components/ShareButtons";
+import { Reveal } from "@/components/motion/primitives";
 import { renderMarkdown } from "@/lib/markdown";
 
 export const revalidate = 120;
@@ -205,6 +206,7 @@ export default async function ArticlePage(
         />
       )}
       {/* Signal scores */}
+      <Reveal>
       <div className="mb-8 bg-[var(--rb-bg-raised)] rounded-xl border border-[var(--rb-border-subtle)] p-5">
         <h2 className="text-sm font-bold text-[var(--rb-text-secondary)] mb-4 uppercase tracking-wide">Signal Scores</h2>
         <div className="space-y-2.5">
@@ -230,8 +232,10 @@ export default async function ArticlePage(
           <span className="text-lg font-black text-[var(--rb-text-primary)] tabular-nums">{mockArticle.composite_score}</span>
         </div>
       </div>
+      </Reveal>
       {/* Primary source */}
       {typedArticle.primary_source_url && (
+        <Reveal>
         <div className="mb-8 rounded-xl border border-[var(--rb-border-subtle)] p-5" style={{ background: "var(--rb-bg-surface)" }}>
           <h2 className="text-sm font-bold text-[var(--rb-text-secondary)] mb-3 uppercase tracking-wide">Primary Source</h2>
           <p className="text-xs text-[var(--rb-text-tertiary)] mb-1 uppercase tracking-wide">
@@ -242,6 +246,7 @@ export default async function ArticlePage(
             {typedArticle.primary_source_url}
           </a>
         </div>
+        </Reveal>
       )}
       {/* Tags */}
       {typedArticle.tags && typedArticle.tags.length > 0 && (
@@ -258,6 +263,7 @@ export default async function ArticlePage(
       <ShareButtons title={typedArticle.title} slug={typedArticle.slug} />
       {/* Related articles */}
       {related.length > 0 && (
+        <Reveal>
         <section className="mb-10">
           <h2 className="text-lg font-bold text-[var(--rb-text-primary)] mb-5">Related Briefings</h2>
           <div className="space-y-4">
@@ -280,6 +286,7 @@ export default async function ArticlePage(
             })}
           </div>
         </section>
+        </Reveal>
       )}
       {/* Back link */}
       <div className="mt-6 pt-6 border-t border-[var(--rb-border-subtle)]">
