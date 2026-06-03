@@ -72,12 +72,26 @@ Tier-3 Podcast is the multi-segment, multi-host expansion of that spine.
 ### 1.3 Voice strategy reuse
 
 ADR-0004 / CLAUDE.md §5 already define tier voices via ElevenLabs (`ELEVENLABS_VOICE_ID_PODCAST`).
-Jellypod has its own 100+ voice / cloning catalog. **Decision needed (D-POD-1):** either
-(a) generate the podcast audio entirely in Jellypod using its voices, or (b) keep ElevenLabs
-as the canonical ROMAS voice and use Jellypod only for multi-host conversational episodes.
-Recommendation: use Jellypod for the conversational Tier-3 Podcast (its strength), keep
-ElevenLabs for Tier-1/2 single-narrator briefs (voice-consent continuity). Two engines,
-clear tier split.
+Jellypod has its own 100+ voice / cloning catalog.
+
+**DECIDED (D-POD-1, 2026-06-03 — Kimal): use BOTH engines, split by tier.**
+
+| Tier | Engine | Why |
+|---|---|---|
+| 1 ROMAS Audio Brief (per article) | **ElevenLabs** | single canonical ROMAS narrator; voice-consent continuity (D-032) |
+| 2 ROMAS Daily Brief (roundup) | **ElevenLabs** | same single-narrator voice |
+| 3 The ROMAS Podcast (30–60 min) | **Jellypod** | its strength — multi-host conversational generation from our script |
+| 4 Conference Brief | **ElevenLabs** (`ELEVENLABS_VOICE_ID_CONFERENCE`) | event-paced single voice |
+| 5 Video Podcast (Day 60) | human guests | real recorded voices, not TTS |
+
+Both engines feed the **same** `audio_jobs` QA gate (Rule 6) and the same R2 layout — the
+split is a generation-engine choice per tier, not two pipelines.
+
+**Bonus (closes a pending gap):** Jellypod is also the strongest candidate to resolve the
+open **TTS-failover decision (ADR-0018 / Q-F)** left after PlayHT shut down 2025-12-31 — it
+can stand in for ElevenLabs on the single-narrator tiers if ElevenLabs is unavailable. If
+adopted as failover, add `JELLYPOD_*` to the failover path in ADR-0018 and a matching voice
+mapping. (Confirm separately — see D-POD-1b in §7.)
 
 ### 1.4 QA gate still applies
 
@@ -198,7 +212,8 @@ are three separate decisions.
 
 ## 7. Open decisions (need Kimal / Day-30 ADR window)
 
-- **D-POD-1** — Jellypod voices vs ElevenLabs for the Tier-3 Podcast (see §1.3). Rec: Jellypod for multi-host conversational, ElevenLabs for single-narrator briefs.
+- **D-POD-1** — ✅ DECIDED 2026-06-03: use BOTH — Jellypod for the Tier-3 conversational Podcast, ElevenLabs for the single-narrator Tier-1/2/4 briefs (see §1.3 table).
+- **D-POD-1b** — OPEN: adopt Jellypod as the cross-vendor TTS *failover* for the ElevenLabs tiers (closes ADR-0018 / Q-F left open by the PlayHT shutdown)? Strong fit; needs a failover voice mapping + ADR-0018 update.
 - **D-POD-2** — render tool (Remotion rec) → ADR-0021.
 - **D-POD-3** — video hosting (ADR-0012, open) — Cloudflare Stream vs Mux vs R2-self-host.
 - **D-POD-4** — YouTube/Reels/TikTok credentials + posting automation vs manual at launch (Founders-Board).
