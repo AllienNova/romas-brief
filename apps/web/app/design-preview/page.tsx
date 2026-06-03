@@ -13,6 +13,8 @@ import { FadeIn, Reveal, Stagger, StaggerItem } from "@/components/motion/primit
 import { SignalScoreRadar, type RadarAxis } from "@/components/dataviz/SignalScoreRadar";
 import { SignalBar } from "@/components/dataviz/SignalBar";
 import { CompositeScoreRing } from "@/components/dataviz/CompositeScoreRing";
+import { ConferenceLeadCard } from "@/components/notice-board/cards/ConferenceLeadCard";
+import type { ConferenceContext, EditorialNotice } from "@/lib/notice-board/types";
 
 export const metadata = {
   title: "Design Preview",
@@ -20,6 +22,30 @@ export const metadata = {
 };
 
 const SAMPLE: MockArticle[] = MOCK_ARTICLES.slice(0, 6);
+
+const CONF_LEAD: EditorialNotice = {
+  id: "astro-lead",
+  type: "conference",
+  isSponsored: false,
+  title: "ASTRO 2026 — Daily Briefs",
+  summary:
+    "Embargo-aware coverage of the highest-signal sessions, mastered each evening and tracked in conference local time.",
+  ctaLabel: "See today's brief",
+  ctaUrl: "/listen",
+  startsAt: "2026-09-27T13:00:00.000Z",
+  timezone: "America/Chicago",
+  publishAt: "2026-09-26T00:00:00.000Z",
+  priority: "featured",
+  status: "published",
+  pinned: false,
+  isNew: true,
+};
+const CONF_CTX: ConferenceContext = {
+  key: "ASTRO-2026",
+  label: "ASTRO 2026",
+  timezone: "America/Chicago",
+  lead: CONF_LEAD,
+};
 
 const RADAR: RadarAxis[] = [
   { label: "Clinical", value: 0.92 },
@@ -165,6 +191,18 @@ export default function DesignPreviewPage() {
             <CompositeScoreRing score={86} label="Composite" size={120} />
           </Reveal>
         </div>
+      </section>
+
+      {/* ── Conference Mode lead ────────────────────────────────────── */}
+      <section className="mx-auto max-w-content px-6 pb-8">
+        <Reveal>
+          <h2 className="mb-8 text-2xl font-black" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>
+            Conference Mode lead
+          </h2>
+        </Reveal>
+        <Reveal className="sm:max-w-2xl">
+          <ConferenceLeadCard notice={CONF_LEAD} conference={CONF_CTX} />
+        </Reveal>
       </section>
 
       {/* ── Staggered card grid ─────────────────────────────────────── */}
