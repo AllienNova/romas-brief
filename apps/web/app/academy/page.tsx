@@ -13,6 +13,7 @@ import {
   LongTakeIcon,
 } from "@/components/icons";
 import type { IconProps } from "@/components/icons";
+import { Reveal } from "@/components/motion/primitives";
 
 export const metadata: Metadata = {
   title: "Academy",
@@ -158,6 +159,7 @@ export default function AcademyPage() {
               Browse by Topic
             </h2>
           </div>
+          <Reveal>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {CATEGORIES.map(({ Icon, label, count, href, color }) => (
               <Link
@@ -179,6 +181,7 @@ export default function AcademyPage() {
               </Link>
             ))}
           </div>
+          </Reveal>
         </section>
 
         {/* ── Featured Courses ──────────────────────────────────────────── */}
@@ -191,6 +194,7 @@ export default function AcademyPage() {
               </h2>
             </div>
           </div>
+          <Reveal>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {FEATURED_COURSES.map((course) => (
               <Link
@@ -246,6 +250,7 @@ export default function AcademyPage() {
               </Link>
             ))}
           </div>
+          </Reveal>
         </section>
 
         {/* ── Quick Reads ───────────────────────────────────────────────── */}
@@ -258,6 +263,7 @@ export default function AcademyPage() {
               </h2>
             </div>
           </div>
+          <Reveal>
           <div className="rounded-2xl overflow-hidden" style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)", boxShadow: "var(--rb-shadow-card)" }}>
             {QUICK_READS.map(({ title, category, time, href }, i) => (
               <Link
@@ -286,6 +292,7 @@ export default function AcademyPage() {
               </Link>
             ))}
           </div>
+          </Reveal>
         </section>
 
         {/* ── Subscribe CTA ─────────────────────────────────────────────── */}

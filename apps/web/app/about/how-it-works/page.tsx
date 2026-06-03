@@ -6,6 +6,7 @@ import {
   VendorIcon, NewsBriefIcon, PracticeDeltaIcon, LongTakeIcon, ConferencesIcon,
 } from "@/components/icons";
 import type { IconProps } from "@/components/icons";
+import { Reveal } from "@/components/motion/primitives";
 
 export const metadata: Metadata = {
   title: "How It Works — ROMAS Wire",
@@ -93,6 +94,7 @@ export default function HowItWorksPage() {
             of publication and queued for scoring. We do not republish press releases verbatim — every item is
             independently summarised and fact-checked against the primary source.
           </p>
+          <Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {SOURCES.map(({ name, Icon, desc }) => (
               <div
@@ -108,6 +110,7 @@ export default function HowItWorksPage() {
               </div>
             ))}
           </div>
+          </Reveal>
         </section>
 
         {/* Step 2 — Scoring */}
@@ -121,6 +124,7 @@ export default function HowItWorksPage() {
             The composite score is the weighted sum: <strong style={{ color: "var(--rb-text-primary)" }}>S = C + P + N</strong>.
             Items below S70 are suppressed. Items above S90 are promoted to the hero carousel.
           </p>
+          <Reveal>
           <div className="space-y-5">
             {SCORE_DIMS.map(({ name, abbr, color, max, desc }) => (
               <div
@@ -147,6 +151,7 @@ export default function HowItWorksPage() {
               </div>
             ))}
           </div>
+          </Reveal>
 
           {/* Score legend */}
           <div className="mt-6 p-5 rounded-2xl" style={{ background: "var(--rb-bg-raised)" }}>
@@ -178,6 +183,7 @@ export default function HowItWorksPage() {
             Each item is assigned a content type that determines its structure, depth, and editorial treatment.
             This helps you quickly calibrate how much time to invest in reading.
           </p>
+          <Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {CONTENT_TYPES.map(({ label, Icon, desc }) => (
               <div
@@ -193,6 +199,7 @@ export default function HowItWorksPage() {
               </div>
             ))}
           </div>
+          </Reveal>
         </section>
 
         {/* Step 4 — Audio */}
