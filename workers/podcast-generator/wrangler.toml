@@ -1,0 +1,20 @@
+name = "romas-brief-podcast-generator"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# HTTP-triggered (POST /generate from the CMS) — no cron.
+
+# R2 binding — the rendered MP3 lands in the public CDN bucket (same as audio-producer).
+[[r2_buckets]]
+binding = "AUDIO_CDN"
+bucket_name = "romas-audio-cdn"
+
+[vars]
+SUPABASE_URL = "https://placeholder.supabase.co"
+
+# Secrets (never in [vars] — use `wrangler secret put`):
+#   JELLYPOD_API_KEY            — Bearer sk_… (ADR-0018 / D-POD-1)
+#   JELLYPOD_PODCAST_ID         — the ROMAS Wire show id
+#   SUPABASE_SERVICE_ROLE_KEY   — opens audio_jobs rows (bypasses RLS)
+#   PODCAST_GENERATOR_SECRET    — bearer authenticating the /generate trigger

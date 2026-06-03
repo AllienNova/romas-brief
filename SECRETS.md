@@ -48,6 +48,7 @@ Three primary stores by audience + transport security:
 | `JELLYPOD_API_KEY` | API key (Bearer `sk_…`, org-scoped) | Worker Secret | Tier-3 podcast generation (audio); see Docs/specs/podcast-video-pipeline.md | 90 days | TBD |
 | `JELLYPOD_PODCAST_ID` | Show identifier (not secret) | Worker Secret | podcast generation worker | On show re-create | TBD |
 | `JELLYPOD_FAILOVER_HOST_ID` | Host/voice identifier (not secret) | Worker Secret | audio-producer TTS failover (ADR-0018) | On voice change | TBD |
+| `PODCAST_GENERATOR_SECRET` | Bearer token | Worker Secret | podcast-generator `POST /generate` auth | 90 days | TBD |
 | `SUPABASE_URL` | URL (not strictly secret but treated as one) | Cloudflare Pages env var + Worker Secret | apps/cms + every Worker that writes Supabase | On project re-provision | TBD |
 | `SUPABASE_ANON_KEY` | Anon key (designed to be public-readable BUT keep out of client bundle per ADR-0015 v2 server-only auth model) | Cloudflare Pages env var (server-only) + Worker Secret | apps/cms server components + route handlers | On Supabase project recycle | TBD |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (FULL DB ACCESS — NEVER to browser) | Worker Secret + GitHub Actions Secret | All Workers that bypass RLS + deploy-migrations workflow | **30 days** (high-blast-radius secret) | TBD |

@@ -1,0 +1,23 @@
+{
+  "name": "@romas-brief/podcast-generator",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Tier-3 full-length podcast generation via the Jellypod API (D-POD-1): script→generate→poll→R2→audio_jobs(in_review).",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run --outdir=dist",
+    "deploy": "wrangler deploy",
+    "lint": "echo \"(stub) lint\" && exit 0",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test src/script.test.ts",
+    "clean": "rimraf dist .wrangler .turbo"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3",
+    "wrangler": "^3.95.0"
+  }
+}
