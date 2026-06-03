@@ -12,6 +12,7 @@ import { ARCHIVE_FILTERS, parseFilter, parseCursor } from "@/lib/notice-board/ar
 import { Stagger, StaggerItem } from "@/components/motion/primitives";
 import { EditorialNoticeCard } from "@/components/notice-board/cards/EditorialNoticeCard";
 import { SponsoredNoticeCard } from "@/components/notice-board/cards/SponsoredNoticeCard";
+import { NoticeTelemetry } from "@/components/notice-board/NoticeTelemetry";
 
 export const metadata: Metadata = {
   title: "Notice Archive — ROMAS Wire",
@@ -117,6 +118,8 @@ export default async function NoticesArchivePage(props: {
           ))}
         </Stagger>
       )}
+
+      <NoticeTelemetry surface="archive" />
 
       {nextCursor !== null && (
         <div className="mt-10 flex justify-center">

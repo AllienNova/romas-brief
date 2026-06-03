@@ -35,6 +35,7 @@ export function EditorialNoticeCard({ notice }: { notice: EditorialNotice }) {
     <article
       className="notice-card notice-card--editorial h-full overflow-hidden rounded-xl p-5"
       style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)" }}
+      data-notice-id={notice.id}
     >
       <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: meta.color }} aria-hidden />
       <div className="flex items-center gap-2">

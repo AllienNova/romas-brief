@@ -8,6 +8,7 @@ import { getBoard } from "@/lib/notice-board/get-board";
 import { NoticeBoardHeader } from "./NoticeBoardHeader";
 import { NoticeGrid } from "./NoticeGrid";
 import { NoticeBoardBoundary } from "./NoticeBoardBoundary";
+import { NoticeTelemetry } from "./NoticeTelemetry";
 
 export default async function NoticeBoard() {
   const board = await getBoard();
@@ -21,6 +22,7 @@ export default async function NoticeBoard() {
       <NoticeBoardBoundary>
         <NoticeGrid board={board} />
       </NoticeBoardBoundary>
+      <NoticeTelemetry surface="homepage" />
     </section>
   );
 }

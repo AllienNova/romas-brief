@@ -20,6 +20,7 @@ export function SponsoredNoticeCard({ notice }: { notice: SponsoredNotice }) {
         border: "1px dashed var(--rb-border-default)",
       }}
       data-sponsored="true"
+      data-notice-id={notice.id}
     >
       <NoticeTypeBadge type="partner" sponsorName={notice.sponsorName} />
       <h3 className="mt-2.5 text-[15px] font-bold leading-snug" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.015em" }}>

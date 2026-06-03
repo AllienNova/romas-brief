@@ -44,6 +44,7 @@ export function ConferenceLeadCard({
         background: `linear-gradient(135deg, color-mix(in srgb, ${CONF_ACCENT} 12%, var(--rb-bg-surface)) 0%, var(--rb-bg-surface) 60%)`,
         border: `1px solid color-mix(in srgb, ${CONF_ACCENT} 30%, var(--rb-border-default))`,
       }}
+      data-notice-id={notice.id}
     >
       <span className="absolute inset-y-0 left-0 w-1" style={{ background: CONF_ACCENT }} aria-hidden />
       <div className="flex flex-wrap items-center gap-2">
