@@ -11,6 +11,8 @@ import Link from "next/link";
 import { MOCK_ARTICLES, type MockArticle } from "@/lib/mock-data";
 import { FadeIn, Reveal, Stagger, StaggerItem } from "@/components/motion/primitives";
 import { SignalScoreRadar, type RadarAxis } from "@/components/dataviz/SignalScoreRadar";
+import { SignalBar } from "@/components/dataviz/SignalBar";
+import { CompositeScoreRing } from "@/components/dataviz/CompositeScoreRing";
 
 export const metadata = {
   title: "Design Preview",
@@ -139,6 +141,28 @@ export default function DesignPreviewPage() {
             <div className="flex justify-center">
               <SignalScoreRadar data={RADAR} size={320} />
             </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── Score primitives (animated bars + composite ring) ───────── */}
+      <section className="mx-auto max-w-content px-6 pb-8">
+        <Reveal>
+          <h2 className="mb-8 text-2xl font-black" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>
+            Score primitives
+          </h2>
+        </Reveal>
+        <div
+          className="grid items-center gap-10 rounded-2xl border p-8 md:grid-cols-[1fr_auto]"
+          style={{ background: "var(--rb-bg-surface)", borderColor: "var(--rb-border-subtle)" }}
+        >
+          <Reveal className="space-y-3">
+            {RADAR.map((axis, i) => (
+              <SignalBar key={axis.label} label={axis.label} value={axis.value} delay={i * 0.06} />
+            ))}
+          </Reveal>
+          <Reveal delay={0.15} className="flex justify-center">
+            <CompositeScoreRing score={86} label="Composite" size={120} />
           </Reveal>
         </div>
       </section>

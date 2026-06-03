@@ -17,6 +17,8 @@ import { AudioPlayer } from "@/components/AudioPlayer";
 import { AudioStatusBadge } from "@/components/AudioStatusBadge";
 import ShareButtons from "@/components/ShareButtons";
 import { Reveal } from "@/components/motion/primitives";
+import { SignalBar } from "@/components/dataviz/SignalBar";
+import { CompositeScoreRing } from "@/components/dataviz/CompositeScoreRing";
 import { renderMarkdown } from "@/lib/markdown";
 
 export const revalidate = 120;
@@ -209,27 +211,25 @@ export default async function ArticlePage(
       <Reveal>
       <div className="mb-8 bg-[var(--rb-bg-raised)] rounded-xl border border-[var(--rb-border-subtle)] p-5">
         <h2 className="text-sm font-bold text-[var(--rb-text-secondary)] mb-4 uppercase tracking-wide">Signal Scores</h2>
-        <div className="space-y-2.5">
-          {([
-            ["Clinical", mockArticle.signal_scores.clinical, "bg-violet-400"],
-            ["AI/ML", mockArticle.signal_scores.ai, "bg-pink-400"],
-            ["Physics", mockArticle.signal_scores.physics, "bg-indigo-400"],
-            ["Operational", mockArticle.signal_scores.operational, "bg-amber-400"],
-            ["Novelty", mockArticle.signal_scores.novelty, "bg-teal-400"],
-            ["Confidence", mockArticle.signal_scores.confidence, "bg-emerald-400"],
-          ] as [string, number, string][]).map(([label, value, color]) => (
-            <div key={label} className="flex items-center gap-2">
-              <span className="text-xs text-[var(--rb-text-tertiary)] w-20 flex-shrink-0">{label}</span>
-              <div className="flex-1 h-1.5 bg-[var(--rb-bg-raised)] rounded-full overflow-hidden">
-                <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.round(value * 100)}%` }} />
-              </div>
-              <span className="text-xs text-[var(--rb-text-tertiary)] tabular-nums w-6 text-right">{Math.round(value * 100)}</span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 pt-3 border-t border-[var(--rb-border-default)] flex items-center justify-between">
-          <span className="text-xs text-[var(--rb-text-tertiary)]">Composite score</span>
-          <span className="text-lg font-black text-[var(--rb-text-primary)] tabular-nums">{mockArticle.composite_score}</span>
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+          <div className="flex-1 space-y-2.5">
+            {([
+              ["Clinical", mockArticle.signal_scores.clinical, "#8B5CF6"],
+              ["AI/ML", mockArticle.signal_scores.ai, "#EC4899"],
+              ["Physics", mockArticle.signal_scores.physics, "#6366F1"],
+              ["Operational", mockArticle.signal_scores.operational, "#F59E0B"],
+              ["Novelty", mockArticle.signal_scores.novelty, "#14B8A6"],
+              ["Confidence", mockArticle.signal_scores.confidence, "#10B981"],
+            ] as [string, number, string][]).map(([label, value, color], i) => (
+              <SignalBar key={label} label={label} value={value} color={color} delay={i * 0.06} />
+            ))}
+          </div>
+          <div
+            className="flex flex-shrink-0 items-center justify-center border-t pt-4 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0"
+            style={{ borderColor: "var(--rb-border-default)" }}
+          >
+            <CompositeScoreRing score={mockArticle.composite_score} label="Composite" />
+          </div>
         </div>
       </div>
       </Reveal>
