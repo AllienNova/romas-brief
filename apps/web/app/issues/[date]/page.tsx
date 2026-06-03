@@ -11,6 +11,7 @@ import {
   type MockArticle,
 } from "@/lib/mock-data";
 import { getArticlesByIssueDate } from "@/lib/articles";
+import { Reveal } from "@/components/motion/primitives";
 
 export const revalidate = 120;
 
@@ -100,6 +101,7 @@ export default async function IssuePage(props: { params: Promise<{ date: string 
       </div>
 
       {/* Articles */}
+      <Reveal>
       {articles.length === 0 ? (
         <div className="text-center py-16 text-[var(--rb-text-tertiary)]">
           <p>No briefings for this date.</p>
@@ -111,8 +113,10 @@ export default async function IssuePage(props: { params: Promise<{ date: string 
           ))}
         </div>
       )}
+      </Reveal>
 
       {/* Prev / Next navigation */}
+      <Reveal>
       <div className="mt-10 flex items-center justify-between pt-6 border-t border-[var(--rb-border-subtle)]">
         {prevDate ? (
           <Link
@@ -134,6 +138,7 @@ export default async function IssuePage(props: { params: Promise<{ date: string 
           </Link>
         ) : <span />}
       </div>
+      </Reveal>
     </div>
   );
 }

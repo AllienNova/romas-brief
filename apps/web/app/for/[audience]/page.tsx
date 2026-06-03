@@ -12,6 +12,7 @@ import {
   type MockArticle,
 } from "@/lib/mock-data";
 import { getArticlesByAudience } from "@/lib/articles";
+import { Reveal } from "@/components/motion/primitives";
 
 export const revalidate = 120;
 
@@ -97,6 +98,7 @@ export default async function AudiencePage(props: { params: Promise<{ audience: 
       </div>
 
       {/* Other audiences */}
+      <Reveal>
       <div className="mb-8 flex flex-wrap gap-2">
         {(Object.entries(AUDIENCE_META) as [Audience, typeof AUDIENCE_META[Audience]][])
           .filter(([s]) => s !== slug)
@@ -110,8 +112,10 @@ export default async function AudiencePage(props: { params: Promise<{ audience: 
             </Link>
           ))}
       </div>
+      </Reveal>
 
       {/* Article list */}
+      <Reveal>
       {articles.length === 0 ? (
         <div className="text-center py-16 text-[var(--rb-text-tertiary)]">
           <p>No articles for this audience yet.</p>
@@ -123,6 +127,7 @@ export default async function AudiencePage(props: { params: Promise<{ audience: 
           ))}
         </div>
       )}
+      </Reveal>
     </div>
   );
 }

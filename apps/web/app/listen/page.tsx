@@ -8,6 +8,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getAudioArticles } from "@/lib/articles";
+import { Reveal } from "@/components/motion/primitives";
 
 export const dynamic = "force-dynamic";
 
@@ -133,7 +134,8 @@ export default async function ListenPage() {
         const jobs = byTier[tier] ?? [];
 
         return (
-          <section key={tier} className="mb-12">
+          <Reveal key={tier}>
+          <section className="mb-12">
             <div className="flex items-baseline justify-between mb-4">
               <div>
                 <h2 className="text-xl font-bold text-[var(--rb-text-primary)]">{meta.label}</h2>
@@ -203,6 +205,7 @@ export default async function ListenPage() {
               })}
             </div>
           </section>
+          </Reveal>
         );
       })}
     </div>

@@ -5,6 +5,7 @@
 import Link from "next/link";
 import { ISSUE_DATES } from "@/lib/mock-data";
 import { getArticlesByIssueDate } from "@/lib/articles";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/primitives";
 
 export const revalidate = 300;
 
@@ -28,26 +29,27 @@ export default async function IssuesIndexPage() {
         </p>
       </div>
 
-      <div className="space-y-3">
+      <Stagger className="space-y-3">
         {ISSUE_DATES.map((date, i) => {
           const count = counts[i] ?? 0;
           const d = new Date(date + "T12:00:00Z");
           const label = d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
           return (
-            <Link
-              key={date}
-              href={`/issues/${date}`}
-              className="group flex items-center justify-between bg-white rounded-xl border border-[var(--rb-border-subtle)] hover:border-teal-200 hover:shadow-sm px-5 py-4 transition-all"
-            >
-              <div>
-                <p className="text-sm font-bold text-[var(--rb-text-primary)] group-hover:text-teal-700 transition-colors">{label}</p>
-                <p className="text-xs text-[var(--rb-text-tertiary)] mt-0.5">{count} briefings</p>
-              </div>
-              <span className="text-[var(--rb-text-tertiary)] group-hover:text-teal-400 transition-colors text-lg">→</span>
-            </Link>
+            <StaggerItem key={date}>
+              <Link
+                href={`/issues/${date}`}
+                className="group flex items-center justify-between bg-white rounded-xl border border-[var(--rb-border-subtle)] hover:border-teal-200 hover:shadow-sm px-5 py-4 transition-all"
+              >
+                <div>
+                  <p className="text-sm font-bold text-[var(--rb-text-primary)] group-hover:text-teal-700 transition-colors">{label}</p>
+                  <p className="text-xs text-[var(--rb-text-tertiary)] mt-0.5">{count} briefings</p>
+                </div>
+                <span className="text-[var(--rb-text-tertiary)] group-hover:text-teal-400 transition-colors text-lg">→</span>
+              </Link>
+            </StaggerItem>
           );
         })}
-      </div>
+      </Stagger>
     </div>
   );
 }

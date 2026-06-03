@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getAudioArticles } from "@/lib/articles";
+import { Reveal } from "@/components/motion/primitives";
 
 export const dynamic = "force-dynamic";
 
@@ -128,6 +129,7 @@ export default async function ListenTierPage(
         {typedJobs.length} episode{typedJobs.length !== 1 ? "s" : ""}
       </p>
       {/* Episode list */}
+      <Reveal>
       {typedJobs.length === 0 ? (
         <div className="text-center py-16 text-[var(--rb-text-tertiary)]">
           <p>No episodes published yet. Check back soon.</p>
@@ -190,6 +192,7 @@ export default async function ListenTierPage(
           })}
         </div>
       )}
+      </Reveal>
     </div>
   );
 }

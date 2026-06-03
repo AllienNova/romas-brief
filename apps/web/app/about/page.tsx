@@ -8,6 +8,7 @@ import {
   RegulatoryIcon,
 } from "@/components/icons";
 import type { IconProps } from "@/components/icons";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/primitives";
 
 export const metadata: Metadata = {
   title: "About ROMAS",
@@ -105,6 +106,7 @@ export default function AboutPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-20">
         
         {/* ── Social Proof / Belonging ─────────────────────────────────── */}
+        <Reveal>
         <div className="rounded-2xl p-8 text-center shadow-xl flex flex-col sm:flex-row items-center justify-center gap-8 mb-24"
           style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)" }}>
           <div className="flex -space-x-4">
@@ -120,8 +122,10 @@ export default function AboutPage() {
             <p className="text-sm font-medium" style={{ color: "var(--rb-text-secondary)" }}>Radiation Oncologists, Physicists, and Dosimetrists trust our signal.</p>
           </div>
         </div>
+        </Reveal>
 
         {/* ── The Acronym Reveal (What is ROMAS?) ──────────────────────── */}
+        <Reveal>
         <section className="mb-32">
           <div className="text-center mb-16">
             <p className="kicker mb-3 font-bold tracking-widest uppercase text-sm" style={{ color: "var(--rb-accent)" }}>The Acronym</p>
@@ -148,8 +152,10 @@ export default function AboutPage() {
             ))}
           </div>
         </section>
+        </Reveal>
 
         {/* ── The Problem & The Solution (Psychological Contrast) ──────── */}
+        <Reveal>
         <section className="mb-32 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-3xl sm:text-4xl font-black mb-6" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>
@@ -188,25 +194,31 @@ export default function AboutPage() {
              </div>
           </div>
         </section>
+        </Reveal>
 
         {/* ── Values ───────────────────────────────────────────────────── */}
+        <Reveal>
         <section className="mb-32">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-black" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.025em" }}>The Code We Operate By</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <Stagger className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             {VALUES.map(({ Icon, title, description }) => (
-              <div key={title} className="rounded-2xl p-8 group hover:shadow-xl transition-all duration-300"
+              <StaggerItem key={title}>
+              <div className="rounded-2xl p-8 group hover:shadow-xl transition-all duration-300"
                 style={{ background: "var(--rb-bg-surface)", border: "1px solid var(--rb-border-subtle)" }}>
                 <span className="mb-6 block transform group-hover:scale-110 transition-transform origin-left" style={{ color: "var(--rb-accent)" }}><Icon size={36} /></span>
                 <h3 className="text-xl font-bold mb-3" style={{ color: "var(--rb-text-primary)" }}>{title}</h3>
                 <p className="text-base leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{description}</p>
               </div>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </section>
+        </Reveal>
 
         {/* ── CTA: Aspirational Identity ───────────────────────────────── */}
+        <Reveal>
         <section className="pb-32">
           <div className="rounded-3xl p-12 text-center relative overflow-hidden"
             style={{ background: "linear-gradient(135deg, #001D3D 0%, #003366 100%)", boxShadow: "var(--rb-shadow-xl)" }}>
@@ -233,6 +245,7 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+        </Reveal>
 
       </div>
     </div>

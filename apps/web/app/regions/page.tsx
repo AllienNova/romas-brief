@@ -5,6 +5,7 @@
 import Link from "next/link";
 import { REGION_META, type Region } from "@/lib/mock-data";
 import { getArticlesByRegion } from "@/lib/articles";
+import { Stagger, StaggerItem } from "@/components/motion/primitives";
 
 export const revalidate = 300;
 
@@ -29,31 +30,32 @@ export default async function RegionsIndexPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <Stagger className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {regions.map(([slug, meta], i) => {
           const count = counts[i] ?? 0;
           return (
-            <Link
-              key={slug}
-              href={`/regions/${slug}`}
-              className="group flex items-start gap-4 bg-white rounded-xl border border-[var(--rb-border-subtle)] hover:border-teal-200 hover:shadow-sm p-5 transition-all"
-            >
-              <span className="text-3xl leading-none flex-shrink-0">{meta.flag}</span>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-base font-bold text-[var(--rb-text-primary)] group-hover:text-teal-700 transition-colors">
-                    {meta.label}
-                  </h2>
-                  <span className="text-xs text-[var(--rb-text-tertiary)] tabular-nums">{count} articles</span>
+            <StaggerItem key={slug} className="h-full">
+              <Link
+                href={`/regions/${slug}`}
+                className="group flex items-start gap-4 bg-white rounded-xl border border-[var(--rb-border-subtle)] hover:border-teal-200 hover:shadow-sm p-5 transition-all block h-full"
+              >
+                <span className="text-3xl leading-none flex-shrink-0">{meta.flag}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-base font-bold text-[var(--rb-text-primary)] group-hover:text-teal-700 transition-colors">
+                      {meta.label}
+                    </h2>
+                    <span className="text-xs text-[var(--rb-text-tertiary)] tabular-nums">{count} articles</span>
+                  </div>
+                  <p className="mt-1 text-xs text-[var(--rb-text-tertiary)] leading-relaxed line-clamp-2">
+                    {meta.description}
+                  </p>
                 </div>
-                <p className="mt-1 text-xs text-[var(--rb-text-tertiary)] leading-relaxed line-clamp-2">
-                  {meta.description}
-                </p>
-              </div>
-            </Link>
+              </Link>
+            </StaggerItem>
           );
         })}
-      </div>
+      </Stagger>
     </div>
   );
 }

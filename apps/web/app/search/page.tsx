@@ -10,6 +10,7 @@
 import Link from "next/link";
 import { CONTENT_TYPE_META, type MockArticle } from "@/lib/mock-data";
 import { searchArticles } from "@/lib/articles";
+import { Stagger, StaggerItem } from "@/components/motion/primitives";
 
 export const dynamic = "force-dynamic";
 
@@ -98,11 +99,13 @@ export default async function SearchPage(props: { searchParams: Promise<{ q?: st
               : `${results.length} result${results.length === 1 ? "" : "s"} for “${query}”.`}
           </p>
           {results.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {results.map((article) => (
-                <ResultCard key={article.slug} article={article} />
+                <StaggerItem key={article.slug} className="h-full">
+                  <ResultCard article={article} />
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           )}
         </>
       )}

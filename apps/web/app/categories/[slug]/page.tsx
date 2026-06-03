@@ -11,6 +11,7 @@ import {
   type MockArticle,
 } from "@/lib/mock-data";
 import { getArticlesByCategory } from "@/lib/articles";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/primitives";
 
 export const revalidate = 120;
 
@@ -94,6 +95,7 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
       </div>
 
       {/* Other categories */}
+      <Reveal>
       <div className="mb-8 flex flex-wrap gap-2">
         {(Object.entries(CATEGORY_META) as [Category, typeof CATEGORY_META[Category]][])
           .filter(([s]) => s !== slug)
@@ -107,6 +109,7 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
             </Link>
           ))}
       </div>
+      </Reveal>
 
       {/* Article grid */}
       {articles.length === 0 ? (
@@ -114,11 +117,13 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
           <p>No articles in this category yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {articles.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
+            <StaggerItem key={article.slug} className="h-full">
+              <ArticleCard article={article} />
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       )}
     </div>
   );

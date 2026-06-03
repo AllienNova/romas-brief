@@ -11,6 +11,7 @@ import {
   type MockArticle,
 } from "@/lib/mock-data";
 import { getArticlesByContentType } from "@/lib/articles";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/primitives";
 
 export const revalidate = 120;
 
@@ -92,6 +93,7 @@ export default async function ContentTypePage(props: { params: Promise<{ slug: s
       </div>
 
       {/* Other content types */}
+      <Reveal>
       <div className="mb-8 flex flex-wrap gap-2">
         {(Object.entries(CONTENT_TYPE_META) as [ContentType, typeof CONTENT_TYPE_META[ContentType]][])
           .filter(([s]) => s !== slug)
@@ -105,6 +107,7 @@ export default async function ContentTypePage(props: { params: Promise<{ slug: s
             </Link>
           ))}
       </div>
+      </Reveal>
 
       {/* Article grid */}
       {articles.length === 0 ? (
@@ -112,11 +115,13 @@ export default async function ContentTypePage(props: { params: Promise<{ slug: s
           <p>No articles of this type yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {articles.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
+            <StaggerItem key={article.slug} className="h-full">
+              <ArticleCard article={article} />
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       )}
     </div>
   );

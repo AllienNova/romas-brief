@@ -12,6 +12,7 @@ import {
   type MockArticle,
 } from "@/lib/mock-data";
 import { getArticlesByRegion } from "@/lib/articles";
+import { Reveal } from "@/components/motion/primitives";
 
 export const revalidate = 120;
 
@@ -103,6 +104,7 @@ export default async function RegionPage(props: { params: Promise<{ slug: string
       </div>
 
       {/* Other regions */}
+      <Reveal>
       <div className="mb-8 flex flex-wrap gap-2">
         {(Object.entries(REGION_META) as [Region, typeof REGION_META[Region]][])
           .filter(([s]) => s !== slug)
@@ -116,8 +118,10 @@ export default async function RegionPage(props: { params: Promise<{ slug: string
             </Link>
           ))}
       </div>
+      </Reveal>
 
       {/* Article list */}
+      <Reveal>
       {articles.length === 0 ? (
         <div className="text-center py-16 text-[var(--rb-text-tertiary)]">
           <p>No articles for this region yet.</p>
@@ -129,6 +133,7 @@ export default async function RegionPage(props: { params: Promise<{ slug: string
           ))}
         </div>
       )}
+      </Reveal>
     </div>
   );
 }
