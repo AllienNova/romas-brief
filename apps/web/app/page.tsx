@@ -29,7 +29,7 @@ import QuickHitsRotator from "@/components/QuickHitsRotator";
 import DismissibleStrip from "@/components/DismissibleStrip";
 import NoticeBoard from "@/components/notice-board/NoticeBoard";
 import RotatingTopStories from "@/components/RotatingTopStories";
-import { Reveal } from "@/components/motion/primitives";
+import { FadeIn, Reveal, Stagger, StaggerItem } from "@/components/motion/primitives";
 import type { MockArticle } from "@/lib/mock-data";
 import {
   getTopStories,
@@ -249,18 +249,22 @@ export default async function HomePage() {
 
       {/* ── HERO CAROUSEL (above Top Stories) ───────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
-        <HeroCarousel slides={carouselSlides} />
+        <FadeIn duration={0.45} y={12}>
+          <HeroCarousel slides={carouselSlides} />
+        </FadeIn>
       </section>
 
       {/* ── MODULE 1: Top Stories ────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-6">
-        <SectionHeader
-          label="Today's Briefing"
-          title="Top Stories"
-          description="Clinical intelligence from PubMed, arXiv, ClinicalTrials and FDA — curated, scored, and audio-ready"
-          href="/issues"
-          hrefLabel="Full archive"
-        />
+        <FadeIn delay={0.12}>
+          <SectionHeader
+            label="Today's Briefing"
+            title="Top Stories"
+            description="Clinical intelligence from PubMed, arXiv, ClinicalTrials and FDA — curated, scored, and audio-ready"
+            href="/issues"
+            hrefLabel="Full archive"
+          />
+        </FadeIn>
 
         {/* Rotating Top Stories — hero + 2 secondary auto-cycle every 7s */}
         <RotatingTopStories articles={topStories} interval={7} />
@@ -273,11 +277,13 @@ export default async function HomePage() {
 
       {/* ── MODULE 2: Inline Conversion ─────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <ConversionWidget
-          variant="inline"
-          headline="Built for radiation oncology professionals"
-          subline="Clinical intelligence from PubMed, arXiv, ClinicalTrials and FDA — curated, scored, and audio-ready"
-        />
+        <Reveal>
+          <ConversionWidget
+            variant="inline"
+            headline="Built for radiation oncology professionals"
+            subline="Clinical intelligence from PubMed, arXiv, ClinicalTrials and FDA — curated, scored, and audio-ready"
+          />
+        </Reveal>
       </section>
 
       {/* ── MODULE 3: Industry Moves + Paper of the Day ─────────────── */}
@@ -367,14 +373,16 @@ export default async function HomePage() {
       {/* ── MODULE 4: Quick Hits (rotating top row) ──────────────────── */}
       <section className="py-10" style={{ background: "var(--rb-bg-raised)", borderTop: "1px solid var(--rb-border-subtle)", borderBottom: "1px solid var(--rb-border-subtle)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            label="Fast Intelligence"
-            title="Quick Hits"
-            description="Top row refreshes every 8s from today's highest-signal items. Rows 2–5 are stable anchors."
-            href="/categories"
-            hrefLabel="Browse all topics"
-          />
-          <QuickHitsRotator rotatingPool={rotatingPool} stableItems={stableItems} />
+          <Reveal>
+            <SectionHeader
+              label="Fast Intelligence"
+              title="Quick Hits"
+              description="Top row refreshes every 8s from today's highest-signal items. Rows 2–5 are stable anchors."
+              href="/categories"
+              hrefLabel="Browse all topics"
+            />
+            <QuickHitsRotator rotatingPool={rotatingPool} stableItems={stableItems} />
+          </Reveal>
         </div>
       </section>
 
@@ -522,12 +530,14 @@ export default async function HomePage() {
       </Reveal>
 
       {/* ── MODULE 7: Top Papers This Week ──────────────────────────── */}
-      <Reveal>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <SectionHeader label="Research Intelligence" title="Top Papers This Week" description="Highest composite signal scores from peer-reviewed literature." href="/categories/research" hrefLabel="All research" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <Reveal>
+          <SectionHeader label="Research Intelligence" title="Top Papers This Week" description="Highest composite signal scores from peer-reviewed literature." href="/categories/research" hrefLabel="All research" />
+        </Reveal>
+        <Stagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {topPapers.map((article) => (
-            <Link key={article.slug} href={`/article/${article.slug}`} className="block group" aria-label={`Research paper: ${article.title}`}>
+            <StaggerItem key={article.slug} className="h-full">
+              <Link href={`/article/${article.slug}`} className="block group h-full" aria-label={`Research paper: ${article.title}`}>
               <article className="card h-full p-5">
                 <div className="flex items-center justify-between mb-3">
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: "var(--rb-accent-subtle)", color: "var(--rb-accent)" }}><PaperCritiqueIcon size={12} /> {article.primary_source_type}</span>
@@ -542,14 +552,15 @@ export default async function HomePage() {
                   {article.has_audio && <span className="flex items-center" style={{ color: "var(--rb-text-tertiary)" }}><HeadphonesIcon size={12} /></span>}
                 </div>
               </article>
-            </Link>
+              </Link>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
-      </Reveal>
 
       {/* ── MODULE 8: Final CTA ──────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <Reveal>
         <div className="rounded-3xl overflow-hidden" style={{ background: "linear-gradient(135deg, #0066CC 0%, #0F766E 100%)", boxShadow: "var(--rb-shadow-xl)" }}>
           <div className="px-8 py-14 sm:px-16 sm:py-16 text-center">
             <p className="kicker text-white/60 mb-3">Free for qualified clinicians</p>
@@ -565,6 +576,7 @@ export default async function HomePage() {
             <p className="text-xs text-white/50 mt-5">No spam. Unsubscribe anytime. GDPR compliant.</p>
           </div>
         </div>
+        </Reveal>
       </section>
 
     </div>
