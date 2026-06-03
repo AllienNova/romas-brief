@@ -27,10 +27,10 @@ import type {
 } from "./types.ts";
 
 const QUERY_TIMEOUT_MS = 10_000;
-const NOTICE_COLUMNS =
+export const NOTICE_COLUMNS =
   "id,type,title,summary,cta_label,cta_url,date_label,starts_at,ends_at,timezone,publish_at,expires_at,priority,status,pinned,audience,region,conference_key,is_sponsored,sponsor_id,sponsor_disclosure";
 
-interface NoticeRow {
+export interface NoticeRow {
   id: string;
   type: string;
   title: string;
@@ -60,12 +60,12 @@ interface SlotRow {
   starts_at: string | null;
   ends_at: string | null;
 }
-interface SponsorRow {
+export interface SponsorRow {
   id: string;
   name: string;
 }
 
-function hasDbEnv(): boolean {
+export function hasDbEnv(): boolean {
   return Boolean(process.env["SUPABASE_URL"] && process.env["SUPABASE_ANON_KEY"]);
 }
 function opt(v: string | null | undefined): string | undefined {
@@ -82,7 +82,7 @@ function safeCta(raw: string | null | undefined): string | undefined {
 const VALID_PRIORITY = new Set<string>(["featured", "high", "normal", "low"]);
 const VALID_STATUS = new Set<string>(["draft", "pending_review", "scheduled", "published", "expired", "archived"]);
 
-function rowToNotice(r: NoticeRow, sponsorName: string | undefined): Notice | null {
+export function rowToNotice(r: NoticeRow, sponsorName: string | undefined): Notice | null {
   // Firewall defense vs schema/enum drift (review M-01): a non-boolean is_sponsored
   // (e.g. a column rename surfacing undefined) or an unknown enum drops the row
   // rather than silently mis-routing a sponsored notice into an editorial card.
