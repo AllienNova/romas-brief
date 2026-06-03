@@ -1,9 +1,9 @@
 # ADR-0018 — TTS failover replacement after PlayHT shutdown
 
-- **Status:** Proposed (pending Q-F decision by Kimal)
-- **Date:** 2026-05-30
+- **Status:** Accepted (Q-F closed 2026-06-03 by Kimal — **Jellypod** failover)
+- **Date:** 2026-05-30 · accepted 2026-06-03
 - **Supersedes:** the PlayHT half of ADR-0004 (ElevenLabs primary + PlayHT failover)
-- **Confidence:** medium (vendor APIs verified current; final vendor choice pending)
+- **Confidence:** high (vendor chosen; Jellypod API grounded against docs 2026-06-03)
 - **Deciders:** Kimal Honour Djam
 
 ## Context
@@ -17,20 +17,43 @@ Impact at HEAD=dd7f0e0:
 
 Without a failover, a single ElevenLabs outage halts all audio on a Mon–Fri daily-deadline product.
 
-## Decision (proposed)
+## Decision (accepted 2026-06-03)
 
-Replace PlayHT with **Cartesia** as the failover provider. Different vendor than the ElevenLabs primary (the point of a failover), API-first, returns WAV/PCM bytes the existing ffmpeg loudnorm path consumes directly.
+Replace PlayHT with **Jellypod** as the failover provider for the single-narrator tiers
+(Tier 1 Audio Brief, Tier 2 Daily Brief, Tier 4 Conference Brief). Jellypod is already
+adopted for Tier-3 podcast generation (D-POD-1, `Docs/specs/podcast-video-pipeline.md`),
+so this **consolidates audio onto two vendors** — ElevenLabs (primary single-narrator) +
+Jellypod (Tier-3 podcast **and** the failover) — with one new credential, one billing
+relationship, and zero net-new vendor onboarding.
 
-Verified current (2026-05-30, official docs):
-- **Cartesia** — `POST https://api.cartesia.ai/tts/bytes`; auth `Authorization` Bearer or API key `sk_car_...` (keys at https://play.cartesia.ai/keys); output RAW/WAV/MP3; models `sonic-3.5` / `sonic-3` / `sonic-latest`; required header `Cartesia-Version: 2026-03-01`.
+Grounded against `jellypod.com/docs/api` (2026-06-03): base `https://api.jellypod.com/v1`,
+Bearer `sk_…`. Failover flow on ElevenLabs failure: submit the same 10-beat script as a
+**single-host** episode via `POST /episodes/generate`, **poll** `GET /episodes/{id}`, then
+download the MP3.
 
-New env vars (if Cartesia): `CARTESIA_API_KEY`, `CARTESIA_VOICE_ID`. Retain the existing failover retry/backoff semantics (3 attempts, 2s/8s/30s) and the "on exhaustion → `audio_status='skipped'` + `skip_reason`" behavior unchanged.
+**Integration shape differs from a synchronous TTS-bytes vendor — recorded honestly:**
+- Jellypod is **asynchronous** (generate → poll), not a synchronous `text → bytes` call,
+  so failover adds generation + poll latency vs an instant TTS-bytes vendor.
+- Output is **MP3**, not WAV/PCM. The existing ffmpeg loudnorm path + Whisper transcription
+  consume MP3 fine (the CDN tier already emits MP3), so downstream is unchanged.
+- Generation is **credit-billed by duration** — failover consumes credits; acceptable
+  because failover is rare and the article still ships audio-less if both engines fail.
+
+These trade-offs are accepted in exchange for vendor consolidation. **Cartesia remains the
+documented alternative** if a low-latency *synchronous* failover is later required (see
+Alternatives) — switching is a localized change to the failover call.
+
+New env vars: `JELLYPOD_API_KEY`, `JELLYPOD_PODCAST_ID` (added), plus
+`JELLYPOD_FAILOVER_HOST_ID` (the single-host voice used for brief failover). Retain the
+existing failover retry/backoff semantics and the "on exhaustion → `audio_status='skipped'`
++ `skip_reason='tts_failover_exhausted'`" behavior unchanged.
 
 ## Alternatives considered
 
 | Option | API verified | Pros | Cons | Verdict |
 |---|---|---|---|---|
-| **Cartesia** | ✅ `api.cartesia.ai/tts/bytes`, sonic-3.5 | Low latency, strong quality, WAV/PCM bytes, clean versioned API (stability signal), well-funded API-native | Newer brand | **Recommended default** |
+| **Jellypod** | ✅ `api.jellypod.com/v1` (docs 2026-06-03) | Vendor consolidation (same vendor as Tier-3 podcast → one key/bill/onboarding); strong conversational + single-host quality; MP3 the pipeline already handles | Async (generate→poll, not sync bytes); credit-billed; MP3 not WAV | **CHOSEN (2026-06-03)** — consolidation outweighs the async latency for a rare failover |
+| **Cartesia** | ✅ `api.cartesia.ai/tts/bytes`, sonic-3.5 | Low latency, strong quality, WAV/PCM bytes, clean versioned API (stability signal), well-funded API-native | Newer brand; net-new vendor | **Documented alternative** — switch to this if a low-latency *synchronous* failover is later required |
 | Fish Audio | ✅ `api.fish.audio/v1/tts`, s2-pro/s1 | ~80% cheaper/char, WAV/PCM/Opus, voice cloning via `reference_id` | More bulk-oriented; quality for a clinical authoritative read unverified | Strong cost alternative |
 | Mistral Voxtral | (open-weight, in AlienNova stack) | Open-weight, EU residency, ~$0.016/1k chars | Fewer languages (9); on-prem ops overhead; quality for narration unverified | If EU on-prem ever required |
 | ElevenLabs-only (drop failover) | n/a | Zero integration work | Single-vendor risk on a daily-deadline product; an outage halts audio | Acceptable only as a temporary Day-1 posture with manual fallback |
@@ -38,9 +61,9 @@ New env vars (if Cartesia): `CARTESIA_API_KEY`, `CARTESIA_VOICE_ID`. Retain the 
 
 ## Consequences
 
-- **Positive:** restores TTS redundancy; Cartesia/Fish both emit WAV/PCM so the loudnorm + R2 + Whisper pipeline downstream is unchanged.
-- **Negative:** rework of the failover code path + new credential (P-03 changes vendor); ADR-0004 must be marked superseded for the PlayHT clause.
-- **Migration:** SHIP-14 acceptance updated — "failover calls the chosen provider once on ElevenLabs failure; exhaustion → skipped" (provider-agnostic).
+- **Positive:** restores TTS redundancy; consolidates audio onto two vendors (ElevenLabs + Jellypod) — one new credential, one billing relationship; Jellypod is the same vendor already chosen for Tier-3 (D-POD-1), so no extra onboarding.
+- **Negative:** the failover path is reworked to Jellypod's **async generate→poll** shape (not a sync TTS-bytes call); failover latency is higher and consumes credits; ADR-0004 marked superseded for the PlayHT clause.
+- **Migration:** SHIP-14 acceptance updated — "failover submits a single-host Jellypod episode on ElevenLabs failure, polls for the MP3; exhaustion → `audio_status='skipped'`". `JELLYPOD_*` env vars replace the removed `PLAYHT_*`.
 
 ## Revisit triggers
 
@@ -48,6 +71,10 @@ New env vars (if Cartesia): `CARTESIA_API_KEY`, `CARTESIA_VOICE_ID`. Retain the 
 - If Q-B selects LATAM Day-1, re-check the failover provider's language coverage for ES/PT.
 - Day-30 audio-volume review: confirm failover throughput for the ~50-episode Day-1 inventory.
 
-## Open question to close this ADR
+## Q-F — CLOSED 2026-06-03
 
-**Q-F:** Pick the failover provider — **Cartesia (recommended)** / Fish Audio (cheaper) / ElevenLabs-only-for-Day-1 (defer failover). On decision, flip Status → Accepted and update env vars + SHIP-14.
+**Q-F (resolved):** failover provider = **Jellypod**. Status flipped to Accepted; env vars
+updated (`JELLYPOD_API_KEY` / `JELLYPOD_PODCAST_ID` / `JELLYPOD_FAILOVER_HOST_ID` replace the
+removed `PLAYHT_*`); SHIP-14 acceptance reworded to the async single-host failover. Cartesia
+retained as the documented synchronous alternative. Rationale: vendor consolidation with the
+Tier-3 podcast engine (D-POD-1) — see Decision.

@@ -213,7 +213,7 @@ are three separate decisions.
 ## 7. Open decisions (need Kimal / Day-30 ADR window)
 
 - **D-POD-1** — ✅ DECIDED 2026-06-03: use BOTH — Jellypod for the Tier-3 conversational Podcast, ElevenLabs for the single-narrator Tier-1/2/4 briefs (see §1.3 table).
-- **D-POD-1b** — OPEN: adopt Jellypod as the cross-vendor TTS *failover* for the ElevenLabs tiers (closes ADR-0018 / Q-F left open by the PlayHT shutdown)? Strong fit; needs a failover voice mapping + ADR-0018 update.
+- **D-POD-1b** — ✅ DECIDED 2026-06-03 (Kimal): Jellypod IS the TTS failover for the ElevenLabs tiers — closes ADR-0018 / Q-F. Recorded as D-033; ADR-0018 flipped to Accepted; `JELLYPOD_FAILOVER_HOST_ID` added. Failover = single-host episode generate→poll→MP3 (async); Cartesia kept as the documented sync alternative.
 - **D-POD-2** — render tool (Remotion rec) → ADR-0021.
 - **D-POD-3** — video hosting (ADR-0012, open) — Cloudflare Stream vs Mux vs R2-self-host.
 - **D-POD-4** — YouTube/Reels/TikTok credentials + posting automation vs manual at launch (Founders-Board).

@@ -578,3 +578,19 @@ User topped up $10 credit pack on the Creator account. Re-ran smoke test. **Full
 **Pipeline status**: VALIDATED end-to-end. The scaffold at `tools/audio/smoke-test.mjs` is production-pattern-ready. M2 R-201 audio-producer Worker can be built directly against this exact flow, with the Queued Consumer adaptation per B-16.
 
 **Owner of completion for this attempt**: smoke test cycle CLOSED. Next session resumes voice iteration (different voice → re-run smoke test → A/B against `aria-final.mp3`).
+
+## D-033 — TTS failover = Jellypod (closes Q-F / ADR-0018)
+
+**Date**: 2026-06-03
+
+**Context**: ADR-0018 left Q-F open (failover vendor after PlayHT shut down 2025-12-31; Cartesia recommended). Jellypod was separately adopted for Tier-3 podcast generation (D-POD-1, `Docs/specs/podcast-video-pipeline.md`).
+
+**Decision**: Adopt **Jellypod** as the TTS failover for the single-narrator tiers (1 Audio Brief / 2 Daily Brief / 4 Conference Brief), consolidating audio onto two vendors — ElevenLabs (primary) + Jellypod (Tier-3 podcast **and** failover). Failover is a single-host episode `generate → poll → MP3` (async), not a synchronous TTS-bytes call. Cartesia retained as the documented synchronous alternative.
+
+**Rationale**: Vendor consolidation — same vendor as the Tier-3 engine → one credential, one billing relationship, zero net-new onboarding. The async/MP3 trade-off is acceptable for a rare failover (the article ships audio-less if both engines fail; downstream loudnorm + Whisper already handle MP3).
+
+**Rejected**: Cartesia (clean sync `tts/bytes`, but a net-new vendor) — kept as documented alternative if low-latency sync failover is later required.
+
+**Propagation**: ADR-0018 Proposed→Accepted; `.env.example` (+`JELLYPOD_FAILOVER_HOST_ID`); SECRETS.md §2; CLAUDE.md §5/§7/§12; SSOT.md rows 6/9 + tech-stack; Audio-Architecture §1 tier table/§2.1 failover/env table/lineage; podcast-video-pipeline D-POD-1b.
+
+**Confidence**: high (Jellypod API grounded against docs 2026-06-03).

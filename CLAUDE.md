@@ -136,7 +136,7 @@ Cycle-3 Q2 / Q2-A locks supersede the v1.1 "Day 14 / Day 30–45" launch dates: 
 9. ROMAS Take
 10. Source attribution
 
-**Voice (D-032, 2026-05-22)**: ElevenLabs Creator-tier; **3 voices by tier role** replace the single ROMAS Clinical Narrator clone for Day 1 (Kimal clone deferred post-launch). Env vars: `ELEVENLABS_VOICE_ID_BRIEF` (tier 1+2 Audio Brief + Daily Brief), `ELEVENLABS_VOICE_ID_PODCAST` (tier 3 Podcast), `ELEVENLABS_VOICE_ID_CONFERENCE` (tier 4+5 Conference Brief + Video Podcast). PlayHT failover (`PLAYHT_ROMAS_VOICE_ID`). Loudness target -16 LUFS / -1 dBTP. Pace 145–160 wpm.
+**Voice (D-032, 2026-05-22)**: ElevenLabs Creator-tier; **3 voices by tier role** replace the single ROMAS Clinical Narrator clone for Day 1 (Kimal clone deferred post-launch). Env vars: `ELEVENLABS_VOICE_ID_BRIEF` (tier 1+2 Audio Brief + Daily Brief), `ELEVENLABS_VOICE_ID_PODCAST` (tier 3 Podcast), `ELEVENLABS_VOICE_ID_CONFERENCE` (tier 4+5 Conference Brief + Video Podcast). **Jellypod failover** (`JELLYPOD_FAILOVER_HOST_ID`, ADR-0018 accepted 2026-06-03; supersedes the dead PlayHT failover). Loudness target -16 LUFS / -1 dBTP. Pace 145–160 wpm.
 
 **Audio QA state machine**: `in_review` → (`published` | `skipped`); `published` → `revoked` (post-publish kill switch; 60s CDN withdrawal).
 
@@ -165,7 +165,7 @@ All files live alongside this CLAUDE.md. Load the relevant one(s) before editing
 - **DB / auth**: Supabase (Postgres + RLS + Auth). Migrations in `supabase/migrations/`.
 - **Edge / CDN**: Cloudflare Workers + R2 + Pages.
 - **Storage**: R2 buckets — `romas-audio-archive` (private WAV master) and `romas-audio-cdn` (public MP3 via CDN).
-- **TTS**: ElevenLabs (primary) + PlayHT (failover).
+- **TTS**: ElevenLabs (primary — single-narrator tiers 1/2/4) + Jellypod (Tier-3 conversational podcast **and** failover for the ElevenLabs tiers, ADR-0018). PlayHT retired (shut down 2025-12-31).
 - **CMS surface**: Internal Next.js app on Cloudflare Pages.
 - **Reader surface**: Next.js + Tailwind on Cloudflare Pages.
 - **Search**: Postgres full-text + pgvector for embeddings.
@@ -270,7 +270,7 @@ Skills (`.claude/skills/`):
 | Framework | **Next 15.5.18 + React 19** (SHIP-01). `pnpm audit --audit-level=high` = 0 vulns. |
 | CI gates | lint ✅ · typecheck ✅ · build ✅ · audit ✅ (SHIP-01/02). Tests stubbed until SHIP-17. |
 
-**TTS failover:** PlayHT shut down 2025-12-31 (Meta acquisition). Replacement pending **Q-F** (Cartesia recommended) — see `Docs/specs/adr/0018-tts-failover-replacement-playht-shutdown.md`.
+**TTS failover:** **Jellypod** (ADR-0018 ACCEPTED 2026-06-03 — Q-F closed; same vendor as the Tier-3 podcast engine, D-POD-1). PlayHT shut down 2025-12-31 (Meta acquisition). Cartesia retained as the documented synchronous alternative. See `Docs/specs/adr/0018-tts-failover-replacement-playht-shutdown.md` + `Docs/specs/podcast-video-pipeline.md`.
 
 **Pending — engineering:** drive the SHIP-NN queue (Waves 1→5) in `Docs/specs/ship-execution-plan.md`.
 **Pending — Kimal:** provisioning items + decisions Q-A..Q-F in `Docs/FOUNDERS-BOARD.md` (audio credentials, R2, Beehiiv DPA, the 8-week content ramp).

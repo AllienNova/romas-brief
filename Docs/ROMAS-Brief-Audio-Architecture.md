@@ -25,9 +25,9 @@ ROMAS Wire ships **four audio tiers Day 1** and **one video tier Day 60** (SSOT 
 
 | Tier | Name | Length | Cadence | RSS feed | Voice engine | Launch | Reference |
 |---|---|---|---|---|---|---|---|
-| 1 | ROMAS Audio Brief | 5 / 7 / 10 min | Per article | `audio-brief.xml` | ElevenLabs primary, PlayHT failover | **Day 1** | CLAUDE.md §5, ADR-0005 |
+| 1 | ROMAS Audio Brief | 5 / 7 / 10 min | Per article | `audio-brief.xml` | ElevenLabs primary, Jellypod failover (ADR-0018) | **Day 1** | CLAUDE.md §5, ADR-0005 |
 | 2 | ROMAS Daily Brief | 10–15 min | Daily roundup | `daily-brief.xml` | Same | **Day 1** | CLAUDE.md §5 |
-| 3 | The ROMAS Podcast | 30–60 min | Weekly deep-dive | `podcast.xml` | Same | **Day 1 (ep 001 pre-mastered)** | ADR-0005 cycle-3 Q2-A |
+| 3 | The ROMAS Podcast | 30–60 min | Weekly deep-dive | `podcast.xml` | Jellypod (multi-host generation, D-POD-1) | **Day 1 (ep 001 pre-mastered)** | ADR-0005 cycle-3 Q2-A; podcast-video-pipeline.md |
 | 4 | ROMAS Conference Brief | 15–30 min | During ASTRO / ESTRO / AAPM / JASTRO / RANZCR | `conference-brief.xml` | Same | **Day 1 (activates per conference)** | ADR-0005 |
 | 5 | Video Podcast (with invited guest) | 20–40 min | Bi-weekly post-launch | `video-podcast.xml` (placeholder) | Human voice + video | **Day 60** | ADR-0012 placeholder; vendor decision Day 30 |
 
@@ -57,7 +57,7 @@ Pace: **145–160 wpm** (SSOT §3 row 13).
 
 The audio-producer agent picks the voice by `audio_jobs.audio_tier` enum value (see migration `0002_create_audio_jobs.sql` for the canonical 5-value enum). When a new audio job arrives, the producer reads its `audio_tier` field, selects the matching env var, and uses that voice ID for the synthesis call. Tier→voice mapping is the operational contract.
 
-**Failover**: PlayHT Play3.0 mini, voice ID held in `PLAYHT_ROMAS_VOICE_ID`. Activated when ElevenLabs returns 429 / 5xx three times with exponential backoff (1s / 4s / 16s).
+**Failover (ADR-0018, accepted 2026-06-03)**: **Jellypod**, single-host voice `JELLYPOD_FAILOVER_HOST_ID` (supersedes the retired PlayHT). Activated when ElevenLabs returns 429 / 5xx three times with exponential backoff. Unlike a synchronous TTS-bytes failover, Jellypod is async: the producer submits a single-host episode (`POST /episodes/generate`), polls `GET /episodes/{id}`, and downloads the MP3 (consumed by the same loudnorm + Whisper path). Same vendor as the Tier-3 podcast engine (D-POD-1) → one credential. Cartesia retained as the documented synchronous alternative.
 
 **Never silently swap voices.** If both fail, the audio job is marked `skipped` with `error` populated and `skip_reason = 'tts_failover_exhausted'`. The article still ships without audio (`reader` UI surfaces "no audio for this brief").
 
@@ -92,11 +92,11 @@ See `Docs/build/decision-log.md` D-031 for the empirical smoke-test trail.
 
 ### 2.2 Voice consent
 
-Voice usage is gated on a signed consent registry (`Docs/voice-consent-registry.md`, R-110, Kimal legal track). The audio-producer agent reads the consent registry at start-of-pipeline; if the voice ID listed in the env vars is disabled (consent withdrawn), the agent falls back to a standard ElevenLabs voice ID + logs the substitution. PlayHT consent is tracked separately because the donor identity differs (R-213, M2).
+Voice usage is gated on a signed consent registry (`Docs/voice-consent-registry.md`, R-110, Kimal legal track). The audio-producer agent reads the consent registry at start-of-pipeline; if the voice ID listed in the env vars is disabled (consent withdrawn), the agent falls back to a standard ElevenLabs voice ID + logs the substitution. The failover engine (Jellypod, ADR-0018) uses a standard hosted voice rather than a cloned donor, so no separate voice-donor consent applies (the retired PlayHT clone previously required one).
 
 ### 2.3 Lexicon
 
-The audio-producer agent applies the pronunciation lexicon (`lexicon` table) before TTS request. The lexicon stores per-term IPA + SSML for ElevenLabs and a plain-English spoken re-spelling for PlayHT (which does not honour SSML). Eight term types: vendor / drug / device / modality / acronym / person / institution / site.
+The audio-producer agent applies the pronunciation lexicon (`lexicon` table) before TTS request. The lexicon stores per-term IPA + SSML for ElevenLabs and a plain-English spoken re-spelling for the failover engine (Jellypod; SSML support unverified, so the re-spelling is the safe fallback). Eight term types: vendor / drug / device / modality / acronym / person / institution / site.
 
 **Seed**: 30 entries land via `supabase/seed.sql` (T-201 / A-201 in M2). Expansion target: ~80 entries by Day 1 (per cycle-5 H-11 risk register).
 
@@ -325,9 +325,9 @@ The `lexicon` table is the canonical pronunciation vocabulary. Schema in `0006_c
 | `ELEVENLABS_VOICE_ID_BRIEF` | Voice ID for Audio Brief + Daily Brief (tier 1+2) per D-032 |
 | `ELEVENLABS_VOICE_ID_PODCAST` | Voice ID for The ROMAS Podcast (tier 3) per D-032 |
 | `ELEVENLABS_VOICE_ID_CONFERENCE` | Voice ID for Conference Brief + Video Podcast (tier 4+5) per D-032 |
-| `PLAYHT_API_KEY` | Worker secret; TTS failover |
-| `PLAYHT_USER_ID` | PlayHT account scope |
-| `PLAYHT_ROMAS_VOICE_ID` | Voice clone identifier (separate from ElevenLabs) |
+| `JELLYPOD_API_KEY` | Worker secret; Tier-3 podcast generation + TTS failover (ADR-0018) |
+| `JELLYPOD_PODCAST_ID` | Jellypod show identifier |
+| `JELLYPOD_FAILOVER_HOST_ID` | Single-host voice for failover of the ElevenLabs tiers |
 | `OPENAI_API_KEY` | Whisper transcription |
 | `R2_AUDIO_ARCHIVE_BUCKET` | WAV master bucket name |
 | `R2_AUDIO_CDN_BUCKET` | MP3 public bucket name |
@@ -362,7 +362,8 @@ The `lexicon` table is the canonical pronunciation vocabulary. Schema in `0006_c
 
 | ADR | Date | What it locks |
 |---|---|---|
-| ADR-0004 | 2026-05-14 | TTS engines (ElevenLabs primary + PlayHT failover) |
+| ADR-0004 | 2026-05-14 | TTS engines (ElevenLabs primary; PlayHT failover — superseded by ADR-0018) |
+| ADR-0018 | 2026-06-03 | TTS failover = Jellypod (PlayHT shut down); Tier-3 podcast via Jellypod (D-POD-1) |
 | ADR-0005 | 2026-05-14 (cycle-3 2026-05-14) | Four-tier RSS feeds, Day-1 all-tier launch |
 | ADR-0006 | 2026-05-14 | Audio QA state machine + 5-condition publish CHECK |
 | ADR-0011 | 2026-05-14 (cycle-3) | Whisper large-v3 transcription via Queued Consumer |
