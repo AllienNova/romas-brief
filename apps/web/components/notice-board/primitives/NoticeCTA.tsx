@@ -2,7 +2,11 @@
 // NoticeCTA — the ONLY anchor in a card (spec §16). Stretched-link pattern:
 // one real <a>/<Link> whose ::after covers the whole card, so the entire
 // card is clickable WITHOUT nesting a second anchor (no hydration error).
-// Internal hrefs use next/link; external/mailto use a plain <a>.
+//
+// URL safety (review H-01): only https (external, case-insensitive), the
+// trusted mailto:/tel: schemes (used by the internal Advertise CTA), or an
+// absolute-path internal link render. Anything else (javascript:, data:, …)
+// renders NOTHING — defense-in-depth behind the DB cta_url CHECK + safeCta().
 // =====================================================================
 import Link from "next/link";
 
@@ -17,6 +21,12 @@ export interface NoticeCTAProps {
 }
 
 export function NoticeCTA({ href, label, ariaLabel, stretch = true, muted = false }: NoticeCTAProps) {
+  const isHttps = /^https:\/\//i.test(href);
+  const isMailOrTel = /^(mailto:|tel:)/i.test(href);
+  const isInternal = href.startsWith("/");
+  // Reject javascript:, data:, http:, protocol-relative, etc.
+  if (!isHttps && !isMailOrTel && !isInternal) return null;
+
   const className = [
     "notice-cta",
     stretch ? "notice-cta--stretched" : "",
@@ -28,15 +38,15 @@ export function NoticeCTA({ href, label, ariaLabel, stretch = true, muted = fals
       {label} <span aria-hidden>→</span>
     </>
   );
-  const isExternal = /^(https?:|mailto:|tel:)/.test(href);
 
-  return isExternal ? (
+  // https/mailto/tel → plain <a> (https opens in a new tab); internal → next/link.
+  return isHttps || isMailOrTel ? (
     <a
       href={href}
       aria-label={ariaLabel ?? label}
       className={className}
       style={style}
-      {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      {...(isHttps ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
       {inner}
     </a>

@@ -72,13 +72,28 @@ function opt(v: string | null | undefined): string | undefined {
   return v ?? undefined;
 }
 
+/** cta_url allowlist (review H-01): https-only external OR absolute-path internal; else dropped. */
+function safeCta(raw: string | null | undefined): string | undefined {
+  if (!raw) return undefined;
+  const t = raw.trim();
+  return /^https:\/\//i.test(t) || t.startsWith("/") ? t : undefined;
+}
+
+const VALID_PRIORITY = new Set<string>(["featured", "high", "normal", "low"]);
+const VALID_STATUS = new Set<string>(["draft", "pending_review", "scheduled", "published", "expired", "archived"]);
+
 function rowToNotice(r: NoticeRow, sponsorName: string | undefined): Notice | null {
+  // Firewall defense vs schema/enum drift (review M-01): a non-boolean is_sponsored
+  // (e.g. a column rename surfacing undefined) or an unknown enum drops the row
+  // rather than silently mis-routing a sponsored notice into an editorial card.
+  if (typeof r.is_sponsored !== "boolean") return null;
+  if (!VALID_PRIORITY.has(r.priority) || !VALID_STATUS.has(r.status)) return null;
   const base = {
     id: r.id,
     title: r.title,
     summary: r.summary,
     ctaLabel: opt(r.cta_label),
-    ctaUrl: opt(r.cta_url),
+    ctaUrl: safeCta(r.cta_url),
     dateLabel: opt(r.date_label),
     startsAt: opt(r.starts_at),
     endsAt: opt(r.ends_at),
@@ -114,23 +129,27 @@ function rowToNotice(r: NoticeRow, sponsorName: string | undefined): Notice | nu
 }
 
 async function fetchBoard(): Promise<BoardPayload> {
-  const fallback = (): BoardPayload => selectBoard(MOCK_NOTICES, MOCK_SLOTS, new Date());
+  const now = new Date(); // single clock for the live + fallback paths (review M-2)
+  const fallback = (): BoardPayload => selectBoard(MOCK_NOTICES, MOCK_SLOTS, now);
   if (!hasDbEnv()) return fallback();
 
   try {
+    // TODO(NB-0015): drop this cast once `supabase gen types` adds notices/
+    // inventory_slots/sponsor_public to database.types.ts (review M-01).
     const sb = createPublicSupabaseClient() as unknown as SupabaseClient;
+    const signal = AbortSignal.timeout(QUERY_TIMEOUT_MS);
     const [noticeRes, slotRes, sponsorRes] = await Promise.all([
-      sb
-        .from("notices")
-        .select(NOTICE_COLUMNS)
-        .eq("status", "published")
-        .abortSignal(AbortSignal.timeout(QUERY_TIMEOUT_MS))
-        .returns<NoticeRow[]>(),
-      sb.from("inventory_slots").select("id,kind,notice_id,starts_at,ends_at").returns<SlotRow[]>(),
-      sb.from("sponsor_public").select("id,name").returns<SponsorRow[]>(),
+      sb.from("notices").select(NOTICE_COLUMNS).eq("status", "published").abortSignal(signal).returns<NoticeRow[]>(),
+      sb.from("inventory_slots").select("id,kind,notice_id,starts_at,ends_at").abortSignal(signal).returns<SlotRow[]>(),
+      sb.from("sponsor_public").select("id,name").abortSignal(signal).returns<SponsorRow[]>(),
     ]);
 
     if (noticeRes.error || !noticeRes.data) return fallback();
+    // A sponsor-name lookup failure would silently drop sold inventory + sponsored
+    // cards (lost revenue) — treat as a hard fallback (review qual H-2).
+    if (sponsorRes.error) return fallback();
+    if (slotRes.error) console.error("[getBoard] inventory_slots query failed:", slotRes.error.message);
+
     const sponsorMap = new Map((sponsorRes.data ?? []).map((s) => [s.id, s.name] as const));
     const notices = noticeRes.data
       .map((r) => rowToNotice(r, r.sponsor_id ? sponsorMap.get(r.sponsor_id) : undefined))
@@ -143,7 +162,10 @@ async function fetchBoard(): Promise<BoardPayload> {
       endsAt: opt(s.ends_at),
     }));
 
-    const board = selectBoard(notices, slots, new Date());
+    // Anonymous viewer — the board is cached public (no per-viewer targeting). If
+    // audience/region targeting is wired to real auth, this must become per-segment
+    // caching + the route Cache-Control private (review M-3).
+    const board = selectBoard(notices, slots, now, {});
     if (!board.featured && board.editorial.length === 0 && board.sponsored.length === 0) {
       return fallback();
     }

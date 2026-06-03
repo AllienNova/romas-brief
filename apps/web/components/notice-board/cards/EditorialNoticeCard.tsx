@@ -13,7 +13,8 @@ import { NoticeCTA } from "../primitives/NoticeCTA";
 function displayDate(n: EditorialNotice): string | null {
   if (n.dateLabel) return n.dateLabel;
   const isEvent = n.type === "event" || n.type === "conference";
-  const src = isEvent ? n.startsAt : (n.startsAt ?? n.publishAt);
+  // Non-events always show publishAt (review M-5 — a stray startsAt must not override).
+  const src = isEvent ? n.startsAt : n.publishAt;
   if (!src) return null;
   const d = new Date(src);
   if (Number.isNaN(d.getTime())) return null;

@@ -40,7 +40,8 @@ export function deriveIsNew(publishAt: string, now: Date): boolean {
 }
 
 function withIsNew<T extends Notice>(n: T, now: Date): T {
-  return { ...n, isNew: deriveIsNew(n.publishAt, now) };
+  // §9: the NEW indicator is editorial-only — never derive isNew=true on sponsored (review arch H-3).
+  return { ...n, isNew: n.isSponsored ? false : deriveIsNew(n.publishAt, now) };
 }
 
 /** Live = published, publishAt reached, not past expiry. */
@@ -102,13 +103,18 @@ function resolveInventory(
   slots: InventorySlot[],
   byId: Map<string, Notice>,
   now: Date,
+  viewer: Viewer,
 ): { state: InventorySlotState; usedNoticeId: string | null } {
   const active = slots.filter((s) => s.kind === "homepage_partner" && slotActive(s, now));
   if (active.length === 0) return { state: { state: "empty" }, usedNoticeId: null };
   const slot = active[0]!;
   if (!slot.noticeId) return { state: { state: "unsold" }, usedNoticeId: null };
   const n = byId.get(slot.noticeId);
-  if (!n || !isLive(n, now)) return { state: { state: "unsold" }, usedNoticeId: null };
+  // Targeting (review arch H-2): a slot notice not targeted at this viewer must not
+  // render to them — fall back to the unsold/Advertise state instead.
+  if (!n || !isLive(n, now) || !targeted(n, viewer)) {
+    return { state: { state: "unsold" }, usedNoticeId: null };
+  }
   if (isSponsored(n)) return { state: { state: "sold", notice: withIsNew(n, now) }, usedNoticeId: n.id };
   return { state: { state: "internal", notice: withIsNew(n, now) }, usedNoticeId: n.id };
 }
@@ -130,13 +136,18 @@ export function selectBoard(
   const live = notices.filter((n) => isLive(n, now) && targeted(n, viewer));
 
   // 7. inventory slot first (so we can exclude its notice from other pools)
-  const { state: inventory, usedNoticeId } = resolveInventory(slots, byId, now);
+  const { state: inventory, usedNoticeId } = resolveInventory(slots, byId, now, viewer);
 
   // 3. conference context (a live conference notice within window)
-  const conferenceNotice = live
+  const conferenceCandidates = live
     .filter(isEditorial)
-    .filter((n) => n.type === "conference" && n.conferenceKey)
-    .sort((a, b) => compareEditorial(a, b))[0];
+    .filter((n) => n.type === "conference" && n.conferenceKey);
+  const distinctKeys = new Set(conferenceCandidates.map((n) => n.conferenceKey));
+  if (distinctKeys.size > 1) {
+    // review qual H-1: don't silently drop a second live conference — surface it.
+    console.warn("[selectBoard] multiple active conference keys; using highest-priority/most-recent:", [...distinctKeys]);
+  }
+  const conferenceNotice = conferenceCandidates.sort((a, b) => compareEditorial(a, b))[0];
   const conferenceKey = conferenceNotice?.conferenceKey;
 
   let conferenceMode: ConferenceContext | null = null;

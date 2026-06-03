@@ -1,11 +1,8 @@
 // =====================================================================
 // NoticeBoardHeader — section label + live dot + taxonomy + Advertise link.
 // =====================================================================
-import Link from "next/link";
 import { LiveDot } from "./primitives/LiveDot";
-
-const ADVERTISE_HREF =
-  "mailto:president@aliennova.com?subject=Advertise%20on%20the%20ROMAS%20Wire%20Notice%20Board";
+import { ADVERTISE_HREF } from "@/lib/notice-board/types";
 
 export function NoticeBoardHeader() {
   return (
@@ -17,13 +14,13 @@ export function NoticeBoardHeader() {
       <span className="text-xs" style={{ color: "var(--rb-text-tertiary)" }}>
         Announcements · Trials · Events · Partner messages
       </span>
-      <Link
+      <a
         href={ADVERTISE_HREF}
         className="ml-auto text-xs font-semibold transition-opacity hover:opacity-80"
         style={{ color: "var(--rb-accent)" }}
       >
         Advertise →
-      </Link>
+      </a>
     </div>
   );
 }

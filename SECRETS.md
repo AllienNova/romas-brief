@@ -48,6 +48,7 @@ Three primary stores by audience + transport security:
 | `SUPABASE_URL` | URL (not strictly secret but treated as one) | Cloudflare Pages env var + Worker Secret | apps/cms + every Worker that writes Supabase | On project re-provision | TBD |
 | `SUPABASE_ANON_KEY` | Anon key (designed to be public-readable BUT keep out of client bundle per ADR-0015 v2 server-only auth model) | Cloudflare Pages env var (server-only) + Worker Secret | apps/cms server components + route handlers | On Supabase project recycle | TBD |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (FULL DB ACCESS — NEVER to browser) | Worker Secret + GitHub Actions Secret | All Workers that bypass RLS + deploy-migrations workflow | **30 days** (high-blast-radius secret) | TBD |
+| `ROMAS_REVALIDATE_SECRET` | Bearer token | Cloudflare Pages env var (server-only) | apps/web `POST /api/internal/revalidate-board` (NoticeBoard cache tag invalidation) | 90 days | TBD |
 | `CLOUDFLARE_ZONE_ID` | Zone identifier (not secret) | Worker Secret | cdn-purge-watchdog (purge by tag scoped to zone) | On zone change | TBD |
 | `CLOUDFLARE_API_TOKEN` | API token (Zone:Cache Purge + Workers:Edit + Pages:Edit scopes) | Worker Secret + GitHub Actions Secret | cdn-purge-watchdog + deploy-pages + deploy-workers workflows | **30 days** (high-blast-radius) | TBD |
 | `CLOUDFLARE_ACCOUNT_ID` | Account identifier (not secret) | GitHub Actions Secret | deploy-pages + deploy-workers + deploy-migrations workflows | On account change | TBD |

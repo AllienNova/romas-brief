@@ -58,10 +58,17 @@ create table notices (
   constraint sponsored_cannot_be_featured
     check (is_sponsored = false or priority <> 'featured'),
   constraint event_requires_timezone
-    check (type not in ('event','conference') or timezone is not null)
+    check (type not in ('event','conference') or timezone is not null),
+  -- cta_url: https-only external OR absolute-path internal (spec §7; XSS guard, review H-01).
+  constraint cta_url_safe_scheme
+    check (cta_url is null or cta_url ~* '^https://' or cta_url ~ '^/')
 );
 
--- Only one featured notice may be live at a time:
+-- Only one featured notice may be live at a time. NOTE (review M-03): this index is
+-- the physical backstop, but the NB-5 scheduler + NB-7 admin publish path MUST wrap
+-- featured scheduled→published transitions in pg_advisory_xact_lock(hashtext(
+-- 'notices_featured_publish')) to close the READ COMMITTED race where two concurrent
+-- promotions both see the index empty.
 create unique index one_live_featured
   on notices ((true))
   where priority = 'featured' and status = 'published';
@@ -113,17 +120,35 @@ create policy notices_public_read_published on notices
     and (expires_at is null or expires_at > now())
   );
 
--- Inventory slots are not sensitive; the board engine needs them to resolve state.
+-- Inventory slots: anon sees only CURRENTLY-ACTIVE slots (review M-02 — past/future
+-- bookings expose sponsor cadence + pricing windows to competitors). Historical
+-- fill-rate analysis goes through a service-role admin path, not anon.
 create policy inventory_slots_public_read on inventory_slots
   for select to anon, authenticated
-  using (true);
+  using (
+    (starts_at is null or starts_at <= now())
+    and (ends_at is null or ends_at > now())
+  );
 
--- Telemetry: anon may INSERT events (no PII), but never read them.
+-- Telemetry: anon may INSERT events (no PII) only for a PUBLISHED, in-window notice
+-- (review H-03 — the FK alone allowed draft-notice telemetry pollution + metric
+-- inflation). Anon never reads events. Rate-limiting + batch ceiling live in the
+-- NB-6 /api/notices/events route.
 create policy notice_events_public_insert on notice_events
   for insert to anon, authenticated
-  with check (true);
+  with check (
+    exists (
+      select 1 from notices n
+      where n.id = notice_id
+        and n.status = 'published'
+        and n.publish_at <= now()
+        and (n.expires_at is null or n.expires_at > now())
+    )
+  );
 
 -- Column-safe public sponsor exposure (id + name only; contact_email stays private).
+-- NEVER replace with SELECT * — that would expose contact_email to anon (review M-04,
+-- HIPAA-relevant). Column list asserted in supabase/tests (columns_are).
 create view sponsor_public as
   select id, name from sponsors;
 grant select on sponsor_public to anon, authenticated;

@@ -125,3 +125,7 @@ export const BOARD_BUDGET = {
 
 /** NEW window: publishAt within the last 7 days (§9). */
 export const NEW_WINDOW_DAYS = 7;
+
+/** Shared "advertise" contact (review L-3 — was duplicated across components). */
+export const ADVERTISE_HREF =
+  "mailto:president@aliennova.com?subject=Advertise%20on%20the%20ROMAS%20Wire%20Notice%20Board";

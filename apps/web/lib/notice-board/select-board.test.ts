@@ -155,3 +155,43 @@ test("derives isNew on returned notices", () => {
   const board = selectBoard([ed({ id: "fresh", publishAt: NOW.toISOString(), priority: "featured" })], [], NOW);
   assert.equal(board.featured?.isNew, true);
 });
+
+// ── review NB-fix D regression tests ──────────────────────────────────
+
+test("sponsored notices never get isNew=true (§9)", () => {
+  const board = selectBoard([sp({ publishAt: NOW.toISOString() })], [], NOW);
+  assert.equal(board.sponsored[0]?.isNew, false);
+});
+
+test("boundary: publishAt===now is live; expiresAt===now is expired", () => {
+  assert.equal(isLive(ed({ publishAt: NOW.toISOString() }), NOW), true);
+  assert.equal(isLive(ed({ expiresAt: NOW.toISOString() }), NOW), false);
+});
+
+test("featured is never a sponsored notice (runtime firewall)", () => {
+  const board = selectBoard([sp({ id: "s", priority: "normal" }), ed({ id: "e", priority: "featured" })], [], NOW);
+  assert.equal(board.featured?.isSponsored, false);
+  assert.equal(board.featured?.id, "e");
+});
+
+test("inventory targeting: a targeted slot notice is hidden from anon (→ unsold)", () => {
+  const promo = ed({ id: "promo", type: "announcement", audience: ["physicist"] });
+  const slot: InventorySlot = { id: "sl", kind: "homepage_partner", noticeId: "promo" };
+  assert.equal(selectBoard([promo], [slot], NOW).inventory.state, "unsold");
+  assert.equal(selectBoard([promo], [slot], NOW, { audience: ["physicist"] }).inventory.state, "internal");
+});
+
+test("multiple active conference keys: picks one deterministically (no throw)", () => {
+  const a = ed({ id: "a", type: "conference", conferenceKey: "ASTRO-2026", timezone: "America/Chicago", priority: "high" });
+  const b = ed({ id: "b", type: "conference", conferenceKey: "ESTRO-2026", timezone: "Europe/Vienna", priority: "normal" });
+  const board = selectBoard([a, b], [], NOW);
+  assert.ok(board.conferenceMode);
+  assert.equal(board.conferenceMode?.key, "ASTRO-2026"); // higher priority wins
+});
+
+test("conference notice without timezone → no conferenceMode (defensive)", () => {
+  const c = ed({ id: "c", type: "conference", conferenceKey: "X", priority: "featured" });
+  const board = selectBoard([c], [], NOW);
+  assert.equal(board.conferenceMode, null);
+  assert.equal(board.featured?.id, "c");
+});

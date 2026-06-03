@@ -7,6 +7,7 @@ import "./notice-board.styles.css";
 import { getBoard } from "@/lib/notice-board/get-board";
 import { NoticeBoardHeader } from "./NoticeBoardHeader";
 import { NoticeGrid } from "./NoticeGrid";
+import { NoticeBoardBoundary } from "./NoticeBoardBoundary";
 
 export default async function NoticeBoard() {
   const board = await getBoard();
@@ -17,7 +18,9 @@ export default async function NoticeBoard() {
       style={{ background: "var(--rb-bg-page)", borderColor: "var(--rb-border-subtle)" }}
     >
       <NoticeBoardHeader />
-      <NoticeGrid board={board} />
+      <NoticeBoardBoundary>
+        <NoticeGrid board={board} />
+      </NoticeBoardBoundary>
     </section>
   );
 }
