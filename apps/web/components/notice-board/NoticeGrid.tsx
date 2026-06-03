@@ -10,6 +10,7 @@ import { ConferenceLeadCard } from "./cards/ConferenceLeadCard";
 import { EditorialNoticeCard } from "./cards/EditorialNoticeCard";
 import { SponsoredNoticeCard } from "./cards/SponsoredNoticeCard";
 import { InventorySlotCard } from "./cards/InventorySlotCard";
+import { RotatingSlot } from "./RotatingSlot";
 
 export function NoticeGrid({ board }: { board: BoardPayload }) {
   return (
@@ -33,6 +34,11 @@ export function NoticeGrid({ board }: { board: BoardPayload }) {
           <SponsoredNoticeCard notice={n} />
         </StaggerItem>
       ))}
+      {board.rotatingSecondary && board.rotatingSecondary.length > 0 && (
+        <StaggerItem>
+          <RotatingSlot notices={board.rotatingSecondary} />
+        </StaggerItem>
+      )}
       {board.inventory.state !== "empty" && (
         <StaggerItem>
           <InventorySlotCard slot={board.inventory} />

@@ -14,6 +14,7 @@ import { SignalScoreRadar, type RadarAxis } from "@/components/dataviz/SignalSco
 import { SignalBar } from "@/components/dataviz/SignalBar";
 import { CompositeScoreRing } from "@/components/dataviz/CompositeScoreRing";
 import { ConferenceLeadCard } from "@/components/notice-board/cards/ConferenceLeadCard";
+import { RotatingSlot } from "@/components/notice-board/RotatingSlot";
 import type { ConferenceContext, EditorialNotice } from "@/lib/notice-board/types";
 
 export const metadata = {
@@ -46,6 +47,28 @@ const CONF_CTX: ConferenceContext = {
   timezone: "America/Chicago",
   lead: CONF_LEAD,
 };
+
+function rotNotice(id: string, title: string, summary: string): EditorialNotice {
+  return {
+    id,
+    type: "news",
+    isSponsored: false,
+    title,
+    summary,
+    ctaLabel: "Read",
+    ctaUrl: "/",
+    publishAt: "2026-06-01T00:00:00.000Z",
+    priority: "normal",
+    status: "published",
+    pinned: false,
+    isNew: false,
+  };
+}
+const ROTATE_POOL: EditorialNotice[] = [
+  rotNotice("r1", "AAPM TG-302 small-field dataset published", "New reference data for stereotactic dosimetry detectors."),
+  rotNotice("r2", "NRG-BR007 enrollment opens", "De-escalation trial for HER2+ early breast cancer now recruiting."),
+  rotNotice("r3", "MR-Linac adaptive workflow webinar", "Vendor-neutral commissioning walkthrough, on demand."),
+];
 
 const RADAR: RadarAxis[] = [
   { label: "Clinical", value: 0.92 },
@@ -202,6 +225,21 @@ export default function DesignPreviewPage() {
         </Reveal>
         <Reveal className="sm:max-w-2xl">
           <ConferenceLeadCard notice={CONF_LEAD} conference={CONF_CTX} />
+        </Reveal>
+      </section>
+
+      {/* ── Rotating secondary slot ─────────────────────────────────── */}
+      <section className="mx-auto max-w-content px-6 pb-8">
+        <Reveal>
+          <h2 className="mb-2 text-2xl font-black" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em" }}>
+            Rotating slot
+          </h2>
+          <p className="mb-8 text-sm" style={{ color: "var(--rb-text-secondary)" }}>
+            One controlled slot, crossfade only, auto-stops after a cycle. Pause on hover/focus; disabled under reduced motion.
+          </p>
+        </Reveal>
+        <Reveal className="sm:max-w-md">
+          <RotatingSlot notices={ROTATE_POOL} />
         </Reveal>
       </section>
 

@@ -23,6 +23,15 @@
 .notice-new-dot { animation: pulse-dot 2s ease-in-out infinite; }
 .notice-live-dot { animation: pulse-dot 2s ease-in-out infinite; }
 
+/* Full-width band (§13) — opt-in layout variant behind board.fullWidth (A/B flag,
+   default off). Full-bleed breakout from a width-constrained parent; inner content
+   re-centers via a max-width wrapper in NoticeBoard. */
+.notice-board--full {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  border-radius: 0;
+}
+
 /* Reduced motion: disable all board animation + lift + pulse (§9/§18). */
 @media (prefers-reduced-motion: reduce) {
   .notice-card, .notice-card * { animation: none !important; transition: none !important; }

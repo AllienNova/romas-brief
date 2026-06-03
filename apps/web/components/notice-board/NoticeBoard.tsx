@@ -15,14 +15,16 @@ export default async function NoticeBoard() {
   return (
     <section
       aria-label="Notice board"
-      className="rounded-2xl border p-6 sm:p-7"
+      className={`border p-6 sm:p-7 ${board.fullWidth ? "notice-board--full" : "rounded-2xl"}`}
       style={{ background: "var(--rb-bg-page)", borderColor: "var(--rb-border-subtle)" }}
     >
-      <NoticeBoardHeader />
-      <NoticeBoardBoundary>
-        <NoticeGrid board={board} />
-      </NoticeBoardBoundary>
-      <NoticeTelemetry surface="homepage" />
+      <div className={board.fullWidth ? "mx-auto max-w-7xl px-4 sm:px-6" : undefined}>
+        <NoticeBoardHeader />
+        <NoticeBoardBoundary>
+          <NoticeGrid board={board} />
+        </NoticeBoardBoundary>
+        <NoticeTelemetry surface="homepage" />
+      </div>
     </section>
   );
 }
