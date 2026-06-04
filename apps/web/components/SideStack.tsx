@@ -79,12 +79,12 @@ function SlotCard({ item }: { item: SideStackItem }) {
             S{item.score}
           </span>
         </div>
-        <h4
+        <h3
           className="text-sm font-semibold line-clamp-2 leading-snug"
           style={{ color: "var(--rb-text-primary)" }}
         >
           {item.title}
-        </h4>
+        </h3>
       </div>
       <div className="flex items-center gap-2 mt-2">
         {item.hasAudio && <span style={{ color: "var(--rb-text-tertiary)" }}><HeadphonesIcon size={12} /></span>}

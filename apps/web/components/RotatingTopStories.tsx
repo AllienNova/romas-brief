@@ -221,8 +221,12 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
                 (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
               }}
             >
-              {/* Image */}
-              <div className="relative w-full overflow-hidden" style={{ height: "clamp(200px, 30vw, 280px)" }}>
+              {/* Image — branded gradient sits BEHIND the photo so a loading or
+                  failed remote thumbnail shows a category tint, never raw white. */}
+              <div
+                className="relative w-full overflow-hidden"
+                style={{ height: "clamp(200px, 30vw, 280px)", background: `linear-gradient(135deg, ${catColor}22 0%, ${catColor}11 100%)` }}
+              >
                 {heroArticle.thumbnail_url ? (
                   <Image
                     src={heroArticle.thumbnail_url}
@@ -264,12 +268,12 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
                   </span>
                   <SignalBadge score={heroArticle.composite_score} />
                 </div>
-                <h2
+                <h3
                   className="text-2xl sm:text-3xl font-bold mb-3 group-hover:text-[var(--rb-accent)] transition-colors duration-200"
                   style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.025em", lineHeight: "1.2" }}
                 >
                   {heroArticle.title}
-                </h2>
+                </h3>
                 <p className="text-base leading-relaxed mb-5" style={{ color: "var(--rb-text-secondary)" }}>
                   {heroArticle.standfirst}
                 </p>
@@ -314,7 +318,10 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
                   }}
                 >
                   {article.thumbnail_url && (
-                    <div className="relative w-full overflow-hidden" style={{ height: "160px" }}>
+                    <div
+                      className="relative w-full overflow-hidden"
+                      style={{ height: "160px", background: `linear-gradient(135deg, ${color}22 0%, ${color}11 100%)` }}
+                    >
                       <Image
                         src={article.thumbnail_url}
                         alt={article.title}

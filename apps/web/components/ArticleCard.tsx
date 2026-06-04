@@ -157,8 +157,8 @@ function CompactCard({ article }: { article: ArticleCardProps }) {
             <span className="kicker font-bold" style={{ color }}>{article.category}</span>
             {article.signalScore !== undefined && <SignalBadge score={article.signalScore} />}
           </div>
-          <h4 className="text-sm font-semibold line-clamp-2 transition-colors duration-150 group-hover:text-[var(--rb-accent)]"
-            style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.01em" }}>{article.title}</h4>
+          <h3 className="text-sm font-semibold line-clamp-2 transition-colors duration-150 group-hover:text-[var(--rb-accent)]"
+            style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.01em" }}>{article.title}</h3>
           <div className="flex items-center gap-2 mt-1">
             <time className="kicker" dateTime={article.publishedAt} style={{ color: "var(--rb-text-tertiary)" }}>{formatDate(article.publishedAt)}</time>
             {article.region && <span className="kicker" style={{ color: "var(--rb-text-tertiary)" }}>{article.region}</span>}
@@ -189,8 +189,8 @@ function QuickHitCard({ article }: { article: ArticleCardProps }) {
               {article.isRomasInsight && <span className="badge-insight"><StarMark className="inline-block mr-0.5" /> RI</span>}
               {article.region && <span className="kicker ml-auto" style={{ color: "var(--rb-text-tertiary)" }}>{article.region}</span>}
             </div>
-            <h4 className="text-[13.5px] font-semibold line-clamp-2 transition-colors duration-150 group-hover:text-[var(--rb-accent)]"
-              style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.01em" }}>{article.title}</h4>
+            <h3 className="text-[13.5px] font-semibold line-clamp-2 transition-colors duration-150 group-hover:text-[var(--rb-accent)]"
+              style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.01em" }}>{article.title}</h3>
             {article.summary && (
               <p className="text-xs line-clamp-2 mt-1 leading-relaxed" style={{ color: "var(--rb-text-secondary)" }}>{article.summary}</p>
             )}

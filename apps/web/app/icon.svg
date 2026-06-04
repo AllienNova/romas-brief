@@ -1,0 +1,12 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- ROMAS Wire favicon: brand rounded-square + white sparkle (matches the header mark).
+       Next.js App Router auto-serves app/icon.svg as the favicon. -->
+  <defs>
+    <linearGradient id="rb" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00B4C6"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#rb)"/>
+  <path d="M16 6c.6 4.2 1.8 5.4 6 6-4.2.6-5.4 1.8-6 6-.6-4.2-1.8-5.4-6-6 4.2-.6 5.4-1.8 6-6Z" fill="#fff"/>
+</svg>

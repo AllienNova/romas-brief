@@ -327,9 +327,9 @@ export default async function HomePage() {
                       {paperOfDay.romas_insight && <span className="badge-insight"><StarMark className="inline-block mr-0.5" /> ROMAS Insight</span>}
                       {paperOfDay.composite_score >= 80 ? <span className="badge-signal-green">S{paperOfDay.composite_score}</span> : <span className="badge-signal-amber">S{paperOfDay.composite_score}</span>}
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-bold mb-4 text-balance group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em", lineHeight: "1.25" }}>
+                    <h3 className="text-xl sm:text-2xl font-bold mb-4 text-balance group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)", letterSpacing: "-0.02em", lineHeight: "1.25" }}>
                       {paperOfDay.title}
-                    </h2>
+                    </h3>
                     <p className="text-sm leading-relaxed mb-6" style={{ color: "var(--rb-text-secondary)" }}>{paperOfDay.standfirst}</p>
                     <div className="grid grid-cols-3 gap-3 p-4 rounded-xl mb-6" style={{ background: "var(--rb-bg-raised)" }}>
                       {[
@@ -452,7 +452,7 @@ export default async function HomePage() {
                       <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "var(--rb-accent-subtle)", color: "var(--rb-accent)" }}><HeadphonesIcon size={20} /></div>
                       <div className="flex-1 min-w-0">
                         <span className="kicker block mb-1" style={{ color: "var(--rb-accent)" }}>{article.category}</span>
-                        <h4 className="text-sm font-semibold line-clamp-2 group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{article.title}</h4>
+                        <h3 className="text-sm font-semibold line-clamp-2 group-hover:text-[var(--rb-accent)] transition-colors" style={{ color: "var(--rb-text-primary)" }}>{article.title}</h3>
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
