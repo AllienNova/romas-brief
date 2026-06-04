@@ -47,9 +47,11 @@ const OVERLAP_CHARS = 400;
 const MIN_WORDS = 40;
 const EMBED_DIM = 1536;     // must match reference_chunks.embedding vector(1536)
 const EMBED_MAX_INPUTS = 256;       // hard cap on inputs per request
-const EMBED_TOKEN_BUDGET = 250_000; // < the gateway's 300k-tokens-per-request cap;
-                                    // batches are packed by token_estimate, not a
-                                    // fixed count (chunks vary ~700–5000 tokens).
+const EMBED_TOKEN_BUDGET = 100_000; // est tokens/request. The estimate (chars/5)
+                                    // UNDER-counts the gateway's real tokenizer on
+                                    // dense medical text, so a 250k-estimated batch
+                                    // tokenized to >300k (the hard cap) → 400. 100k
+                                    // est gives ~2× headroom under the 300k limit.
 const UPSERT_BATCH = 8;     // rows per Management-API INSERT — 8×(1536 floats) keeps the
                             // SQL payload well under the Management API request-size cap
                             // (batch 40 returned an HTML error mid-run, killing the pass).
