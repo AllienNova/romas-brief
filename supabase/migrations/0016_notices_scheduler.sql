@@ -82,5 +82,9 @@ comment on function notices_run_scheduler() is
   'NB-5 scheduler (§10). Inside pg_advisory_xact_lock(notices_featured_publish): expires due published notices, resolves the single live-featured (latest due-scheduled featured wins; losers + any published featured demote to high — honors one_live_featured), then promotes all due scheduled→published. Returns (promoted, expired). Called every 1–5 min by the notice-scheduler cron worker, which then revalidates the board tag.';
 
 -- Only the service role (the cron worker) may run the scheduler — never anon.
-revoke all on function notices_run_scheduler() from public;
+-- NOTE: Supabase grants EXECUTE to anon/authenticated by default on public-schema
+-- functions, so `revoke ... from public` alone is NOT enough — the roles must be
+-- revoked explicitly (verified against the live DB 2026-06-03: anon/authenticated
+-- retained EXECUTE until this explicit revoke).
+revoke execute on function notices_run_scheduler() from public, anon, authenticated;
 grant execute on function notices_run_scheduler() to service_role;

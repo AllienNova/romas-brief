@@ -144,10 +144,19 @@ async function fetchBoard(): Promise<BoardPayload> {
       sb.from("sponsor_public").select("id,name").abortSignal(signal).returns<SponsorRow[]>(),
     ]);
 
-    if (noticeRes.error || !noticeRes.data) return fallback();
+    // Log fallbacks — a SILENT fallback-to-mock once masked a wrong-project
+    // SUPABASE_URL for a whole debug session (the query failed "Invalid API key"
+    // but the board just showed mock). Surface it.
+    if (noticeRes.error || !noticeRes.data) {
+      console.error("[getBoard] notices query failed → fallback:", noticeRes.error?.message ?? "no data");
+      return fallback();
+    }
     // A sponsor-name lookup failure would silently drop sold inventory + sponsored
     // cards (lost revenue) — treat as a hard fallback (review qual H-2).
-    if (sponsorRes.error) return fallback();
+    if (sponsorRes.error) {
+      console.error("[getBoard] sponsor_public query failed → fallback:", sponsorRes.error.message);
+      return fallback();
+    }
     if (slotRes.error) console.error("[getBoard] inventory_slots query failed:", slotRes.error.message);
 
     const sponsorMap = new Map((sponsorRes.data ?? []).map((s) => [s.id, s.name] as const));
@@ -165,11 +174,11 @@ async function fetchBoard(): Promise<BoardPayload> {
     // Anonymous viewer — the board is cached public (no per-viewer targeting). If
     // audience/region targeting is wired to real auth, this must become per-segment
     // caching + the route Cache-Control private (review M-3).
-    const board = selectBoard(notices, slots, now, {});
-    if (!board.featured && board.editorial.length === 0 && board.sponsored.length === 0) {
-      return fallback();
-    }
-    return board;
+    // A live-but-empty board (DB reachable, simply 0 published notices) renders
+    // its REAL empty state — never the mock fallback. The mock carries a sample
+    // sponsored notice that must never appear on the live site; it is reserved
+    // for the no-DB (local dev) and hard-query-error paths only.
+    return selectBoard(notices, slots, now, {});
   } catch {
     return fallback();
   }
