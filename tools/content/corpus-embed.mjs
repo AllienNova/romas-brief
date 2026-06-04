@@ -158,17 +158,27 @@ const existing = new Set((await dbQuery("select chunk_key from reference_chunks 
 const todo = allChunks.filter((c) => !existing.has(c.chunk_key));
 console.error(`Resume: ${existing.size} already embedded · ${todo.length} to do.`);
 
-async function embed(inputs) {
-  const res = await fetch(EMB.url, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${EMB.key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: EMB.model, input: inputs, dimensions: EMBED_DIM }),
-  });
-  if (!res.ok) throw new Error(`${EMB.provider} ${res.status}: ${await res.text()}`);
-  const j = await res.json();
-  const vecs = j.data.map((d) => d.embedding);
-  if (vecs[0]?.length !== EMBED_DIM) throw new Error(`embedding dim ${vecs[0]?.length} != ${EMBED_DIM}`);
-  return vecs;
+async function embed(inputs, attempt = 1) {
+  try {
+    const res = await fetch(EMB.url, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${EMB.key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: EMB.model, input: inputs, dimensions: EMBED_DIM }),
+    });
+    if (!res.ok) throw new Error(`${EMB.provider} ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    const j = await res.json();
+    const vecs = j.data.map((d) => d.embedding);
+    if (vecs[0]?.length !== EMBED_DIM) throw new Error(`embedding dim ${vecs[0]?.length} != ${EMBED_DIM}`);
+    return vecs;
+  } catch (e) {
+    // A single transient gateway error (429/5xx/network) must not abort a 75k-chunk
+    // resumable run — retry with backoff (same policy as dbQuery). Idempotent upsert.
+    if (attempt <= 4) {
+      await new Promise((r) => setTimeout(r, 1500 * attempt));
+      return embed(inputs, attempt + 1);
+    }
+    throw e;
+  }
 }
 
 let done = 0;
