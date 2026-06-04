@@ -196,6 +196,7 @@ async function embed(inputs, attempt = 1) {
 }
 
 let done = 0;
+let failed = 0;
 let i = 0;
 while (i < todo.length) {
   // Pack a batch by token budget (not a fixed count) so no request exceeds the
@@ -208,23 +209,31 @@ while (i < todo.length) {
     i++;
   }
   if (batch.length === 0) { batch.push(todo[i]); i++; } // single oversized chunk — send alone
-  const vecs = await embed(batch.map((c) => c.chunk_text));
-  batch.forEach((c, k) => { c.embedding = vecs[k]; });
-  // upsert in smaller DB batches
-  for (let j = 0; j < batch.length; j += UPSERT_BATCH) {
-    const rows = batch.slice(j, j + UPSERT_BATCH);
-    const json = JSON.stringify(rows);
-    if (json.includes("$ref$")) throw new Error("token collision $ref$");
-    const sql = `insert into public.reference_chunks
-      (chunk_key, source_path, source_category, source_subcategory, source_title, doc_type, source_hash, chunk_index, chunk_text, token_estimate, embedding)
-      select x.chunk_key, x.source_path, x.source_category, x.source_subcategory, x.source_title, x.doc_type, x.source_hash, x.chunk_index, x.chunk_text, x.token_estimate, (x.embedding::text)::vector(1536)
-      from jsonb_to_recordset($ref$${json}$ref$::jsonb) as x(
-        chunk_key text, source_path text, source_category text, source_subcategory text, source_title text,
-        doc_type text, source_hash text, chunk_index integer, chunk_text text, token_estimate integer, embedding jsonb)
-      on conflict (chunk_key) do update set embedding = excluded.embedding, updated_at = now();`;
-    await dbQuery(sql);
-    done += rows.length;
+  // Resilience: a single batch that fails (after retries) is logged + SKIPPED so it
+  // can't abort the whole run — the run drains, and a later resume retries skipped
+  // chunks (they stay absent from reference_chunks → re-queued by the existing-set diff).
+  try {
+    const vecs = await embed(batch.map((c) => c.chunk_text));
+    batch.forEach((c, k) => { c.embedding = vecs[k]; });
+    // upsert in smaller DB batches
+    for (let j = 0; j < batch.length; j += UPSERT_BATCH) {
+      const rows = batch.slice(j, j + UPSERT_BATCH);
+      const json = JSON.stringify(rows);
+      if (json.includes("$ref$")) throw new Error("token collision $ref$");
+      const sql = `insert into public.reference_chunks
+        (chunk_key, source_path, source_category, source_subcategory, source_title, doc_type, source_hash, chunk_index, chunk_text, token_estimate, embedding)
+        select x.chunk_key, x.source_path, x.source_category, x.source_subcategory, x.source_title, x.doc_type, x.source_hash, x.chunk_index, x.chunk_text, x.token_estimate, (x.embedding::text)::vector(1536)
+        from jsonb_to_recordset($ref$${json}$ref$::jsonb) as x(
+          chunk_key text, source_path text, source_category text, source_subcategory text, source_title text,
+          doc_type text, source_hash text, chunk_index integer, chunk_text text, token_estimate integer, embedding jsonb)
+        on conflict (chunk_key) do update set embedding = excluded.embedding, updated_at = now();`;
+      await dbQuery(sql);
+      done += rows.length;
+    }
+  } catch (e) {
+    failed += batch.length;
+    console.error(`  SKIP batch (${batch.length} chunks) @ ${batch[0]?.source_path}: ${String(e).slice(0, 160)}`);
   }
   console.error(`  embedded+upserted ${done}/${todo.length}`);
 }
-console.log(JSON.stringify({ embedded: done, skipped_existing: existing.size, provider: EMB.provider, model: EMB.model }, null, 2));
+console.log(JSON.stringify({ embedded: done, failed_skipped: failed, skipped_existing: existing.size, provider: EMB.provider, model: EMB.model }, null, 2));
