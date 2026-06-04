@@ -60,15 +60,19 @@ Performed today, May 12, 2026, at 02:55 ET. Demonstrates the runbook works end-t
 
 ### 2.2 By Region (worldwide footprint signal)
 
+> **SUPERSEDED 2026-05-14 by SSOT decision 15 (Kimal verbal lock):** the original NA-bias
+> table below is replaced by the worldwide rebalance. NA-bias was rejected. The locked mix
+> is the source of truth for catalog allocation. Top-Stories grid quota: max 2 of 6 cards
+> from the same region. Date format honors reader locale via `Intl.DateTimeFormat`.
+
 | Region | Articles | % | Rationale |
 |---|---|---|---|
-| **US** | 200 | 40% | Largest current audience; CMS/FDA dominate volume |
-| **Europe** | 130 | 26% | ESTRO, national societies, EU MDR/AI Act, NICE |
-| **UK** | 30 | 6% | Split from Europe — MHRA + NICE are distinct |
-| **Asia-Pacific** | 80 | 16% | Japan (PMDA, JASTRO), Korea, China, ANZ, India |
+| **US** | 110 | 22% | Largest current audience; CMS/FDA dominate volume |
+| **Europe** (incl. UK 30) | 160 | 32% | ESTRO, national societies (DEGRO/SFRO/AIRO), EU MDR + AI Act, NICE/MHRA |
+| **Asia-Pacific** | 130 | 26% | Japan 40 (PMDA/JASTRO) · Korea 15 · China 25 (read-only, NMPA) · India 15 · ANZ 20 · SE Asia 15 |
+| **LATAM** | 40 | 8% | Brazil 20 / Mexico 8 / Argentina 6 / Chile 4 / Other 2 — LLM-translate (SSOT 18, DeepL Pro + Claude verify) |
 | **Canada** | 20 | 4% | Health Canada + COMP |
-| **Latin America** | 10 | 2% | ALATRO, growing AI adoption (Radformation Brazil) |
-| **MENA + Africa** | 10 | 2% | IAEA programs, SASRO |
+| **MENA + Africa** | 20 | 4% | IAEA programs, SASRO |
 | **Global / Multi-region** | 20 | 4% | IAEA, WHO, joint ESTRO-AAPM statements |
 | **TOTAL** | **500** | **100%** | |
 
