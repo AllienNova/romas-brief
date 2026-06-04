@@ -129,7 +129,7 @@ const EMB = resolveEmbedder();
 const SUPABASE_ACCESS_TOKEN = process.env["SUPABASE_ACCESS_TOKEN"];
 if (!EMB) { console.error("BLOCKED: no embedding key — set AI_GATEWAY_API_KEY (Vercel AI Gateway) or OPENAI_API_KEY. Tooling verified via --dry-run."); process.exit(2); }
 if (!SUPABASE_ACCESS_TOKEN) { console.error("BLOCKED: SUPABASE_ACCESS_TOKEN not set."); process.exit(2); }
-console.error(`Embedder: ${EMB.provider} (${EMB.model}, ${EMB_DIM}-dim).`);
+console.error(`Embedder: ${EMB.provider} (${EMB.model}, ${EMBED_DIM}-dim).`);
 
 async function dbQuery(sql) {
   const res = await fetch(`https://api.supabase.com/v1/projects/${SUPABASE_REF}/database/query`, {
@@ -150,12 +150,12 @@ async function embed(inputs) {
   const res = await fetch(EMB.url, {
     method: "POST",
     headers: { Authorization: `Bearer ${EMB.key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: EMB.model, input: inputs, dimensions: EMB_DIM }),
+    body: JSON.stringify({ model: EMB.model, input: inputs, dimensions: EMBED_DIM }),
   });
   if (!res.ok) throw new Error(`${EMB.provider} ${res.status}: ${await res.text()}`);
   const j = await res.json();
   const vecs = j.data.map((d) => d.embedding);
-  if (vecs[0]?.length !== EMB_DIM) throw new Error(`embedding dim ${vecs[0]?.length} != ${EMB_DIM}`);
+  if (vecs[0]?.length !== EMBED_DIM) throw new Error(`embedding dim ${vecs[0]?.length} != ${EMBED_DIM}`);
   return vecs;
 }
 
@@ -181,4 +181,4 @@ for (let i = 0; i < todo.length; i += EMBED_BATCH) {
   }
   console.error(`  embedded+upserted ${done}/${todo.length}`);
 }
-console.log(JSON.stringify({ embedded: done, skipped_existing: existing.size, model: EMBED_MODEL }, null, 2));
+console.log(JSON.stringify({ embedded: done, skipped_existing: existing.size, provider: EMB.provider, model: EMB.model }, null, 2));
