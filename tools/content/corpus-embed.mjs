@@ -46,7 +46,10 @@ const CHUNK_CHARS = 3500;
 const OVERLAP_CHARS = 400;
 const MIN_WORDS = 40;
 const EMBED_DIM = 1536;     // must match reference_chunks.embedding vector(1536)
-const EMBED_MAX_INPUTS = 256;       // hard cap on inputs per request
+const EMBED_MAX_INPUTS = 48;        // hard cap on inputs per request. 48 × worst-case
+                                    // ~5k tokens/chunk = 240k < the 300k gateway cap,
+                                    // so a request can't exceed the cap even when many
+                                    // small chunks slip under the token budget below.
 const EMBED_TOKEN_BUDGET = 100_000; // est tokens/request. The estimate (chars/5)
                                     // UNDER-counts the gateway's real tokenizer on
                                     // dense medical text, so a 250k-estimated batch
