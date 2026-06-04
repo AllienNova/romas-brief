@@ -64,7 +64,14 @@ function axes(sig, dom, st) {
   };
   return a;
 }
+// Composite on the canonical 0..100 scale. Axes a.* are 0..1 here; the stored
+// signal_scores are emitted on 0..100 to match packages/shared/signal-scoring.ts
+// compositeScore() (which expects 0..100 axes). round(100 * Σ w·a_0..1) ===
+// Σ w·a_0..100, so the value is identical either way — only the STORED axis scale
+// changes. The generator asserts the two agree per row (see expand loop).
 const composite = (a) => Math.round(100 * (W.clinical*a.clinical + W.ai*a.ai + W.physics*a.physics + W.operational*a.operational + W.novelty*a.novelty + W.confidence*a.confidence));
+// Canonical engine replica: weighted sum of 0..100 axes (must equal `composite` above).
+const compositeFrom100 = (s) => +(W.clinical*s.clinical + W.ai*s.ai + W.physics*s.physics + W.operational*s.operational + W.novelty*s.novelty + W.confidence*s.confidence).toFixed(2);
 
 // ============================================================
 // THE 90 FINDINGS. Compact tuple per row; the generator expands.
@@ -370,10 +377,15 @@ const rows = F.map((r, i) => {
     region: r.region ?? [], audience_tags: r.aud ?? [],
     modality_tags: r.mod ?? [], disease_site_tags: r.dis ?? [],
     composite_score: score,
-    signal_scores: { clinical: +a.clinical.toFixed(3), ai: +a.ai.toFixed(3), physics: +a.physics.toFixed(3), operational: +a.operational.toFixed(3), novelty: +a.novelty.toFixed(3), confidence: +a.confidence.toFixed(3) },
+    // Stored 0..100 to match the canonical compositeScore() axis contract.
+    signal_scores: { clinical: +(a.clinical*100).toFixed(1), ai: +(a.ai*100).toFixed(1), physics: +(a.physics*100).toFixed(1), operational: +(a.operational*100).toFixed(1), novelty: +(a.novelty*100).toFixed(1), confidence: +(a.confidence*100).toFixed(1) },
     embargoed: r.embargo ? true : false,
     embargo_until: r.embargo ? r.embargo[0] : null,
   };
+  // Contract check: the canonical engine recomputing from the STORED 0..100 axes
+  // must land within rounding of the stored composite_score. Guards scale drift.
+  const recomputed = Math.round(compositeFrom100(row.signal_scores));
+  if (Math.abs(recomputed - score) > 1) errors.push(`${id} composite drift: stored ${score} vs engine ${recomputed}`);
   return row;
 });
 

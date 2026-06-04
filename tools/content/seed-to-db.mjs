@@ -49,7 +49,19 @@ from jsonb_to_recordset($seed$${json}$seed$::jsonb) as x(
   region text[], audience_tags text[], modality_tags text[], disease_site_tags text[],
   composite_score numeric, signal_scores jsonb, embargoed boolean, embargo_until timestamptz
 )
-on conflict (slug) do nothing;`;
+on conflict (slug) do update set
+  archetype = excluded.archetype, tier = excluded.tier, category = excluded.category,
+  subcategory = excluded.subcategory, content_type = excluded.content_type,
+  source_language = excluded.source_language, title = excluded.title,
+  standfirst = excluded.standfirst, body_md = excluded.body_md,
+  romas_insight = excluded.romas_insight, romas_insight_labeled = excluded.romas_insight_labeled,
+  primary_source_url = excluded.primary_source_url, primary_source_type = excluded.primary_source_type,
+  region = excluded.region, audience_tags = excluded.audience_tags,
+  modality_tags = excluded.modality_tags, disease_site_tags = excluded.disease_site_tags,
+  composite_score = excluded.composite_score, signal_scores = excluded.signal_scores,
+  embargoed = excluded.embargoed, embargo_until = excluded.embargo_until,
+  updated_at = now()
+where public.articles.status = 'draft';  -- never overwrite an article that has moved past draft`;
 
 writeFileSync(SQL_OUT, SQL + "\n", "utf8");
 writeFileSync(PAYLOAD_OUT, JSON.stringify({ query: SQL }), "utf8");
