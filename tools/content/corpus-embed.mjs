@@ -41,9 +41,23 @@ const SUPABASE_REF = "rjpuxfbuzispklcstuzo";
 const CHUNK_CHARS = 3500;
 const OVERLAP_CHARS = 400;
 const MIN_WORDS = 40;
-const EMBED_MODEL = "text-embedding-3-small";
-const EMBED_BATCH = 96;     // inputs per OpenAI embeddings request
+const EMBED_DIM = 1536;     // must match reference_chunks.embedding vector(1536)
+const EMBED_BATCH = 96;     // inputs per embeddings request
 const UPSERT_BATCH = 40;    // rows per Management-API INSERT
+
+// Embedding endpoint resolution. Prefer the Vercel AI Gateway (unified billing +
+// observability + fallbacks) when AI_GATEWAY_API_KEY is set; else direct OpenAI.
+// Both are OpenAI-compatible (POST /embeddings, {model,input,dimensions} →
+// {data:[{embedding}]}) — verified vs Vercel AI Gateway docs 2026-06-04
+// (https://vercel.com/docs/ai-gateway/sdks-and-apis/openai-chat-completions/embeddings)
+// and apps/web/lib/search-core.ts. Gateway model IDs are provider-prefixed.
+function resolveEmbedder() {
+  const gw = process.env["AI_GATEWAY_API_KEY"];
+  const oai = process.env["OPENAI_API_KEY"];
+  if (gw) return { provider: "vercel-gateway", url: "https://ai-gateway.vercel.sh/v1/embeddings", key: gw, model: "openai/text-embedding-3-small" };
+  if (oai) return { provider: "openai-direct", url: "https://api.openai.com/v1/embeddings", key: oai, model: "text-embedding-3-small" };
+  return null;
+}
 
 const sha256 = (s) => createHash("sha256").update(s).digest("hex");
 const estTokens = (chars) => Math.round((chars / 5) * 1.0); // ~5 chars/token English
@@ -107,10 +121,11 @@ if (DRY) {
 }
 
 // ---- LIVE PATH (gated) ----
-const OPENAI_API_KEY = process.env["OPENAI_API_KEY"];
+const EMB = resolveEmbedder();
 const SUPABASE_ACCESS_TOKEN = process.env["SUPABASE_ACCESS_TOKEN"];
-if (!OPENAI_API_KEY) { console.error("BLOCKED: OPENAI_API_KEY not set — embedding run is gated (Kimal to provide). Tooling verified via --dry-run."); process.exit(2); }
+if (!EMB) { console.error("BLOCKED: no embedding key — set AI_GATEWAY_API_KEY (Vercel AI Gateway) or OPENAI_API_KEY. Tooling verified via --dry-run."); process.exit(2); }
 if (!SUPABASE_ACCESS_TOKEN) { console.error("BLOCKED: SUPABASE_ACCESS_TOKEN not set."); process.exit(2); }
+console.error(`Embedder: ${EMB.provider} (${EMB.model}, ${EMB_DIM}-dim).`);
 
 async function dbQuery(sql) {
   const res = await fetch(`https://api.supabase.com/v1/projects/${SUPABASE_REF}/database/query`, {
@@ -128,14 +143,16 @@ const todo = allChunks.filter((c) => !existing.has(c.chunk_key));
 console.error(`Resume: ${existing.size} already embedded · ${todo.length} to do.`);
 
 async function embed(inputs) {
-  const res = await fetch("https://api.openai.com/v1/embeddings", {
+  const res = await fetch(EMB.url, {
     method: "POST",
-    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: EMBED_MODEL, input: inputs }),
+    headers: { Authorization: `Bearer ${EMB.key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: EMB.model, input: inputs, dimensions: EMB_DIM }),
   });
-  if (!res.ok) throw new Error(`OpenAI ${res.status}: ${await res.text()}`);
+  if (!res.ok) throw new Error(`${EMB.provider} ${res.status}: ${await res.text()}`);
   const j = await res.json();
-  return j.data.map((d) => d.embedding);
+  const vecs = j.data.map((d) => d.embedding);
+  if (vecs[0]?.length !== EMB_DIM) throw new Error(`embedding dim ${vecs[0]?.length} != ${EMB_DIM}`);
+  return vecs;
 }
 
 let done = 0;
