@@ -27,6 +27,10 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+// Load the project .env (gitignored) so AI_GATEWAY_API_KEY / OPENAI_API_KEY /
+// SUPABASE_ACCESS_TOKEN can simply be pasted there — no shell export needed.
+// Node ≥20.12 / 24 ships process.loadEnvFile(); ignore if absent or no .env.
+try { process.loadEnvFile?.(resolve(__dirname, "../../.env")); } catch { /* no .env — use shell env */ }
 const argv = process.argv.slice(2);
 const flag = (n) => argv.includes(n);
 const val = (n, d) => { const i = argv.indexOf(n); return i > -1 ? argv[i + 1] : d; };
