@@ -23,11 +23,11 @@ catalog row maps 1:1:
 | Catalog field | `articles` column | Notes |
 |---|---|---|
 | slug | `slug` | kebab, unique |
-| archetype | `archetype` | short_brief (600–900) · standard (1000–1500) · deep_report (2000–3500) |
+| archetype | `archetype` | **short_brief** (600–900) · **standard_analysis** (1000–1500) · **deep_report** (2000–3500) |
 | tier | `tier` | daily · friday_read · conference (editorial edition) |
-| category | `category` | one of the 11 (§2.1) |
+| category | `category` | **ai · physics · clinical_rt · regulatory · guidelines · reimbursement · vendor · conferences · resident_education · future_rt · operations** (the live enum) |
 | subcategory | `subcategory` | per §2.1 split |
-| content_type | `content_type` | news_brief · paper_critique · practice_delta · fda_brief · reimbursement_explainer · vendor_note · long_take · primer |
+| content_type | `content_type` | news_brief · paper_critique · practice_delta · fda_brief · reimbursement_explainer · **vendor_intel** · long_take · primer |
 | title | `title` | ≤90 chars, no hype words |
 | standfirst | `standfirst` | the deck |
 | primary_source_url | `primary_source_url` | **REQUIRED before non-draft (Rule 1)** |
@@ -95,3 +95,23 @@ line, fields = §1). Populated from the CONTENT-2 research findings. Load path:
 2. Map findings → catalog rows (this framework), distributing to hit §2 targets.
 3. Seed `draft` rows into `articles` (Rule 1: real sources only).
 4. CONTENT-5 pipeline drafts/fact-checks/scores → `in_review` → `published` over the 8-week ramp.
+
+## 7. Seed status (CONTENT-4, applied 2026-06-04)
+
+The grounded launch tranche is **live**: 44 source-verified `draft` rows seeded into `articles`
+on project `rjpuxfbuzispklcstuzo` from `Docs/content/2026-radonc-landscape-intelligence.md`.
+
+- **Generator:** `tools/content/build-seed.mjs` (findings + locked rubric + enum validation → `catalog/seed.ndjson`).
+- **Loader:** `tools/content/seed-to-db.mjs` (dollar-quoted `jsonb_to_recordset` INSERT, `ON CONFLICT (slug) DO NOTHING`, idempotent).
+- **Verified:** 44/44 carry a valid `primary_source_url` (Rule 1, enforced by `articles_primary_source_required` CHECK). Composite 47→76.
+- **Remaining ~456** are produced by the CONTENT-5 pipeline over the 8-week ramp from ongoing cron discovery — not hand-seeded (no fabrication).
+
+### Rubric-band note (why no seed row is "Hero")
+
+The locked composite weights **clinical 0.30 + ai 0.25 = 0.55** of the score. The grounded tranche is
+mostly *single-axis-dominant* (a pure clinical RCT, a pure physics TG report, a pure regulatory
+guidance), so the highest seed composite is **76** — top of the **Strong** band. The **Hero band
+(85–100)** is structurally reserved for **AI × clinical convergence** stories (an AI tool that
+*changes how a clinician treats*), which is the rubric's deliberate AI-native intent. **No seed row
+was inflated to manufacture a Hero score.** Homepage "Hero" *placement* is an editorial-curation
+decision separate from the composite badge — a Strong-scored flagship RCT can still be featured.

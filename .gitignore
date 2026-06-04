@@ -113,3 +113,6 @@ _legacy/
 
 # Playwright MCP device-test artifacts
 .playwright-mcp/
+
+# CONTENT-4 seed loader payload (generated build artifact)
+tools/content/.seed-payload.json

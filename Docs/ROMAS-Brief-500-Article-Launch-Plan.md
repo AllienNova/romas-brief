@@ -151,6 +151,30 @@ Working backward from ROMAS COS launch (5 weeks from May 12 + 3 weeks of pre-pop
 - Drafts are LLM-generated to 80% complete, human-finished
 - Editorial approval is the bottleneck — pace ramp at ~10/day average
 
+### 3.1 Landscape-driven launch sequencing (2026-06-04 — supersedes the W-8 focus *only*)
+
+The grounded 2026 landscape research (`Docs/content/2026-radonc-landscape-intelligence.md`, 90
+source-pointed findings across 5 domains) **confirms the category/region distribution unchanged** but
+re-weights *what leads the ramp*. The 10 themes, ranked by launch signal, set the Hero/Strong tranche:
+
+| Lead theme | Signal | Category pull | Why it leads |
+|---|---|---|---|
+| US 2026 reimbursement earthquake (CMS code overhaul + payer repricing) | 96 | Reimbursement (over-indexed at launch vs its 30-row weight) | Highest operational impact in the window; least-covered by general outlets |
+| SBRT/hypofx becomes default (NRG-GU005, PACE-B, FAST-Forward 10y, STARS 10y, EMBRACE-II) | 95 | Clinical | 5 mature RCTs = ready-made Hero `paper_critique` rows |
+| First proton survival signal (Lancet H&N OS) amid RADCOMP/TORPEdO scrutiny | 95 | Clinical / Future | Friday `long_take` — the honest cost-effectiveness read |
+| Physics infrastructure catches up (TG-351, TG-332, RO-ILS 10y, TRS-398 rev-1, MRI-only) | 90 | Physics (moat) | Pure ROMAS moat — no general outlet leads with TG reports |
+| AI regulation matures (FDA PCCP final, EU AI Act high-risk, openFDA verification) | 88 | Regulatory (moat) | Multi-jurisdiction read is structurally hard to copy |
+| AI frontier: contouring→dose+autonomous QA (ESTRO-AAPM guideline, gamma prediction) | 88 | AI (moat) | Adoption-readiness-vs-hype filter differentiates |
+| Online adaptive mainstream + cheaper (Ethos 2.0, Elekta Evo) | 88 | Vendor / Physics | Physics-operational seam |
+| FLASH first-clinical inflection (FAST-02, detector problem unsolved) | 92 | Physics (moat) | "Why FLASH dosimetry is hard," not just "a trial enrolled" |
+| Theranostics × external-beam convergence (ARTO, PSMA-RT) | 86 | Clinical / Future | Where RT and nuclear medicine collide operationally |
+| Vendor map redrawn (ViewRay exit, Elekta Evo, GE MR Contour, Varian lead) | 80 | Vendor | Buyer's-risk competitive intel, not PR |
+
+**Net effect on the schedule above:** W-8 seed adds the **reimbursement Hero franchise** (Theme 1) and
+the **SBRT-default `paper_critique` set** (Theme 2) to the existing AI-first seed — these are the
+launch-day front page. APAC/LATAM sourcing (the research skewed US/EU) becomes a deliberate W-2 push,
+flagged in the brief so the Europe-160/APAC-130 mix (SSOT decision 15) isn't met by US/EU items alone.
+
 ---
 
 ## 4. The Tactful Mix — How It Looks in the App
