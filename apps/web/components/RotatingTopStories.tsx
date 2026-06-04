@@ -93,13 +93,17 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
   }, []);
 
   const startIdx = page * 3;
-  const heroArticle = articles[startIdx % total];
-  const secondaryArticles = [
-    articles[(startIdx + 1) % total],
-    articles[(startIdx + 2) % total],
-  ];
+  // Empty-safe: total===0 → startIdx % total is NaN → articles[NaN] is undefined.
+  // Derivations stay null-safe so all hooks below still run; the empty case
+  // early-returns after the hooks (React rules-of-hooks).
+  const heroArticle = total > 0 ? articles[startIdx % total] : undefined;
+  const secondaryArticles = total > 0
+    ? [articles[(startIdx + 1) % total], articles[(startIdx + 2) % total]]
+    : [];
 
-  const catColor = CATEGORY_COLORS[heroArticle.category] || CATEGORY_COLORS.default;
+  const catColor = heroArticle
+    ? CATEGORY_COLORS[heroArticle.category] ?? CATEGORY_COLORS.default
+    : CATEGORY_COLORS.default;
 
   // Progress bar width
   const [progress, setProgress] = useState(0);
@@ -124,6 +128,11 @@ export default function RotatingTopStories({ articles, interval = 7 }: Props) {
       ? direction === "next" ? "translateX(-18px)" : "translateX(18px)"
       : "translateX(0)",
   };
+
+  // No published stories yet (empty pool) — render nothing rather than crash.
+  // The homepage section heading still provides context; an empty rotator is
+  // preferable to a 500. (All hooks above run unconditionally.)
+  if (total === 0 || !heroArticle) return null;
 
   return (
     <div

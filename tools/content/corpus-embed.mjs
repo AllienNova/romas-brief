@@ -47,7 +47,9 @@ const OVERLAP_CHARS = 400;
 const MIN_WORDS = 40;
 const EMBED_DIM = 1536;     // must match reference_chunks.embedding vector(1536)
 const EMBED_BATCH = 96;     // inputs per embeddings request
-const UPSERT_BATCH = 40;    // rows per Management-API INSERT
+const UPSERT_BATCH = 8;     // rows per Management-API INSERT — 8×(1536 floats) keeps the
+                            // SQL payload well under the Management API request-size cap
+                            // (batch 40 returned an HTML error mid-run, killing the pass).
 
 // Embedding endpoint resolution. Prefer the Vercel AI Gateway (unified billing +
 // observability + fallbacks) when AI_GATEWAY_API_KEY is set; else direct OpenAI.
@@ -131,14 +133,24 @@ if (!EMB) { console.error("BLOCKED: no embedding key — set AI_GATEWAY_API_KEY 
 if (!SUPABASE_ACCESS_TOKEN) { console.error("BLOCKED: SUPABASE_ACCESS_TOKEN not set."); process.exit(2); }
 console.error(`Embedder: ${EMB.provider} (${EMB.model}, ${EMBED_DIM}-dim).`);
 
-async function dbQuery(sql) {
-  const res = await fetch(`https://api.supabase.com/v1/projects/${SUPABASE_REF}/database/query`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${SUPABASE_ACCESS_TOKEN}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ query: sql }),
-  });
-  if (!res.ok) throw new Error(`DB ${res.status}: ${await res.text()}`);
-  return res.json();
+async function dbQuery(sql, attempt = 1) {
+  try {
+    const res = await fetch(`https://api.supabase.com/v1/projects/${SUPABASE_REF}/database/query`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${SUPABASE_ACCESS_TOKEN}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ query: sql }),
+    });
+    if (!res.ok) throw new Error(`DB ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    return res.json();
+  } catch (e) {
+    // Transient Management-API failures (5xx/HTML/network) shouldn't abort a long
+    // resumable run — retry with backoff; the run is idempotent (ON CONFLICT).
+    if (attempt <= 3) {
+      await new Promise((r) => setTimeout(r, 1000 * attempt));
+      return dbQuery(sql, attempt + 1);
+    }
+    throw e;
+  }
 }
 
 // Resume: skip chunk_keys already embedded.
