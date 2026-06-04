@@ -46,7 +46,10 @@ const CHUNK_CHARS = 3500;
 const OVERLAP_CHARS = 400;
 const MIN_WORDS = 40;
 const EMBED_DIM = 1536;     // must match reference_chunks.embedding vector(1536)
-const EMBED_BATCH = 96;     // inputs per embeddings request
+const EMBED_MAX_INPUTS = 256;       // hard cap on inputs per request
+const EMBED_TOKEN_BUDGET = 250_000; // < the gateway's 300k-tokens-per-request cap;
+                                    // batches are packed by token_estimate, not a
+                                    // fixed count (chunks vary ~700–5000 tokens).
 const UPSERT_BATCH = 8;     // rows per Management-API INSERT — 8×(1536 floats) keeps the
                             // SQL payload well under the Management API request-size cap
                             // (batch 40 returned an HTML error mid-run, killing the pass).
@@ -159,31 +162,47 @@ const todo = allChunks.filter((c) => !existing.has(c.chunk_key));
 console.error(`Resume: ${existing.size} already embedded · ${todo.length} to do.`);
 
 async function embed(inputs, attempt = 1) {
+  let res;
   try {
-    const res = await fetch(EMB.url, {
+    res = await fetch(EMB.url, {
       method: "POST",
       headers: { Authorization: `Bearer ${EMB.key}`, "Content-Type": "application/json" },
       body: JSON.stringify({ model: EMB.model, input: inputs, dimensions: EMBED_DIM }),
     });
-    if (!res.ok) throw new Error(`${EMB.provider} ${res.status}: ${(await res.text()).slice(0, 200)}`);
-    const j = await res.json();
-    const vecs = j.data.map((d) => d.embedding);
-    if (vecs[0]?.length !== EMBED_DIM) throw new Error(`embedding dim ${vecs[0]?.length} != ${EMBED_DIM}`);
-    return vecs;
-  } catch (e) {
-    // A single transient gateway error (429/5xx/network) must not abort a 75k-chunk
-    // resumable run — retry with backoff (same policy as dbQuery). Idempotent upsert.
-    if (attempt <= 4) {
+  } catch (netErr) {
+    // Network blip — retryable.
+    if (attempt <= 4) { await new Promise((r) => setTimeout(r, 1500 * attempt)); return embed(inputs, attempt + 1); }
+    throw netErr;
+  }
+  if (!res.ok) {
+    const body = (await res.text()).slice(0, 200);
+    // Only 429 / 5xx are transient. A 4xx (e.g. 400 oversized request) is permanent —
+    // retrying is pointless; surface it so the batching can be fixed.
+    if ((res.status === 429 || res.status >= 500) && attempt <= 4) {
       await new Promise((r) => setTimeout(r, 1500 * attempt));
       return embed(inputs, attempt + 1);
     }
-    throw e;
+    throw new Error(`${EMB.provider} ${res.status}: ${body}`);
   }
+  const j = await res.json();
+  const vecs = j.data.map((d) => d.embedding);
+  if (vecs[0]?.length !== EMBED_DIM) throw new Error(`embedding dim ${vecs[0]?.length} != ${EMBED_DIM}`);
+  return vecs;
 }
 
 let done = 0;
-for (let i = 0; i < todo.length; i += EMBED_BATCH) {
-  const batch = todo.slice(i, i + EMBED_BATCH);
+let i = 0;
+while (i < todo.length) {
+  // Pack a batch by token budget (not a fixed count) so no request exceeds the
+  // gateway's 300k-token cap — chunks range ~700–5000 tokens.
+  const batch = [];
+  let toks = 0;
+  while (i < todo.length && batch.length < EMBED_MAX_INPUTS && toks + (todo[i].token_estimate || 1) <= EMBED_TOKEN_BUDGET) {
+    toks += todo[i].token_estimate || 1;
+    batch.push(todo[i]);
+    i++;
+  }
+  if (batch.length === 0) { batch.push(todo[i]); i++; } // single oversized chunk — send alone
   const vecs = await embed(batch.map((c) => c.chunk_text));
   batch.forEach((c, k) => { c.embedding = vecs[k]; });
   // upsert in smaller DB batches
